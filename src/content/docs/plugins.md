@@ -5,7 +5,7 @@ category: Guide
 order: 2
 ---
 
-Editora can be extended with **plugins** — they add commands, keybindings, tool
+Editora can be extended with **plugins**, they add commands, keybindings, tool
 windows, editor-menu items, and status-bar segments. Browse the
 [plugin catalog](/plugins) for what's available, or write your own.
 
@@ -48,6 +48,6 @@ which exercises every extension point, and read the full authoring guide in
 ## Publishing
 
 The official registry is
-[adriandeleon/editora-plugins](https://github.com/adriandeleon/editora-plugins) —
+[adriandeleon/editora-plugins](https://github.com/adriandeleon/editora-plugins),
 a curated `index.json` plus each plugin's source and a downloadable `.zip`
 (verified by sha-256 on install). Open a pull request there to add yours.

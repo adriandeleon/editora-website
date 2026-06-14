@@ -42,7 +42,7 @@ const featureGroups = await groupedFeatures();
 const perfStats = [
   {
     stat: "Off the UI thread",
-    body: "Tokenizing, parsing, and search run in the background — the editor never blocks while you type.",
+    body: "Tokenizing, parsing, and search run in the background, so the editor never blocks while you type.",
   },
   {
     stat: "Large files stay smooth",
@@ -72,7 +72,7 @@ const platforms = [
       <h2 class="hero-name">Editora</h2>
       <h1 class="hero-title">A keyboard-driven programmer's text editor</h1>
       <p class="tagline">
-        Fast, cross-platform, and command-first. Every action is a command —
+        Fast, cross-platform, and command-first. Every action is a command,
         reachable by your choice of keymap (Emacs, VS Code, and more) or a fuzzy palette.
       </p>
       <div class="cta">
@@ -81,7 +81,7 @@ const platforms = [
       </div>
 
       <p class="hero-kbd">
-        Keyboard-first — every action is a keystroke or a <kbd>M-x</kbd> search
+        Keyboard-first: every action is a keystroke or a <kbd>M-x</kbd> search
         away.
       </p>
 
@@ -117,7 +117,7 @@ const platforms = [
         Editora is a keyboard-first editor for people who'd rather keep their
         hands on the keys. Every action is a command you can bind or
         fuzzy-search, it stays responsive on huge files, and it runs the same on
-        macOS, Windows, and Linux. It's free, open source, and quiet — no
+        macOS, Windows, and Linux. It's free, open source, and quiet: no
         accounts, no telemetry, no subscriptions.
       </p>
     </section>
@@ -153,7 +153,7 @@ const platforms = [
         <section id="whats-new" class="section">
           <h2>What's new</h2>
           <p class="section-lead">
-            Recently shipped — see the{" "}
+            Recently shipped. See the{" "}
             <a href={changelogUrl}>full changelog</a> for everything.
           </p>
           <ul class="news">
@@ -162,7 +162,7 @@ const platforms = [
                 <span class="news-title" set:html={n.title} />
                 {n.detail && (
                   <span class="news-detail">
-                    {" — "}
+                    {": "}
                     <span set:html={n.detail} />
                   </span>
                 )}
@@ -198,7 +198,7 @@ const platforms = [
     <section id="performance" class="section">
       <h2>Built for speed</h2>
       <p class="section-lead">
-        Performance is a first-class goal — the UI thread stays free and work
+        Performance is a first-class goal: the UI thread stays free and work
         happens incrementally, off-thread, and only on what's visible.
       </p>
       <div class="perf">
@@ -241,7 +241,7 @@ const platforms = [
         <a class="btn btn-ghost" href={`${repo}/releases`}>All releases</a>
       </div>
       <p id="dl-sub" class="note">
-        Native installer (bundles a Java runtime — nothing else to install), or a
+        Native installer (bundles a Java runtime, nothing else to install), or a
         self-contained <code>java -jar</code> on JDK&nbsp;25.
       </p>
       <p class="note">

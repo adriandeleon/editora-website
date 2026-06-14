@@ -1,18 +1,18 @@
 ---
 title: FAQ
-description: Frequently asked questions — licensing, telemetry, platforms, signing, and customization.
+description: Frequently asked questions, licensing, telemetry, platforms, signing, and customization.
 category: Help
 order: 1
 ---
 
 ## Is Editora free and open source?
 
-Yes — it's free and released under the MIT License. Source is on
+Yes, it's free and released under the MIT License. Source is on
 [GitHub](https://github.com/adriandeleon/Editora).
 
 ## Does it phone home or collect telemetry?
 
-No. There are no accounts, no telemetry, and no network calls for analytics —
+No. There are no accounts, no telemetry, and no network calls for analytics,
 it's a local editor.
 
 ## Which platforms are supported?
@@ -22,7 +22,7 @@ Windows-on-ARM runs the x64 installer under emulation.
 
 ## Do I need Java installed?
 
-No for the native installers — they bundle their own Java runtime. The portable
+No for the native installers, they bundle their own Java runtime. The portable
 fat jar does need JDK 25 (`java -jar`).
 
 ## The installer says it's from an unidentified developer.
@@ -40,9 +40,9 @@ pick a language per file with "Spell Check: Set Language…". See
 
 ## Can I rebind keys or use a different keymap?
 
-Yes — Editora is keyboard-first and every action is a command. In **Settings →
-Keymaps** you can switch between five built-in keymaps — **Emacs** (default),
-**CUA**, **Sublime Text**, **VS Code**, and **IntelliJ IDEA** — and rebind any
+Yes, Editora is keyboard-first and every action is a command. In **Settings →
+Keymaps** you can switch between five built-in keymaps, **Emacs** (default),
+**CUA**, **Sublime Text**, **VS Code**, and **IntelliJ IDEA**, and rebind any
 command with the built-in keybinding editor (recording multi-key chords like
 `C-x C-s`). Changes apply live and your overrides are saved in
 `settings.toml`, layered on top of the active keymap. See the

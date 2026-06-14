@@ -14,11 +14,11 @@ Grab a native installer for your platform from the
 [releases page](https://github.com/adriandeleon/Editora/releases) (or use the
 OS-detected button on the [home page](/)):
 
-- **macOS** — `.dmg` (Intel & Apple Silicon)
-- **Windows** — `.msi` (x64)
-- **Linux** — `.deb` (x64 & arm64)
+- **macOS**: `.dmg` (Intel & Apple Silicon)
+- **Windows**: `.msi` (x64)
+- **Linux**: `.deb` (x64 & arm64)
 
-Installers bundle their own Java runtime — nothing else to install. They're
+Installers bundle their own Java runtime, nothing else to install. They're
 currently **unsigned**, so on first launch macOS Gatekeeper (right-click →
 *Open*) or Windows SmartScreen will warn you once.
 
@@ -36,7 +36,7 @@ java -jar target/Editora-*.jar
 
 ## First steps
 
-Editora is keyboard-first — these get you moving:
+Editora is keyboard-first, these get you moving:
 
 | Do this | Key |
 | --- | --- |
@@ -53,9 +53,9 @@ can learn shortcuts as you go.
 
 ## Make it yours
 
-- **Themes & fonts** — open Settings (the gear, or "Settings" in the palette) →
+- **Themes & fonts**: open Settings (the gear, or "Settings" in the palette) →
   Appearance. Six editor themes, five bundled fonts.
-- **Projects** — off by default; enable in Settings, then `C-x C-p` opens a
+- **Projects**: off by default; enable in Settings, then `C-x C-p` opens a
   folder as a workspace.
-- **Config & overrides** — preferences and keybindings live in a config folder;
+- **Config & overrides**: preferences and keybindings live in a config folder;
   see [Configuration](/docs/configuration).

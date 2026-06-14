@@ -12,4 +12,4 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 - A threads + call-stack view and a lazy variables tree with **set-value**
 - **Watches** and an evaluate console
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled. Off by default — enable it under Settings → Debugging.
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled. Off by default. Enable it under Settings → Debugging.
