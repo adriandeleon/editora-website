@@ -1,8 +1,8 @@
 ---
 title: Plugins
 description: Install plugins from the registry, and write your own to extend Editora.
-category: Guide
-order: 2
+category: Customization
+order: 4
 ---
 
 Editora can be extended with **plugins**, they add commands, keybindings, tool

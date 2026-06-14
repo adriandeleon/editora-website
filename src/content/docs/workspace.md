@@ -1,0 +1,75 @@
+---
+title: Projects, windows & files
+description: Projects and multi-window, tabs and splits, Zen and Simple UI modes, and external-change detection.
+category: Workspace
+order: 1
+---
+
+## Projects
+
+A project is a VS Code-style single-folder workspace: a root folder plus its
+**own saved session** (open files with carets and pins, the active tab, folds,
+and tool-window layout). Projects are **off by default**; enable them in
+Settings.
+
+| Action | Command | Default key |
+| --- | --- | --- |
+| Open a folder as a project | `project.open` | `C-x C-p` |
+| Switch project | `project.switch` | `C-x p` |
+
+The **Project** tool window shows the folder tree with keyboard navigation, a
+filter that runs a bounded project-wide filename search, per-file-type icons, and
+right-click actions (new file, new from template, rename). Bookmarks and notes
+are scoped per project. Closing a project returns you to the global, no-project
+session.
+
+## Multiple windows
+
+When projects are enabled, **each project opens in its own window**, with its own
+tabs, tool windows, and session. The window's project picker acts as a window
+switcher: choosing a project focuses or opens that window. The set of open
+windows is remembered and restored on the next launch. With projects disabled,
+Editora stays a single window.
+
+## Tabs and splits
+
+Tabs are draggable to reorder and can be **pinned**. The tab strip, the
+switcher, and the Open Files picker all show the same unsaved-file marker. Close
+the last tab and the editor is left empty (it doesn't recreate an Untitled
+buffer).
+
+Split the editor into two panes:
+
+| Split | Command | Default key |
+| --- | --- | --- |
+| Side by side | `view.splitVertical` | `C-x 3` |
+| Stacked | `view.splitHorizontal` | `C-x 2` |
+| Unsplit | `view.unsplit` | (palette) |
+
+## The Welcome page
+
+With no session to restore, Editora opens a **Welcome** page (a real tab) with
+New / Open / Open Folder / Clone actions (each labeled with its shortcut), your
+recent files, and version and license info. Reopen it with `view.welcome`.
+
+## Focus modes
+
+- **Zen mode** hides the chrome for distraction-free writing, with a small
+  floating "Z" to exit. Toggle it from the palette or start with the `--zen`
+  flag.
+- **Simple UI mode** strips the editor to the essentials: it hides the extra
+  toolbar groups, the tool-window stripe, the breadcrumb, the gutter, and the
+  minimap, and turns off the heavier features (LSP, debugging, Git, multiple
+  cursors) for a calm surface. Toggle it from Settings, the toolbar, the palette
+  (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
+  restores everything.
+
+You can also hide the toolbar, the tool stripe, the breadcrumb, and the minimap
+individually in Settings.
+
+## External-change detection
+
+When a file changes on disk under you, Editora notices on window focus and tab
+switch and prompts to reload or keep your version. The Project tree also
+re-scans on focus so files added or removed outside the editor show up, keeping
+your expanded folders and selection.

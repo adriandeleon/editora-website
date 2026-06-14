@@ -1,16 +1,17 @@
 ---
 title: Configuration
-description: The config folder, settings.toml, keybinding overrides, snippets, and dictionaries.
-category: Guide
+description: The config folder, settings.toml, session state, and how to export or reset it.
+category: Customization
 order: 1
 ---
 
 Editora keeps preferences and session state in a config folder. Most settings
-have a UI in the Settings window; everything is plain text you can edit by hand.
+have a UI in the Settings window; everything underneath is plain text you can
+edit by hand.
 
 ## Config directory
 
-The config folder is chosen by this precedence:
+The folder is chosen by this precedence:
 
 | Source | Location |
 | --- | --- |
@@ -20,24 +21,30 @@ The config folder is chosen by this precedence:
 | default | `~/.editora/` |
 
 Use `--dev` to run a development instance that never touches your everyday
-settings or session.
+settings or session. The live path is shown in **About Editora**. See the
+[command-line reference](/docs/cli) for all the flags.
 
 ## Files
 
 | File | Holds |
 | --- | --- |
 | `settings.toml` | Preferences: font, theme, keymap, tab size, view options, auto-save, keybinding overrides |
-| `workspace-state.json` | Session: open files, collapsed folds, tool-window layout, window geometry |
+| `workspace-state.json` | Session: open files, folds, tool-window layout, window geometry |
 | `recent-files.json` | Recent files list |
-| `bookmarks.json` | Bookmarks (scoped per project) |
-| `notes.json` | Personal notes (scoped per project) |
-| `projects/<id>.json` | Each project's saved session |
+| `projects.json` + `projects/<id>.json` | Project index and each project's session |
+| `bookmarks.json` | Bookmarks (per project) |
+| `notes.json` | Personal notes (per project) |
+| `breakpoints.json` | Debugger breakpoints (per project) |
+| `connections.json` | Saved SFTP connections (no secrets) |
+| `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
-| `snippets/<lang>.json` | Your user snippets (override the bundled ones) |
+| `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
+
+Preferences are **TOML**; session and list files are **JSON**.
 
 ## Preferences (settings.toml)
 
-Edit in the Settings window, or directly. Common keys are written as TOML:
+Edit in the Settings window, or directly:
 
 ```toml
 fontFamily = "JetBrains Mono"
@@ -47,26 +54,29 @@ tabSize = 4
 autoSave = "afterDelay"
 ```
 
-The live path to your settings file is shown in **About Editora** (it reflects
-`--dev` / `--config-dir`).
+`autoSave` accepts `off`, `afterDelay`, or `onFocusChange`. Text zoom is stored
+separately as `fontZoom` (adjusted with `C-=` / `C--` / `C-0` or Ctrl+wheel) and
+isn't shown in the Settings window.
 
-## Keybindings
+## Schema versioning
 
-Editora ships several keymaps, **Emacs** (default), **CUA**, **Sublime Text**,
-**VS Code**, and **IntelliJ IDEA**, chosen in **Settings → Keymaps** (see [the
-reference](/keybindings) for the Emacs defaults). There you can also rebind any
-command with the built-in keybinding editor. Overrides are stored in
-`settings.toml` (the `keymap` name plus per-command overrides) and layer on top
-of the active keymap, so you only specify what you change.
+Each structured config file carries a `schemaVersion`. Editora migrates older
+files forward automatically on read. A file written by a **newer** Editora than
+you're running is backed up to `<name>.v<n>.bak` and defaults are loaded, so an
+older build never clobbers a newer config.
 
-## Snippets & dictionaries
+## Export and reset
 
-- Add snippets in `snippets/<language>.json` (or `global.json`), VS Code /
-  TextMate syntax. "Snippet: Edit User Snippets…" opens the file; "Snippet:
-  Reload Snippets" picks up changes.
-- Spell-check: choose a dictionary per file with "Spell Check: Set Language…"
-  (English, Spanish, French ship in); "Add to Dictionary" appends to
-  `dictionary.txt`.
+- **Export Configuration…** (Settings → Advanced, or `config.export`) zips the
+  active config folder into a timestamped archive in your home directory.
+- **Reset to Defaults** (Settings → Advanced) restores defaults while keeping
+  your text zoom and keybinding overrides.
 
-Full details live in the
+## More
+
+- Keymaps and rebinding: [Keymaps & keybindings](/docs/keymaps).
+- Themes, fonts, and zoom: [Themes & fonts](/docs/themes-fonts).
+- Snippets and templates: [Snippets & templates](/docs/snippets-templates).
+
+Full internals live in the
 [README](https://github.com/adriandeleon/Editora/blob/master/README.md).

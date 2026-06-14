@@ -8,7 +8,17 @@ interface Props {
 const { entry } = Astro.props;
 
 // Build the ordered sidebar: categories in a fixed order, docs by `order`.
-const CATEGORY_ORDER = ["Getting started", "Guide", "Help"];
+const CATEGORY_ORDER = [
+  "Getting started",
+  "Editing",
+  "Code intelligence",
+  "Navigation",
+  "Run & debug",
+  "Version control",
+  "Workspace",
+  "Customization",
+  "Help",
+];
 const all = (await getCollection("docs")).sort(
   (a, b) =>
     (a.data.order ?? 100) - (b.data.order ?? 100) ||
