@@ -1,6 +1,6 @@
 ---
 title: "Shipping a JavaFX app to five platforms"
-description: The release pipeline behind Editora — native installers and fat jars for five targets, jpackage, moditect, and the joys of automatic modules.
+description: "The release pipeline behind Editora: native installers and fat jars for five targets, jpackage, moditect, and the joys of automatic modules."
 date: 2026-06-12
 author: Adrian De Leon
 tags: [packaging, release]
@@ -33,8 +33,8 @@ reactfx/flowless/undofx/wellbehavedfx friends), tm4e, PDFBox, lsp4j, are
 
 The fix is the `moditect` plugin, which injects generated `module-info`
 descriptors into those jars at build time so jlink will accept them. Bump one of
-those dependencies and you sometimes have to adjust the injected `requires` —
-that's the tax for living on automatic modules.
+those dependencies and you sometimes have to adjust the injected `requires`.
+That's the tax for living on automatic modules.
 
 There's an even sharper edge with tm4e: it ships as a NetBeans repackaging
 that's **code-signed**, and jlink rejects signed modular jars. So the build
@@ -54,13 +54,13 @@ Every runner uploads its installer (renamed to a consistent
 `Editora-<version>-<target>.<ext>`) and its fat jar. A final job hands them all
 to [JReleaser](https://jreleaser.org), which creates the GitHub release with the
 installers, jars, a `checksums.txt`, and a changelog. JReleaser only
-*orchestrates* — it doesn't build, and there's no `pom.xml` change for it, so the
+*orchestrates*. It doesn't build, and there's no `pom.xml` change for it, so the
 normal build is unaffected.
 
 ## What I'd tell someone starting out
 
 If you're packaging a JVM desktop app: expect the matrix (no cross-building),
 budget time for the automatic-module/jlink dance, and check early whether your UI
-toolkit even *has* natives for every arch you want to ship — because "we'll add
+toolkit even *has* natives for every arch you want to ship, because "we'll add
 ARM later" can turn out to mean "we can't, yet," and it's better to know that
 before you promise it.

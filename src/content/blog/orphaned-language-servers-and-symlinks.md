@@ -1,6 +1,6 @@
 ---
 title: "Orphaned language servers and the symlink that ate my diagnostics"
-description: Two LSP integration bugs — a process that wouldn't die and diagnostics that silently vanished — and what they taught me about subprocesses and paths.
+description: "Two LSP integration bugs (a process that wouldn't die, and diagnostics that silently vanished) and what they taught me about subprocesses and paths."
 date: 2026-06-08
 author: Adrian De Leon
 tags: [lsp, debugging]
@@ -30,7 +30,7 @@ wrapper.
 There was a sibling bug in the same area: the server's stderr was a PIPE that
 nothing drained. A chatty server (jdtls logs *a lot*) fills the OS pipe buffer
 (~64 KB) and then blocks mid-startup, waiting for someone to read it. The fix is
-boring and important — `Redirect.DISCARD` the stderr; the LSP traffic is on
+boring and important: `Redirect.DISCARD` the stderr; the LSP traffic is on
 stdout anyway.
 
 ## Bug 2: diagnostics that silently vanished

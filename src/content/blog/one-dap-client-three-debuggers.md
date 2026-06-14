@@ -1,6 +1,6 @@
 ---
 title: "One DAP client, three debuggers"
-description: How Editora debugs Java, Python, and JavaScript through a single Debug Adapter Protocol client — three very different transports behind one UI.
+description: "How Editora debugs Java, Python, and JavaScript through a single Debug Adapter Protocol client: three very different transports behind one UI."
 date: 2026-06-11
 author: Adrian De Leon
 tags: [debugging, dap]
@@ -38,7 +38,7 @@ work, plus a threading one:
   PIPE that nobody reads fills up and blocks it mid-handshake. `Redirect.DISCARD`
   it.
 - **Orphaned adapters.** Kill the whole descendant process tree on dispose, not
-  just the launcher — a wrapper script otherwise leaves the real adapter running.
+  just the launcher; a wrapper script otherwise leaves the real adapter running.
 - **Don't block the reader thread.** When the `initialized` event arrives, you
   fire `setBreakpoints` / `setExceptionBreakpoints` / `configurationDone`. That
   callback runs on the DAP **reader thread**: so if you `.join()` on those

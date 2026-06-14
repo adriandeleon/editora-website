@@ -14,8 +14,7 @@ installed." It is installed. The app just can't see it.
 ## The cause: a stripped PATH
 
 When you launch an app from Finder (or a `.desktop` file on Linux), it does
-**not** inherit your shell's environment. It gets a minimal PATH —
-`/usr/bin:/bin:/usr/sbin:/sbin` — with none of the directories your tools
+**not** inherit your shell's environment. It gets a minimal PATH (`/usr/bin:/bin:/usr/sbin:/sbin`) with none of the directories your tools
 actually live in: Homebrew (`/opt/homebrew/bin`), npm globals, and especially
 anything under a version manager.
 
@@ -32,8 +31,7 @@ path against that PATH before launching. (Java's Unix `ProcessBuilder` resolves
 the executable against the JVM's own stripped PATH, not the child env, so both
 the augmentation *and* the rewrite are needed.)
 
-The crucial piece is the **login-shell PATH**. Editora runs your shell once —
-`$SHELL -l -i -c 'printf …$PATH…'`, with stdin from `/dev/null`, stderr
+The crucial piece is the **login-shell PATH**. Editora runs your shell once: `$SHELL -l -i -c 'printf …$PATH…'`, with stdin from `/dev/null`, stderr
 discarded, a 5-second timeout, and marker strings fencing the PATH off from any
 `.zshrc` banner output (the pure marker-parse is unit-tested). This is the same
 approach VS Code uses (`resolveShellEnv`).

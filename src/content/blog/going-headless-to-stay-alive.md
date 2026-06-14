@@ -1,6 +1,6 @@
 ---
 title: "Going headless to stay alive: an AWT/JavaFX deadlock"
-description: Why the very first line of Editora's main() sets java.awt.headless=true — and the intermittent macOS hang that forced it.
+description: "Why the very first line of Editora's main() sets java.awt.headless=true, and the intermittent macOS hang that forced it."
 date: 2026-06-03
 author: Adrian De Leon
 tags: [javafx, debugging]
@@ -32,7 +32,7 @@ That `BufferedImage` is the catch. Rasterizing through Java2D pulls in
 `java.awt`, and on macOS the AWT/Java2D **native** pipeline (AppKit/Metal) and
 JavaFX's own Glass/Prism pipeline both want the single AppKit run loop. Put them
 in the same process, ask them to render at the same time, and occasionally they
-deadlock. The more badges being rasterized — i.e., the more previews open — the
+deadlock. The more badges being rasterized (the more previews open), the
 likelier the hang.
 
 ## The fix: rasterize in software
@@ -44,8 +44,8 @@ contention disappears. JavaFX keeps the screen to itself.
 
 Two details matter:
 
-- **It has to be the first thing `main` does**, before any AWT class loads —
-  once Java2D initializes its pipeline, the property is read too late.
+- **It has to be the first thing `main` does**, before any AWT class loads.
+  Once Java2D initializes its pipeline, the property is read too late.
 - **It has to cover every entry point.** `mvn javafx:run`, the fat-jar
   `Launcher`, and the jpackage native launcher all route through `App.main`, so
   one line covers all three.
@@ -53,8 +53,8 @@ Two details matter:
 ## A free security win
 
 There's a nice side effect. JSVG loads with
-`LoaderContext.createDefault()`, which **denies external resource loading** —
-an SVG can't be coaxed into fetching a remote URL while it rasterizes. So a
+`LoaderContext.createDefault()`, which **denies external resource loading**, so
+an SVG can't be coaxed into fetching a remote URL while it rasterizes. A
 malicious badge in some README can't turn the preview into an SSRF vector. The
 headless software path keeps the whole thing self-contained.
 

@@ -1,6 +1,6 @@
 ---
-title: "Rendering Markdown like GitHub — without a WebView"
-description: How Editora's Markdown preview renders natively to JavaFX nodes — task lists, code pills, images, and SVG badges — with no embedded browser.
+title: "Rendering Markdown like GitHub, without a WebView"
+description: "How Editora's Markdown preview renders natively to JavaFX nodes (task lists, code pills, images, SVG badges), with no embedded browser."
 date: 2026-06-04
 author: Adrian De Leon
 tags: [markdown, rendering]
@@ -17,7 +17,7 @@ JavaFX nodes**, and it aims to look like GitHub.
 Parsing and rendering are split across threads. Editora parses CommonMark + GFM
 with [commonmark-java](https://github.com/commonmark/commonmark-java) **off the
 UI thread**, then builds the JavaFX node tree **on** the FX thread under a
-stale-generation guard — the same idiom the syntax highlighter uses. The whole
+stale-generation guard, the same idiom the syntax highlighter uses. The whole
 thing is debounced (~250 ms) off `multiPlainChanges`, and only runs while the
 preview is actually visible. Big files render once.
 

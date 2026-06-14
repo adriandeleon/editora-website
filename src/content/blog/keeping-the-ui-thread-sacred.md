@@ -1,6 +1,6 @@
 ---
 title: "Keeping the UI thread sacred"
-description: The performance doctrine behind Editora — off-thread work, incremental updates, coalesced redraws, and degrading gracefully on huge files.
+description: "The performance doctrine behind Editora: off-thread work, incremental updates, coalesced redraws, and degrading gracefully on huge files."
 date: 2026-06-06
 author: Adrian De Leon
 tags: [performance]
@@ -33,7 +33,7 @@ is how an editor dies by a thousand cuts.
 Two more multipliers:
 
 - **Incremental.** An edit re-tokenizes from the *changed line* to the end,
-  reusing stored per-line grammar state for the unchanged prefix — not the whole
+  reusing stored per-line grammar state for the unchanged prefix, not the whole
   document.
 - **Visible-only.** Overlays iterate just the visible paragraphs
   (`firstVisibleParToAllParIndex … last`) and skip folded lines. Nothing does

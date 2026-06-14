@@ -1,6 +1,6 @@
 ---
 title: Building a keyboard-first text editor
-description: Why Editora treats every action as a command — and what that design buys you.
+description: "Why Editora treats every action as a command, and what that design buys you."
 date: 2026-06-09
 author: Adrian De Leon
 tags: [design, keyboard]
@@ -20,7 +20,7 @@ everywhere:
 
 - The **command palette** (`M-x`) lists all 200+ of them with fuzzy search, so
   you can do anything without remembering where it lives.
-- **Keybindings** are just a map from a chord to a command id — so any command
+- **Keybindings** are just a map from a chord to a command id, so any command
   can be bound, and you can override the defaults.
 - **Toolbar buttons** dispatch the same commands, so the UI and the keyboard can
   never drift apart.
@@ -45,5 +45,5 @@ codebase is held to.
 
 ---
 
-That's the philosophy. If it resonates, [give it a try](/#download) — and let me
+That's the philosophy. If it resonates, [give it a try](/#download), and let me
 know what you think on [GitHub](https://github.com/adriandeleon/Editora).

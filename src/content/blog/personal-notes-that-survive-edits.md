@@ -1,6 +1,6 @@
 ---
 title: "Notes that survive edits and renames"
-description: How Editora's Personal Notes stay attached to the right text — even after you edit the file in another program or rename it.
+description: "How Editora's Personal Notes stay attached to the right text, even after you edit the file in another program or rename it."
 date: 2026-06-10
 author: Adrian De Leon
 tags: [editor, design]
@@ -51,15 +51,15 @@ watching.
 ## Self-healing on open
 
 When a file opens, Editora relocates every note against the current text and, if
-anything moved, **persists the corrected positions** — so the next open hits the
+anything moved, **persists the corrected positions**, so the next open hits the
 exact-match fast path. The notes file quietly heals itself instead of drifting
 further each session.
 
 ## Why this shape
 
 The model carries tags, a status (active/resolved/orphaned), and the full
-`FileIdentity`, so the obvious next steps — fuzzy matching beyond nearest-text,
-team sync: are additive rather than rewrites. But the core idea is simple and
+`FileIdentity`, so the obvious next steps (fuzzy matching beyond nearest-text,
+team sync) are additive rather than rewrites. But the core idea is simple and
 worth stealing for any "metadata about code that lives outside the code": don't
 anchor to a position, anchor to *content plus context*, and re-find it every time
 you open.
