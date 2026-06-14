@@ -21,12 +21,12 @@ const byKeymap = keymaps.map((km) => {
 
 <Layout
   title="Keybindings — Editora"
-  description="Editora's keymaps — Emacs (default), CUA, Sublime Text, VS Code, and IntelliJ IDEA. Every command with its default binding, grouped by area. Rebind anything in Settings → Keymaps."
+  description="Editora's keymaps: Emacs (default), CUA, Sublime Text, VS Code, and IntelliJ IDEA. Every command with its default binding, grouped by area. Rebind anything in Settings → Keymaps."
 >
   <main class="page">
     <h1>Keybindings</h1>
     <p class="lead">
-      Editora ships five keymaps — pick one below. <strong>Emacs</strong> is the
+      Editora ships five keymaps; pick one below. <strong>Emacs</strong> is the
       default; you can switch to any of them (or rebind any command) in
       <strong>Settings → Keymaps</strong>. Every binding maps to a
       <strong>command</strong>, so the same actions are also reachable from the
@@ -69,7 +69,7 @@ const byKeymap = keymaps.map((km) => {
           byKeymap.map((km) => (
             <section class="km-panel" id={`panel-${km.id}`}>
               <p class="km-count">
-                <strong>{km.name}</strong> — {km.count} commands with a default binding.
+                <strong>{km.name}</strong>: {km.count} commands with a default binding.
               </p>
               <div class="columns">
                 {km.groups.map((g) => (
@@ -105,8 +105,8 @@ const byKeymap = keymaps.map((km) => {
       (<kbd>Option</kbd>+<kbd>e</kbd>/<kbd>i</kbd>/<kbd>u</kbd>/<kbd>n</kbd>/<kbd
         >`</kbd
       >) are intercepted by the OS for accent composition, so a few
-      <kbd>M-</kbd> chords like <kbd>M-e</kbd> aren't reachable by keyboard there
-      — the command palette still works.
+      <kbd>M-</kbd> chords like <kbd>M-e</kbd> aren't reachable by keyboard there.
+      The command palette still works.
     </p>
   </main>
 </Layout>

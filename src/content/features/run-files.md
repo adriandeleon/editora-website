@@ -3,7 +3,7 @@ title: "Run files"
 group: "Run & debug"
 order: 1
 beta: false
-summary: "Run a Java compact source file, Python, or shell script from a gutter \u25b6. Output and <code>stdin</code> go to the Run console, with clickable stack traces and per-file arguments."
+summary: "Run a Java compact source file, Python, or shell script from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and per-file arguments."
 ---
 
 A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), a **Python** script, or a **shell** script.

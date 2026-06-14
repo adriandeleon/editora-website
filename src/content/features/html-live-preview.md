@@ -3,7 +3,7 @@ title: "HTML live preview"
 group: "Docs & diagrams"
 order: 4
 beta: true
-summary: "Click the globe on any HTML file to open it in a detected browser (Safari, Chrome, Firefox, Edge\u2026), served over a loopback web server with live-as-you-type reload. Sibling CSS, JS, and images included."
+summary: "Click the globe on any HTML file to open it in a detected browser (Safari, Chrome, Firefox, Edge…), served over a loopback web server with live-as-you-type reload. Sibling CSS, JS, and images included."
 ---
 
 A floating browser-globe button on any `.html`/`.htm`/`.xhtml` file opens it in a **detected browser**, Safari, Chrome, Firefox, Edge, or the system default.

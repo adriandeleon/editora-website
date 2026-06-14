@@ -3,7 +3,7 @@ title: "HTTP client"
 group: "Run & debug"
 order: 3
 beta: true
-summary: "Run <code>.http</code> / <code>.rest</code> requests from a gutter \u25b6, with environments, variables, and a formatted response view. Built on the JDK HTTP client."
+summary: "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶, with environments, variables, and a formatted response view. Built on the JDK HTTP client."
 ---
 
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send it, no external tool, it uses the JDK's built-in HTTP client.

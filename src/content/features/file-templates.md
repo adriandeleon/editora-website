@@ -3,7 +3,7 @@ title: "File templates"
 group: "Workspace & files"
 order: 4
 beta: true
-summary: "New File From Template: single- or multi-file scaffolds with interactive placeholders (author, date, file name, \u2026)."
+summary: "New File From Template: single- or multi-file scaffolds with interactive placeholders (author, date, file name, …)."
 ---
 
 **New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.
