@@ -1,0 +1,197 @@
+/// Generator for src/lib/roadmap.ts and src/lib/whatsnew.ts.
+/// A JDK 25 compact source file (JEP 512): run with `java scripts/GenRoadmap.java`
+/// from the website repo root (or the scripts/ dir). It reads the Editora app's
+/// TODO.md (the roadmap) and CHANGELOG.md ([Unreleased] = What's New) and writes
+/// committed, static data modules, so the site build needs no filesystem access
+/// to the Editora repo (it isn't checked out in CI).
+/// The Editora checkout is found as a sibling directory (Editora-V2 or Editora);
+/// override with an argument or the EDITORA_REPO environment variable.
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+record RmItem(boolean done, String text) {}
+record RmSection(String title, List<RmItem> items) {}
+record News(String title, String detail) {}
+
+// Shared inline markdown -> safe HTML (entities escaped, code spans kept).
+String esc(String s) {
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+}
+
+String inlineRoadmap(String s) {
+    s = esc(s);
+    s = s.replaceAll("`([^`]+)`", "<code>$1</code>");
+    s = s.replaceAll("\\*\\*([^*]+)\\*\\*", "<strong>$1</strong>");
+    s = s.replaceAll("\\[([^\\]]+)\\]\\([^)]+\\)", "$1");
+    return s;
+}
+
+// What's New flattens bold (it's already shown as a bold title).
+String inlineNews(String s) {
+    s = esc(s);
+    s = s.replaceAll("`([^`]+)`", "<code>$1</code>");
+    s = s.replaceAll("\\*\\*([^*]+)\\*\\*", "$1");
+    s = s.replaceAll("\\[([^\\]]+)\\]\\([^)]+\\)", "$1");
+    return s;
+}
+
+String truncate(String s, int n) {
+    s = s.strip();
+    if (s.length() > n) {
+        return s.substring(0, n).replaceAll("\\s+\\S*$", "") + "…";
+    }
+    return s;
+}
+
+String stripCr(String s) {
+    return s.endsWith("\r") ? s.substring(0, s.length() - 1) : s;
+}
+
+// --- Roadmap (TODO.md) ---------------------------------------------------
+
+List<RmSection> parseRoadmap(String md) {
+    Pattern head = Pattern.compile("^##\\s+(.*)$");
+    Pattern li = Pattern.compile("^- \\[([ xX])\\]\\s+(.*)$");
+    List<RmSection> sections = new ArrayList<>();
+    RmSection cur = null;
+    RmItem item = null;
+    for (String raw : md.split("\n", -1)) {
+        raw = stripCr(raw);
+        Matcher hm = head.matcher(raw);
+        Matcher lm = li.matcher(raw);
+        if (hm.matches()) {
+            if (cur != null && item != null) cur.items().add(item);
+            item = null;
+            if (cur != null) sections.add(cur);
+            String t = hm.group(1).trim();
+            cur = t.equalsIgnoreCase("recently shipped") ? null : new RmSection(t, new ArrayList<>());
+        } else if (lm.matches() && cur != null) {
+            if (item != null) cur.items().add(item);
+            item = new RmItem(lm.group(1).equalsIgnoreCase("x"), inlineRoadmap(lm.group(2).trim()));
+        } else if (item != null && raw.matches("\\s+\\S.*")) {
+            item = new RmItem(item.done(), item.text() + " " + inlineRoadmap(raw.trim())); // wrapped line
+        }
+    }
+    if (cur != null && item != null) cur.items().add(item);
+    if (cur != null) sections.add(cur);
+    List<RmSection> out = new ArrayList<>();
+    for (RmSection s : sections) if (!s.items().isEmpty()) out.add(s);
+    return out;
+}
+
+// --- What's New (CHANGELOG.md [Unreleased]) ------------------------------
+
+void flushNews(List<News> items, String cur, Pattern title) {
+    if (cur == null) return;
+    Matcher m = title.matcher(cur);
+    if (m.matches()) {
+        items.add(new News(inlineNews(m.group(1)), truncate(inlineNews(m.group(2)), 150)));
+    } else {
+        items.add(new News(truncate(inlineNews(cur), 90), ""));
+    }
+}
+
+List<News> parseWhatsNew(String md) {
+    int start = md.indexOf("## [Unreleased]");
+    String body = start >= 0 ? md.substring(start) : md;
+    Pattern title = Pattern.compile("^\\*\\*(.+?)\\*\\*\\s*(?:[—–-]+\\s*)?(.*)$");
+    List<News> items = new ArrayList<>();
+    String cur = null;
+    for (String raw : body.split("\n", -1)) {
+        raw = stripCr(raw);
+        if (raw.matches("- .*")) {
+            flushNews(items, cur, title);
+            cur = raw.replaceFirst("^- ", "").trim();
+        } else if (cur != null && raw.matches("\\s+\\S.*") && !raw.matches("\\s*[-*].*")) {
+            cur = cur + " " + raw.trim(); // wrapped continuation
+        } else if (raw.matches("#{2,3}\\s.*") || raw.startsWith("[Unreleased]:")) {
+            flushNews(items, cur, title);
+            cur = null;
+        }
+        if (items.size() >= 8) break;
+    }
+    flushNews(items, cur, title);
+    return items.size() > 8 ? items.subList(0, 8) : items;
+}
+
+// --- Emit ----------------------------------------------------------------
+
+String ts(String s) {
+    return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+}
+
+Path websiteRoot() {
+    Path cwd = Path.of("").toAbsolutePath();
+    if (Files.isDirectory(cwd.resolve("src/lib"))) return cwd;
+    Path parent = cwd.getParent();
+    if (parent != null && Files.isDirectory(parent.resolve("src/lib"))) return parent;
+    return cwd;
+}
+
+Path editoraRoot(String[] args, Path web) {
+    List<Path> candidates = new ArrayList<>();
+    if (args.length > 0) candidates.add(Path.of(args[0]));
+    String env = System.getenv("EDITORA_REPO");
+    if (env != null && !env.isBlank()) candidates.add(Path.of(env));
+    Path sib = web.getParent();
+    if (sib != null) {
+        candidates.add(sib.resolve("Editora-V2"));
+        candidates.add(sib.resolve("Editora"));
+        candidates.add(sib);
+    }
+    for (Path c : candidates) {
+        if (c != null && Files.isRegularFile(c.resolve("TODO.md")) && Files.isRegularFile(c.resolve("CHANGELOG.md"))) {
+            return c.toAbsolutePath().normalize();
+        }
+    }
+    throw new IllegalStateException(
+        "Could not find the Editora repo (with TODO.md + CHANGELOG.md). Pass its path as an argument or set EDITORA_REPO. Tried: " + candidates);
+}
+
+void main(String[] args) throws IOException {
+    Path web = websiteRoot();
+    Path root = editoraRoot(args, web);
+
+    List<RmSection> roadmap = parseRoadmap(Files.readString(root.resolve("TODO.md"), StandardCharsets.UTF_8));
+    List<News> news = parseWhatsNew(Files.readString(root.resolve("CHANGELOG.md"), StandardCharsets.UTF_8));
+
+    StringBuilder rm = new StringBuilder();
+    rm.append("// AUTO-GENERATED by scripts/GenRoadmap.java — do not edit by hand.\n");
+    rm.append("// Source: Editora's TODO.md. Re-run after the roadmap changes.\n\n");
+    rm.append("export type RoadmapItem = { done: boolean; text: string };\n");
+    rm.append("export type RoadmapSection = { title: string; items: RoadmapItem[] };\n\n");
+    rm.append("export const roadmap: RoadmapSection[] = [\n");
+    for (RmSection s : roadmap) {
+        rm.append("  {\n");
+        rm.append("    title: ").append(ts(s.title())).append(",\n");
+        rm.append("    items: [\n");
+        for (RmItem i : s.items()) {
+            rm.append("      { done: ").append(i.done()).append(", text: ").append(ts(i.text())).append(" },\n");
+        }
+        rm.append("    ],\n");
+        rm.append("  },\n");
+    }
+    rm.append("];\n");
+    Files.writeString(web.resolve("src/lib/roadmap.ts"), rm.toString(), StandardCharsets.UTF_8);
+
+    StringBuilder wn = new StringBuilder();
+    wn.append("// AUTO-GENERATED by scripts/GenRoadmap.java — do not edit by hand.\n");
+    wn.append("// Source: Editora's CHANGELOG.md [Unreleased] section. Re-run after the changelog changes.\n\n");
+    wn.append("export type NewsItem = { title: string; detail: string };\n\n");
+    wn.append("export const whatsNew: NewsItem[] = [\n");
+    for (News n : news) {
+        wn.append("  { title: ").append(ts(n.title())).append(", detail: ").append(ts(n.detail())).append(" },\n");
+    }
+    wn.append("];\n");
+    Files.writeString(web.resolve("src/lib/whatsnew.ts"), wn.toString(), StandardCharsets.UTF_8);
+
+    int rmItems = roadmap.stream().mapToInt(s -> s.items().size()).sum();
+    IO.println("Wrote roadmap.ts: " + rmItems + " items in " + roadmap.size() + " sections");
+    IO.println("Wrote whatsnew.ts: " + news.size() + " items");
+}
