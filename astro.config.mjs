@@ -7,4 +7,9 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   site: "https://editora-project.dev",
   integrations: [sitemap()],
+  // Per-command pages live at /docs/commands/<id>; the bare index points at the
+  // searchable command list.
+  redirects: {
+    "/docs/commands": "/commands",
+  },
 });

@@ -1,0 +1,225 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { commandGroups, keymaps, type Cmd } from "../../../lib/commands";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+
+// One page per command, generated from the command data in src/lib/commands.ts
+// (itself generated from Editora's source by GenCommands.java). English-only for
+// now; a future locale would add per-locale command data and a locale route.
+// The app deep-links these as /docs/commands/<command-id>.
+export async function getStaticPaths() {
+  const docs = await getCollection("commandDocs");
+  const docById = new Map(docs.map((d) => [d.id, d]));
+  const paths: {
+    params: { id: string };
+    props: { cmd: Cmd; category: string; doc: CollectionEntry<"commandDocs"> | null };
+  }[] = [];
+  for (const g of commandGroups) {
+    for (const cmd of g.commands) {
+      paths.push({
+        params: { id: cmd.id },
+        props: { cmd, category: g.title, doc: docById.get(cmd.id) ?? null },
+      });
+    }
+  }
+  return paths;
+}
+
+const { cmd, category, doc } = Astro.props;
+const { Content } = doc ? await render(doc) : { Content: null };
+
+// Map a command category to the most relevant guide.
+const GUIDE: Record<string, { href: string; label: string }> = {
+  Files: { href: "/docs/workspace", label: "Projects, windows & files" },
+  Editing: { href: "/docs/editing", label: "Editing" },
+  Navigation: { href: "/docs/navigation", label: "Navigation & search" },
+  Search: { href: "/docs/navigation", label: "Navigation & search" },
+  "Buffers & tabs": { href: "/docs/workspace", label: "Projects, windows & files" },
+  "View & display": { href: "/docs/workspace", label: "Projects, windows & files" },
+  Folding: { href: "/docs/editing", label: "Editing" },
+  "Splits & zoom": { href: "/docs/workspace", label: "Projects, windows & files" },
+  Markdown: { href: "/docs/markdown", label: "Markdown, diagrams & preview" },
+  "Code intelligence (LSP)": { href: "/docs/lsp", label: "Language servers (LSP)" },
+  Run: { href: "/docs/run-debug", label: "Running & debugging" },
+  Debugging: { href: "/docs/run-debug", label: "Running & debugging" },
+  "Git & diff": { href: "/docs/git", label: "Git" },
+  "HTTP client": { href: "/docs/http-client", label: "HTTP client" },
+  Diagrams: { href: "/docs/markdown", label: "Markdown, diagrams & preview" },
+  Bookmarks: { href: "/docs/bookmarks-notes", label: "Bookmarks & notes" },
+  "Personal notes": { href: "/docs/bookmarks-notes", label: "Bookmarks & notes" },
+  "Snippets & templates": { href: "/docs/snippets-templates", label: "Snippets & templates" },
+  Projects: { href: "/docs/workspace", label: "Projects, windows & files" },
+  "Remote (SFTP)": { href: "/docs/remote", label: "Remote files (SFTP)" },
+  "Spell check": { href: "/docs/languages", label: "Languages & highlighting" },
+  Appearance: { href: "/docs/themes-fonts", label: "Themes & fonts" },
+  "Tool windows": { href: "/docs", label: "Documentation" },
+  Window: { href: "/docs/workspace", label: "Projects, windows & files" },
+  Application: { href: "/docs/configuration", label: "Configuration" },
+};
+const guide = GUIDE[category] ?? { href: "/docs", label: "Documentation" };
+
+const bindings = keymaps
+  .map((k) => ({ name: k.name, chord: cmd.bindings?.[k.id] ?? null }))
+  .filter((b) => b.chord);
+---
+
+<Layout
+  title={`${cmd.title} — Editora command`}
+  description={cmd.desc || `The ${cmd.title} command in Editora (${cmd.id}).`}
+>
+  <main class="page">
+    <nav class="crumbs">
+      <a href="/docs">Docs</a>
+      <span>›</span>
+      <a href="/commands">Commands</a>
+      <span>›</span>
+      <span class="crumb-cat">{category}</span>
+    </nav>
+
+    <h1>{cmd.title}</h1>
+    <code class="cmd-id">{cmd.id}</code>
+
+    {cmd.desc && <p class="lead">{cmd.desc}</p>}
+
+    <section class="run">
+      <h2>How to run it</h2>
+      <p>
+        Open the command palette (<kbd>M-x</kbd> in the Emacs keymap) and search
+        for <strong>{cmd.title}</strong>, then press Enter.
+        {
+          bindings.length > 0
+            ? " It also has a default keybinding:"
+            : " It has no default keybinding, but you can bind one in Settings → Keymaps."
+        }
+      </p>
+      {
+        bindings.length > 0 && (
+          <table class="keys">
+            <tbody>
+              {bindings.map((b) => (
+                <tr>
+                  <td class="km">{b.name}</td>
+                  <td class="chord">
+                    {b.chord!.split(" ").map((tok) => (
+                      <kbd>{tok}</kbd>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      }
+    </section>
+
+    {
+      Content && (
+        <section class="details doc">
+          <h2>Details</h2>
+          <Content />
+        </section>
+      )
+    }
+
+    <section class="see-also">
+      <h2>See also</h2>
+      <ul>
+        <li><a href={guide.href}>{guide.label}</a></li>
+        <li><a href="/commands">All commands</a></li>
+        <li><a href="/keybindings">Keybindings reference</a></li>
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .page {
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 2rem;
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .crumbs span {
+    color: var(--faint);
+  }
+
+  .crumb-cat {
+    color: var(--muted);
+  }
+
+  h1 {
+    font-size: 2.1rem;
+    margin: 0 0 0.35rem;
+    letter-spacing: -0.02em;
+  }
+
+  .cmd-id {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.1rem 0.45rem;
+  }
+
+  .lead {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin: 1.25rem 0 0;
+  }
+
+  section {
+    margin-top: 2.25rem;
+  }
+
+  h2 {
+    font-size: 1.15rem;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .run p {
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  table.keys {
+    border-collapse: collapse;
+  }
+
+  table.keys td {
+    padding: 0.35rem 1.5rem 0.35rem 0;
+    vertical-align: top;
+  }
+
+  .km {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .chord kbd + kbd {
+    margin-left: 0.25rem;
+  }
+
+  .see-also ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+</style>

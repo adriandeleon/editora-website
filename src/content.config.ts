@@ -50,4 +50,21 @@ const features = defineCollection({
   }),
 });
 
-export const collections = { docs, news, blog, features };
+// Optional long-form docs for individual commands. A file named after a command
+// id (e.g. `view.toggleReadOnly.md`) is rendered as the "Details" section on
+// that command's page (/docs/commands/<id>). Commands without one still get a
+// generated reference page. English-only for now; locales will be added later.
+const commandDocs = defineCollection({
+  // Keep the entry id exactly equal to the command id (e.g. view.toggleReadOnly),
+  // dots and camelCase preserved, so it matches the ids in src/lib/commands.ts.
+  loader: glob({
+    pattern: "**/*.md",
+    base: "./src/content/command-docs",
+    generateId: ({ entry }) => entry.replace(/\.md$/, ""),
+  }),
+  schema: z.object({
+    title: z.string().optional(),
+  }),
+});
+
+export const collections = { docs, news, blog, features, commandDocs };
