@@ -66,8 +66,8 @@ const { Content } = await render(entry);
                     href={href(d)}
                     class={d.id === entry.id ? "active" : ""}
                   >
-                    {d.data.title}
                     {d.data.beta && <span class="beta-pill">Beta</span>}
+                    {d.data.title}
                   </a>
                 ))}
             </div>
@@ -82,8 +82,8 @@ const { Content } = await render(entry);
 
     <article class="docs-content doc">
       <h1>
-        {entry.data.title}
         {entry.data.beta && <span class="beta-pill">Beta</span>}
+        {entry.data.title}
       </h1>
       <Content />
 
@@ -159,6 +159,13 @@ const { Content } = await render(entry);
     color: var(--text);
     background: var(--bg-soft);
     border-left-color: var(--accent);
+  }
+
+  /* Beta pill leads the title/sidebar entry, so the pills line up. */
+  .docs-cat a .beta-pill,
+  .docs-content h1 .beta-pill {
+    margin-left: 0;
+    margin-right: 0.4rem;
   }
 
   /* the .doc prose styles come from Layout's global stylesheet */
