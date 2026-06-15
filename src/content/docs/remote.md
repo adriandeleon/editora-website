@@ -3,6 +3,7 @@ title: Remote files (SFTP)
 description: Browse, edit, search, and save files on a remote host over SSH/SFTP.
 category: Workspace
 order: 3
+beta: true
 ---
 
 Editora can edit files on a remote host over **SSH/SFTP**. A remote folder

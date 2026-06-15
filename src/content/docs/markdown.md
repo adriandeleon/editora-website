@@ -57,6 +57,8 @@ Export a diagram to SVG, PNG, or PDF with `mermaid.export`.
 
 ## HTML live preview
 
+<span class="beta-pill">Beta</span>
+
 On any `.html` / `.htm` / `.xhtml` file, a floating globe button opens it in a
 detected browser (Safari, Chrome, Firefox, Edge, or the system default), served
 over a tiny loopback-only web server with live reload as you type. Sibling CSS,

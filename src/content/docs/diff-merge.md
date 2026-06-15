@@ -3,6 +3,7 @@ title: Diff & merge
 description: The side-by-side and unified diff viewer, hunk apply, and the merge-conflict resolver.
 category: Version control
 order: 2
+beta: true
 ---
 
 Editora has a built-in diff viewer and a merge-conflict resolver. The Git-backed

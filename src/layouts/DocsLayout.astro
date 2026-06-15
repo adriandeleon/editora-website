@@ -67,6 +67,7 @@ const { Content } = await render(entry);
                     class={d.id === entry.id ? "active" : ""}
                   >
                     {d.data.title}
+                    {d.data.beta && <span class="beta-pill">Beta</span>}
                   </a>
                 ))}
             </div>
@@ -80,7 +81,10 @@ const { Content } = await render(entry);
     </aside>
 
     <article class="docs-content doc">
-      <h1>{entry.data.title}</h1>
+      <h1>
+        {entry.data.title}
+        {entry.data.beta && <span class="beta-pill">Beta</span>}
+      </h1>
       <Content />
 
       <nav class="docs-pager">

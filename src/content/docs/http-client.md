@@ -3,6 +3,7 @@ title: HTTP client
 description: Send HTTP requests from .http and .rest files, with environments and variables.
 category: Run & debug
 order: 2
+beta: true
 ---
 
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send

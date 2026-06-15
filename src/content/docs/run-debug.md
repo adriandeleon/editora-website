@@ -27,6 +27,8 @@ reports a clear message if it finds an older Java.
 
 ## Debugging
 
+<span class="beta-pill">Beta</span>
+
 Editora debugs **Java**, **Python**, and **JavaScript (Node)** through the Debug
 Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**.

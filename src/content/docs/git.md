@@ -3,6 +3,7 @@ title: Git
 description: "The built-in Git integration: branch info, change bars, commits, log, blame, and stash."
 category: Version control
 order: 1
+beta: true
 ---
 
 Editora's Git support shells out to your installed `git`, with no bundled

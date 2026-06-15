@@ -3,6 +3,7 @@ title: Language servers (LSP)
 description: Enable language servers for go-to-definition, references, hover, diagnostics, and completion.
 category: Code intelligence
 order: 2
+beta: true
 ---
 
 Editora speaks the **Language Server Protocol**, so with a server installed you

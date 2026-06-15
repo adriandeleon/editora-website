@@ -39,6 +39,8 @@ real-world files (an array `prefix` registers every trigger, and an unknown
 
 ## File templates
 
+<span class="beta-pill">Beta</span>
+
 **New File From Template** (`C-c C-n`, also a toolbar button) scaffolds a file,
 or a whole set of files, from a reusable template. A picker chooses the
 template, then a small wizard prompts for any variables it declares (author,
