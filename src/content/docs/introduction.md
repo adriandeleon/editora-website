@@ -41,10 +41,11 @@ Editing and code:
 
 Running, tools, and version control:
 
-- **[Running & debugging](/docs/run-debug)**: run files, the debugger, and the
-  HTTP client.
-- **[Git, diff & merge](/docs/git)**: the built-in Git integration and the diff
-  viewer.
+- **[Running & debugging](/docs/run-debug)**: run files and debug Java, Python,
+  and JavaScript.
+- **[HTTP client](/docs/http-client)**: send requests from `.http` files.
+- **[Git](/docs/git)**: the built-in Git integration.
+- **[Diff & merge](/docs/diff-merge)**: the diff viewer and merge resolver.
 
 Workspace and customization:
 

@@ -1,6 +1,6 @@
 ---
 title: Running & debugging
-description: Run files from the gutter, debug Java/Python/JavaScript, and send HTTP requests.
+description: Run files from the gutter, and debug Java, Python, and JavaScript.
 category: Run & debug
 order: 1
 ---
@@ -58,15 +58,5 @@ fetch each one:
 
 The Settings → Debugging page shows a live found/not-found status for each.
 
-## HTTP client
-
-Open a `.http` or `.rest` file and click the ▶ next to a request to send it. It
-uses the JDK's built-in HTTP client, so there's no external tool. The HTTP
-client is **off by default**; enable it in **Settings → HTTP Client**.
-
-Separate requests with `###`, use `{{variables}}` and dynamic built-ins like
-`{{$uuid}}` and `{{$timestamp}}`, and switch **environments** defined in
-`http-client.env.json`. The response (status, headers, timing, and a
-pretty-printed JSON body) shows in the **HTTP Client** tool window (`M-0`), with
-a Save-response action. Run one request with `http.runRequest` or the whole file
-with `http.runFile`.
+For sending HTTP requests from `.http` files, see the
+[HTTP client](/docs/http-client).

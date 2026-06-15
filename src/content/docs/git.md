@@ -1,6 +1,6 @@
 ---
-title: Git, diff & merge
-description: The built-in Git integration, the diff viewer, and the merge-conflict resolver.
+title: Git
+description: "The built-in Git integration: branch info, change bars, commits, log, blame, and stash."
 category: Version control
 order: 1
 ---
@@ -34,29 +34,5 @@ Cloning asks for a URL and a destination, then opens a file from the clone (its
 README if present) so Git activates without creating a project. Branch switch,
 pull, and push reload unmodified open buffers whose files changed on disk.
 
-## Diff viewer
-
-Compare files in a dedicated tab, **side by side** or **unified**, with per-line
-backgrounds and intra-line word-level highlights.
-
-| Compare | Command | Default key |
-| --- | --- | --- |
-| Against HEAD | `diff.vsHead` | `C-x v =` |
-| Against a commit | `diff.vsCommit` | (palette) |
-| With another file | `diff.compareWith` | (palette) |
-
-The Git-backed comparisons need Git on; comparing two files does not. When a
-file is open, its live (possibly unsaved) text is used as the working side. Open
-diffs **refresh live** when the underlying files change on disk or after a Git
-mutation.
-
-**Apply changes hunk by hunk** with the gutter arrows on the editable side (a
-single chevron per changed row, a double chevron for a whole hunk), or
-**Apply all** from the toolbar. Applies route through an undoable buffer, so the
-toolbar's Undo and Save act on them and you can revert.
-
-## Merge conflicts
-
-When a file has Git conflict markers, `merge.resolve` opens the **merge
-resolver**, which lists each conflict with **Accept Ours / Theirs / Both**. Save
-writes the resolved result back to the buffer (undoable).
+For comparing files and resolving merge conflicts, see
+[Diff & merge](/docs/diff-merge).

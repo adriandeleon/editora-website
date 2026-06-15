@@ -73,7 +73,7 @@ add chrome. Enable the ones you want in Settings:
 
 - **[Language servers](/docs/lsp)** for definitions, references, and diagnostics.
 - **[Git](/docs/git)** for branch info, change bars, and commits.
-- **[Debugging](/docs/run-debug)**, the **[HTTP client](/docs/run-debug#http-client)**,
+- **[Debugging](/docs/run-debug)**, the **[HTTP client](/docs/http-client)**,
   **[Mermaid](/docs/markdown#mermaid-diagrams)**, **[HTML preview](/docs/markdown#html-live-preview)**,
   **[Personal notes](/docs/bookmarks-notes)**, **[Remote files](/docs/remote)**,
   and **[Plugins](/docs/plugins)**.
