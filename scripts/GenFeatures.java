@@ -127,6 +127,7 @@ Editora speaks the **Language Server Protocol**, so you get real language smarts
 - **Go to definition**: `M-.`
 - **Find references**: `M-?`
 - **Hover docs**: `C-c h`
+- **Format Document**: reformat the whole file via the server (palette or right-click)
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
 Over 20 servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, and more. Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
@@ -167,11 +168,13 @@ While suspended, **inline values** appear after each line and hovering a variabl
 """),
     new Feature("http-client", RD, 3, true,
         "HTTP client",
-        "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶, with environments, variables, and a formatted response view. Built on the JDK HTTP client.",
+        "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶, with environments, variables, request chaining, and a formatted response view. Built on the JDK HTTP client.",
         """
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send it, no external tool, it uses the JDK's built-in HTTP client.
 
-Define multiple requests separated by `###`, use `{{variables}}` and dynamic built-ins (`{{$uuid}}`, `{{$timestamp}}`…), and switch **environments** from `http-client.env.json`. The response shows status, headers, timing, and a pretty-printed JSON body in a tool window, with a Save-response action. Run one request or the whole file. Off by default. Enable it under Settings → HTTP Client.
+Define multiple requests separated by `###` and the feature reaches for IntelliJ-style parity: `{{var}}` / `@var` substitution, dynamic variables (`{{$random.*}}`, `{{$datetime}}` with date math, `{{$dotenv.X}}`), **request chaining** that references an earlier response, **multipart** and external-file bodies, **environment files** (`http-client.env.json` with a `$shared` section) and a picker, and Basic/Digest auth shorthand.
+
+The response shows status, headers, timing, and a pretty-printed, content-type-highlighted body in a tool window (`M-0`), with an in-session history, **Copy as cURL** / **Import cURL**, open-in-editor, and Save-response. Run one request or the whole file. Off by default. Enable it under Settings → HTTP Client.
 """),
     new Feature("git", GD, 1, true,
         "Git integration",
@@ -284,6 +287,16 @@ Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* moun
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Off by default; local-only features (running, LSP, Git) are gated off for remote files.
 """),
+    new Feature("local-file-history", WF, 7, false,
+        "Local file history",
+        "IntelliJ-style snapshots of your files over time, on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required.",
+        """
+Editora quietly snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.
+
+Open a file's timeline from the **File History** tool window (`M-g l`). Each revision shows its date, the reason it was taken, and its size, with the latest tagged *Current*. Double-click one for a read-only diff against the current file, or restore it (an undoable whole-file replace).
+
+Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
+"""),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",
         "Six editor themes (Primer, Nord, Cupertino, Dracula, Islands, each light &amp; dark) that follow the app theme, plus five bundled monospace fonts, no install needed.",
@@ -317,6 +330,21 @@ Toggle it from Settings → Application, the toolbar, the palette, or the `--sim
 Editora's entire interface is translated (**English, Italian, Spanish, French, Portuguese, and German**) covering the command palette, toolbar tooltips, tool windows, Settings, the status bar, dialogs, and menus.
 
 Pick a language in Settings → Appearance (or let it follow your OS locale); the choice applies on restart. A key-parity test keeps every translation complete.
+"""),
+    new Feature("mcp", CE, 5, true,
+        "MCP server",
+        "Embed a Model Context Protocol server in the running editor so an LLM agent (Claude Code, …) can observe live state and drive the command registry. Loopback-only, token-authed, off by default.",
+        """
+Editora can run a small **Model Context Protocol** server inside the editor, so an LLM agent like Claude Code can see what you're working on and act through Editora's own commands.
+
+It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposing six tools:
+
+- `list_open_files`, `read_buffer`, `get_diagnostics`
+- `find_in_files`, `list_commands`, `execute_command`
+
+The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
+
+It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
 """)
 );
 

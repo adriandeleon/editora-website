@@ -50,11 +50,12 @@ Running, tools, and version control:
 Workspace and customization:
 
 - **[Projects, windows & files](/docs/workspace)**: workspaces, tabs, splits,
-  and the focus modes.
+  focus modes, and local file history.
 - **[Bookmarks & notes](/docs/bookmarks-notes)**: mark lines and annotate code.
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[Plugins](/docs/plugins)**: install and write extensions.
+- **[MCP server](/docs/mcp)**: let an LLM agent observe and drive the editor.
 
 Help:
 

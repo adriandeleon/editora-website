@@ -5,11 +5,11 @@ export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
   { title: "Smoother scrolling in files with many lines.", detail: "The line-number gutter set each row's number via a per-row reactive binding that subscribed/unsubscribed as cells recycled during a scroll —…" },
+  { title: "Cheaper spell-check overlay redraw while scrolling prose.", detail: "The red-squiggle overlay re-runs each scroll pulse over the visible words. It now checks the (cached) spelling verdict *before* the per-word…" },
+  { title: "Find and Find in Files pre-fill from the selected text.", detail: "Select a word or phrase on a single line, then open the in-editor Find/Replace bar (the toolbar icon, <code>C-s</code>/<code>C-r</code>, or Replace)…" },
+  { title: "Markdown split view now keeps the editor and preview scrolled together.", detail: "In SPLIT mode (editor + rendered preview side by side), scrolling one pane scrolls the other by the same fraction of its content, so the two stay…" },
+  { title: "The Project tool window shows the current file's folder when no project is open.", detail: "In the global (\"No Project\") window it no longer just shows an empty \"No project open\" placeholder — it roots the tree at the active file's parent…" },
+  { title: "File-type icons now line up in the Project tree (and other file lists).", detail: "Each glyph's node bounds equal its ink, which varies per file type, so the icon column had a ragged width and file names jumped left/right (and the…" },
+  { title: "Distinct icons for the tab right-click close menu.", detail: "The six close commands (Close, Close Other Tabs, Close All Tabs, Close Unmodified Tabs, Close Tabs to the Left/Right) all shared the plain ✕. They…" },
   { title: "The Find in Files toolbar icon now toggles the panel", detail: "one click opens it (focusing the query field), another click closes it (matching <code>C-s</code>'s in-file find and the <code>M-6</code> tool-window…" },
-  { title: "Language servers and debug adapters no longer pile up as orphaned processes.", detail: "Previously the external servers Editora spawns (e.g. <code>jdtls</code>) were only killed when a window was closed through the app — so…" },
-  { title: "Silenced a spurious LSP \"Internal error\" log.", detail: "Language servers that support pull diagnostics (the HTML/CSS/JSON servers) send a <code>workspace/diagnostic/refresh</code> request; the client…" },
-  { title: "Find/Replace highlights now stay in sync when you edit the buffer.", detail: "With the find bar open, editing the text left the match highlights painted at their old offsets (no longer aligned with the searched text). The bar…" },
-  { title: "Per-file-type icons.", detail: "File icons now reflect the file's type instead of a single generic document glyph. Editing <code>Main.java</code> shows the Java logo,…" },
-  { title: "Local file history.", detail: "Editora now silently snapshots local files over time — on save, auto-save, and before an external-change reload — so you can recover earlier versions…" },
-  { title: "Emacs fill commands.", detail: "Re-wrap paragraphs to a fill column: Fill Paragraph (<code>M-q</code>) reflows the paragraph at the caret, Fill Region reflows every paragraph in the…" },
 ];

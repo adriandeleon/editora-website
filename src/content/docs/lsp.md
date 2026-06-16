@@ -17,11 +17,14 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Go to definition | `lsp.gotoDefinition` | `M-.` |
 | Find references | `lsp.findReferences` | `M-?` |
 | Hover docs | `lsp.hover` | `C-c h` |
+| Format Document | `lsp.formatDocument` | (palette) |
 | Restart servers | `lsp.restartServers` | (palette) |
 
-The first three are also in the editor right-click menu while a server is
-active. Diagnostics appear as inline squiggles, in the **Problems** tool window
-(`M-8`), and as marks on the minimap and scrollbar. Completion is merged into the
+The goto/references/hover commands are also in the editor right-click menu while
+a server is active. **Format Document** reformats the whole file through the
+server when it advertises formatting (undoable; palette or the right-click menu).
+Diagnostics appear as inline squiggles, in the **Problems** tool window (`M-8`),
+and as marks on the minimap and scrollbar. Completion is merged into the
 [autocomplete](/docs/languages#autocomplete) popup. The status bar shows an
 **LSP: \<server\>** segment for managed files, with a loading bar while a server
 starts.
@@ -62,7 +65,8 @@ for details.
 
 ## Notes and limits
 
-What's deferred for now: formatting, rename, code actions and quick fixes,
+What's deferred for now: format-on-save, rename, code actions and quick fixes,
 document symbols from the server, incremental sync, and a dedicated references
-tool window. Diagnostics for files that aren't open are dropped to keep the
-Problems window focused on what you're editing.
+tool window. (Whole-file Format Document is supported.) Diagnostics for files
+that aren't open are dropped to keep the Problems window focused on what you're
+editing.

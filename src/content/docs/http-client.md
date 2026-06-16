@@ -1,6 +1,6 @@
 ---
 title: HTTP client
-description: Send HTTP requests from .http and .rest files, with environments and variables.
+description: Send HTTP requests from .http and .rest files, with environments, variables, and request chaining.
 category: Run & debug
 order: 2
 beta: true
@@ -30,11 +30,22 @@ Content-Type: application/json
 
 ## Variables and environments
 
-Use `{{variables}}` and dynamic built-ins like `{{$uuid}}`, `{{$timestamp}}`,
-`{{$isoTimestamp}}`, and `{{$randomInt}}`. Declare file-local variables with
-`@name = value`, and define named **environments** in `http-client.env.json`
-alongside the file. The environment is picked in the tool window and remembered
-per workspace.
+Substitute `{{var}}` and file-local `@var = value` declarations, plus **dynamic
+variables**: `{{$random.*}}`, `{{$datetime}}` (with date math), `{{$dotenv.X}}`,
+and more. Define named **environments** in `http-client.env.json` alongside the
+file (with a `$shared` section for common values) and pick one in the tool
+window; the choice is remembered per workspace.
+
+## Chaining, bodies, and auth
+
+The client is close to IntelliJ's HTTP Client:
+
+- **Request chaining** references an earlier request's response, so a login can
+  feed a token into the next call.
+- **Multipart** and external-file bodies are supported, with automatic URL
+  encoding.
+- **Basic / Digest auth** shorthand, per-request directives, and
+  response-to-file redirects.
 
 ## Running and the response
 
@@ -45,12 +56,8 @@ per workspace.
 | Select environment | `http.selectEnvironment` | (palette) |
 | Open the tool window | `tool.http` | `M-0` |
 
-The response shows in the **HTTP Client** tool window with the status line,
-headers, timing, size, and a pretty-printed JSON body, plus a Save-response
-action.
-
-## Limits
-
-Response-handler scripts (`> {% %}`) and cross-request captured variables aren't
-supported yet, so a request that needs a token from an earlier one can't run in
-isolation. Multipart and file bodies are also deferred.
+The response shows in the **HTTP Client** tool window (`M-0`) with the status
+line, headers, timing, size, and a content-type-highlighted, pretty-printed
+body. It keeps an in-session **history**, and you can **Copy as cURL**, **Import
+cURL** from the clipboard (`http.importCurl`), open a response in its own editor
+tab (`http.openResponseInTab`), and save the response to a file.

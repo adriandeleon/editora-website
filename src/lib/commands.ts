@@ -25,6 +25,8 @@ export const commandGroups: CmdGroup[] = [
       { title: "File: Find File…", id: "file.find", keys: "C-x C-f", bindings: { "emacs": "C-x C-f", "sublime": "C-p", "vscode": "C-p", "intellij": "C-S-n" }, desc: "Open a file by fuzzy-matching its path." },
       { title: "File: New", id: "file.new", bindings: { "cua": "C-n", "sublime": "C-n", "vscode": "C-n", "intellij": "M-insert" }, desc: "Create a new, empty file." },
       { title: "File: Open…", id: "file.open", bindings: { "cua": "C-o", "sublime": "C-o", "vscode": "C-o" }, desc: "Open a file with the system file chooser." },
+      { title: "File: Open Terminal Here", id: "file.openTerminal", desc: "Open a terminal at the current file's folder." },
+      { title: "File: Reveal in File Manager", id: "file.revealInFileManager", desc: "Show the current file in the operating system's file manager." },
       { title: "File: Save", id: "file.save", keys: "C-x C-s", bindings: { "emacs": "C-x C-s", "cua": "C-s", "sublime": "C-s", "vscode": "C-s", "intellij": "C-s" }, desc: "Save the current file." },
       { title: "File: Save As…", id: "file.saveAs", keys: "C-x C-w", bindings: { "emacs": "C-x C-w", "cua": "C-S-s", "sublime": "C-S-s", "vscode": "C-S-s", "intellij": "C-S-s" }, desc: "Save the current file under a new name." },
       { title: "File: Toggle Auto Save", id: "file.toggleAutoSave", keys: "C-c a", bindings: { "emacs": "C-c a" }, desc: "Turn automatic saving on or off." },
@@ -122,6 +124,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "View: Toggle Current Line Highlight", id: "view.toggleLineHighlight", desc: "Highlight the current line, or not." },
       { title: "View: Toggle Line Numbers", id: "view.toggleLineNumbers", desc: "Show or hide line numbers." },
       { title: "Toggle LSP Support", id: "view.toggleLsp", desc: "Turn Language Server Protocol support on or off." },
+      { title: "Toggle MCP Server", id: "view.toggleMcp", desc: "Turn the MCP server (loopback HTTP endpoint for an LLM agent) on or off." },
       { title: "View: Toggle Minimap", id: "view.toggleMinimap", desc: "Show or hide the minimap." },
       { title: "View: Toggle Multiple Cursors", id: "view.toggleMultiCaret", desc: "Turn multiple cursors and column selection on or off." },
       { title: "View: Toggle Plugins", id: "view.togglePlugins", desc: "Turn plugin support on or off." },
@@ -184,6 +187,7 @@ export const commandGroups: CmdGroup[] = [
     title: "Code intelligence (LSP)",
     commands: [
       { title: "Find References", id: "lsp.findReferences", keys: "M-?", bindings: { "emacs": "M-?", "vscode": "S-f12", "intellij": "M-f7" }, desc: "List all references to the symbol at the caret." },
+      { title: "Format Document", id: "lsp.formatDocument", desc: "Reformat the whole file with its language server." },
       { title: "Go to Definition", id: "lsp.gotoDefinition", keys: "M-.", bindings: { "emacs": "M-.", "sublime": "f12", "vscode": "f12", "intellij": "C-b" }, desc: "Jump to the definition of the symbol at the caret." },
       { title: "Show Documentation (Hover)", id: "lsp.hover", keys: "C-c h", bindings: { "emacs": "C-c h", "vscode": "C-k C-i", "intellij": "C-q" }, desc: "Show type and documentation for the symbol at the caret." },
       { title: "Restart Language Servers", id: "lsp.restartServers", desc: "Restart all running language servers." },
@@ -244,6 +248,9 @@ export const commandGroups: CmdGroup[] = [
   {
     title: "HTTP client",
     commands: [
+      { title: "HTTP: Copy Response Request as cURL", id: "http.copyAsCurl", desc: "Copy the selected response's request as a curl command." },
+      { title: "HTTP: Import cURL from Clipboard", id: "http.importCurl", desc: "Convert a curl command on the clipboard into a .http request." },
+      { title: "HTTP: Open Response in Editor Tab", id: "http.openResponseInTab", desc: "Open the selected response body in a new editor tab." },
       { title: "HTTP: Run All Requests in File", id: "http.runFile", desc: "Send every request in the .http file in order." },
       { title: "HTTP: Run Request at Caret", id: "http.runRequest", desc: "Send the .http request at the caret." },
       { title: "HTTP: Select Environment", id: "http.selectEnvironment", desc: "Choose the environment for .http variable substitution." },
@@ -357,6 +364,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "HTML Preview: Open in Browser", id: "htmlPreview.open", desc: "Open the current HTML file in the last-used browser via a local server." },
       { title: "HTML Preview: Open in Browser…", id: "htmlPreview.openIn", desc: "Pick a detected browser and open the current HTML file in it." },
       { title: "Keymap: Select…", id: "keymap.select", desc: "Switch the active keybinding theme." },
+      { title: "MCP: Copy Endpoint Command", id: "mcp.copyEndpoint", desc: "Copy a ready-to-paste \"claude mcp add\" command (endpoint URL + token) to the clipboard." },
       { title: "Command Palette", id: "palette.show", keys: "M-x", bindings: { "emacs": "M-x", "cua": "C-S-p", "sublime": "C-S-p", "vscode": "C-S-p", "intellij": "C-S-a" }, desc: "Open the fuzzy command palette." },
       { title: "Plugins: Browse Plugins", id: "plugins.browse", bindings: { "vscode": "C-S-x" }, desc: "Browse and install plugins from the registry." },
       { title: "Plugins: Install from File…", id: "plugins.installFromDisk", desc: "Install a plugin from a local .zip file." },

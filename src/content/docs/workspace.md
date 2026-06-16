@@ -1,6 +1,6 @@
 ---
 title: Projects, windows & files
-description: Projects and multi-window, tabs and splits, Zen and Simple UI modes, and external-change detection.
+description: Projects and multi-window, tabs and splits, Zen and Simple UI modes, local file history, and external-change detection.
 category: Workspace
 order: 1
 ---
@@ -22,6 +22,10 @@ filter that runs a bounded project-wide filename search, per-file-type icons, an
 right-click actions (new file, new from template, rename). Bookmarks and notes
 are scoped per project. Closing a project returns you to the global, no-project
 session.
+
+With no project open, the Project tool window doesn't sit empty: it becomes a
+**Current Folder** explorer rooted at the active file's parent directory, and
+follows the focused tab as you switch files.
 
 ## Multiple windows
 
@@ -66,6 +70,19 @@ recent files, and version and license info. Reopen it with `view.welcome`.
 
 You can also hide the toolbar, the tool stripe, the breadcrumb, and the minimap
 individually in Settings.
+
+## Local file history
+
+Editora snapshots your local files over time, independent of any version
+control, so you have a safety net even outside Git. A snapshot is taken on save,
+on auto-save, and before a file is reloaded after an external change.
+
+The **File History** tool window (`M-g l`) lists each revision with its
+date, the reason it was taken, and its size (the latest tagged *Current*).
+Double-click a revision for a read-only diff against the current file, or restore
+it (an undoable whole-file replace). Snapshots are deduped by content and stored
+gzip-compressed in your config folder, pruned by configurable limits. It's on by
+default, local-only, and off in Simple UI mode.
 
 ## External-change detection
 
