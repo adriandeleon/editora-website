@@ -43,6 +43,11 @@ server's advertised trigger characters, so `<` in HTML or `:` in CSS pops the
 popup. In the popup, **Up** / **Down** and `C-n` / `C-p` move the selection, and
 **Esc** or `C-g` dismisses it.
 
+The code popup is IntelliJ-style: per-kind icons (class, method, keyword,
+snippet, and so on), the matched characters highlighted, deprecated items struck
+through, and a **documentation popup** beside the list. The docs popup shows
+automatically and toggles with `C-q` (*Edit: Toggle Completion Documentation*).
+
 Toggles live in **Settings → Editor**: a master switch plus per-source switches
 for words (prose), snippets, and Mermaid keywords. Palette equivalents are
 `view.toggleAutocomplete` and the per-source variants.

@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
+  { title: "LSP-powered Structure tool window.", detail: "For files served by a language server, the Structure outline is now built from the server's <code>textDocument/documentSymbol</code> response — a…" },
+  { title: "Project tool window auto-refreshes on filesystem changes.", detail: "A watcher on the project tree (the root + currently-expanded folders) refreshes the view when files are created, deleted, renamed, or modified on…" },
+  { title: "EditorConfig status-bar indicator.", detail: "When an <code>.editorconfig</code> governs the current file, the status bar shows an EditorConfig segment; clicking it (or the EditorConfig: Open…" },
+  { title: "Global indent-style preference.", detail: "Settings → Editor → \"Indent style\" (and the Editor: Set Indent Style… palette command) lets you force Spaces or Tabs for Tab/Enter indentation, or…" },
+  { title: "EditorConfig (<code>.editorconfig</code>) support.", detail: "Opening a file now resolves the nearest <code>.editorconfig</code> chain (walking up to <code>root = true</code>, nearest-directory-wins) and applies…" },
+  { title: "Tab re-indents the current line to the language server's convention.", detail: "In an LSP language whose server supports range formatting (e.g. Java via jdtls), pressing Tab snaps the current line's indentation to what the…" },
+  { title: "IntelliJ-style code completion popup.", detail: "The autocomplete list now looks and behaves much closer to IntelliJ IDEA: enum, keyword, module, snippet, …), mapped from the language server's…" },
   { title: "Smoother scrolling in files with many lines.", detail: "The line-number gutter set each row's number via a per-row reactive binding that subscribed/unsubscribed as cells recycled during a scroll —…" },
-  { title: "Cheaper spell-check overlay redraw while scrolling prose.", detail: "The red-squiggle overlay re-runs each scroll pulse over the visible words. It now checks the (cached) spelling verdict *before* the per-word…" },
-  { title: "Find and Find in Files pre-fill from the selected text.", detail: "Select a word or phrase on a single line, then open the in-editor Find/Replace bar (the toolbar icon, <code>C-s</code>/<code>C-r</code>, or Replace)…" },
-  { title: "Markdown split view now keeps the editor and preview scrolled together.", detail: "In SPLIT mode (editor + rendered preview side by side), scrolling one pane scrolls the other by the same fraction of its content, so the two stay…" },
-  { title: "The Project tool window shows the current file's folder when no project is open.", detail: "In the global (\"No Project\") window it no longer just shows an empty \"No project open\" placeholder — it roots the tree at the active file's parent…" },
-  { title: "File-type icons now line up in the Project tree (and other file lists).", detail: "Each glyph's node bounds equal its ink, which varies per file type, so the icon column had a ragged width and file names jumped left/right (and the…" },
-  { title: "Distinct icons for the tab right-click close menu.", detail: "The six close commands (Close, Close Other Tabs, Close All Tabs, Close Unmodified Tabs, Close Tabs to the Left/Right) all shared the plain ✕. They…" },
-  { title: "The Find in Files toolbar icon now toggles the panel", detail: "one click opens it (focusing the query field), another click closes it (matching <code>C-s</code>'s in-file find and the <code>M-6</code> tool-window…" },
 ];

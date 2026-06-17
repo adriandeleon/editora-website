@@ -29,6 +29,13 @@ and as marks on the minimap and scrollbar. Completion is merged into the
 **LSP: \<server\>** segment for managed files, with a loading bar while a server
 starts.
 
+Two more things ride on a server when it's active. The **Structure** tool window
+builds its outline from the server's document symbols, so you get a precise
+hierarchy with real kinds, per-kind icons, and method signatures (it falls back
+to a fold/TextMate heuristic for non-LSP files). And in a language whose server
+supports range formatting, **Tab** snaps the current line's indentation to the
+server's convention.
+
 ## Servers are auto-detected, never bundled
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a

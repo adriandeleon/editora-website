@@ -28,6 +28,7 @@ Editing and code:
 
 - **[Editing](/docs/editing)**: multiple cursors, auto-indent, brackets,
   comments, and the small text operations.
+- **[EditorConfig](/docs/editorconfig)**: honor a project's `.editorconfig`.
 - **[Snippets & templates](/docs/snippets-templates)**: expand boilerplate and
   scaffold new files.
 - **[Markdown, diagrams & preview](/docs/markdown)**: the live preview, the

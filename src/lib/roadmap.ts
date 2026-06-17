@@ -41,8 +41,8 @@ export const roadmap: RoadmapSection[] = [
     title: "Code intelligence",
     items: [
       { done: true, text: "Autocomplete support — code: snippet popup (Enter/Tab); prose: inline ghost text (Tab); auto + <code>C-M-i</code>/<code>M-/</code> trigger; Settings toggle. (Next: document-words, LSP, fuzzy matching.)" },
-      { done: true, text: "LSP support — <strong>21 servers</strong> (see \"Recently shipped\"): diagnostics + Problems window (<code>M-8</code>) + minimap/scrollbar stripes, go-to-definition (<code>M-.</code>), find references (<code>M-?</code>), hover (<code>C-c h</code>), LSP-backed completion, TS/PHP auto-imports, and <strong>Format Document</strong> (whole-file reformat). Server-centric registry, per-server Settings, off by default. (Next: format-on-save; rename, code actions, quick fixes; document symbols.)" },
-      { done: false, text: "Fix structure for the 21 languages we support" },
+      { done: true, text: "LSP support — <strong>21 servers</strong> (see \"Recently shipped\"): diagnostics + Problems window (<code>M-8</code>) + minimap/scrollbar stripes, go-to-definition (<code>M-.</code>), find references (<code>M-?</code>), hover (<code>C-c h</code>), LSP-backed completion, TS/PHP auto-imports, and <strong>Format Document</strong> (whole-file reformat). Server-centric registry, per-server Settings, off by default. Document symbols power the Structure tool window. (Next: format-on-save; rename, code actions, quick fixes.)" },
+      { done: true, text: "Fix structure for the 21 languages we support — the Structure tool window now builds from the language server's <code>textDocument/documentSymbol</code> (precise hierarchy, real kinds, per-kind icons, method signatures), with the fold-region/TextMate heuristic as the fallback for non-LSP files; sort (Position/Name/Kind) + kind filter, expanded by default" },
       { done: true, text: "Multi language support — UI string translation (en/it/es/fr/pt/de); see \"UI localization (i18n)\" under \"Recently shipped\"" },
     ],
   },
