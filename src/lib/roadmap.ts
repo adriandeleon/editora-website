@@ -67,7 +67,7 @@ export const roadmap: RoadmapSection[] = [
   {
     title: "Keybindings",
     items: [
-      { done: false, text: "Complete emacs movement/text manipulation keybindings" },
+      { done: true, text: "Complete emacs movement/text manipulation keybindings — backward-kill-word (<code>M-DEL</code>), upcase/downcase/capitalize-word + region (<code>M-u</code>/<code>M-l</code>/<code>M-c</code>, <code>C-x C-u</code>/<code>C-x C-l</code>), join-line (<code>M-^</code>), delete-horizontal-space (<code>M-\\</code>), just-one-space (<code>M-SPC</code>), delete-blank-lines (<code>C-x C-o</code>), open-line (<code>C-o</code>), kill-whole-line (<code>C-S-DEL</code>), zap-to-char (<code>M-z</code>), forward/backward-sexp + mark/kill-sexp (<code>C-M-f</code>/<code>C-M-b</code>/<code>C-M-SPC</code>/<code>C-M-k</code>), beginning/end-of-defun (<code>C-M-a</code>/<code>C-M-e</code>), mark-paragraph (<code>M-h</code>), mark-whole-buffer (<code>C-x h</code>), move-to-window-line (<code>M-r</code>). *Kill ring (yank-pop / consecutive-kill accumulation) still deferred.*" },
       { done: true, text: "Fully configurable shortcuts — keybinding editor in Settings → Keymaps: searchable command list, multi-key chord recorder, conflict warnings, per-command + global reset; live (no restart), persisted as overrides on top of the active keymap theme" },
       { done: true, text: "Keybinding themes — switchable in Settings → Keymaps / <code>keymap.select</code>, live (no restart), per-OS (Ctrl vs Cmd): <strong>Emacs</strong> (default), <strong>CUA</strong>, <strong>Sublime Text</strong>, <strong>VSCode</strong>, <strong>IntelliJ IDEA</strong>" },
       { done: false, text: "Vim keybindings (modal — needs a mode state machine: normal/insert/visual, operators, counts, registers, <code>:</code> command line; deferred as its own feature)" },
@@ -82,7 +82,7 @@ export const roadmap: RoadmapSection[] = [
       { done: true, text: "File-type icons — a per-type glyph (language logos, image/archive/PDF/table/…, generic fallback) everywhere a file is listed: tabs, Project tree, Open-Files/Recent pickers, Switcher, file/folder finders" },
       { done: true, text: "\"Current Folder\" explorer — with no project open, the Project tool window roots at the active file's folder and follows the focused tab" },
       { done: false, text: "Upgrade breadcrumbs support — _partial:_ Reveal in File Manager / Open Terminal Here on a crumb" },
-      { done: false, text: "Fix Zen mode" },
+      { done: false, text: "Fix Zen mode Programming ligatures are OpenType contextual alternates (<code>calt</code>), and JavaFX exposes no feature-control API (no <code>-fx-font-feature-settings</code>, no <code>Font</code> method) — it only auto-shapes complex scripts, never Latin programming ligatures. Even if it did, RichTextFX's editing model maps one char → one glyph cell for caret/selection/hit-testing, which ligature glyph-substitution breaks (the caret lands in the wrong column). Would require both JavaFX feature support *and* ligature-aware caret math in the fork. Deferred unless JavaFX adds OpenType feature control" },
     ],
   },
   {
