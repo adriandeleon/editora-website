@@ -68,6 +68,18 @@ It's powered by Editora's RichTextFX fork, which adds multiple cursors and colum
 
 *Note:* movement chords act on the primary caret and don't fan out, use the arrow keys for multi-caret movement.
 """),
+    new Feature("macros", KB, 5, false,
+        "Keyboard macros",
+        "Record a sequence of edits and replay it: <kbd>F3</kbd> to start, <kbd>F4</kbd> to stop, <kbd>C-x e</kbd> to replay. Name and save macros, and bind them to keys.",
+        """
+Record a sequence of editor actions and replay it, Emacs-style. Recording captures the faithful interleaved stream of invoked commands and literally typed text, and replay reproduces the exact sequence, so replayed typing runs through the same auto-close and auto-indent assists as live typing.
+
+- **F3** starts recording, **F4** stops, and **C-x e** replays the last macro.
+- The palette adds **Replay Last N Times**, **Name and Save Last**, **Run Saved**, and **Delete Saved**.
+- Saved macros persist across sessions, and each becomes its own palette command, so you can bind it to a shortcut in Settings → Keymaps like any other command.
+
+The recording hooks are inert when you're not recording, so there's no idle cost. See the [macros guide](/docs/macros).
+"""),
     new Feature("snippets", ED, 1, false,
         "Snippets",
         "Retyping the same boilerplate? Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for all 21 languages.",
@@ -216,13 +228,21 @@ When a file has Git conflict markers, the **merge resolver** lists each conflict
 """),
     new Feature("markdown-preview", DD, 1, false,
         "Markdown preview",
-        "IntelliJ-style 3-mode view (Editor / Split / Preview), rendered natively with CommonMark + GFM. GitHub-style output: task-list checkboxes, code pills, and local/remote images. Live and theme-matched.",
+        "IntelliJ-style 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and Export to HTML. Live and theme-matched.",
         """
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
 
-It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file.
+It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. Extra CommonMark extensions render too: YAML front matter, footnotes, heading anchors, and `++inserted++` text.
 
-Zoom with the −/+ control or Ctrl+wheel; right-click to copy, or export to PDF / print.
+Markdown files get a full editing kit:
+
+- **Linting** with high-confidence rules, shown as inline squiggles and in a Markdown Lint tool window.
+- **LaTeX math**: inline `$…$` and display `$$…$$` (off by default).
+- **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
+- **Table editing**: Tab between cells, Enter adds a row, with reflow.
+- A **heading outline** in the Structure tool window.
+
+Zoom with the −/+ control or Ctrl+wheel; right-click to copy, or **export to PDF, HTML, or print**. See the [Markdown guide](/docs/markdown).
 """),
     new Feature("mermaid", DD, 2, false,
         "Mermaid diagrams",
@@ -312,6 +332,18 @@ Open a file's timeline from the **File History** tool window (`M-g l`). Each rev
 
 Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
 """),
+    new Feature("todo-highlighting", WF, 8, false,
+        "TODO highlighting",
+        "Configurable regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a TODO tool window, with scrollbar and minimap stripes.",
+        """
+Editora highlights **TODO / FIXME-style patterns** everywhere they appear, IntelliJ-style, and collects them in a **TODO** tool window (`M-g o`).
+
+- Matches are highlighted inline and listed in the tool window, grouped by file. It scans the open project's tree when a project is open, else the open files; double-click a result to jump.
+- Matches also show as **overview stripes** over the scrollbar and on the minimap edge, each in its pattern's color. Click to jump, hover for the line.
+- Patterns are fully configurable in **Settings → Editor → TODO Highlighting**: name, regex, a color picker, case sensitivity, and enabled. TODO and FIXME ship by default.
+
+On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).
+"""),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",
         "Six editor themes (Primer, Nord, Cupertino, Dracula, Islands, each light &amp; dark) that follow the app theme, plus five bundled monospace fonts, no install needed.",
@@ -360,6 +392,18 @@ It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposi
 The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
 
 It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
+"""),
+    new Feature("external-tools", CE, 6, false,
+        "External tools",
+        "Define your own CLI commands and run them on the current file or buffer, with <code>$Name$</code> macros, stdin piping, and output to a console or back into the text. IntelliJ-style.",
+        """
+Define your own command-line tools in **Settings → External Tools** and run them on the current file or buffer, IntelliJ-style.
+
+- Command and arguments support `$Name$` macros: `$FilePath$`, `$FileDir$`, `$FileName$`, `$FileNameWithoutExtension$`, `$SelectedText$`, `$LineNumber$`, `$ColumnNumber$`, `$ProjectFileDir$`.
+- A tool can pipe the **selection** or the **whole buffer** to the command's stdin.
+- Each tool chooses what to do with the output: show it in a read-only **console**, **replace the selection**, **replace the whole buffer** (undoable), or **insert at the caret**. That covers both "run and see the output" and text transforms with filters like `jq`, `sort`, or `sed`.
+
+Every tool you define becomes its own palette command (and is bindable to a key), plus there's **External Tools: Run…** (a picker) and **Rerun Last**. Tools run off the UI thread with a timeout. Available by default (the list starts empty) and off in Simple UI mode. See the [external tools guide](/docs/external-tools).
 """)
 );
 

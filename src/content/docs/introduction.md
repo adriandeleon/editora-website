@@ -28,6 +28,7 @@ Editing and code:
 
 - **[Editing](/docs/editing)**: multiple cursors, auto-indent, brackets,
   comments, and the small text operations.
+- **[Keyboard macros](/docs/macros)**: record and replay edits.
 - **[EditorConfig](/docs/editorconfig)**: honor a project's `.editorconfig`.
 - **[Snippets & templates](/docs/snippets-templates)**: expand boilerplate and
   scaffold new files.
@@ -53,8 +54,10 @@ Workspace and customization:
 - **[Projects, windows & files](/docs/workspace)**: workspaces, tabs, splits,
   focus modes, and local file history.
 - **[Bookmarks & notes](/docs/bookmarks-notes)**: mark lines and annotate code.
+- **[TODO highlighting](/docs/todo)**: highlight and list TODO/FIXME patterns.
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
+- **[External tools](/docs/external-tools)**: run your own CLI commands.
 - **[Plugins](/docs/plugins)**: install and write extensions.
 - **[MCP server](/docs/mcp)**: let an LLM agent observe and drive the editor.
 

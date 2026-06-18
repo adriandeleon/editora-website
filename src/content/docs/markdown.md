@@ -1,6 +1,6 @@
 ---
 title: Markdown, diagrams & preview
-description: The live Markdown preview, the selection format bar, Mermaid diagrams, HTML live preview, and export to PDF or print.
+description: The live Markdown preview, the format bar, linting, LaTeX math, Mermaid, HTML preview, and export to PDF or HTML.
 category: Editing
 order: 3
 ---
@@ -21,6 +21,11 @@ The preview is built from CommonMark + GFM and aims to match GitHub: real
 task-list checkboxes, inline-code pills, underlined headings, tables, and images
 (local and remote, including SVG badges). It updates live as you type, follows
 the active theme or its own light/dark toggle, and remembers its mode per file.
+
+Beyond GFM it also renders **YAML front matter** (as a metadata block),
+**footnotes**, **heading anchors**, and **`++inserted++`** text, and the
+Structure tool window shows the document's `#`…`######` heading outline for quick
+navigation.
 
 Zoom with the `−` / `+` control or Ctrl+wheel. In Preview mode, **Space** /
 **PageDown** and **Backspace** / **PageUp** scroll the page, and a right-click
@@ -43,6 +48,25 @@ chords:
 
 List and quote continuation happens automatically on Enter. Ctrl/Cmd-click opens
 a link. The format bar can be turned off in **Settings → Editor**.
+
+## Linting, math, and editing aids
+
+- **Linting**: high-confidence rules (trailing whitespace, blank-line runs,
+  heading-marker spacing, multiple H1, fenced blocks without a language, missing
+  final newline, broken reference links) show as inline squiggles with hover
+  messages and in a **Markdown Lint** tool window. On by default; toggle with
+  *View: Toggle Markdown Lint*.
+- **LaTeX math**: render inline `$…$` and display `$$…$$` math in the preview
+  (and in PDF export) via JLaTeXMath, with GitHub-style delimiter rules so prose
+  dollar amounts are left alone. **Off by default** (Settings → Editor → *Render
+  LaTeX math*).
+- **Image paste and drag-drop**: paste an image from the clipboard, or drop image
+  files onto a saved Markdown buffer, and the file is written into a sibling
+  `assets/` folder with the `![](…)` link inserted.
+- **Smart link paste**: paste a URL over a selection to wrap it as
+  `[selection](url)`.
+- **Table editing**: **Tab** / **Shift-Tab** move between pipe-table cells, and
+  **Enter** on the last row adds a row, reflowing as you go.
 
 ## Mermaid diagrams
 
@@ -68,14 +92,16 @@ It's **off by default**; enable it in **Settings → HTML Preview**. The file mu
 be saved so its assets resolve, and remote (SFTP) files are excluded. Commands:
 `htmlPreview.open` and `htmlPreview.openIn` (pick a browser).
 
-## Export to PDF and print
+## Export and print
 
 Export code to a syntax-highlighted PDF, or the Markdown / Mermaid preview to a
 richly formatted PDF with headings, lists, tables, code blocks, and images as
-native vector text. Or print either, with a page-by-page preview first (what you
-preview is what prints). Output is always light-themed and generated off the UI
-thread.
+native vector text. You can also export a Markdown file's preview to a
+**standalone, self-contained `.html` file** (embedded stylesheet, heading
+anchors, math as images) with *Preview: Export to HTML*. Or print either, with a
+page-by-page preview first (what you preview is what prints). Output is always
+light-themed and generated off the UI thread.
 
-Commands: `editor.exportPdf`, `preview.exportPdf`, `editor.print`,
-`preview.print`. Line numbers, syntax highlighting, and page size live in
-**Settings → Editor → Export & Print**.
+Commands: `editor.exportPdf`, `preview.exportPdf`, `preview.exportHtml`,
+`editor.print`, `preview.print`. Line numbers, syntax highlighting, and page size
+live in **Settings → Editor → Export & Print**.
