@@ -1,23 +1,22 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import { commandGroups, keymaps, type Cmd } from "../../../lib/commands";
+import Layout from "../../../../layouts/Layout.astro";
+import { commandGroups, keymaps, type Cmd } from "../../../../lib/commands";
+import { version } from "../../../../lib/version";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
-// One page per command, generated from the command data in src/lib/commands.ts
-// (itself generated from Editora's source by GenCommands.java). English-only for
-// now; a future locale would add per-locale command data and a locale route.
-// The app deep-links these as /docs/commands/<command-id>.
+// One page per command, generated from src/lib/commands.ts. Versioned: the app
+// deep-links these as /docs/v-<appVersion>/commands/<command-id>.
 export async function getStaticPaths() {
   const docs = await getCollection("commandDocs");
   const docById = new Map(docs.map((d) => [d.id, d]));
   const paths: {
-    params: { id: string };
+    params: { version: string; id: string };
     props: { cmd: Cmd; category: string; doc: CollectionEntry<"commandDocs"> | null };
   }[] = [];
   for (const g of commandGroups) {
     for (const cmd of g.commands) {
       paths.push({
-        params: { id: cmd.id },
+        params: { version: `v-${version}`, id: cmd.id },
         props: { cmd, category: g.title, doc: docById.get(cmd.id) ?? null },
       });
     }
@@ -28,35 +27,37 @@ export async function getStaticPaths() {
 const { cmd, category, doc } = Astro.props;
 const { Content } = doc ? await render(doc) : { Content: null };
 
-// Map a command category to the most relevant guide.
-const GUIDE: Record<string, { href: string; label: string }> = {
-  Files: { href: "/docs/workspace", label: "Projects, windows & files" },
-  Editing: { href: "/docs/editing", label: "Editing" },
-  Navigation: { href: "/docs/navigation", label: "Navigation & search" },
-  Search: { href: "/docs/navigation", label: "Navigation & search" },
-  "Buffers & tabs": { href: "/docs/workspace", label: "Projects, windows & files" },
-  "View & display": { href: "/docs/workspace", label: "Projects, windows & files" },
-  Folding: { href: "/docs/editing", label: "Editing" },
-  "Splits & zoom": { href: "/docs/workspace", label: "Projects, windows & files" },
-  Markdown: { href: "/docs/markdown", label: "Markdown, diagrams & preview" },
-  "Code intelligence (LSP)": { href: "/docs/lsp", label: "Language servers (LSP)" },
-  Run: { href: "/docs/run-debug", label: "Running & debugging" },
-  Debugging: { href: "/docs/run-debug", label: "Running & debugging" },
-  "Git & diff": { href: "/docs/git", label: "Git" },
-  "HTTP client": { href: "/docs/http-client", label: "HTTP client" },
-  Diagrams: { href: "/docs/markdown", label: "Markdown, diagrams & preview" },
-  Bookmarks: { href: "/docs/bookmarks-notes", label: "Bookmarks & notes" },
-  "Personal notes": { href: "/docs/bookmarks-notes", label: "Bookmarks & notes" },
-  "Snippets & templates": { href: "/docs/snippets-templates", label: "Snippets & templates" },
-  Projects: { href: "/docs/workspace", label: "Projects, windows & files" },
-  "Remote (SFTP)": { href: "/docs/remote", label: "Remote files (SFTP)" },
-  "Spell check": { href: "/docs/languages", label: "Languages & highlighting" },
-  Appearance: { href: "/docs/themes-fonts", label: "Themes & fonts" },
-  "Tool windows": { href: "/docs", label: "Documentation" },
-  Window: { href: "/docs/workspace", label: "Projects, windows & files" },
-  Application: { href: "/docs/configuration", label: "Configuration" },
+const docsBase = `/docs/v-${version}`;
+// Map a command category to the most relevant guide (slug under the docs base).
+const GUIDE: Record<string, { slug: string; label: string }> = {
+  Files: { slug: "workspace", label: "Projects, windows & files" },
+  Editing: { slug: "editing", label: "Editing" },
+  Navigation: { slug: "navigation", label: "Navigation & search" },
+  Search: { slug: "navigation", label: "Navigation & search" },
+  "Buffers & tabs": { slug: "workspace", label: "Projects, windows & files" },
+  "View & display": { slug: "workspace", label: "Projects, windows & files" },
+  Folding: { slug: "editing", label: "Editing" },
+  "Splits & zoom": { slug: "workspace", label: "Projects, windows & files" },
+  Markdown: { slug: "markdown", label: "Markdown, diagrams & preview" },
+  "Code intelligence (LSP)": { slug: "lsp", label: "Language servers (LSP)" },
+  Run: { slug: "run-debug", label: "Running & debugging" },
+  Debugging: { slug: "run-debug", label: "Running & debugging" },
+  "Git & diff": { slug: "git", label: "Git" },
+  "HTTP client": { slug: "http-client", label: "HTTP client" },
+  Diagrams: { slug: "markdown", label: "Markdown, diagrams & preview" },
+  Bookmarks: { slug: "bookmarks-notes", label: "Bookmarks & notes" },
+  "Personal notes": { slug: "bookmarks-notes", label: "Bookmarks & notes" },
+  "Snippets & templates": { slug: "snippets-templates", label: "Snippets & templates" },
+  Projects: { slug: "workspace", label: "Projects, windows & files" },
+  "Remote (SFTP)": { slug: "remote", label: "Remote files (SFTP)" },
+  "Spell check": { slug: "languages", label: "Languages & highlighting" },
+  Appearance: { slug: "themes-fonts", label: "Themes & fonts" },
+  "Tool windows": { slug: "", label: "Documentation" },
+  Window: { slug: "workspace", label: "Projects, windows & files" },
+  Application: { slug: "configuration", label: "Configuration" },
 };
-const guide = GUIDE[category] ?? { href: "/docs", label: "Documentation" };
+const g = GUIDE[category] ?? { slug: "", label: "Documentation" };
+const guide = { href: g.slug ? `${docsBase}/${g.slug}` : docsBase, label: g.label };
 
 const bindings = keymaps
   .map((k) => ({ name: k.name, chord: cmd.bindings?.[k.id] ?? null }))
@@ -69,7 +70,7 @@ const bindings = keymaps
 >
   <main class="page">
     <nav class="crumbs">
-      <a href="/docs">Docs</a>
+      <a href={docsBase}>Docs</a>
       <span>›</span>
       <a href="/commands">Commands</a>
       <span>›</span>

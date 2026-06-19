@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import Layout from "./Layout.astro";
+import { docsBase } from "../lib/editora";
 
 interface Props {
   entry: CollectionEntry<"docs">;
@@ -29,7 +30,7 @@ const cats = [
 ].filter((c) => all.some((d) => d.data.category === c));
 
 const href = (d: CollectionEntry<"docs">) =>
-  d.id === "introduction" ? "/docs" : `/docs/${d.id}`;
+  d.id === "introduction" ? docsBase : `${docsBase}/${d.id}`;
 
 // Flat order for prev/next.
 const flat = cats.flatMap((c) => all.filter((d) => d.data.category === c));

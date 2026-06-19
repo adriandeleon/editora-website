@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { commandGroups, commandCount } from "../lib/commands";
+import { docsBase } from "../lib/editora";
 ---
 
 <Layout
@@ -26,7 +27,7 @@ import { commandGroups, commandCount } from "../lib/commands";
               {g.commands.map((c) => (
                 <tr>
                   <td class="cmd">
-                    <a class="cmd-title" href={`/docs/commands/${c.id}`}>
+                    <a class="cmd-title" href={`${docsBase}/commands/${c.id}`}>
                       {c.title}
                     </a>
                     <code class="cmd-id">{c.id}</code>

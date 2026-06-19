@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { loadPlugins, sourceUrl, REGISTRY_REPO } from "../lib/plugins";
+import { docsBase } from "../lib/editora";
 
 const plugins = await loadPlugins();
 ---
@@ -34,7 +35,7 @@ const plugins = await loadPlugins();
       <p class="trust">
         Plugins run with full access and are not sandboxed — only install ones
         you trust. See the
-        <a href="/docs/plugins">plugins documentation</a> to write your own.
+        <a href={`${docsBase}/plugins`}>plugins documentation</a> to write your own.
       </p>
     </div>
 
