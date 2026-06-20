@@ -77,12 +77,26 @@ Editora snapshots your local files over time, independent of any version
 control, so you have a safety net even outside Git. A snapshot is taken on save,
 on auto-save, and before a file is reloaded after an external change.
 
-The **File History** tool window (`M-g l`) lists each revision with its
-date, the reason it was taken, and its size (the latest tagged *Current*).
-Double-click a revision for a read-only diff against the current file, or restore
-it (an undoable whole-file replace). Snapshots are deduped by content and stored
-gzip-compressed in your config folder, pruned by configurable limits. It's on by
-default, local-only, and off in Simple UI mode.
+The **File History** tool window (`M-g l`) lists each revision with its date,
+the reason it was taken, and its size (the latest tagged *Current*).
+Double-click a revision for a diff against the current file, then restore the
+whole revision or use the **apply-chevrons to copy individual fragments** back in
+(undoable).
+
+It mirrors more of IntelliJ's Local History:
+
+- **Named snapshots** with *Put Label* (`history.putLabel`), shown bold in the
+  list even when the content is unchanged.
+- A **filter** over the revision list, plus a project-wide **Recent Changes**
+  picker (`history.recentChanges`).
+- A **folder view**: right-click a folder in the Project tree to list every file
+  under it that has history, with **deleted files badged**; restore a revision to
+  recreate the file. Deleting a file in Editora snapshots it first, so an
+  accidental delete is recoverable (for files Editora had opened or edited).
+
+Snapshots are deduped by content and stored gzip-compressed in your config
+folder, pruned by configurable limits. It's on by default, local-only, and off in
+Simple UI mode.
 
 ## External-change detection
 

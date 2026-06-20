@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "External Tools (IntelliJ-style).", detail: "Define your own CLI commands in Settings → External Tools and run them on the current file/buffer. Command and arguments support <code>$Name$</code>…" },
-  { title: "Markdown support improvements.", detail: "A broad set of upgrades to the Markdown experience: task lists / strikethrough / autolinks. tree (ATX + Setext), so long documents are navigable;…" },
-  { title: "More Emacs editing &amp; movement commands.", detail: "Filled the remaining gaps versus a standard Emacs <code>global-map</code>: backward-kill-word (<code>M-DEL</code>); case commands…" },
-  { title: "Keyboard macros (Emacs-style).", detail: "Record a sequence of editor actions and replay it. Recording captures the faithful interleaved stream of invoked commands and literally typed text,…" },
-  { title: "New Window command.", detail: "A palette command Window: New Window (<code>C-x 5 2</code>) opens an additional editor window without having to load a project — previously a second…" },
-  { title: "TODO / highlight patterns (IntelliJ-style).", detail: "Configurable regex patterns (TODO and FIXME by default, each with its own color) are highlighted everywhere they match in the editor, and listed in a…" },
-  { title: "LSP-powered Structure tool window.", detail: "For files served by a language server, the Structure outline is now built from the server's <code>textDocument/documentSymbol</code> response — a…" },
-  { title: "Project tool window auto-refreshes on filesystem changes.", detail: "A watcher on the project tree (the root + currently-expanded folders) refreshes the view when files are created, deleted, renamed, or modified on…" },
+  { title: "Syntax highlighting for common project config files.", detail: "<code>.editorconfig</code> (INI), <code>.gitignore</code> (and other <code>.*ignore</code> files, via a new <code>ignore</code> grammar),…" },
+  { title: "Local History, closer to IntelliJ.", detail: "Three additions to the File History tool window: apply-chevrons copy individual fragments from a revision back into the file (undoable) instead of…" },
+  { title: "Local History: folder view + recover a deleted file.", detail: "Right-click a folder in the Project tool window → a revision's \"Restore This Version\" writes it back to disk (recreating the file). Deleting a file…" },
+  { title: "Command docs now open the version-matched page.", detail: "The command palette's \"open docs\" (C-h) now links to <code>…/docs/v-&lt;appVersion&gt;/commands/&lt;command-id&gt;</code>, matching the website's new…" },
+  { title: "De-duplicated the plugin examples.", detail: "The full plugin catalog lives canonically in the adriandeleon/editora-plugins repo (source + signed registry index), so the editor repo no longer…" },
+  { title: "Plugin API: <code>needsBuffer</code> opt-out for tool windows.", detail: "Plugin tool windows are gated on an open editor buffer by default (they act on the active editor), but a new <code>registerToolWindow(…, icon,…" },
+  { title: "Markdown lint, substantially expanded.", detail: "The Markdown linter now covers more of the markdownlint rule set — MD001 (heading-level increment), MD010 (hard tabs), MD022 (headings surrounded by…" },
+  { title: "Export to HTML opens the result in a tab.", detail: "After *Preview: Export to HTML* writes the file, the generated <code>.html</code> now opens in a new editor tab (re-selecting it if already open)." },
 ];

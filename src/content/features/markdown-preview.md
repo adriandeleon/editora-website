@@ -12,7 +12,7 @@ It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real t
 
 Markdown files get a full editing kit:
 
-- **Linting** with high-confidence rules, shown as inline squiggles and in a Markdown Lint tool window.
+- **Linting** with a broad markdownlint rule set, shown as inline squiggles, scrollbar/minimap stripes, and a Markdown Lint tool window, with **auto-fix**, per-rule config, inline disable comments, and `.markdownlint.json` discovery.
 - **LaTeX math**: inline `$…$` and display `$$…$$` (off by default).
 - **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
 - **Table editing**: Tab between cells, Enter adds a row, with reflow.

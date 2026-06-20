@@ -51,11 +51,15 @@ a link. The format bar can be turned off in **Settings → Editor**.
 
 ## Linting, math, and editing aids
 
-- **Linting**: high-confidence rules (trailing whitespace, blank-line runs,
-  heading-marker spacing, multiple H1, fenced blocks without a language, missing
-  final newline, broken reference links) show as inline squiggles with hover
-  messages and in a **Markdown Lint** tool window. On by default; toggle with
-  *View: Toggle Markdown Lint*.
+- **Linting**: a broad slice of the markdownlint rule set (heading-level
+  increment, hard tabs, blank-line and spacing rules, bare URLs, trailing
+  punctuation, first-line H1, and more) shows as inline squiggles with hover
+  messages, **scrollbar and minimap stripes**, and a **Markdown Lint** tool
+  window. **Auto-fix** (`markdownLint.fix`) corrects the safely-mechanical issues
+  in one undoable edit. Turn individual rules off in *Settings → Markdown* or with
+  `markdownLint.toggleRule`, use inline `<!-- markdownlint-disable -->` comments,
+  or a nearest `.markdownlint.json`. On by default; toggle with *View: Toggle
+  Markdown Lint*.
 - **LaTeX math**: render inline `$…$` and display `$$…$$` math in the preview
   (and in PDF export) via JLaTeXMath, with GitHub-style delimiter rules so prose
   dollar amounts are left alone. **Off by default** (Settings → Editor → *Render
@@ -98,7 +102,8 @@ Export code to a syntax-highlighted PDF, or the Markdown / Mermaid preview to a
 richly formatted PDF with headings, lists, tables, code blocks, and images as
 native vector text. You can also export a Markdown file's preview to a
 **standalone, self-contained `.html` file** (embedded stylesheet, heading
-anchors, math as images) with *Preview: Export to HTML*. Or print either, with a
+anchors, math as images) with *Preview: Export to HTML*, which opens the result
+in a new tab. Or print either, with a
 page-by-page preview first (what you preview is what prints). Output is always
 light-themed and generated off the UI thread.
 

@@ -236,7 +236,7 @@ It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real t
 
 Markdown files get a full editing kit:
 
-- **Linting** with high-confidence rules, shown as inline squiggles and in a Markdown Lint tool window.
+- **Linting** with a broad markdownlint rule set, shown as inline squiggles, scrollbar/minimap stripes, and a Markdown Lint tool window, with **auto-fix**, per-rule config, inline disable comments, and `.markdownlint.json` discovery.
 - **LaTeX math**: inline `$…$` and display `$$…$$` (off by default).
 - **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
 - **Table editing**: Tab between cells, Enter adds a row, with reflow.
@@ -328,7 +328,13 @@ Auth supports your default `~/.ssh` keys, a key file, or a password; connections
         """
 Editora quietly snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.
 
-Open a file's timeline from the **File History** tool window (`M-g l`). Each revision shows its date, the reason it was taken, and its size, with the latest tagged *Current*. Double-click one for a read-only diff against the current file, or restore it (an undoable whole-file replace).
+Open a file's timeline from the **File History** tool window (`M-g l`). Each revision shows its date, the reason it was taken, and its size, with the latest tagged *Current*. Double-click one for a diff against the current file, then **restore the whole revision** or use the **apply-chevrons to copy individual fragments** back in (undoable).
+
+It's grown closer to IntelliJ:
+
+- **Named snapshots** with *Put Label* (`history.putLabel`), shown bold in the list.
+- A **filter** over the revisions plus a project-wide **Recent Changes** picker (`history.recentChanges`).
+- A **folder view**: right-click a folder in the Project tree to list every file under it with history, **deleted files badged**, and restore a revision to recreate a file. Deleting a file in Editora snapshots it first, so an accidental delete is recoverable.
 
 Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
 """),
@@ -343,6 +349,18 @@ Editora highlights **TODO / FIXME-style patterns** everywhere they appear, Intel
 - Patterns are fully configurable in **Settings → Editor → TODO Highlighting**: name, regex, a color picker, case sensitivity, and enabled. TODO and FIXME ship by default.
 
 On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).
+"""),
+    new Feature("log-viewer", WF, 9, false,
+        "Server log viewer",
+        "Open a <code>.log</code> file for severity highlighting, a <code>tail -f</code> Follow toggle, open-at-the-tail for huge logs, and live level + regex filtering.",
+        """
+`.log` files open in a dedicated log mode built for reading server output.
+
+- **Severity highlighting**: ERROR / WARN / INFO / DEBUG / TRACE, both inline and as a left-edge bar that works even on huge logs. It recognizes Logback/Log4j, `java.util.logging`, syslog, nginx, structured/JSON, zerolog, and access logs.
+- **Follow** (`tail -f`): a floating toggle streams new lines as the file grows and auto-scrolls. Very large logs **open at the tail** (read-only at the end).
+- **Live filtering**: filter as you type by a level floor and a regex (or a literal substring when it isn't valid regex). A stack trace inherits its record's level so it stays visible.
+
+Logs open in **View mode** (read-only with an *Enable Editing* banner) by default, and follow keeps streaming while read-only. On by default (Settings → Editor → Logs). Commands: `log.toggleFollow`, `log.setLevelFilter`, `log.setRegexFilter`, `log.clearFilter`, `log.viewAsLog`, and `view.toggleLogViewer`. See the [log viewer guide](/docs/log-viewer).
 """),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",

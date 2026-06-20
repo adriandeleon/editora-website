@@ -55,6 +55,7 @@ Workspace and customization:
   focus modes, and local file history.
 - **[Bookmarks & notes](/docs/bookmarks-notes)**: mark lines and annotate code.
 - **[TODO highlighting](/docs/todo)**: highlight and list TODO/FIXME patterns.
+- **[Server log viewer](/docs/log-viewer)**: severity highlighting, follow, and filtering for `.log` files.
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[External tools](/docs/external-tools)**: run your own CLI commands.
