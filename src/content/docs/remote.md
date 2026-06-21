@@ -24,6 +24,19 @@ no dialog.
 success it mounts the remote folder as the Project tree and opens the Project
 tool window. Connections are remembered in `connections.json`.
 
+## Saved sites
+
+Saved sites have three surfaces beyond the palette picker:
+
+- A **Remote Sites** tool window (`tool.remote`, `M-g r`) listing every saved
+  site, with New, Connect, and Remove.
+- A **Settings → Remote** page (`remote.settings`) to add, edit, and remove
+  sites: label, host, port, user, auth method, and key path.
+- A **Remote Sites** quick-connect list on the [Welcome page](/docs/workspace).
+
+Picking a site opens the connection form pre-filled; your password or key
+passphrase is still prompted each time and is never stored.
+
 ## Authentication
 
 Three methods, tried in this order when set to default: your default `~/.ssh`

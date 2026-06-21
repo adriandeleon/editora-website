@@ -21,7 +21,7 @@ export const roadmap: RoadmapSection[] = [
       { done: true, text: "Format document — <strong>LSP: Format Document</strong> reformats the whole file via the language server (<code>textDocument/formatting</code>, when it advertises formatting), undoable; palette + editor right-click. (GFM table reflow also exists.)" },
       { done: true, text: "Column select support — column/block selection (overlay + column-aware edits)" },
       { done: true, text: "Multiple cursors support — VS Code–style multi-caret (add at next occurrence / above / below) + Alt-drag column selection (personal RichTextFX fork); see \"Recently shipped\"" },
-      { done: false, text: "Advanced Undo/Redo support" },
+      { done: true, text: "Advanced Undo/Redo support — word/line-level undo coalescing (boundary + idle breaks) <strong>and</strong> an Undo History tool window (<code>M-g u</code>: in-session checkpoints, jump-to-restore). *The undo tree (branch recovery) was deliberately not pursued — it would mean replacing RichTextFX's linear undo engine for a niche payoff; revisit if there's demand.*" },
       { done: true, text: "Spell check support — Lucene Hunspell, red squiggles, suggestions, user dictionary, en_US/en_GB" },
       { done: true, text: "Private comments/notes — see <strong>Personal Notes</strong> under \"Recently shipped\"" },
     ],
@@ -50,7 +50,7 @@ export const roadmap: RoadmapSection[] = [
   {
     title: "Snippets",
     items: [
-      { done: false, text: "GUI for Snippet management" },
+      { done: true, text: "GUI for Snippet management — Settings → Snippets: a master-detail editor (language picker + per-language user-snippet list + name/trigger/description/body form), saving to <code>&lt;configDir&gt;/snippets/&lt;lang&gt;.json</code>. Palette <code>Snippets: Manage Snippets…</code> (<code>snippets.manage</code>)" },
     ],
   },
   {

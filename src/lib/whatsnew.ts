@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Syntax highlighting for common project config files.", detail: "<code>.editorconfig</code> (INI), <code>.gitignore</code> (and other <code>.*ignore</code> files, via a new <code>ignore</code> grammar),…" },
-  { title: "Local History, closer to IntelliJ.", detail: "Three additions to the File History tool window: apply-chevrons copy individual fragments from a revision back into the file (undoable) instead of…" },
-  { title: "Local History: folder view + recover a deleted file.", detail: "Right-click a folder in the Project tool window → a revision's \"Restore This Version\" writes it back to disk (recreating the file). Deleting a file…" },
-  { title: "Command docs now open the version-matched page.", detail: "The command palette's \"open docs\" (C-h) now links to <code>…/docs/v-&lt;appVersion&gt;/commands/&lt;command-id&gt;</code>, matching the website's new…" },
-  { title: "De-duplicated the plugin examples.", detail: "The full plugin catalog lives canonically in the adriandeleon/editora-plugins repo (source + signed registry index), so the editor repo no longer…" },
-  { title: "Plugin API: <code>needsBuffer</code> opt-out for tool windows.", detail: "Plugin tool windows are gated on an open editor buffer by default (they act on the active editor), but a new <code>registerToolWindow(…, icon,…" },
-  { title: "Markdown lint, substantially expanded.", detail: "The Markdown linter now covers more of the markdownlint rule set — MD001 (heading-level increment), MD010 (hard tabs), MD022 (headings surrounded by…" },
-  { title: "Export to HTML opens the result in a tab.", detail: "After *Preview: Export to HTML* writes the file, the generated <code>.html</code> now opens in a new editor tab (re-selecting it if already open)." },
+  { title: "Macros management in Settings.", detail: "A new Settings → Macros page lists your saved keyboard macros and lets you rename them, edit/reorder/remove their steps (add command or text steps),…" },
+  { title: "Snippet &amp; template body editors got syntax highlighting + Emacs keys.", detail: "The Snippets and File Templates pages in Settings now edit the body in a real code editor (RichTextFX <code>CodeArea</code>) with live syntax…" },
+  { title: "Reorganized the Settings window.", detail: "The flat 22-item sidebar is now grouped into five sections (General · Editor · Languages &amp; Tools · Version Control · System) with non-selectable…" },
+  { title: "Saved remote sites UI.", detail: "Your saved SFTP connections (in <code>connections.json</code>) now have three visible surfaces beyond the palette picker: a Remote Sites tool window…" },
+  { title: "Personal dictionary editor.", detail: "Settings → Spell Check now has a *Personal Dictionary* section listing your accepted spell-check words (from <code>dictionary.txt</code>) with…" },
+  { title: "File template management GUI.", detail: "A new Settings → Templates page lists your file templates — the bundled (shipped) ones too, tagged read-only — alongside your own. Editing a bundled…" },
+  { title: "Undo History tool window", detail: "(<code>M-g u</code>) — an in-session timeline of document checkpoints captured as you edit (one per typing burst); double-click or Enter to jump back…" },
+  { title: "Word/line-level undo.", detail: "Undo no longer collapses an entire typing burst into one step — one <code>C-z</code> now undoes a word or line. The undo manager starts a new group…" },
 ];
