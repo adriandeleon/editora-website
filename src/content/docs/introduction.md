@@ -14,6 +14,8 @@ It runs on macOS, Windows, and Linux, ships its own Java runtime in the native
 installers, and keeps everything local: no accounts, no telemetry, no analytics
 calls.
 
+Editora is built with the help of AI coding tools.
+
 ## Start here
 
 - **[Getting Started](/docs/getting-started)**: install Editora and learn the

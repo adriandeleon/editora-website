@@ -7,6 +7,8 @@ a keyboard-driven, cross-platform programmer's text editor. Live at
 Built with [Astro](https://astro.build) and deployed to GitHub Pages via
 `.github/workflows/pages.yml` on every push to `master`.
 
+Editora is built with the help of AI coding tools.
+
 ## Develop
 
 ```bash
