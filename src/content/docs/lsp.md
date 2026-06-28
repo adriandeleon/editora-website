@@ -54,6 +54,25 @@ Around twenty servers are supported:
 Each server has its own enable checkbox and a live found/not-found status on the
 **Settings → LSP** page, plus a per-server command field with a Browse button.
 
+## One-click install
+
+If a server isn't installed, Editora can fetch it for you. **All 21 servers** are
+covered through three channels, picked per server:
+
+- **npm** packages (JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
+  Python/Pyright), needing Node.
+- **Toolchain** installs that use the language's own package manager (Go, Ruby,
+  C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
+- **Binary** releases downloaded per OS/architecture (clangd, lemminx, Kotlin,
+  terraform-ls, Lua), extracted into your config folder.
+
+Three entry points: an **Install…** button per server in **Settings → LSP**, an
+in-editor **banner** when you open a file whose server is missing (turn the nudge
+off with `view.toggleInstallPrompts`), and the **Install: Language Server…**
+picker (`install.languageServer`). After installing, the server is auto-detected
+and activates without a restart. Editora never installs the underlying runtimes
+(Node, Python, Go, …); if one is missing it tells you which to install first.
+
 ## Workspace roots
 
 A server runs once per workspace root. The root is the active project, else the

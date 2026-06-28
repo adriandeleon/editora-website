@@ -16,4 +16,6 @@ Editora speaks the **Language Server Protocol**, so you get real language smarts
 
 Over 20 servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, and more. Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
 
+**One-click install** covers all 21 servers: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
+
 Off by default. Enable it under Settings → LSP.

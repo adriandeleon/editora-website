@@ -35,16 +35,19 @@ them in **Settings → Application**.
 | Action | Command | Default key |
 | --- | --- | --- |
 | Add a note | `notes.add` | `C-c n` |
+| Edit the note at the caret | `notes.editNote` | `C-c e` |
+| Resolve / reopen the note | `notes.toggleResolved` | (palette) |
 | Next / previous | `notes.next` / `previous` | (palette) |
 | Jump (cross-file) | `notes.jump` | `M-g n` |
-| Full-text search | `notes.search` | (palette) |
+| Full-text search | `notes.search` | `M-g s` |
 | Delete note on the line | `notes.delete` | (palette) |
 | Export notes to JSON | `notes.export` | (palette) |
 
 Add one from the editor right-click menu (*Add Personal Note* / *Add Note to
-Selection*) or `C-c n`. A noted span gets a soft highlight, and hovering it shows
-the note body rendered as Markdown. Note bodies are edited in a multi-line dialog
-(Ctrl/Cmd+Enter saves) that honors your keymap's caret-movement keys.
+Selection*) or `C-c n`. A noted span gets a soft highlight and an amber start
+marker you can **click to edit**, and hovering it shows the note body rendered as
+Markdown. Note bodies are edited in a multi-line dialog (Ctrl/Cmd+Enter saves)
+that honors your keymap's caret-movement keys.
 
 Notes track their anchor through edits and re-locate themselves by surrounding
 text when a file changes externally, marking themselves orphaned only if the

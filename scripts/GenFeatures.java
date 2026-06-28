@@ -137,6 +137,17 @@ It honors the common keys:
 
 It's **on by default**; toggle it in Settings → Editor or with *View: Toggle EditorConfig*. Without an `.editorconfig`, a global **Indent style** preference (Detect / Spaces / Tabs) still applies.
 """),
+    new Feature("undo-history", ED, 7, false,
+        "Undo History",
+        "An in-session timeline of document checkpoints (one per typing burst). Jump back to any recent state from a filterable popup (<kbd>M-g v</kbd>) or the tool window (<kbd>M-g u</kbd>).",
+        """
+Editora keeps an in-session **timeline of checkpoints** as you edit, one per typing burst, finer-grained than save-based [local file history](/docs/local-file-history).
+
+- The **popup** (`undoHistory.jump`, `M-g v`) lists the active buffer's checkpoints, each with a caret-line preview and capture time, and filters as you type. Pick one to jump back to that state (a single undoable restore). It's the fast, keyboard-driven path.
+- The **Undo History tool window** (`M-g u`) shows the same timeline; double-click or Enter to jump back.
+
+It's session-only and disabled for very large files. The tool-window stripe is off by default (the popup is the primary entry point); enable it in Settings → Tool Windows if you want it docked. This complements the **word/line-level undo** granularity, where one `C-z` undoes a word or line rather than a whole burst.
+"""),
     new Feature("syntax-highlighting", CI, 1, false,
         "Syntax highlighting",
         "TextMate grammars (via tm4e) for 21 languages: Java, Python, Rust, Go, Kotlin, C/C++, C#, Ruby, SQL, Markdown, and more.",
@@ -158,6 +169,8 @@ Editora speaks the **Language Server Protocol**, so you get real language smarts
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
 Over 20 servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, and more. Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
+
+**One-click install** covers all 21 servers: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
 Off by default. Enable it under Settings → LSP.
 """),
@@ -348,6 +361,7 @@ Editora highlights **TODO / FIXME-style patterns** everywhere they appear, Intel
 
 - Matches are highlighted inline and listed in the tool window, grouped by file. It scans the open project's tree when a project is open, else the open files; double-click a result to jump.
 - Matches also show as **overview stripes** over the scrollbar and on the minimap edge, each in its pattern's color. Click to jump, hover for the line.
+- Jump between matches in the active file with `M-g ]` / `M-g [` (`todo.next` / `todo.previous`), wrapping around.
 - Patterns are fully configurable in **Settings → Editor → TODO Highlighting**: name, regex, a color picker, case sensitivity, and enabled. TODO and FIXME ship by default.
 
 On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).

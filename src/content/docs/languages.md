@@ -24,7 +24,9 @@ TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, Mermaid, and the
 HTTP request format. The TypeScript grammar also covers plain JavaScript.
 
 Folding, comment syntax, and auto-indent rules are wired per language alongside
-the grammar.
+the grammar. Many extension-less dotfiles and named config files (e.g.
+`.editorconfig`, `.gitignore` and other `.*ignore` files) are matched by name, so
+they get highlighting too (and the matching language server when enabled).
 
 ## Autocomplete
 
@@ -64,3 +66,7 @@ dependency. English (en_US, en_GB), Spanish, and French ship in the app. Pick a
 dictionary per file with **Spell Check: Set Language…**, set a default in
 Settings, or toggle checking with `view.toggleSpellCheck`. Words you add live in
 `dictionary.txt` in your config folder.
+
+A bundled **technical-terms dictionary** (`config`, `async`, `middleware`,
+`kubernetes`, and the like) keeps code-adjacent words from being flagged; toggle
+it in Settings or with `view.toggleTechnicalDictionary`.

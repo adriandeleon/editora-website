@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Macros management in Settings.", detail: "A new Settings → Macros page lists your saved keyboard macros and lets you rename them, edit/reorder/remove their steps (add command or text steps),…" },
-  { title: "Snippet &amp; template body editors got syntax highlighting + Emacs keys.", detail: "The Snippets and File Templates pages in Settings now edit the body in a real code editor (RichTextFX <code>CodeArea</code>) with live syntax…" },
-  { title: "Reorganized the Settings window.", detail: "The flat 22-item sidebar is now grouped into five sections (General · Editor · Languages &amp; Tools · Version Control · System) with non-selectable…" },
-  { title: "Saved remote sites UI.", detail: "Your saved SFTP connections (in <code>connections.json</code>) now have three visible surfaces beyond the palette picker: a Remote Sites tool window…" },
-  { title: "Personal dictionary editor.", detail: "Settings → Spell Check now has a *Personal Dictionary* section listing your accepted spell-check words (from <code>dictionary.txt</code>) with…" },
-  { title: "File template management GUI.", detail: "A new Settings → Templates page lists your file templates — the bundled (shipped) ones too, tagged read-only — alongside your own. Editing a bundled…" },
-  { title: "Undo History tool window", detail: "(<code>M-g u</code>) — an in-session timeline of document checkpoints captured as you edit (one per typing burst); double-click or Enter to jump back…" },
-  { title: "Word/line-level undo.", detail: "Undo no longer collapses an entire typing burst into one step — one <code>C-z</code> now undoes a word or line. The undo manager starts a new group…" },
+  { title: "Dirty-state tracking no longer allocates the whole document on every keystroke.", detail: "The editor's modified-flag listener was bound to RichTextFX's <code>textProperty()</code>, which forces the full document <code>String</code> to be…" },
+  { title: "Broadened the headless-FX harness over the Run + External-Tool console panels.", detail: "New <code>RunPanelFxTest</code> and <code>ExternalToolPanelFxTest</code> exercise the console lifecycle (started → appendOutput stdout/stderr →…" },
+  { title: "Broadened the headless-FX harness over the Notes + TODO panels.", detail: "New <code>NotesPanelFxTest</code> and <code>TodoPanelFxTest</code> feed an in-memory note bucket / a <code>TodoService.Outcome</code> into the panels…" },
+  { title: "Broadened the headless-FX harness over the Structure + Bookmarks panels.", detail: "New <code>StructurePanelFxTest</code> and <code>BookmarksPanelFxTest</code> feed an LSP <code>SymbolNode</code> tree / an in-memory bookmark bucket…" },
+  { title: "Broadened the headless-FX harness over the Git + Problems tool-window panels.", detail: "New <code>GitPanelFxTest</code> and <code>ProblemsPanelFxTest</code> feed pure-record data (<code>GitStatus</code> / <code>LspDiagnostic</code> maps)…" },
+  { title: "Broadened the headless-FX harness over <code>MainController</code> command dispatch.", detail: "A new <code>MainControllerCommandsFxTest</code> drives service-free commands through the real <code>CommandRegistry</code> against a fully-wired…" },
+  { title: "Broadened the headless-FX harness over <code>EditorBuffer</code>.", detail: "A new <code>EditorBufferFxTest</code> exercises Markdown view-mode switching (incl. the minimap-hidden-in-preview rule), read-only / view mode,…" },
+  { title: "Test coverage: added unit tests + ratcheted the JaCoCo floors.", detail: "New tests for <code>config</code> models/stores (<code>Breakpoint</code>, <code>BreakpointStore</code>, <code>RecentFiles</code>, plus…" },
 ];

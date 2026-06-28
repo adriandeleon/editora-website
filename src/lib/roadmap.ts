@@ -22,7 +22,7 @@ export const roadmap: RoadmapSection[] = [
       { done: true, text: "Column select support — column/block selection (overlay + column-aware edits)" },
       { done: true, text: "Multiple cursors support — VS Code–style multi-caret (add at next occurrence / above / below) + Alt-drag column selection (personal RichTextFX fork); see \"Recently shipped\"" },
       { done: true, text: "Advanced Undo/Redo support — word/line-level undo coalescing (boundary + idle breaks) <strong>and</strong> an Undo History tool window (<code>M-g u</code>: in-session checkpoints, jump-to-restore). *The undo tree (branch recovery) was deliberately not pursued — it would mean replacing RichTextFX's linear undo engine for a niche payoff; revisit if there's demand.*" },
-      { done: true, text: "Spell check support — Lucene Hunspell, red squiggles, suggestions, user dictionary, en_US/en_GB" },
+      { done: true, text: "Spell check support — Lucene Hunspell, red squiggles, suggestions, user dictionary, en_US/en_GB; bundled technical-terms dictionary (toggle in Settings)" },
       { done: true, text: "Private comments/notes — see <strong>Personal Notes</strong> under \"Recently shipped\"" },
     ],
   },

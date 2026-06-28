@@ -11,10 +11,13 @@ typing burst into one step. The undo manager starts a new group at word,
 whitespace, and newline boundaries, and after a short typing pause, so undo
 behaves like VS Code and IntelliJ: one press steps back a word or a line.
 
-**Undo History tool window** (`M-g u`). An in-session timeline of document
-checkpoints, captured roughly one per typing burst. Double-click or press Enter
-on any entry to jump back to that state as a single undoable restore. It's
+**Undo History** (`M-g u` tool window, `M-g v` popup). An in-session timeline of
+document checkpoints, captured roughly one per typing burst. The tool window
+lists them; the keyboard-driven **popup** (`undoHistory.jump`, `M-g v`) shows the
+same checkpoints as a filterable list with a caret-line preview and capture time.
+Either way, picking one jumps back as a single undoable restore. It's
 finer-grained than the save-based [Local History](/docs/workspace#local-file-history),
-session-only, and disabled for very large files.
+session-only, and disabled for very large files. See the
+[Undo History guide](/docs/undo-history).
 
 An undo tree and a richer history panel are next.

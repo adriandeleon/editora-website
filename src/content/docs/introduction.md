@@ -31,6 +31,7 @@ Editing and code:
 - **[Editing](/docs/editing)**: multiple cursors, auto-indent, brackets,
   comments, and the small text operations.
 - **[Keyboard macros](/docs/macros)**: record and replay edits.
+- **[Undo History](/docs/undo-history)**: jump back to any recent checkpoint.
 - **[EditorConfig](/docs/editorconfig)**: honor a project's `.editorconfig`.
 - **[Snippets & templates](/docs/snippets-templates)**: expand boilerplate and
   scaffold new files.
