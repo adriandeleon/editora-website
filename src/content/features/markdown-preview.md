@@ -15,7 +15,8 @@ Markdown files get a full editing kit:
 - **Linting** with a broad markdownlint rule set, shown as inline squiggles, scrollbar/minimap stripes, and a Markdown Lint tool window, with **auto-fix**, per-rule config, inline disable comments, and `.markdownlint.json` discovery.
 - **LaTeX math**: inline `$…$` and display `$$…$$` (off by default).
 - **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
-- **Table editing**: Tab between cells, Enter adds a row, with reflow.
-- A **heading outline** in the Structure tool window.
+- **Table editing**: insert a table, add/delete rows and columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
+- **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
+- **Export** the preview to PDF, **HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
 
 Zoom with the −/+ control or Ctrl+wheel; right-click to copy, or **export to PDF, HTML, or print**. See the [Markdown guide](/docs/markdown).

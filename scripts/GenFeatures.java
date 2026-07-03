@@ -162,8 +162,9 @@ Tokenization is **stateful** (it carries grammar state across lines, so block co
         """
 Editora speaks the **Language Server Protocol**, so you get real language smarts:
 
-- **Go to definition**: `M-.`
-- **Find references**: `M-?`
+- **Go to definition**: `M-.`, or Ctrl/Cmd-click a symbol
+- **Find references**: `M-?`, listed in a browsable **References** tool window
+- **Go to Symbol in Workspace**: search any symbol across the project and jump
 - **Hover docs**: `C-c h`
 - **Format Document**: reformat the whole file via the server (palette or right-click)
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
@@ -225,6 +226,7 @@ Native Git that shells out to your installed `git`, no bundled library.
 - The **status bar** shows the current branch with ahead/behind counts and a dropdown to switch/create branches, pull, fetch, and push.
 - **Gutter change bars** mark added/modified/deleted lines vs HEAD (hover for the hunk diff).
 - The **Commit** tool window groups staged / changed / untracked files with stage, unstage, discard, and a commit box.
+- The **Project tree colors files by Git status** (added, modified, deleted, renamed, untracked), IntelliJ-style, with changed folders tinted.
 - Plus a **history / log** view, **inline blame**, and **stash**.
 
 Off by default. Enable it under Settings → Git.
@@ -252,8 +254,9 @@ Markdown files get a full editing kit:
 - **Linting** with a broad markdownlint rule set, shown as inline squiggles, scrollbar/minimap stripes, and a Markdown Lint tool window, with **auto-fix**, per-rule config, inline disable comments, and `.markdownlint.json` discovery.
 - **LaTeX math**: inline `$…$` and display `$$…$$` (off by default).
 - **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
-- **Table editing**: Tab between cells, Enter adds a row, with reflow.
-- A **heading outline** in the Structure tool window.
+- **Table editing**: insert a table, add/delete rows and columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
+- **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
+- **Export** the preview to PDF, **HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
 
 Zoom with the −/+ control or Ctrl+wheel; right-click to copy, or **export to PDF, HTML, or print**. See the [Markdown guide](/docs/markdown).
 """),
@@ -268,12 +271,14 @@ Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), wi
 Off by default. Enable it under Settings → Mermaid (point it at your `mmdc`/`maid`, or use `npx`).
 """),
     new Feature("export-pdf-print", DD, 3, false,
-        "Export to PDF & print",
-        "Export code or the Markdown preview to a syntax-highlighted PDF, or print with a preview, light-themed and generated off-thread.",
+        "Export & print",
+        "Export code or the Markdown preview to a syntax-highlighted PDF, HTML, MS Word, or ODF, or print with a preview. Light-themed and generated off-thread.",
         """
 Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly-formatted PDF, headings, lists, tables, code blocks, and images rendered as native vector text.
 
-Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / `javafx.print`. Page size and options live in Settings → Editor → Export & Print.
+The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
+
+Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. Page size and options live in Settings → Editor → Export & Print.
 """),
     new Feature("html-live-preview", DD, 4, true,
         "HTML live preview",
@@ -377,6 +382,20 @@ On by default. Highlighting runs off the UI thread and is debounced; the project
 - **Live filtering**: filter as you type by a level floor and a regex (or a literal substring when it isn't valid regex). A stack trace inherits its record's level so it stays visible.
 
 Logs open in **View mode** (read-only with an *Enable Editing* banner) by default, and follow keeps streaming while read-only. On by default (Settings → Editor → Logs). Commands: `log.toggleFollow`, `log.setLevelFilter`, `log.setRegexFilter`, `log.clearFilter`, `log.viewAsLog`, and `view.toggleLogViewer`. See the [log viewer guide](/docs/log-viewer).
+"""),
+    new Feature("csv", WF, 10, false,
+        "CSV & TSV support",
+        "Rainbow per-column coloring, a field readout, and an editable CSV Grid with sort/filter and export to Excel/ODF, plus align/shrink and Markdown-table interop.",
+        """
+`.csv` and `.tsv` files get first-class, spreadsheet-style tooling.
+
+- **Rainbow columns**: each column is colored distinctly in the editor (cycling every eight), so rows line up at a glance. On by default.
+- **Field readout**: the status bar shows *Field N of M* for the caret's column.
+- **CSV Grid** tool window: the file as a spreadsheet, with content-fit columns, a filter box, column sort, inconsistent-row highlighting, **editable cells and headers**, and a right-click export to **PDF / Print / Excel (`.xlsx`) / ODF (`.ods`)**.
+- **Align / shrink**: *CSV: Align Columns* pads fields so delimiters line up in the editor; *CSV: Shrink Columns* reverses it. Both preserve quoted fields.
+- **Markdown interop**: *CSV: Copy as Markdown Table*, and from a Markdown table, export to CSV/Excel/ODF or convert to and from CSV.
+
+It builds on proper CSV/TSV syntax highlighting. Toggle rainbow and the grid in **Settings → Editor → CSV**.
 """),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",

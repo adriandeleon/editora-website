@@ -49,6 +49,26 @@ chords:
 List and quote continuation happens automatically on Enter. Ctrl/Cmd-click opens
 a link. The format bar can be turned off in **Settings → Editor**.
 
+You can also insert a **table of contents** (`markdown.toc`) and a **task list**
+(`markdown.taskList`, `C-c C-s k`).
+
+## Tables
+
+Beyond the format bar's reflow, the right-click **Table** submenu (and the
+palette) edits the table under the cursor: **insert** a table
+(`markdown.insertTable`), **add / delete** rows and columns
+(`markdown.tableAddRow` / `tableAddColumn` / `tableDeleteRow` /
+`tableDeleteColumn`), and Tab moves between cells with Enter adding a row.
+
+Tables interoperate with CSV and spreadsheets:
+
+- Convert **to and from CSV** (`markdown.tableToCsv` / `markdown.tableFromCsv`,
+  delimiter auto-detected, RFC-4180 quoting).
+- Export the table to a **CSV**, **Excel (`.xlsx`)**, or **ODF (`.ods`)** file
+  (`markdown.tableExportCsv` / `tableExportExcel` / `tableExportOds`).
+
+See [CSV & TSV](/docs/csv) for editing data files directly.
+
 ## Linting, math, and editing aids
 
 - **Linting**: a broad slice of the markdownlint rule set (heading-level
@@ -103,10 +123,13 @@ richly formatted PDF with headings, lists, tables, code blocks, and images as
 native vector text. You can also export a Markdown file's preview to a
 **standalone, self-contained `.html` file** (embedded stylesheet, heading
 anchors, math as images) with *Preview: Export to HTML*, which opens the result
-in a new tab. Or print either, with a
+in a new tab, or to **MS Word (`.docx`)** and **OpenDocument Text (`.odt`)** with
+*Preview: Export to Word / OpenDocument*. Headings, styling, lists, tables,
+code, math, Mermaid diagrams, and images all carry over. Or print either, with a
 page-by-page preview first (what you preview is what prints). Output is always
 light-themed and generated off the UI thread.
 
 Commands: `editor.exportPdf`, `preview.exportPdf`, `preview.exportHtml`,
-`editor.print`, `preview.print`. Line numbers, syntax highlighting, and page size
-live in **Settings → Editor → Export & Print**.
+`preview.exportDocx`, `preview.exportOdt`, `editor.print`, `preview.print`. Line
+numbers, syntax highlighting, and page size live in **Settings → Editor → Export
+& Print**.

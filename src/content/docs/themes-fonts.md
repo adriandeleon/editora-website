@@ -27,6 +27,11 @@ The Markdown preview can be themed independently of the app with its own
 light/dark toggle (a sun/moon button on the preview's zoom control), so you can
 read a GitHub-style light page inside a dark editor.
 
+**User themes**: drop your own theme CSS in a `themes/` (app + editor theme) or
+`editor-themes/` (editor only) folder in your [config directory](/docs/configuration),
+and it joins the picker. *Theme: Reload User Themes* (`theme.reloadUserThemes`)
+picks up changes without a restart.
+
 ## Fonts
 
 Five monospace families ship with the app, so nothing needs a system install:

@@ -58,6 +58,15 @@ open buffers are edited in-memory (undoable) and closed files are rewritten on
 disk, preserving their line endings. The search re-runs afterward to refresh the
 panel.
 
+There's also a lightweight **Find in Files popup** (`search.inFilesPopup`) if you
+prefer a quick, keyboard-first search without opening the tool window.
+
+## Back and forward
+
+Jump around and step through your navigation history with **Go: Back**
+(`nav.back`) and **Go: Forward** (`nav.forward`), like a browser's back/forward
+for the caret.
+
 ## AceJump
 
 `M-g j` labels every visible occurrence of the next character you type. Type a

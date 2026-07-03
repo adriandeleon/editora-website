@@ -16,15 +16,20 @@ get real language smarts. LSP is **off by default**; turn it on in
 | --- | --- | --- |
 | Go to definition | `lsp.gotoDefinition` | `M-.` |
 | Find references | `lsp.findReferences` | `M-?` |
+| Go to Symbol in Workspace | `lsp.gotoSymbol` | (palette) |
 | Hover docs | `lsp.hover` | `C-c h` |
 | Format Document | `lsp.formatDocument` | (palette) |
 | Restart servers | `lsp.restartServers` | (palette) |
 
 The goto/references/hover commands are also in the editor right-click menu while
-a server is active. **Format Document** reformats the whole file through the
-server when it advertises formatting (undoable; palette or the right-click menu).
-Diagnostics appear as inline squiggles, in the **Problems** tool window (`M-8`),
-and as marks on the minimap and scrollbar. Completion is merged into the
+a server is active, and you can **Ctrl/Cmd-click** a symbol to jump to its
+definition. **Find references** lists results in a browsable **References** tool
+window (`tool.references`), grouped by file with a line and preview. **Go to
+Symbol in Workspace** opens a live search over every symbol in the project.
+**Format Document** reformats the whole file through the server when it
+advertises formatting (undoable; palette or the right-click menu). Diagnostics
+appear as inline squiggles, in the **Problems** tool window (`M-8`), and as marks
+on the minimap and scrollbar. Completion is merged into the
 [autocomplete](/docs/languages#autocomplete) popup. The status bar shows an
 **LSP: \<server\>** segment for managed files, with a loading bar while a server
 starts.

@@ -8,8 +8,9 @@ summary: "Go-to-definition, find references, hover docs, diagnostics, and comple
 
 Editora speaks the **Language Server Protocol**, so you get real language smarts:
 
-- **Go to definition**: `M-.`
-- **Find references**: `M-?`
+- **Go to definition**: `M-.`, or Ctrl/Cmd-click a symbol
+- **Find references**: `M-?`, listed in a browsable **References** tool window
+- **Go to Symbol in Workspace**: search any symbol across the project and jump
 - **Hover docs**: `C-c h`
 - **Format Document**: reformat the whole file via the server (palette or right-click)
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**

@@ -8,7 +8,6 @@ import { whatsNew } from "../lib/whatsnew";
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 const logo = url("editora-icon.svg");
-const changelogUrl = `${repo}/blob/master/CHANGELOG.md`;
 
 // Latest entries for the home-page teaser — News first, then Blog.
 const byDate = (a, b) => b.data.date.valueOf() - a.data.date.valueOf();
@@ -153,8 +152,8 @@ const platforms = [
         <section id="whats-new" class="section">
           <h2>What's new</h2>
           <p class="section-lead">
-            Recently shipped. See the{" "}
-            <a href={changelogUrl}>full changelog</a> for everything.
+            A few of the most recent changes. See{" "}
+            <a href="/whats-new">everything that's shipped</a>.
           </p>
           <ul class="news">
             {whatsNew.map((n) => (
@@ -169,6 +168,9 @@ const platforms = [
               </li>
             ))}
           </ul>
+          <p class="whats-new-more">
+            <a href="/whats-new">Show more &rarr;</a>
+          </p>
         </section>
       )
     }
@@ -463,6 +465,11 @@ const platforms = [
 
   .news-detail {
     color: var(--muted);
+  }
+
+  .whats-new-more {
+    margin: 1.25rem 0 0;
+    font-weight: 600;
   }
 
   /* Latest blog & news teaser */

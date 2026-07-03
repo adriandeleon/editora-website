@@ -59,6 +59,7 @@ Workspace and customization:
 - **[Bookmarks & notes](/docs/bookmarks-notes)**: mark lines and annotate code.
 - **[TODO highlighting](/docs/todo)**: highlight and list TODO/FIXME patterns.
 - **[Server log viewer](/docs/log-viewer)**: severity highlighting, follow, and filtering for `.log` files.
+- **[CSV & TSV](/docs/csv)**: rainbow columns and an editable grid for data files.
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[External tools](/docs/external-tools)**: run your own CLI commands.

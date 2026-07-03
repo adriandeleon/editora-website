@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Dirty-state tracking no longer allocates the whole document on every keystroke.", detail: "The editor's modified-flag listener was bound to RichTextFX's <code>textProperty()</code>, which forces the full document <code>String</code> to be…" },
-  { title: "Broadened the headless-FX harness over the Run + External-Tool console panels.", detail: "New <code>RunPanelFxTest</code> and <code>ExternalToolPanelFxTest</code> exercise the console lifecycle (started → appendOutput stdout/stderr →…" },
-  { title: "Broadened the headless-FX harness over the Notes + TODO panels.", detail: "New <code>NotesPanelFxTest</code> and <code>TodoPanelFxTest</code> feed an in-memory note bucket / a <code>TodoService.Outcome</code> into the panels…" },
-  { title: "Broadened the headless-FX harness over the Structure + Bookmarks panels.", detail: "New <code>StructurePanelFxTest</code> and <code>BookmarksPanelFxTest</code> feed an LSP <code>SymbolNode</code> tree / an in-memory bookmark bucket…" },
-  { title: "Broadened the headless-FX harness over the Git + Problems tool-window panels.", detail: "New <code>GitPanelFxTest</code> and <code>ProblemsPanelFxTest</code> feed pure-record data (<code>GitStatus</code> / <code>LspDiagnostic</code> maps)…" },
-  { title: "Broadened the headless-FX harness over <code>MainController</code> command dispatch.", detail: "A new <code>MainControllerCommandsFxTest</code> drives service-free commands through the real <code>CommandRegistry</code> against a fully-wired…" },
-  { title: "Broadened the headless-FX harness over <code>EditorBuffer</code>.", detail: "A new <code>EditorBufferFxTest</code> exercises Markdown view-mode switching (incl. the minimap-hidden-in-preview rule), read-only / view mode,…" },
-  { title: "Test coverage: added unit tests + ratcheted the JaCoCo floors.", detail: "New tests for <code>config</code> models/stores (<code>Breakpoint</code>, <code>BreakpointStore</code>, <code>RecentFiles</code>, plus…" },
+  { title: "Git status colors in the Project tree.", detail: "Files in the Project tool window are now colored by their Git status — added (green), modified (blue), deleted (gray), renamed (violet), and…" },
+  { title: "References tool window.", detail: "Find References now shows its results in a dedicated, browsable References tool window — grouped by file, with a line + preview per reference —…" },
+  { title: "Go to Symbol in Workspace.", detail: "A new command opens a live search box that finds any symbol (class, function, method, …) across the whole project by name and jumps to it — the LSP…" },
+  { title: "Ctrl/Cmd-click to go to definition.", detail: "In a code file with a running language server, holding Ctrl (or ⌘ on macOS) and clicking a symbol now jumps to its definition — the same gesture as…" },
+  { title: "Markdown table: export to CSV / Excel / ODF file.", detail: "The editor's right-click Table submenu (and the command palette) now export the Markdown table under the cursor to a <code>.csv</code>, Excel…" },
+  { title: "CSV grid: columns fit their content.", detail: "The CSV Grid now sizes each column to the width of its widest cell (or header), so you rarely need to drag a column edge to read the data. Very long…" },
+  { title: "CSV: align / shrink columns.", detail: "Two new commands reformat a <code>.csv</code>/<code>.tsv</code> file so it's easy to read as a table: CSV: Align Columns pads each field with spaces…" },
+  { title: "Rainbow CSV columns.", detail: "<code>.csv</code>/<code>.tsv</code> files are now colored per column in the editor — each column gets a distinct color that cycles every eight, so…" },
 ];
