@@ -69,6 +69,26 @@ commented.
 Fill re-wraps a paragraph to the fill column (70 by default), repeating any
 comment or quote prefix on each wrapped line.
 
+## String manipulation
+
+Convert the **case style** of the selection or the identifier at the caret
+(camelCase, PascalCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case, dot.case),
+with a *Cycle Case Style* that steps a token through the styles on repeated
+presses (`edit.case.cycle`) and a *Swap Case* (`edit.case.swap`). Whole-line
+transforms work on the selection or the whole file: sort ascending/descending
+(numeric-aware, case-insensitive), sort by length, reverse, shuffle, remove
+duplicate or empty lines, and trim trailing whitespace. Each is a palette
+command, or reach them all from one filterable picker, *Edit: String
+Manipulation…* (`C-c x`).
+
+## Hex viewer
+
+Opening a **binary** file (an executable, archive, `.class`, `.pdf`, and so on)
+shows a read-only `offset | hex | ASCII` dump instead of garbage text. Binaries
+are detected by content, and large files show their first slice with a
+truncation note. *View: Open as Hex* (`view.openAsHex`) force-opens any file's
+bytes as hex, and *View: Open as Text* switches back.
+
 ## Read-only and View mode
 
 Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident.

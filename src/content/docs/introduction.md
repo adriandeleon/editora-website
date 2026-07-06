@@ -63,6 +63,7 @@ Workspace and customization:
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[External tools](/docs/external-tools)**: run your own CLI commands.
+- **[AI assistance](/docs/ai)**: AI actions and an embedded coding agent.
 - **[Plugins](/docs/plugins)**: install and write extensions.
 - **[MCP server](/docs/mcp)**: let an LLM agent observe and drive the editor.
 

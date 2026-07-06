@@ -20,9 +20,11 @@ backgrounds and intra-line word-level highlights.
 | Against HEAD | `diff.vsHead` | `C-x v =` |
 | Against a commit | `diff.vsCommit` | (palette) |
 | With another file | `diff.compareWith` | (palette) |
+| Open a `.patch`/`.diff` in the viewer | `diff.openPatchFile` | (palette) |
 
 When a file is open, its live (possibly unsaved) text is used as the working
-side. Open diffs **refresh live** when the underlying files change on disk or
+side. A unified `.patch`/`.diff` file can be opened as a structured, side-by-side
+diff with *Diff: Open Patch as Diff*. Open diffs **refresh live** when the underlying files change on disk or
 after a Git mutation such as a commit, stage, or checkout.
 
 ## Applying changes

@@ -31,6 +31,8 @@ palette with **TODO: Add Highlight Pattern…** (`todo.addPattern`).
 | Toggle the TODO tool window | `tool.todo` | `M-g o` |
 | Refresh the scan | `todo.refresh` | (palette) |
 | Add a pattern | `todo.addPattern` | (palette) |
+| Next / previous TODO | `todo.next` / `todo.previous` | `M-g ]` / `M-g [` |
+| Set a part color | `todo.setPartColor` | (palette) |
 
 Highlighting runs off the UI thread and is debounced, and the project scan is
 lazy (only when the tool window is open or refreshed), so it stays cheap. Use

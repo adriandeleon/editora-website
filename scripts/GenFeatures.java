@@ -397,6 +397,23 @@ Logs open in **View mode** (read-only with an *Enable Editing* banner) by defaul
 
 It builds on proper CSV/TSV syntax highlighting. Toggle rainbow and the grid in **Settings → Editor → CSV**.
 """),
+    new Feature("ai", CE, 0, true,
+        "AI assistance",
+        "One-shot AI actions (explain, rewrite, commit message, inline completion) and an embedded coding agent over ACP. Anthropic or a local model. Off by default.",
+        """
+Editora has optional AI, off by default and yours to configure.
+
+**AI actions** call the model directly (streamed):
+
+- **Generate a commit message** from the staged diff into the Commit window.
+- **Explain the selection** in a new Markdown buffer.
+- **Rewrite the selection** per an instruction, as a single undoable edit.
+- **Inline completion**: after a typing pause, a muted one-line ghost suggestion at the caret, accepted with Tab (its own fast model).
+
+**AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. The agent is a user-installed external tool, never bundled.
+
+**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings; models configurable) or switch to **Local (OpenAI-compatible)** to run everything against LM Studio, Ollama, or any local server, with no API key. Enable it under Settings → AI. See the [AI guide](/docs/ai).
+"""),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",
         "Six editor themes (Primer, Nord, Cupertino, Dracula, Islands, each light &amp; dark) that follow the app theme, plus five bundled monospace fonts, no install needed.",
@@ -437,12 +454,13 @@ Pick a language in Settings → Appearance (or let it follow your OS locale); th
         """
 Editora can run a small **Model Context Protocol** server inside the editor, so an LLM agent like Claude Code can see what you're working on and act through Editora's own commands.
 
-It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposing six tools:
+It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposing fourteen tools:
 
-- `list_open_files`, `read_buffer`, `get_diagnostics`
-- `find_in_files`, `list_commands`, `execute_command`
+- **Reads**: `list_open_files`, `list_tabs`, `read_buffer`, `get_selection`, `get_diagnostics`, `document_symbols`, `git_status`, `todo_scan`, `find_in_files`, `list_commands`.
+- **Writes**: `edit_buffer` (undoable str-replace edits) and `save_buffer`.
+- **Actions**: `open_file` and `execute_command`.
 
-The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
+So an agent can observe live state, make undoable edits, and drive the editor. The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
 
 It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
 """),

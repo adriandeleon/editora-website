@@ -15,21 +15,18 @@ and guarded by a security-notice dialog; enable it in **Settings → MCP Server*
 
 ## What it exposes
 
-A **loopback-only** HTTP/JSON-RPC server with **bearer-token auth** exposes six
-tools:
+A **loopback-only** HTTP/JSON-RPC server with **bearer-token auth** exposes
+fourteen tools, in three groups:
 
-| Tool | Does |
+| Group | Tools |
 | --- | --- |
-| `list_open_files` | List the open buffers |
-| `read_buffer` | Read a buffer's text |
-| `get_diagnostics` | Read LSP diagnostics |
-| `find_in_files` | Search the project |
-| `list_commands` | List the command registry |
-| `execute_command` | Run a command by id |
+| **Reads** | `list_open_files`, `list_tabs`, `read_buffer`, `get_selection`, `get_diagnostics`, `document_symbols`, `git_status`, `todo_scan`, `find_in_files`, `list_commands` |
+| **Writes** | `edit_buffer` (undoable str-replace edits), `save_buffer` |
+| **Actions** | `open_file`, `execute_command` |
 
-So an agent can both observe state and drive the editor through the same command
-registry the palette uses. It runs on the JDK's built-in HTTP server, so there's
-no new dependency.
+So an agent can observe live state, make **undoable edits**, and drive the editor
+through the same command registry the palette uses. It runs on the JDK's built-in
+HTTP server, so there's no new dependency.
 
 ## Enabling and connecting
 

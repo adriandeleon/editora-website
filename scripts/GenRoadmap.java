@@ -98,7 +98,11 @@ void flushNews(List<News> items, String cur, Pattern title) {
 }
 
 List<News> parseWhatsNew(String md) {
-    int start = md.indexOf("## [Unreleased]");
+    // Lead the home teaser with the newest user-facing additions. Start at the
+    // first "### Added" section (features/highlights) so a release's leading
+    // release-engineering "### Fixed" block doesn't dominate the landing page.
+    int start = md.indexOf("### Added");
+    if (start < 0) start = md.indexOf("## [");
     String body = start >= 0 ? md.substring(start) : md;
     Pattern title = Pattern.compile("^\\*\\*(.+?)\\*\\*\\s*(?:[—–-]+\\s*)?(.*)$");
     List<News> items = new ArrayList<>();
@@ -204,14 +208,15 @@ void main(String[] args) throws IOException {
             + "export const version = " + ts(version) + ";\n",
         StandardCharsets.UTF_8);
 
-    // The full "What's New" page: the entire CHANGELOG [Unreleased] section as a
-    // Markdown page (uncapped), so nothing the home teaser truncates is lost.
-    int uStart = changelogMd.indexOf("## [Unreleased]");
-    String unreleased = "";
-    if (uStart >= 0) {
-        String afterHeader = changelogMd.substring(changelogMd.indexOf('\n', uStart) + 1);
-        int nextVer = afterHeader.indexOf("\n## [");
-        unreleased = (nextVer >= 0 ? afterHeader.substring(0, nextVer) : afterHeader).strip();
+    // The full "What's New" page: the entire changelog (every ## [version]
+    // section) as a Markdown page, so nothing the home teaser truncates is lost.
+    int firstVer = changelogMd.indexOf("## [");
+    String unreleased = (firstVer >= 0 ? changelogMd.substring(firstVer) : changelogMd).strip();
+    // Drop a leading empty [Unreleased] header (present right after a release).
+    if (unreleased.startsWith("## [Unreleased]")) {
+        int nl = unreleased.indexOf('\n');
+        String rest = nl >= 0 ? unreleased.substring(nl + 1).strip() : "";
+        if (rest.startsWith("## [")) unreleased = rest;
     }
     Files.writeString(
         web.resolve("src/pages/whats-new.md"),

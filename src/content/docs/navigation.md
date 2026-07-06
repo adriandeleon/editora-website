@@ -71,7 +71,8 @@ for the caret.
 
 `M-g j` labels every visible occurrence of the next character you type. Type a
 label to jump the caret there. **Esc** or `C-g` cancels. It's the fastest way to
-move the caret to something you can see.
+move the caret to something you can see. **Line mode** (`nav.aceJumpLine`,
+`M-g L`) labels every visible line so you can jump straight to one.
 
 ## Closing tool windows
 

@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Git status colors in the Project tree.", detail: "Files in the Project tool window are now colored by their Git status — added (green), modified (blue), deleted (gray), renamed (violet), and…" },
-  { title: "References tool window.", detail: "Find References now shows its results in a dedicated, browsable References tool window — grouped by file, with a line + preview per reference —…" },
-  { title: "Go to Symbol in Workspace.", detail: "A new command opens a live search box that finds any symbol (class, function, method, …) across the whole project by name and jumps to it — the LSP…" },
-  { title: "Ctrl/Cmd-click to go to definition.", detail: "In a code file with a running language server, holding Ctrl (or ⌘ on macOS) and clicking a symbol now jumps to its definition — the same gesture as…" },
-  { title: "Markdown table: export to CSV / Excel / ODF file.", detail: "The editor's right-click Table submenu (and the command palette) now export the Markdown table under the cursor to a <code>.csv</code>, Excel…" },
-  { title: "CSV grid: columns fit their content.", detail: "The CSV Grid now sizes each column to the width of its widest cell (or header), so you rarely need to drag a column edge to read the data. Very long…" },
-  { title: "CSV: align / shrink columns.", detail: "Two new commands reformat a <code>.csv</code>/<code>.tsv</code> file so it's easy to read as a table: CSV: Align Columns pads each field with spaces…" },
-  { title: "Rainbow CSV columns.", detail: "<code>.csv</code>/<code>.tsv</code> files are now colored per column in the editor — each column gets a distinct color that cycles every eight, so…" },
+  { title: "Open a <code>.patch</code>/<code>.diff</code> file in the structured diff viewer.", detail: "A right-click \"Open in Diff Viewer\" item (shown only for a <code>.patch</code>/<code>.diff</code> file, plus the palette-only…" },
+  { title: "Configurable TODO per-part colors.", detail: "The highlight color for a structured TODO comment's <code>[tag]</code> and each <code>(priority)</code> level (critical/high/medium/low) is now…" },
+  { title: "AceJump line-mode (avy-goto-line).", detail: "A new <code>nav.aceJumpLine</code> command (<code>M-g L</code>) labels every visible line at once — type a label to jump the caret to that line's…" },
+  { title: "MCP: <code>list_tabs</code> and <code>todo_scan</code> tools.", detail: "The MCP bridge gains two read tools — <code>list_tabs</code> (every open tab including non-editor tabs — Welcome/image/hex/diff — with each tab's…" },
+  { title: "External Tools: editor right-click submenu.", detail: "The editor context menu now shows an External Tools submenu listing every enabled tool, so you can run one on the active file without the palette or…" },
+  { title: "Find-in-Files popup: include/exclude globs.", detail: "The keyboard-first *Find in Files* popup now has the same comma-separated include / exclude glob fields as the tool window (e.g. <code>*.java,…" },
+  { title: "Remote-file (SFTP) status indicator.", detail: "When the active file lives on a remote host, the status bar now shows a ⇅ SFTP badge (with the <code>host:/path</code> in its tooltip; click it to…" },
+  { title: "Macro recording indicator.", detail: "While recording a keyboard macro (<code>F3</code>), the status bar now shows a red" },
 ];

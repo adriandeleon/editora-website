@@ -41,5 +41,6 @@ an exception stays visible when you filter to `WARN` and above.
 | Filter by level | `log.setLevelFilter` |
 | Filter by pattern | `log.setRegexFilter` |
 | Clear the filter | `log.clearFilter` |
+| Next / previous error | `log.nextError` / `log.previousError` |
 | Treat the file as a log | `log.viewAsLog` |
 | Enable/disable the feature | `view.toggleLogViewer` |
