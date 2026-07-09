@@ -29,7 +29,8 @@ navigation.
 
 Zoom with the `−` / `+` control or Ctrl+wheel. In Preview mode, **Space** /
 **PageDown** and **Backspace** / **PageUp** scroll the page, and a right-click
-menu offers Select All, Copy, Export to PDF, and Print.
+menu offers Select All, Copy, Export to PDF, and Print. A **link in the preview
+is clickable**, it shows a hand cursor and opens in your system browser.
 
 ## The format bar
 

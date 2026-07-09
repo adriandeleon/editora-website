@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Open a <code>.patch</code>/<code>.diff</code> file in the structured diff viewer.", detail: "A right-click \"Open in Diff Viewer\" item (shown only for a <code>.patch</code>/<code>.diff</code> file, plus the palette-only…" },
-  { title: "Configurable TODO per-part colors.", detail: "The highlight color for a structured TODO comment's <code>[tag]</code> and each <code>(priority)</code> level (critical/high/medium/low) is now…" },
-  { title: "AceJump line-mode (avy-goto-line).", detail: "A new <code>nav.aceJumpLine</code> command (<code>M-g L</code>) labels every visible line at once — type a label to jump the caret to that line's…" },
-  { title: "MCP: <code>list_tabs</code> and <code>todo_scan</code> tools.", detail: "The MCP bridge gains two read tools — <code>list_tabs</code> (every open tab including non-editor tabs — Welcome/image/hex/diff — with each tab's…" },
-  { title: "External Tools: editor right-click submenu.", detail: "The editor context menu now shows an External Tools submenu listing every enabled tool, so you can run one on the active file without the palette or…" },
-  { title: "Find-in-Files popup: include/exclude globs.", detail: "The keyboard-first *Find in Files* popup now has the same comma-separated include / exclude glob fields as the tool window (e.g. <code>*.java,…" },
-  { title: "Remote-file (SFTP) status indicator.", detail: "When the active file lives on a remote host, the status bar now shows a ⇅ SFTP badge (with the <code>host:/path</code> in its tooltip; click it to…" },
-  { title: "Macro recording indicator.", detail: "While recording a keyboard macro (<code>F3</code>), the status bar now shows a red" },
+  { title: "Maven support — a toolbar icon + actions popup that reads the active project's pom.xml, IntelliJ-style.", detail: "A new Maven toolbar button (hidden until a pom.xml is actually detected for the active file/project; refreshed on tab switch, window focus-regain,…" },
+  { title: "A dedicated \"AI\" group in Settings, with a master Enable/Disable AI switch (off by default).", detail: "The AI Agent and AI Actions pages — previously scattered under separate groups — now live together under a new AI sidebar group, alongside a new…" },
+  { title: "Clickable links in the Markdown preview.", detail: "A rendered link now shows a hand cursor and opens in the system default browser on click (the same <code>Consumer&lt;String&gt;</code> already used…" },
+  { title: "Loading indicator while an AI explanation streams into the Markdown preview.", detail: "<code>ai.explainSelection</code> opens a new <code>explanation.md</code> buffer in Preview mode and streams the response in, but the preview's…" },
+  { title: "The gutter Run play glyph is 20% bigger", detail: "(scale 1.014 → 1.217), making the clickable green run target easier to see and click." },
+  { title: "Windows installs failed to launch: \"Failed to find JVM in ...\\runtime directory\".", detail: "The AOT-cache build step (<code>scripts/aot_build.java</code>) strips the bundled runtime's <code>bin/</code> after training to reclaim footprint —…" },
+  { title: "AI Agent header buttons (History / New Session / Stop) took up too much width.", detail: "They're now icon-only (matching the Debug panel's icon-only toolbar buttons), with the translated label moved to a tooltip instead of being lost —…" },
+  { title: "CSV grid preview could stay open on a non-CSV file after a restart.", detail: "If the CSV/TSV grid tool window was left open in the previous session, it was force-reopened at startup (session restore) before the first real…" },
 ];

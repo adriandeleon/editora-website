@@ -445,6 +445,8 @@ export const commandGroups: CmdGroup[] = [
     title: "Application",
     commands: [
       { title: "Agent: New Session", id: "agent.newSession", desc: "Drop the current agent conversation and start a fresh session on the next prompt." },
+      { title: "Agent: Resume Session", id: "agent.resumeSession", desc: "Reopen a past agent chat session from history." },
+      { title: "Agent: Select Client", id: "agent.selectClient", desc: "Choose which ACP agent client (Claude Code, Gemini, Copilot, Codex, Qwen, OpenCode) to drive." },
       { title: "Agent: Select Mode", id: "agent.selectMode", desc: "Choose the ACP agent's active mode for this session (e.g. Plan Mode)." },
       { title: "Agent: Select Model", id: "agent.selectModel", desc: "Choose the ACP agent's active model for this session." },
       { title: "Agent: Stop", id: "agent.stop", desc: "Cancel the AI agent's in-flight turn." },
