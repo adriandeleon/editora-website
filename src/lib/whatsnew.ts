@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Maven support — a toolbar icon + actions popup that reads the active project's pom.xml, IntelliJ-style.", detail: "A new Maven toolbar button (hidden until a pom.xml is actually detected for the active file/project; refreshed on tab switch, window focus-regain,…" },
-  { title: "A dedicated \"AI\" group in Settings, with a master Enable/Disable AI switch (off by default).", detail: "The AI Agent and AI Actions pages — previously scattered under separate groups — now live together under a new AI sidebar group, alongside a new…" },
-  { title: "Clickable links in the Markdown preview.", detail: "A rendered link now shows a hand cursor and opens in the system default browser on click (the same <code>Consumer&lt;String&gt;</code> already used…" },
-  { title: "Loading indicator while an AI explanation streams into the Markdown preview.", detail: "<code>ai.explainSelection</code> opens a new <code>explanation.md</code> buffer in Preview mode and streams the response in, but the preview's…" },
-  { title: "The gutter Run play glyph is 20% bigger", detail: "(scale 1.014 → 1.217), making the clickable green run target easier to see and click." },
-  { title: "Windows installs failed to launch: \"Failed to find JVM in ...\\runtime directory\".", detail: "The AOT-cache build step (<code>scripts/aot_build.java</code>) strips the bundled runtime's <code>bin/</code> after training to reclaim footprint —…" },
-  { title: "AI Agent header buttons (History / New Session / Stop) took up too much width.", detail: "They're now icon-only (matching the Debug panel's icon-only toolbar buttons), with the translated label moved to a tooltip instead of being lost —…" },
-  { title: "CSV grid preview could stay open on a non-CSV file after a restart.", detail: "If the CSV/TSV grid tool window was left open in the previous session, it was force-reopened at startup (session restore) before the first real…" },
+  { title: "GitHub Actions workflow preview.", detail: "A workflow YAML (detected by content — a top-level <code>on:</code> + <code>jobs:</code> — so it works regardless of path and keeps YAML…" },
+  { title: "In-app typst-CLI installer.", detail: "*Settings → Languages &amp; Tools → Typst* gains an Install… button (and the <code>install.typstCli</code> command) that downloads the…" },
+  { title: "Typst editing conveniences.", detail: "For <code>.typ</code> files: snippets (a bundled <code>typst.json</code> — figure, table, grid, equation, import, outline, bibliography, …); Insert…" },
+  { title: "Typst language server (tinymist).", detail: "<code>.typ</code> files now get full LSP code intelligence via tinymist — completion, hover docs, go-to-definition, find-references, a precise…" },
+  { title: "Three more config-file previews — systemd units, SSH config, and Dockerfiles", detail: "each gets the same 3-mode Editor/Split/Preview view that decodes the file into plain English: \"<code>Restart=on-failure</code>\",…" },
+  { title: "fstab mount preview.", detail: "An <code>/etc/fstab</code> file (already syntax-highlighted) gains the same 3-mode Editor/Split/Preview view. The preview decodes each mount line…" },
+  { title: "Typst document preview.", detail: "Standalone <code>.typ</code> files get the same 3-mode preview (Editor / Split / Preview) as Markdown, rendered off-thread via the external…" },
+  { title: "Crontab schedule preview.", detail: "A <code>crontab</code> / <code>*.cron</code> / <code>cron.d/*</code> file (already syntax-highlighted) gains the same 3-mode Editor/Split/Preview…" },
 ];

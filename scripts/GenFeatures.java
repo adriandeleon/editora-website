@@ -169,7 +169,7 @@ Editora speaks the **Language Server Protocol**, so you get real language smarts
 - **Format Document**: reformat the whole file via the server (palette or right-click)
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
-Over 20 servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, and more. Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
+Over 20 servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Typst (tinymist), and more. Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
 
 **One-click install** covers all 21 servers: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
@@ -217,18 +217,19 @@ Define multiple requests separated by `###` and the feature reaches for IntelliJ
 
 The response shows status, headers, timing, and a pretty-printed, content-type-highlighted body in a tool window (`M-0`), with an in-session history, **Copy as cURL** / **Import cURL**, open-in-editor, and Save-response. Run one request or the whole file. Off by default. Enable it under Settings → HTTP Client.
 """),
-    new Feature("maven", RD, 4, false,
-        "Maven support",
-        "A toolbar icon + searchable actions popup that reads the active project's <code>pom.xml</code>, IntelliJ-style: lifecycle phases, profiles, and plugin goals, streamed to a Maven console.",
+    new Feature("build-tools", RD, 4, false,
+        "Build tools",
+        "Maven, npm, Cargo, Go, and Gradle each get a toolbar icon with an IntelliJ-style actions popup that streams the chosen task to a per-tool console.",
         """
-When a project has a `pom.xml`, a **Maven** toolbar button appears (hidden until one is actually detected). Click it for a searchable popup that reads the pom directly, offline and instant, with no `mvn help:effective-pom`:
+Each detected build tool gets its own toolbar icon (shown only when its marker file is present) that opens an IntelliJ-style actions popup, streaming the chosen task to a per-tool console.
 
-- The standard **lifecycle** phases (clean, validate, compile, test, package, verify, install, site, deploy).
-- The pom's declared **profiles**, checkable to compose with a run via `-P<id>` (and marking any `activeByDefault` one).
-- Each plugin's explicitly-bound **goals** as `<prefix>:<goal>` rows (e.g. `spotless:check`, `jacoco:report`), using Maven's own plugin-prefix naming; profile-scoped plugins nest under their profile once checked.
-- A **"Run custom goal(s)…"** freeform prompt for anything else.
+- **Maven** (`pom.xml`): lifecycle phases, the pom's declared profiles (checkable, composing via `-P`), and each plugin's bound goals, plus a *Run custom…* box. Prefers `./mvnw`, else `mvn`.
+- **npm** (`package.json`): one entry per `scripts` name (run as `<pm> run <name>`) plus `install` / `ci`. Uses the detected package manager (npm/yarn/pnpm/bun).
+- **Cargo** (`Cargo.toml`): the standard subcommands, any `[[bin]]` / `[[example]]` targets, and a `--release` toggle.
+- **Go** (`go.mod`): the standard subcommands over the whole module.
+- **Gradle** (`build.gradle[.kts]`): the common tasks plus *Load all tasks…*. Prefers `./gradlew`.
 
-Runs prefer the project's own `./mvnw` wrapper when present (falling back to `mvn` on PATH, or a Settings override) and stream output to a dedicated **Maven console** tool window. Parsing uses the JDK's own hardened XML parser, no third-party dependency. On by default (inert until a `pom.xml` is found); off in Simple UI mode and for remote files.
+Discovery parses the marker file directly (no shell-out, no new dependency), so it's instant and offline. **On by default**, each inert until its marker is found. See the [build tools guide](/docs/build-tools).
 """),
     new Feature("git", GD, 1, true,
         "Git integration",
@@ -282,6 +283,38 @@ Mermaid diagrams render inline. A fenced ` ```mermaid ` block in Markdown become
 Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), with **live linting** via `maid` that underlines errors with precise line/column messages as you type. Export a diagram to **SVG / PNG / PDF**.
 
 Off by default. Enable it under Settings → Mermaid (point it at your `mmdc`/`maid`, or use `npx`).
+"""),
+    new Feature("typst", DD, 5, false,
+        "Typst",
+        "A 3-mode preview for <code>.typ</code> files rendered by the Typst CLI, a tinymist language server, Markdown-style editing, and export to PDF / PNG / SVG.",
+        """
+Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered off-thread by the external **`typst`** CLI as a **multi-page** stack. The last good render stays on screen while you edit (no flicker), and a compile error keeps the pages visible under a small banner.
+
+- **Editing** has Markdown-style ergonomics: Enter continues a `-` / `+` / `N.` list, and selecting text pops a format bar (bold, emphasis, raw, link, bullet, heading) with matching right-click and palette actions. Bundled snippets cover figures, tables, and more.
+- **Code intelligence** comes from the **tinymist** language server.
+- **Export** to PDF (a native single file), PNG, or SVG (`typst.export`); print paginates the pages.
+
+**On by default**, self-gating on detection, so it's inert until `typst` is found. Install it with your package manager (`brew install typst`, `cargo install typst-cli`) or the in-app **Install…** button. See the [Typst guide](/docs/typst).
+"""),
+    new Feature("diagrams", DD, 6, false,
+        "Diagrams as code",
+        "A 3-mode preview for Graphviz DOT (<code>.dot</code>/<code>.gv</code>) and PlantUML (<code>.puml</code>) files via the <code>dot</code> / <code>plantuml</code> CLIs, with export to SVG / PNG / PDF.",
+        """
+Standalone `.dot`/`.gv` (Graphviz) and `.puml`/`.plantuml` files get the same 3-mode preview as Markdown and Mermaid, rendered off-thread via the external **`dot`** and **`plantuml`** CLIs. Both rasterize to PNG natively, so there's no headless browser, and results are cached by source hash. Zoom resizes the image, and you can export a diagram to **SVG / PNG / PDF** (`diagram.export`).
+
+**On by default**, self-gating on detection, so it's inert until the tool is found (install via your package manager, e.g. `brew install graphviz plantuml`). Tool paths live under Settings → Languages & Tools → Diagrams.
+"""),
+    new Feature("previews", DD, 7, false,
+        "Smart file previews",
+        "Open a data or config file and get a rendered or plain-English preview: JSON/YAML/TOML/XML trees, OpenAPI docs, and decoded systemd, ssh, Dockerfile, fstab, crontab, and GitHub Actions files.",
+        """
+Many file types get the same 3-mode preview as Markdown, turning raw config and data into something readable.
+
+- **Structured data**: `.json` / `.yaml` / `.toml` render a collapsible, type-colored **data tree**, and `.xml` renders a faithful DOM tree. A JSON/YAML file recognized as an **OpenAPI 3 / Swagger 2** spec instead renders as browsable **API docs** (endpoints, method badges, params, responses, schemas), with a tree ⇄ docs toggle.
+- **Config files, decoded to plain English**: **crontab** (`30 2 * * 1-5` becomes "At 02:30, Monday through Friday", with next fire times), **fstab** mounts, **systemd** units (with `OnCalendar=` next triggers), **SSH config** (a one-line connection summary per host), **Dockerfile** (a per-stage digest), and **GitHub Actions** workflows (triggers and jobs). Malformed lines are flagged.
+- **Viewers**: `.pdf` files open in a read-only page viewer, `.svg` files stay editable XML but gain a live rendered-image preview, and binaries open as a hex dump.
+
+All on by default, each toggled under Settings → Editor. See the [previews guide](/docs/previews).
 """),
     new Feature("export-pdf-print", DD, 3, false,
         "Export & print",

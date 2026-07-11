@@ -54,7 +54,7 @@ Around twenty servers are supported:
   (`kotlin-language-server`), **Lua** (`lua-language-server`)
 - **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
-  (`terraform-ls`), **TOML** (`taplo`)
+  (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
 
 Each server has its own enable checkbox and a live found/not-found status on the
 **Settings → LSP** page, plus a per-server command field with a Browse button.

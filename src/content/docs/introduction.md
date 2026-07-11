@@ -37,6 +37,10 @@ Editing and code:
   scaffold new files.
 - **[Markdown, diagrams & preview](/docs/markdown)**: the live preview, the
   format bar, Mermaid, HTML preview, and export to PDF.
+- **[Typst](/docs/typst)**: a live preview and export for `.typ` files.
+- **[Diagrams as code](/docs/diagrams)**: DOT and PlantUML preview and export.
+- **[Smart file previews](/docs/previews)**: JSON/YAML/TOML/XML trees, OpenAPI
+  docs, and decoded config files.
 - **[Languages & highlighting](/docs/languages)**: grammars, supported
   languages, and autocomplete.
 - **[Language servers (LSP)](/docs/lsp)**: definitions, references, diagnostics,
@@ -48,9 +52,8 @@ Running, tools, and version control:
 
 - **[Running & debugging](/docs/run-debug)**: run files and debug Java, Python,
   and JavaScript.
+- **[Build tools](/docs/build-tools)**: Maven, npm, Cargo, Go, and Gradle.
 - **[HTTP client](/docs/http-client)**: send requests from `.http` files.
-- **[Maven support](/docs/maven)**: run lifecycle phases, profiles, and plugin
-  goals from a toolbar popup.
 - **[Git](/docs/git)**: the built-in Git integration.
 - **[Diff & merge](/docs/diff-merge)**: the diff viewer and merge resolver.
 

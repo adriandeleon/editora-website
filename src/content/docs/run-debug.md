@@ -61,5 +61,5 @@ fetch each one:
 The Settings → Debugging page shows a live found/not-found status for each.
 
 For sending HTTP requests from `.http` files, see the
-[HTTP client](/docs/http-client). For running Maven lifecycle phases and plugin
-goals, see [Maven support](/docs/maven).
+[HTTP client](/docs/http-client). For Maven, npm, Cargo, Go, and Gradle tasks,
+see [Build tools](/docs/build-tools).

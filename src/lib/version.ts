@@ -2,4 +2,4 @@
 // Source: Editora's pom.xml <version>. Committed so the build needs no
 // access to the Editora repo (it isn't checked out in CI).
 
-export const version = "0.9.2";
+export const version = "0.9.3";

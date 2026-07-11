@@ -41,8 +41,10 @@ bundled**.
   save.
 - Each action that needs permission pops a dialog.
 
-Commands: `tool.agent` (the tool window), `agent.newSession`, `agent.selectMode`,
-`agent.selectModel`, `agent.stop`.
+Commands: `tool.agent` (the tool window), `agent.newSession`,
+`agent.resumeSession`, `agent.selectClient`, `agent.selectMode`,
+`agent.selectModel`, `agent.stop`. AI is gated behind a master **Enable AI**
+switch (off by default) in **Settings → AI**.
 
 ## Providers
 
