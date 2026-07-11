@@ -291,6 +291,7 @@ const platforms = [
         var btn = document.getElementById("dl-primary");
         if (!btn) return;
         var ua = navigator.userAgent;
+        var plat = navigator.platform || "";
         var os = "Linux",
           exts = [".deb", ".appimage", ".rpm", ".tar.gz"];
         if (/Mac/i.test(ua)) {
@@ -300,6 +301,11 @@ const platforms = [
           os = "Windows";
           exts = [".msi", ".exe"];
         }
+        // Detect CPU architecture; default to x64 (the common desktop case),
+        // only prefer arm64 when the browser clearly reports an ARM machine.
+        var archPrefs = /aarch64|arm64|armv8|\barm\b/i.test(ua + " " + plat)
+          ? ["arm64", "x64"]
+          : ["x64", "arm64"];
         btn.textContent = "Download for " + os;
         // Try to deep-link the matching asset from the latest release.
         fetch(api + "/releases/latest")
@@ -309,10 +315,23 @@ const platforms = [
           .then(function (rel) {
             if (!rel || !rel.assets) return;
             var pick = null;
+            // Prefer an asset matching both the OS extension and the CPU arch
+            // (asset names end with e.g. "-linux-x64.deb"); fall back to any
+            // asset with the extension if no arch-specific match exists.
             for (var e = 0; e < exts.length && !pick; e++) {
-              for (var i = 0; i < rel.assets.length; i++) {
-                if (rel.assets[i].name.toLowerCase().endsWith(exts[e])) {
-                  pick = rel.assets[i];
+              for (var a = 0; a < archPrefs.length && !pick; a++) {
+                for (var i = 0; i < rel.assets.length; i++) {
+                  if (rel.assets[i].name.toLowerCase().endsWith(archPrefs[a] + exts[e])) {
+                    pick = rel.assets[i];
+                    break;
+                  }
+                }
+              }
+            }
+            for (var e2 = 0; e2 < exts.length && !pick; e2++) {
+              for (var j = 0; j < rel.assets.length; j++) {
+                if (rel.assets[j].name.toLowerCase().endsWith(exts[e2])) {
+                  pick = rel.assets[j];
                   break;
                 }
               }
