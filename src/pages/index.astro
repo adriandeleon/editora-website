@@ -301,49 +301,82 @@ const platforms = [
           os = "Windows";
           exts = [".msi", ".exe"];
         }
-        // Detect CPU architecture; default to x64 (the common desktop case),
-        // only prefer arm64 when the browser clearly reports an ARM machine.
-        var archPrefs = /aarch64|arm64|armv8|\barm\b/i.test(ua + " " + plat)
-          ? ["arm64", "x64"]
-          : ["x64", "arm64"];
         btn.textContent = "Download for " + os;
-        // Try to deep-link the matching asset from the latest release.
-        fetch(api + "/releases/latest")
-          .then(function (r) {
-            return r.ok ? r.json() : null;
-          })
-          .then(function (rel) {
-            if (!rel || !rel.assets) return;
-            var pick = null;
-            // Prefer an asset matching both the OS extension and the CPU arch
-            // (asset names end with e.g. "-linux-x64.deb"); fall back to any
-            // asset with the extension if no arch-specific match exists.
-            for (var e = 0; e < exts.length && !pick; e++) {
-              for (var a = 0; a < archPrefs.length && !pick; a++) {
-                for (var i = 0; i < rel.assets.length; i++) {
-                  if (rel.assets[i].name.toLowerCase().endsWith(archPrefs[a] + exts[e])) {
-                    pick = rel.assets[i];
+
+        // Detect CPU arch. Browsers report "MacIntel"/"Intel" even on Apple
+        // Silicon, so beyond the UA/platform string (which catches Linux/Windows
+        // ARM) use userAgentData.architecture (Chromium) and a WebGL "Apple GPU"
+        // renderer heuristic (works in Safari) to catch M-series Macs.
+        function webglIsApple() {
+          try {
+            var c = document.createElement("canvas");
+            var gl = c.getContext("webgl") || c.getContext("experimental-webgl");
+            if (!gl) return false;
+            var dbg = gl.getExtension("WEBGL_debug_renderer_info");
+            var r = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "";
+            return /apple/i.test(r) && !/intel|amd|radeon|nvidia/i.test(r);
+          } catch (e) {
+            return false;
+          }
+        }
+        function detectArm(cb) {
+          if (/aarch64|arm64|armv8|\barm\b/i.test(ua + " " + plat)) return cb(true);
+          if (os === "Windows") return cb(false);
+          var uad = navigator.userAgentData;
+          if (uad && uad.getHighEntropyValues) {
+            uad
+              .getHighEntropyValues(["architecture"])
+              .then(function (v) {
+                cb(/arm|aarch/i.test(v.architecture || "") || webglIsApple());
+              })
+              .catch(function () {
+                cb(webglIsApple());
+              });
+            return;
+          }
+          cb(webglIsApple());
+        }
+
+        detectArm(function (isArm) {
+          var archPrefs = isArm ? ["arm64", "x64"] : ["x64", "arm64"];
+          // Try to deep-link the matching asset from the latest release.
+          fetch(api + "/releases/latest")
+            .then(function (r) {
+              return r.ok ? r.json() : null;
+            })
+            .then(function (rel) {
+              if (!rel || !rel.assets) return;
+              var pick = null;
+              // Prefer an asset matching both the OS extension and the CPU arch
+              // (asset names end with e.g. "-linux-x64.deb"); fall back to any
+              // asset with the extension if no arch-specific match exists.
+              for (var e = 0; e < exts.length && !pick; e++) {
+                for (var a = 0; a < archPrefs.length && !pick; a++) {
+                  for (var i = 0; i < rel.assets.length; i++) {
+                    if (rel.assets[i].name.toLowerCase().endsWith(archPrefs[a] + exts[e])) {
+                      pick = rel.assets[i];
+                      break;
+                    }
+                  }
+                }
+              }
+              for (var e2 = 0; e2 < exts.length && !pick; e2++) {
+                for (var j = 0; j < rel.assets.length; j++) {
+                  if (rel.assets[j].name.toLowerCase().endsWith(exts[e2])) {
+                    pick = rel.assets[j];
                     break;
                   }
                 }
               }
-            }
-            for (var e2 = 0; e2 < exts.length && !pick; e2++) {
-              for (var j = 0; j < rel.assets.length; j++) {
-                if (rel.assets[j].name.toLowerCase().endsWith(exts[e2])) {
-                  pick = rel.assets[j];
-                  break;
-                }
+              if (pick) {
+                btn.href = pick.browser_download_url;
+                var sub = document.getElementById("dl-sub");
+                if (sub && rel.tag_name)
+                  btn.textContent = "Download for " + os + " (" + rel.tag_name + ")";
               }
-            }
-            if (pick) {
-              btn.href = pick.browser_download_url;
-              var sub = document.getElementById("dl-sub");
-              if (sub && rel.tag_name)
-                btn.textContent = "Download for " + os + " (" + rel.tag_name + ")";
-            }
-          })
-          .catch(function () {});
+            })
+            .catch(function () {});
+        });
       })();
 
       // --- GitHub stars ---
