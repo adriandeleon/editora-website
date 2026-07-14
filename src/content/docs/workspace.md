@@ -19,9 +19,11 @@ Settings.
 
 The **Project** tool window shows the folder tree with keyboard navigation, a
 filter that runs a bounded project-wide filename search, per-file-type icons, and
-right-click actions (new file, new from template, rename). Bookmarks and notes
-are scoped per project. Closing a project returns you to the global, no-project
-session.
+right-click actions: new file, **new folder**, new from template, rename, reveal,
+open terminal, local history, and Git stage/revert. The **project root has its
+own menu** too (with rename omitted so you can't move the whole project).
+Bookmarks and notes are scoped per project. Closing a project returns you to the
+global, no-project session.
 
 With no project open, the Project tool window doesn't sit empty: it becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
@@ -61,6 +63,13 @@ recent files, and version and license info. Reopen it with `view.welcome`.
 - **Zen mode** hides the chrome for distraction-free writing, with a small
   floating "Z" to exit. Toggle it from the palette or start with the `--zen`
   flag.
+- **Expert mode** is a lighter focus mode than Zen: it strips only the window
+  chrome (toolbar, tab bar, breadcrumb, tool stripes, whitespace guides) but
+  **keeps the full editor view**, line numbers, status bar, minimap, column
+  ruler, and current-line highlight, so you stay oriented. Toggle it from the
+  palette (`view.toggleExpert`), `C-c C-e`, Settings → Interface → Modes, the
+  floating "E" button, or the `--expert` flag. Expert and Zen are mutually
+  exclusive, and like Zen it's per-window and never changes your saved settings.
 - **Simple UI mode** strips the editor to the essentials: it hides the extra
   toolbar groups, the tool-window stripe, the breadcrumb, the gutter, and the
   minimap, and turns off the heavier features (LSP, debugging, Git, multiple

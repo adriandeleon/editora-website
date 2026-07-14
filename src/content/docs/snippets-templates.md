@@ -51,13 +51,12 @@ plus a `${cursor}` marker for the final caret. Bundled templates cover a Java
 class, an HTML page, an HTML bundle (multiple files), a Markdown doc, and a
 Python script.
 
-There are two flavors:
-
-- **Untitled** (`template.new`): creates an unsaved buffer with tab stops live,
-  so you fill the placeholders before saving.
-- **Into a folder** (`template.newInFolder`, also the Project tree's
-  *New From Template…*): writes the file or files to disk, refusing to overwrite,
-  and opens the primary one.
+The wizard has an optional **Folder** field (with a Browse button): leave it
+blank to create an unsaved buffer (with tab stops live, so you fill the
+placeholders before saving), or pick a folder to write the file or files to disk
+(refusing to overwrite) and open the primary one. Invoking *New From Template…*
+from a project folder's right-click menu pre-fills that folder. The two flows are
+also the `template.new` and `template.newInFolder` commands.
 
 ### Your own templates
 

@@ -20,6 +20,7 @@ the jar.
 | `--project <dir>` | Open this folder as a project (if projects are enabled) |
 | `--new-file[=name]` | Open a new untitled buffer (optionally named) |
 | `--zen` | Start in Zen mode (session-only) |
+| `--expert` | Start in Expert mode, a lighter focus mode (session-only) |
 | `--simple` | Start in Simple UI mode (session-only) |
 | `--single-window[=project]` | Open just one window, not the whole saved set (session-only) |
 

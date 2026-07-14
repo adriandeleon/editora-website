@@ -155,6 +155,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "View: Toggle Autocomplete — Snippets", id: "view.toggleAutocompleteSnippets", desc: "Turn snippet autocomplete on or off." },
       { title: "View: Toggle File Breadcrumb", id: "view.toggleBreadcrumb", keys: "C-c p", bindings: { "emacs": "C-c p" }, desc: "Show or hide the file breadcrumb bar." },
       { title: "View: Toggle 80-Column Ruler", id: "view.toggleColumnRuler", desc: "Show or hide the 80-column ruler." },
+      { title: "View: Toggle Expert Mode", id: "view.toggleExpert", keys: "C-c C-e", bindings: { "emacs": "C-c C-e" }, desc: "Toggle Expert mode — like Zen, but keeps the editor view (line numbers, ruler, current-line highlight, minimap) and the status bar." },
       { title: "Toggle HTML Live Preview", id: "view.toggleHtmlPreview", desc: "Turn the HTML Live Preview feature on or off." },
       { title: "Toggle Large-File Mode (active file)", id: "view.toggleLargeFileMode", desc: "Turn the minimap and language server off (or back on) for the current file to keep a huge file responsive." },
       { title: "View: Toggle Current Line Highlight", id: "view.toggleLineHighlight", desc: "Highlight the current line, or not." },

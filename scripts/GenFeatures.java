@@ -219,9 +219,9 @@ The response shows status, headers, timing, and a pretty-printed, content-type-h
 """),
     new Feature("build-tools", RD, 4, false,
         "Build tools",
-        "Maven, npm, Cargo, Go, and Gradle each get a toolbar icon with an IntelliJ-style actions popup that streams the chosen task to a per-tool console.",
+        "Maven, npm, Cargo, Go, and Gradle each get an IntelliJ-style tasks tool window and a streaming console.",
         """
-Each detected build tool gets its own toolbar icon (shown only when its marker file is present) that opens an IntelliJ-style actions popup, streaming the chosen task to a per-tool console.
+Each detected build tool gets its own **tasks tool window** (its stripe appears when the tool's marker file is found): a browsable tree of the tool's goals, scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…). Double-click or Enter runs a task, and the output streams to a separate per-tool console window. A searchable actions popup is also available from the command palette (*Maven: Show Actions*, and so on).
 
 - **Maven** (`pom.xml`): lifecycle phases, the pom's declared profiles (checkable, composing via `-P`), and each plugin's bound goals, plus a *Run custom…* box. Prefers `./mvnw`, else `mvn`.
 - **npm** (`package.json`): one entry per `scripts` name (run as `<pm> run <name>`) plus `install` / `ci`. Uses the detected package manager (npm/yarn/pnpm/bun).

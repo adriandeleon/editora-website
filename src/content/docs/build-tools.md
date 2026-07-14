@@ -5,10 +5,14 @@ category: Run & debug
 order: 3
 ---
 
-Each detected build tool gets its own **toolbar icon** (shown only when its
-marker file is present) that opens an IntelliJ-style **actions popup**, streaming
-the chosen task to a per-tool console. It's **on by default**, and each tool is
-inert until its marker file is found.
+Each detected build tool gets its own **tasks tool window** (its stripe appears
+when the tool's marker file is present): a browsable tree of the tool's goals,
+scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…).
+Double-click or Enter runs a task, and the output streams to a separate per-tool
+console window. A searchable actions popup is also available from the palette
+(`<tool>.showActions`, e.g. *Maven: Show Actions*). `tool.<tool>` opens the tasks
+window; `tool.<tool>Output` opens the console. It's **on by default**, and each
+tool is inert until its marker file is found.
 
 | Tool | Marker | Actions |
 | --- | --- | --- |
