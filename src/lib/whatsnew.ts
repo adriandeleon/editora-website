@@ -4,6 +4,7 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
+  { title: "The Project tool window now works like a mini file manager.", detail: "Multi-select files/folders with Ctrl/Cmd- and Shift-click, then drag them onto a folder to move them (drop onto any folder or the project root; a…" },
   { title: "Expert mode — a lighter focus mode than Zen that strips only the window chrome and keeps the whole editor view.", detail: "A new per-window distraction-free overlay that hides the surrounding chrome like Zen — toolbar, tab bar, breadcrumb, tool stripes, and the whitespace…" },
   { title: "File Templates can write into a chosen folder.", detail: "The template creation wizard gained an optional a folder to write the file(s) into. Invoking \"New From Template…\" from a project folder's right-click…" },
   { title: "Project tool window: create folders and act on the root.", detail: "Folder right-click menus gained a Template / Reveal / Open Terminal / Local History / Git stage·revert) — with Rename omitted on the root so it can't…" },
@@ -11,5 +12,4 @@ export const whatsNew: NewsItem[] = [
   { title: "The editor install banner for a missing language server now says \"*X* language server…", detail: "" },
   { title: "The Cargo, Go, and Gradle build-tool tool-window icons showed blank.", detail: "Their SVG logos (vendored from Simple Icons) used SVGO's compact *packed elliptical-arc flags* (e.g. <code>a1 1 0 000-.5</code>), which JavaFX's…" },
   { title: "Installing the Typst language server (tinymist) from the banner/Settings now actually activates it.", detail: "The extracted <code>tinymist</code> binary's path was never written to <code>Settings.typstLspCommand</code>, so detection kept failing on the PATH…" },
-  { title: "GitHub Actions workflow preview.", detail: "A workflow YAML (detected by content — a top-level <code>on:</code> + <code>jobs:</code> — so it works regardless of path and keeps YAML…" },
 ];

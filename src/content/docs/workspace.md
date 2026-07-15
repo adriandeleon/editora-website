@@ -25,6 +25,12 @@ own menu** too (with rename omitted so you can't move the whole project).
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
+It also works like a **mini file manager**: multi-select files and folders with
+Ctrl/Cmd- and Shift-click, then **drag them onto a folder** (or the root) to move
+them, with open tabs following to the new path; a name conflict is skipped rather
+than overwritten, and a folder can't be moved into its own subtree. **Delete**
+acts on the whole selection at once.
+
 With no project open, the Project tool window doesn't sit empty: it becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
 follows the focused tab as you switch files.

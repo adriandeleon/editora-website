@@ -17,10 +17,11 @@ isn't installed, the integration stays inert.
   repo it reads "No VCS" and offers to clone.
 - **Gutter change bars** mark added, modified, and deleted lines against HEAD.
   Hover a bar for that hunk's diff.
-- The **Project tree colors files by Git status**, IntelliJ-style: added (green),
-  modified (blue), deleted (gray), renamed (violet), untracked (olive), with
-  changed folders tinted. It updates as you edit, stage, commit, or switch
-  branches.
+- The **Project tree marks files by Git status**, IntelliJ-style: a single-letter
+  prefix (M / A / D / R / U) and a color, added (green), modified (blue), deleted
+  (gray), renamed (violet), untracked (olive), with changed folders tinted. The
+  Commit window's rows use the same letters and colors, so the two read
+  identically. It updates as you edit, stage, commit, or switch branches.
 - The **Commit** tool window (`M-4`) groups staged, changed, and untracked files
   with stage, unstage, discard, and a commit box (Ctrl/Cmd+Enter to commit).
 - A **Git Log** tool window (`M-g h`), the active file's history
