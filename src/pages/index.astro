@@ -232,14 +232,28 @@ const platforms = [
         }
       </div>
       <div class="cta">
-        <a
-          id="dl-primary"
-          class="btn btn-primary"
-          href={`${repo}/releases/latest`}
-          data-repo={repo}
-        >
-          Download
-        </a>
+        <span class="dl-split">
+          <a
+            id="dl-primary"
+            class="btn btn-primary dl-main"
+            href={`${repo}/releases/latest`}
+            data-repo={repo}
+          >
+            Download
+          </a>
+          <button
+            id="dl-toggle"
+            class="btn btn-primary dl-caret"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Show downloads for all platforms"
+            hidden
+          >
+            <span aria-hidden="true">▾</span>
+          </button>
+          <div id="dl-menu" class="dl-menu" role="menu" hidden></div>
+        </span>
         <a class="btn btn-ghost" href={`${repo}/releases`}>All releases</a>
       </div>
       <p id="dl-sub" class="note">
@@ -374,9 +388,122 @@ const platforms = [
                 if (sub && rel.tag_name)
                   btn.textContent = "Download for " + os + " (" + rel.tag_name + ")";
               }
+              buildMenu(rel);
             })
             .catch(function () {});
         });
+
+        // --- Every build, one click away ---
+        // Asset names look like "Editora-0.9.5-macos-arm64.dmg"; anything that
+        // doesn't (checksums.txt) is skipped.
+        function assetInfo(name) {
+          var m = name.match(/-(macos|windows|linux)-(arm64|aarch64|x64|x86_64)\.(.+)$/i);
+          if (!m) return null;
+          var p = m[1].toLowerCase();
+          var arm = /arm|aarch/i.test(m[2]);
+          var label =
+            p === "macos"
+              ? arm
+                ? "macOS (Apple Silicon)"
+                : "macOS (Intel)"
+              : p === "windows"
+                ? arm
+                  ? "Windows (ARM64)"
+                  : "Windows (x64)"
+                : arm
+                  ? "Linux (ARM64)"
+                  : "Linux (x64)";
+          return {
+            plat: p,
+            arm: arm,
+            ext: m[3],
+            label: label,
+            meta: "." + m[3] + " · " + (arm ? "aarch64" : "x86_64"),
+          };
+        }
+
+        function rank(map, key, dflt) {
+          var v = map[String(key).toLowerCase()];
+          return v === undefined ? dflt : v;
+        }
+
+        function buildMenu(rel) {
+          var menu = document.getElementById("dl-menu");
+          var toggle = document.getElementById("dl-toggle");
+          if (!menu || !toggle || !rel || !rel.assets) return;
+
+          var items = [];
+          for (var i = 0; i < rel.assets.length; i++) {
+            var info = assetInfo(rel.assets[i].name);
+            if (!info) continue;
+            info.url = rel.assets[i].browser_download_url;
+            items.push(info);
+          }
+          if (!items.length) return;
+
+          // macOS, Windows, Linux; native installers before portable jars.
+          var platRank = { macos: 0, windows: 1, linux: 2 };
+          var extRank = { dmg: 0, msi: 0, exe: 0, deb: 1, rpm: 2, appimage: 3, "tar.gz": 4, jar: 5 };
+          items.sort(function (a, b) {
+            return (
+              rank(platRank, a.plat, 9) - rank(platRank, b.plat, 9) ||
+              // Apple Silicon first on macOS, x86 first elsewhere.
+              (a.plat === "macos" ? (b.arm ? 1 : 0) - (a.arm ? 1 : 0) : (a.arm ? 1 : 0) - (b.arm ? 1 : 0)) ||
+              rank(extRank, a.ext, 9) - rank(extRank, b.ext, 9) ||
+              a.ext.localeCompare(b.ext)
+            );
+          });
+
+          menu.textContent = "";
+          items.forEach(function (it) {
+            var a = document.createElement("a");
+            a.className = "dl-item";
+            a.href = it.url;
+            a.setAttribute("role", "menuitem");
+            var main = document.createElement("span");
+            main.className = "dl-item-main";
+            var name = document.createElement("span");
+            name.className = "dl-item-name";
+            name.textContent = it.label;
+            var meta = document.createElement("span");
+            meta.className = "dl-item-meta";
+            meta.textContent = it.meta;
+            main.appendChild(name);
+            main.appendChild(meta);
+            var arrow = document.createElement("span");
+            arrow.className = "dl-item-arrow";
+            arrow.setAttribute("aria-hidden", "true");
+            arrow.textContent = "→";
+            a.appendChild(main);
+            a.appendChild(arrow);
+            a.addEventListener("click", close);
+            menu.appendChild(a);
+          });
+          toggle.hidden = false;
+
+          function close() {
+            menu.hidden = true;
+            toggle.setAttribute("aria-expanded", "false");
+          }
+          toggle.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (menu.hidden) {
+              menu.hidden = false;
+              toggle.setAttribute("aria-expanded", "true");
+            } else {
+              close();
+            }
+          });
+          document.addEventListener("click", function (e) {
+            if (!menu.hidden && !menu.contains(e.target) && !toggle.contains(e.target)) close();
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && !menu.hidden) {
+              close();
+              toggle.focus();
+            }
+          });
+        }
       })();
 
       // --- GitHub stars ---
@@ -663,6 +790,88 @@ const platforms = [
     border-color: var(--border);
     color: var(--text);
     background: var(--bg-soft);
+  }
+
+  /* Split download button: OS-detected primary + a caret opening every build. */
+  .dl-split {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .dl-split .dl-main {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .dl-split .dl-caret {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 1px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+    padding: 0.7rem 1rem;
+    font: inherit;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+
+  .dl-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    z-index: 30;
+    min-width: 21rem;
+    /* Every build is one row, so cap the height rather than run off-screen. */
+    max-height: min(60vh, 30rem);
+    overflow-y: auto;
+    padding: 0.4rem;
+    text-align: left;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3);
+  }
+
+  /* The rows are built at runtime, so they carry no Astro scope attribute:
+     these have to be :global() under the scoped menu. */
+  .dl-menu :global(.dl-item) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 9px;
+    color: var(--text);
+  }
+
+  .dl-menu :global(.dl-item:hover),
+  .dl-menu :global(.dl-item:focus-visible) {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    text-decoration: none;
+  }
+
+  .dl-menu :global(.dl-item-main) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .dl-menu :global(.dl-item-name) {
+    font-weight: 600;
+  }
+
+  .dl-menu :global(.dl-item-meta) {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .dl-menu :global(.dl-item-arrow) {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  @media (max-width: 480px) {
+    .dl-menu {
+      min-width: min(21rem, calc(100vw - 2.5rem));
+    }
   }
 
   main {
