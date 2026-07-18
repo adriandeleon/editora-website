@@ -56,6 +56,14 @@ Pick a provider in Settings:
   **Ollama**, or any local OpenAI-compatible server, with no API key and a
   configurable endpoint.
 
+Each provider has its **own** stored key: the Settings key field shows only the
+selected provider's, and a key set for one provider is never sent to another's
+endpoint. The `ANTHROPIC_API_KEY` fallback applies only to the Anthropic
+provider. And Editora won't attach a key to a plain-`http://` endpoint on another
+machine, refusing before it connects and asking you to use `https` or a loopback
+address, so your key never crosses the network in the clear. Plain-http on
+`127.0.0.1` (the usual local-inference path) is unaffected.
+
 ## Related
 
 For letting an external agent drive Editora (rather than Editora calling a

@@ -42,7 +42,15 @@ passphrase is still prompted each time and is never stored.
 Three methods, tried in this order when set to default: your default `~/.ssh`
 keys, then a specific key file, then a password. Secrets are never stored, only
 the connection details (host, user, last path, and which method to use). The
-secret you type is wiped from memory after the connection is made.
+secret you type is wiped from memory as soon as the handshake completes.
+
+## Host-key verification
+
+Editora verifies the server's host key against `~/.ssh/known_hosts`, the same
+file `ssh` uses, so a host you've already accepted at the terminal connects with
+no prompt. A host you've never connected to shows its fingerprint and asks you
+first. A host whose key has **changed** is refused outright, without any button to
+wave it through, since a changed key is how an impersonation attempt looks.
 
 ## What works remotely, and what doesn't
 

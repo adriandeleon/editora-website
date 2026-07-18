@@ -8,11 +8,13 @@ order: 3
 Each detected build tool gets its own **tasks tool window** (its stripe appears
 when the tool's marker file is present): a browsable tree of the tool's goals,
 scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…).
-Double-click or Enter runs a task, and the output streams to a separate per-tool
-console window. A searchable actions popup is also available from the palette
-(`<tool>.showActions`, e.g. *Maven: Show Actions*). `tool.<tool>` opens the tasks
-window; `tool.<tool>Output` opens the console. It's **on by default**, and each
-tool is inert until its marker file is found.
+Double-click or Enter runs a task, and the output streams to the shared **Build
+Output** window, which has **one tab per tool** (created on first run and
+selected while it runs), so two builds running at once stay in separate tabs
+instead of interleaving. A searchable actions popup is also available from the
+palette (`<tool>.showActions`, e.g. *Maven: Show Actions*). `tool.<tool>` opens
+the tasks window; `tool.buildOutput` opens the Build Output console. It's **on by
+default**, and each tool is inert until its marker file is found.
 
 | Tool | Marker | Actions |
 | --- | --- | --- |

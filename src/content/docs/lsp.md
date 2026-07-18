@@ -27,7 +27,8 @@ definition. **Find references** lists results in a browsable **References** tool
 window (`tool.references`), grouped by file with a line and preview. **Go to
 Symbol in Workspace** opens a live search over every symbol in the project.
 **Format Document** reformats the whole file through the server when it
-advertises formatting (undoable; palette or the right-click menu). Diagnostics
+advertises formatting (undoable; palette or the right-click menu), including
+`.json`, `.css`, and `.html`. Diagnostics
 appear as inline squiggles, in the **Problems** tool window (`M-8`), and as marks
 on the minimap and scrollbar. Completion is merged into the
 [autocomplete](/docs/languages#autocomplete) popup. The status bar shows an

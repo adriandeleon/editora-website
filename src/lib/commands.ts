@@ -90,7 +90,7 @@ export const commandGroups: CmdGroup[] = [
     title: "Navigation",
     commands: [
       { title: "Go: AceJump", id: "nav.aceJump", keys: "M-g j", bindings: { "emacs": "M-g j" }, desc: "Jump the caret to any visible spot by typing a label." },
-      { title: "Go: AceJump Line", id: "nav.aceJumpLine", keys: "M-g L", bindings: { "emacs": "M-g L" }, desc: "Jump the caret to any visible line by typing a label." },
+      { title: "Go: AceJump Line", id: "nav.aceJumpLine", keys: "M-g S-l", bindings: { "emacs": "M-g S-l" }, desc: "Jump the caret to any visible line by typing a label." },
       { title: "Go: Back", id: "nav.back", desc: "Jump back to the previous cursor location in the navigation history." },
       { title: "Go: Backward Expression", id: "nav.backwardSexp", keys: "C-M-b", bindings: { "emacs": "C-M-b" }, desc: "Move over the balanced expression before the caret." },
       { title: "Go: Beginning of Defun", id: "nav.beginningOfDefun", keys: "C-M-a", bindings: { "emacs": "C-M-a" }, desc: "Move to the start of the current top-level definition." },
@@ -242,7 +242,7 @@ export const commandGroups: CmdGroup[] = [
   {
     title: "Code intelligence (LSP)",
     commands: [
-      { title: "Find References", id: "lsp.findReferences", keys: "M-?", bindings: { "emacs": "M-?", "vscode": "S-f12", "intellij": "M-f7" }, desc: "List all references to the symbol at the caret." },
+      { title: "Find References", id: "lsp.findReferences", keys: "M-S-/", bindings: { "emacs": "M-S-/", "vscode": "S-f12", "intellij": "M-f7" }, desc: "List all references to the symbol at the caret." },
       { title: "Format Document", id: "lsp.formatDocument", desc: "Reformat the whole file with its language server." },
       { title: "Go to Definition", id: "lsp.gotoDefinition", keys: "M-.", bindings: { "emacs": "M-.", "sublime": "f12", "vscode": "f12", "intellij": "C-b" }, desc: "Jump to the definition of the symbol at the caret." },
       { title: "Go to Symbol in Workspace", id: "lsp.gotoSymbol", desc: "Search all symbols in the project by name and jump to one (workspace/symbol)." },
@@ -413,6 +413,7 @@ export const commandGroups: CmdGroup[] = [
     commands: [
       { title: "AI Agent", id: "tool.agent", desc: "Toggle the AI Agent chat tool window." },
       { title: "Tool Window: Bookmarks", id: "tool.bookmarks", keys: "M-2", bindings: { "emacs": "M-2" }, desc: "Toggle the Bookmarks tool window." },
+      { title: "Toggle Build Output Window", id: "tool.buildOutput", desc: "Toggle the shared Build Output console (Maven/npm/Cargo/Go/Gradle)." },
       { title: "Tool Window: Commit", id: "tool.commit", keys: "M-4", bindings: { "emacs": "M-4", "intellij": "M-0" }, desc: "Toggle the Git Commit tool window." },
       { title: "Tool Window: Debug", id: "tool.debug", keys: "M-g d", bindings: { "emacs": "M-g d", "vscode": "C-S-d", "intellij": "M-5" }, desc: "Toggle the Debug tool window." },
       { title: "Tool Window: External Tools Output", id: "tool.externalTools", desc: "Show or hide the External Tools output console." },
@@ -468,6 +469,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Editor: Set PDF Page Size…", id: "editor.setPdfPageSize", desc: "Choose the page size for PDF export (Letter or A4)." },
       { title: "EditorConfig: Open Active File", id: "editorConfig.openActive", desc: "Open the .editorconfig file that governs the current file." },
       { title: "About Editora", id: "help.about", desc: "Show version, license, and links for Editora." },
+      { title: "Check for Updates", id: "help.checkForUpdates", desc: "Check GitHub now for a newer version of Editora." },
       { title: "Local History: Put Label…", id: "history.putLabel", desc: "Record a named snapshot of the current file in Local History." },
       { title: "Local History: Recent Changes…", id: "history.recentChanges", desc: "Browse the most recent file revisions across the project." },
       { title: "HTML Preview: Open in Browser", id: "htmlPreview.open", desc: "Open the current HTML file in the last-used browser via a local server." },
@@ -508,6 +510,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Typst: Insert Table of Contents", id: "typst.outline", desc: "Insert a #outline() table-of-contents call." },
       { title: "Typst: Raw / Code", id: "typst.raw", desc: "Wrap the selection in `raw` (inline code) markup." },
       { title: "Undo History: Pick Checkpoint…", id: "undoHistory.jump", keys: "M-g v", bindings: { "emacs": "M-g v" }, desc: "Open a popup of recent edit checkpoints and jump back to one." },
+      { title: "Open the Download Page", id: "update.openDownloadPage", desc: "Open the release page for the available update in your browser." },
       { title: "Debug Log", id: "view.debugLog", desc: "Open the debug log window." },
       { title: "Message Log", id: "view.messageLog", desc: "Show the log of status-bar messages." },
       { title: "Settings", id: "view.settings", bindings: { "cua": "C-,", "sublime": "C-,", "vscode": "C-,", "intellij": "C-M-s" }, desc: "Open the Settings window." },

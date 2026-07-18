@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "The Project tool window now works like a mini file manager.", detail: "Multi-select files/folders with Ctrl/Cmd- and Shift-click, then drag them onto a folder to move them (drop onto any folder or the project root; a…" },
-  { title: "Expert mode — a lighter focus mode than Zen that strips only the window chrome and keeps the whole editor view.", detail: "A new per-window distraction-free overlay that hides the surrounding chrome like Zen — toolbar, tab bar, breadcrumb, tool stripes, and the whitespace…" },
-  { title: "File Templates can write into a chosen folder.", detail: "The template creation wizard gained an optional a folder to write the file(s) into. Invoking \"New From Template…\" from a project folder's right-click…" },
-  { title: "Project tool window: create folders and act on the root.", detail: "Folder right-click menus gained a Template / Reveal / Open Terminal / Local History / Git stage·revert) — with Rename omitted on the root so it can't…" },
-  { title: "Build tools (Maven / npm / Cargo / Go / Gradle) now have IntelliJ-style tasks tool windows instead of main-toolbar icons.", detail: "Each detected build tool gets its own tool-window stripe (shown when the tool's marker file is found) whose panel is a browsable tree of the tool's…" },
-  { title: "The editor install banner for a missing language server now says \"*X* language server…", detail: "" },
-  { title: "The Cargo, Go, and Gradle build-tool tool-window icons showed blank.", detail: "Their SVG logos (vendored from Simple Icons) used SVGO's compact *packed elliptical-arc flags* (e.g. <code>a1 1 0 000-.5</code>), which JavaFX's…" },
-  { title: "Installing the Typst language server (tinymist) from the banner/Settings now actually activates it.", detail: "The extracted <code>tinymist</code> binary's path was never written to <code>Settings.typstLspCommand</code>, so detection kept failing on the PATH…" },
+  { title: "Logpoints and disabled breakpoints can now actually be created.", detail: "Both were fully built — they persisted, re-anchored, reached the adapter, and had their own gutter glyphs — but nothing in the app could set them:…" },
+  { title: "Turning a language server off in Settings now actually stops it, and changing its command now takes effect.", detail: "Neither did: the code that shuts down one server's sessions could never match them, so a disabled server kept running, a re-pointed command kept…" },
+  { title: "A language server that crashes no longer takes every language feature down silently.", detail: "Its session stayed cached and looked healthy, so completion, hover, go-to-definition and diagnostics all quietly did nothing while the status bar…" },
+  { title: "A language server that never finishes starting no longer leaks memory or spins forever.", detail: "The handshake had no timeout, so the loading indicator never stopped, and every keystroke queued another full copy of the document — about a gigabyte…" },
+  { title: "Installing Typst now actually fixes the preview.", detail: "A failed render was cached against the document's text forever, so after installing the tool — which re-renders every open preview — the old \"typst…" },
+  { title: "Typst works when its path contains a space", detail: "<code>/Users/John Smith/…</code> was split into two arguments and every render failed, which also broke the installer for anyone whose home directory…" },
+  { title: "Exporting a Typst document now reports the file it actually wrote.", detail: "Typst renames <code>report.png</code> to <code>report-1.png</code> — even for a single page — so the status bar named a file that didn't exist; an…" },
+  { title: "Pressing Enter after a Typst list item numbered beyond ~19 digits no longer throws.", detail: "(From a per-feature audit of Typst + MCP.)" },
 ];

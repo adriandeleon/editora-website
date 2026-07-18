@@ -45,8 +45,10 @@ is **off by default**; enable it in **Settings → Debugging**.
 The Debug window has a threads and call-stack view, a lazy variables tree with
 **set-value**, **watches**, and an evaluate console. While suspended, **inline
 values** appear after each line and hovering a variable shows its value.
-Breakpoints (including conditional and logpoints) live in a leftmost gutter
-strip and are saved per project.
+Breakpoints live in a leftmost gutter strip and are saved per project.
+**Edit Breakpoint** is a form for all three: a **condition**, a **log message**
+(which turns it into a logpoint that logs and never suspends), and an
+**enabled** toggle. Breakpoints in closed files are honored too.
 
 ### Installing adapters
 
