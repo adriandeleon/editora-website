@@ -52,8 +52,9 @@ default Emacs keymap; pick another in Settings):
 
 Don't memorize these. Open the palette with `M-x`, type a few letters of what
 you want, and run it. Each entry shows its key, so you pick up shortcuts as you
-go. The full list lives on the [Commands](/commands) and
-[Keybindings](/keybindings) pages.
+go. A command that can't run right now (a Git command while Git is off, say) is
+still listed, just dimmed, so you can see it exists. The full list lives on the
+[Commands](/commands) and [Keybindings](/keybindings) pages.
 
 ## Make it yours
 

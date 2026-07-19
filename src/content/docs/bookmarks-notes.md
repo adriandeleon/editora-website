@@ -21,9 +21,12 @@ a short note.
 
 The **Bookmarks** tool window (`M-2`) lists them across files in an order you
 control: reorder a bookmark or a whole file group with Alt+Up/Down, a right-click
-Move, or drag and drop. Bookmarks follow their content through edits, and they're
-re-anchored to the saved line text when a file changes outside the editor, so
-they survive external edits. They live in `bookmarks.json`.
+Move, or drag and drop. It groups by project, always showing the **General**
+(no-project) group plus the **current project**, with a **Show all projects**
+toggle to reveal and jump to every other project's bookmarks. Bookmarks follow
+their content through edits, and they're re-anchored to the saved line text when
+a file changes outside the editor, so they survive external edits. They live in
+`bookmarks.json`.
 
 ## Personal notes
 
@@ -52,5 +55,7 @@ that honors your keymap's caret-movement keys.
 Notes track their anchor through edits and re-locate themselves by surrounding
 text when a file changes externally, marking themselves orphaned only if the
 anchor truly disappears. The **Notes** tool window (`M-5`) groups them per file
-with a filter. They live in `notes.json`. A second toggle, *Show note
-indicators*, hides just the gutter glyph and highlight while keeping notes on.
+with a filter, and like Bookmarks it groups by project, General plus the current
+one, with a **Show all projects** toggle. They live in `notes.json`. A second
+toggle, *Show note indicators*, hides just the gutter glyph and highlight while
+keeping notes on.

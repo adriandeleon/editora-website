@@ -147,6 +147,7 @@ export const commandGroups: CmdGroup[] = [
   {
     title: "View & display",
     commands: [
+      { title: "view.customizeToolbar", id: "view.customizeToolbar" },
       { title: "View: Open as Hex", id: "view.openAsHex", desc: "Open the current file’s bytes in a read-only hex viewer." },
       { title: "View: Open as Text", id: "view.openAsText", desc: "Open the current file as plain text, bypassing the image/hex viewer (for a mis-detected binary)." },
       { title: "View: Toggle Autocomplete", id: "view.toggleAutocomplete", desc: "Turn autocomplete on or off." },
@@ -431,6 +432,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Toggle Run Window", id: "tool.run", keys: "M-9", bindings: { "emacs": "M-9", "intellij": "M-4" }, desc: "Toggle the Run tool window." },
       { title: "Tool Window: Find in Files", id: "tool.search", keys: "M-6", bindings: { "emacs": "M-6" }, desc: "Toggle the Find in Files tool window." },
       { title: "Tool Window: Structure", id: "tool.structure", keys: "M-7", bindings: { "emacs": "M-7", "intellij": "M-7" }, desc: "Toggle the Structure tool window." },
+      { title: "Test Results Window", id: "tool.testResults", keys: "M-g e", bindings: { "emacs": "M-g e" }, desc: "Show or hide the Test Results tool window." },
       { title: "tool.undoHistory", id: "tool.undoHistory", keys: "M-g u", bindings: { "emacs": "M-g u" } },
     ],
   },
@@ -495,7 +497,12 @@ export const commandGroups: CmdGroup[] = [
       { title: "Plugins: Install from File…", id: "plugins.installFromDisk", desc: "Install a plugin from a local .zip file." },
       { title: "Structure: Jump…", id: "structure.jump", keys: "M-g i", bindings: { "emacs": "M-g i", "sublime": "C-r", "vscode": "C-S-o" }, desc: "Fuzzy-jump to a symbol in the current file." },
       { title: "Structured: Toggle Tree / API Docs View", id: "structured.toggleView", desc: "Switch a JSON/YAML preview between the data tree and the OpenAPI docs view." },
+      { title: "Rerun Tests", id: "test.rerun", desc: "Run the most recent test run again." },
+      { title: "Rerun Failed Tests", id: "test.rerunFailed", desc: "Run only the tests that failed in the last run." },
+      { title: "Run Tests", id: "test.run", desc: "Run the test task for the current project's build tool." },
+      { title: "Stop Tests", id: "test.stop", desc: "Stop the running test task." },
       { title: "TODO: Set Part Color…", id: "todo.setPartColor", desc: "Set the highlight color for a TODO comment part (tag or priority level)." },
+      { title: "toolbar.restoreDefault", id: "toolbar.restoreDefault" },
       { title: "Typst: Bold", id: "typst.bold", desc: "Wrap the selection in *bold* markup." },
       { title: "Typst: Bullet List", id: "typst.bulletList", desc: "Toggle a \"- \" bullet on the selected line(s)." },
       { title: "Typst: Emphasis", id: "typst.emph", desc: "Wrap the selection in _emphasis_ markup." },

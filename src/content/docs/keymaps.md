@@ -42,7 +42,9 @@ filter. For any command:
 Changes apply live across all windows. Your overrides are saved in
 `settings.toml` (the `keymap` name plus per-command entries) and layer on top of
 the active keymap, so you only store what you change. Switching keymaps keeps
-your overrides on top.
+your overrides on top. Overrides are stored **per platform**, since a chord is
+modifier-specific (⌘ on macOS, Ctrl elsewhere), so a config synced between a Mac
+and a Windows or Linux machine binds each OS's own chord instead of both.
 
 ## Reading and writing the reference
 
