@@ -7,7 +7,14 @@ order: 9
 
 Many file types get the same 3-mode preview (Editor / Split / Preview) as
 Markdown, turning raw data and config into something readable. Each is **on by
-default** and toggled under **Settings → Editor**.
+default**, and each preview type has its own checkbox under **Settings →
+Editor**.
+
+Whatever the file, the same two commands switch the view: **`view.togglePreview`**
+flips between the editor and the full preview, and **`view.toggleSplitPreview`**
+flips between the editor and a split editor-plus-preview. They act on whatever
+the active file previews as, so there's nothing per-type to remember. A floating
+3-mode toggle also appears at the top right of any previewable file.
 
 ## Structured data and API docs
 

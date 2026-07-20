@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Opening the first file of a language no longer freezes the editor for a beat.", detail: "Starting a language server (forking the jdtls/pyright/tsserver process, scanning <code>PATH</code>, writing the process ledger) ran on the UI thread.…" },
-  { title: "Language-server updates aren't sent twice per keystroke.", detail: "After a trigger character (e.g. <code>.</code>), the editor materialized and pushed the whole document to the server both on the completion trigger…" },
-  { title: "Editing above a bookmark, note, or breakpoint no longer stutters.", detail: "When an edit shifted a marker's line (e.g. holding Enter above a bookmark), the editor did a blocking…" },
-  { title: "The Structure outline no longer rebuilds while it's closed.", detail: "It re-split the whole document and rebuilt its tree on every edit (debounced) even when the tool window was hidden. It now defers the rebuild while…" },
-  { title: "The File Information panel no longer slows down typing.", detail: "It re-counted words (a whole-document scan) on every caret move and re-materialized the whole document on every keystroke — even when the panel was…" },
-  { title: "Zooming text is much smoother.", detail: "A text zoom (<code>Ctrl</code>+wheel, <code>Ctrl</code>+<code>=</code>/<code>-</code>/<code>0</code>, the status-bar <code>−/+</code>) reran the…" },
-  { title: "Moving the caret or typing in a large file is much lighter.", detail: "The status bar recomputed the file size — which scans and copies the whole document — on every caret move and keystroke (and re-materialized the…" },
-  { title: "Bookmarks and Personal Notes now group by project, so they don't appear/disappear when you switch projects.", detail: "Each panel always shows the General (no-project) group and the current project, and a new \"Show all projects\" toggle reveals every other project's…" },
+  { title: "GitHub integration, via your own <code>gh</code> CLI.", detail: "Editora never handles a token — it shells out to the authenticated <code>gh</code> you already have, so GitHub Enterprise works with no extra setup.…" },
+  { title: "Test runner polish.", detail: "An unfiltered <code>test</code> run now pre-seeds the whole expected test list greyed-out and flips each entry green or red as results land, instead…" },
+  { title: "Debug tool window: gdb-style single-key controls", detail: "(<code>n</code>/<code>s</code>/<code>f</code>/…) with an active-focus highlight showing when the panel has the keyboard." },
+  { title: "Linux <code>.deb</code>: an \"Editora Expert Mode\" launcher.", detail: "A second menu entry starts Editora with <code>--expert --single-window</code>, and is registered as the system-wide default handler for text and…" },
+  { title: "Development builds now say so.", detail: "Between releases the project version carries a <code>-SNAPSHOT</code> suffix, and a <code>snapshot</code> badge appears in the toolbar (beside the…" },
+  { title: "One pair of preview commands for every file type.", detail: "The per-type toggles (Markdown preview, CSV grid, …) are replaced by shared <code>view.togglePreview</code> and <code>view.toggleSplitPreview</code>…" },
+  { title: "The GitHub tool window is repo-scoped rather than buffer-scoped, so it no longer…", detail: "" },
+  { title: "The release flow reopens <code>master</code> at the next patch <code>-SNAPSHOT</code>…", detail: "" },
 ];

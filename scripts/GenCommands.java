@@ -67,12 +67,12 @@ String category(String cid) {
             "view.textZoomIn", "view.textZoomOut", "view.textZoomReset")) return "Splits & zoom";
     if (in(cid, "view.settings", "view.welcome", "view.messageLog", "view.debugLog")) return "Application";
     if (p.equals("view")) return "View & display";
-    if (in(p, "git", "diff", "merge")) return "Git & diff";
+    if (in(p, "git", "github", "diff", "merge")) return "Git & diff";
     if (p.equals("debug")) return "Debugging";
     if (p.equals("lsp")) return "Code intelligence (LSP)";
     if (p.equals("http")) return "HTTP client";
     if (p.equals("mermaid")) return "Diagrams";
-    if (p.equals("run")) return "Run";
+    if (in(p, "run", "test")) return "Run";
     if (p.equals("bookmarks")) return "Bookmarks";
     if (p.equals("notes")) return "Personal notes";
     if (in(p, "snippets", "template")) return "Snippets & templates";
@@ -169,12 +169,16 @@ void main(String[] args) throws IOException {
     while (m.find()) ids.add(m.group(1));
 
     // command.<id>[.desc] -> text, from the English i18n catalog (naive, like the app reads it).
+    // Key and value are stripped: the catalog mixes `command.x=Text` and `command.x = Text`, and
+    // java.util.Properties treats whitespace around the `=` as a separator. Slicing at the `=` index
+    // without stripping keyed the spaced entries as "x " (and valued them " Text"), so every lookup of
+    // the real id missed and those commands fell back to rendering their raw id with no description.
     Map<String, String> props = new HashMap<>();
     for (String line : Files.readAllLines(
             root.resolve("src/main/resources/com/editora/i18n/messages.properties"), StandardCharsets.UTF_8)) {
         if (line.startsWith("command.") && line.contains("=")) {
             int eq = line.indexOf('=');
-            props.put(line.substring("command.".length(), eq), line.substring(eq + 1));
+            props.put(line.substring("command.".length(), eq).strip(), line.substring(eq + 1).strip());
         }
     }
 

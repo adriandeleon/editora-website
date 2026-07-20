@@ -41,4 +41,5 @@ README if present) so Git activates without creating a project. Branch switch,
 pull, and push reload unmodified open buffers whose files changed on disk.
 
 For comparing files and resolving merge conflicts, see
-[Diff & merge](/docs/diff-merge).
+[Diff & merge](/docs/diff-merge). For pull requests, reviews, and CI runs, see
+[GitHub](/docs/github).

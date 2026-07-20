@@ -1,7 +1,7 @@
 ---
 title: "Diff & merge"
 group: "Git & diff"
-order: 2
+order: 3
 beta: true
 summary: "Side-by-side and unified diff (vs HEAD, a commit, or another file) with word-level highlights and apply-hunk arrows, plus a merge-conflict resolver."
 ---

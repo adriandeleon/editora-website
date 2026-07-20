@@ -50,6 +50,12 @@ Breakpoints live in a leftmost gutter strip and are saved per project.
 (which turns it into a logpoint that logs and never suspends), and an
 **enabled** toggle. Breakpoints in closed files are honored too.
 
+When the Debug panel has the keyboard (it shows an active-focus highlight),
+**gdb-style single keys** drive the session: `n` to step over, `s` to step into,
+`f` to finish (step out), and so on. Stepping keeps focus in the panel, so you
+can step repeatedly without your key presses landing in the editor. A fresh
+breakpoint hit while you're editing still takes you to the code.
+
 ### Installing adapters
 
 Adapters are user-installed, not bundled. Helper scripts in the Editora repo
