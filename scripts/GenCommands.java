@@ -40,7 +40,16 @@ static final String[] ORDER = {
     "Appearance", "Tool windows", "Window", "Application",
 };
 
-static final Pattern COMMAND_OF = Pattern.compile("Command\\.of\\(\"([^\"]+)\"");
+// `\s*` spans the newline in a wrapped registration:
+//     registry.register(Command.of(
+//             "view.toggleTestRunner",
+// Requiring the literal on the same line as `Command.of(` missed 96 of MainController's 492
+// registrations. Calls whose id is an expression rather than a literal (`id + ".stop"` per build
+// tool, `ExternalTool.commandIdFor(...)`, plugin ids) are deliberately not matched: those are
+// generated at runtime and have no fixed id or i18n title to document.
+// The trailing `,` requires the literal to be the *whole* first argument, so a concatenation like
+// `Command.of("tool." + id, …)` is rejected instead of contributing a truncated id ("tool.").
+static final Pattern COMMAND_OF = Pattern.compile("Command\\.of\\(\\s*\"([^\"]+)\"\\s*,");
 // Flat JSON "key": "value" pairs (escape-aware), scanned in file order.
 static final Pattern JSON_PAIR =
     Pattern.compile("\"((?:[^\"\\\\]|\\\\.)*)\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"");
@@ -161,12 +170,19 @@ void main(String[] args) throws IOException {
     Path web = websiteRoot();
     Path root = editoraRoot(args, web);
 
-    // Command ids from MainController.
-    String mc = Files.readString(root.resolve("src/main/java/com/editora/ui/MainController.java"),
-        StandardCharsets.UTF_8);
+    // Command ids from every class in com.editora.ui that registers one. MainController holds most,
+    // but the feature coordinators (Todo, Macro, Build, ExternalTool, Csv, Plugin) register their own,
+    // and scanning MainController alone silently dropped them from the site.
+    Path uiDir = root.resolve("src/main/java/com/editora/ui");
     TreeSet<String> ids = new TreeSet<>();
-    Matcher m = COMMAND_OF.matcher(mc);
-    while (m.find()) ids.add(m.group(1));
+    List<Path> sources = new ArrayList<>();
+    try (var stream = Files.list(uiDir)) {
+        stream.filter(p -> p.getFileName().toString().endsWith(".java")).sorted().forEach(sources::add);
+    }
+    for (Path src : sources) {
+        Matcher m = COMMAND_OF.matcher(Files.readString(src, StandardCharsets.UTF_8));
+        while (m.find()) ids.add(m.group(1));
+    }
 
     // command.<id>[.desc] -> text, from the English i18n catalog (naive, like the app reads it).
     // Key and value are stripped: the catalog mixes `command.x=Text` and `command.x = Text`, and
@@ -212,6 +228,7 @@ void main(String[] args) throws IOException {
     }
     out.add("];");
     out.add("");
+    TreeSet<String> untitled = new TreeSet<>();
     out.add("export const commandGroups: CmdGroup[] = [");
     for (String g : ORDER) {
         List<String> cmds = groups.get(g);
@@ -220,6 +237,10 @@ void main(String[] args) throws IOException {
         out.add("    title: \"" + js(g) + "\",");
         out.add("    commands: [");
         for (String cid : cmds) {
+            // A command with no `command.<id>` entry falls back to rendering its raw id as its
+            // title, with no description, on both the command list and its own page. Collect those
+            // so the run reports them instead of shipping them silently.
+            if (!props.containsKey(cid)) untitled.add(cid);
             String title = js(props.getOrDefault(cid, cid));
             String key = keyForEmacs.getOrDefault(cid, "");
             String desc = js(props.getOrDefault(cid + ".desc", ""));
@@ -255,5 +276,11 @@ void main(String[] args) throws IOException {
         total += v.size();
         if (!v.isEmpty()) nonEmpty++;
     }
-    IO.println("Wrote " + outFile + ": " + total + " commands in " + nonEmpty + " groups");
+    IO.println("Wrote " + outFile + ": " + total + " commands in " + nonEmpty + " groups"
+        + " (from " + sources.size() + " sources in com/editora/ui)");
+    if (!untitled.isEmpty()) {
+        IO.println("WARNING: " + untitled.size() + " command(s) have no `command.<id>` entry in"
+            + " messages.properties and will render their raw id with no description:");
+        for (String cid : untitled) IO.println("  - " + cid);
+    }
 }
