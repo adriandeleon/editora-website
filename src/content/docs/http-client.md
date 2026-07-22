@@ -54,10 +54,15 @@ The client is close to IntelliJ's HTTP Client:
 | Run the request at the caret | `http.runRequest` | (gutter ▶) |
 | Run every request in the file | `http.runFile` | (palette) |
 | Select environment | `http.selectEnvironment` | (palette) |
-| Open the tool window | `tool.http` | `M-0` |
 
-The response shows in the **HTTP Client** tool window (`M-0`) with the status
-line, headers, timing, size, and a content-type-highlighted, pretty-printed
-body. It keeps an in-session **history**, and you can **Copy as cURL**, **Import
-cURL** from the clipboard (`http.importCurl`), open a response in its own editor
-tab (`http.openResponseInTab`), and save the response to a file.
+The response appears as the `.http` file's own **preview**, in the same
+Editor / Split / Preview view every other rich file type uses, so the response
+sits beside the request that produced it. Running a request from the gutter ▶
+opens the split automatically, and the view mode is remembered per file. Switch
+views with `view.togglePreview` and `view.toggleSplitPreview`, or the floating
+3-mode toggle at the top right.
+
+The response shows the status line, headers, timing, size, and a
+content-type-highlighted, pretty-printed body. You can **Copy as cURL**,
+**Import cURL** from the clipboard (`http.importCurl`), open a response in its
+own editor tab (`http.openResponseInTab`), and save the response to a file.

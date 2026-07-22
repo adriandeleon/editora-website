@@ -10,8 +10,12 @@ files.
 
 ## Bookmarks
 
-Toggle a bookmark on a line with `C-c m`. It shows a gutter marker and can carry
-a short note.
+Toggle a bookmark on a line with `C-c m`, or from the editor's right-click menu
+(**Add / Remove Bookmark**, acting on the line you clicked). It shows a gutter
+marker and can carry a short note. The marker itself is display-only: clicking
+the gutter used to toggle a bookmark, but the breakpoint strip and the Run ▶ are
+narrow targets inside that same gutter, so a slightly-off click added a stray
+bookmark instead of hitting what you aimed at.
 
 | Action | Command | Default key |
 | --- | --- | --- |

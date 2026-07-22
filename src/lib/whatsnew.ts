@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "GitHub integration, via your own <code>gh</code> CLI.", detail: "Editora never handles a token — it shells out to the authenticated <code>gh</code> you already have, so GitHub Enterprise works with no extra setup.…" },
-  { title: "Test runner polish.", detail: "An unfiltered <code>test</code> run now pre-seeds the whole expected test list greyed-out and flips each entry green or red as results land, instead…" },
-  { title: "Debug tool window: gdb-style single-key controls", detail: "(<code>n</code>/<code>s</code>/<code>f</code>/…) with an active-focus highlight showing when the panel has the keyboard." },
-  { title: "Linux <code>.deb</code>: an \"Editora Expert Mode\" launcher.", detail: "A second menu entry starts Editora with <code>--expert --single-window</code>, and is registered as the system-wide default handler for text and…" },
-  { title: "Development builds now say so.", detail: "Between releases the project version carries a <code>-SNAPSHOT</code> suffix, and a <code>snapshot</code> badge appears in the toolbar (beside the…" },
-  { title: "One pair of preview commands for every file type.", detail: "The per-type toggles (Markdown preview, CSV grid, …) are replaced by shared <code>view.togglePreview</code> and <code>view.toggleSplitPreview</code>…" },
-  { title: "The GitHub tool window is repo-scoped rather than buffer-scoped, so it no longer…", detail: "" },
-  { title: "The release flow reopens <code>master</code> at the next patch <code>-SNAPSHOT</code>…", detail: "" },
+  { title: "Workspace trust for build wrappers.", detail: "A repository that ships its own <code>./mvnw</code> or <code>./gradlew</code> gets that script run with your privileges the moment you trigger a…" },
+  { title: "Create a pull request from the GitHub tool window", detail: "a <code>+</code> button beside Refresh, opening the same form as the palette command, with the panel refreshing afterwards so the new PR appears in…" },
+  { title: "The Create Pull Request form gained reviewers, assignees and labels", detail: ", and can push a never-pushed branch first. <code>gh pr create</code> on a branch with no upstream used to fail with an opaque error, because it…" },
+  { title: "The Git Log file list gained a context menu", detail: "Show Diff / Open File / Show File History / Copy Path (Open File is disabled for a deleted file), plus Enter to open a diff." },
+  { title: "Startup instrumentation", detail: "(<code>EDITORA_PERF=1</code>, <code>scripts/measure-startup.sh</code>) measuring launch through to the first frame that actually carries the file's…" },
+  { title: "<code>view.toggleStructuredPreview</code> — the structured-data preview had a Settings…", detail: "" },
+  { title: "The HTTP Client is now the <code>.http</code> file's preview", detail: ", not a separate tool window. Every other rich file type in Editora presents itself through the shared Editor/Split/Preview view, and…" },
+  { title: "Console panels scroll with your configured keybindings.", detail: "Build Output, Run, External Tools and Debug marked themselves as owning their keys but had nothing to hand the chords to, so…" },
 ];

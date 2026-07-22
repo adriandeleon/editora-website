@@ -119,3 +119,29 @@ When a file changes on disk under you, Editora notices on window focus and tab
 switch and prompts to reload or keep your version. The Project tree also
 re-scans on focus so files added or removed outside the editor show up, keeping
 your expanded folders and selection.
+
+## Trusted folders
+
+A repository can ship its own build wrapper, `./mvnw` or `./gradlew`, and those
+scripts live in the repository rather than on your machine. Triggering a Maven
+or Gradle build runs one with your privileges, so a repository you merely cloned
+and opened could execute its own code on the first build.
+
+Editora asks first. The first time you build in a folder it hasn't been told to
+trust, it shows what would run and waits. Trust is remembered **per folder and
+inherited by subfolders**, so a multi-module repository asks once, and the
+default is always untrusted, including when the trust file can't be read.
+
+Declining means **no build**, not a quieter one. Falling back to the `mvn` or
+`gradle` on your `PATH` would not be safer: a hostile `pom.xml` or
+`build.gradle` executes code through those too, since build plugins and Gradle
+scripts run in-process.
+
+Only the wrapper case is gated. Every other build tool (npm, Cargo, Go) launches
+your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
+none of them prompt.
+
+Review or revoke trust in **Settings → Workspace → Trusted Folders**, or from
+the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
+folder that is still covered by a trusted parent tells you so, rather than
+claiming a revoke that the parent would override.

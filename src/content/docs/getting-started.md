@@ -52,9 +52,16 @@ default Emacs keymap; pick another in Settings):
 
 Don't memorize these. Open the palette with `M-x`, type a few letters of what
 you want, and run it. Each entry shows its key, so you pick up shortcuts as you
-go. A command that can't run right now (a Git command while Git is off, say) is
-still listed, just dimmed, so you can see it exists. The full list lives on the
-[Commands](/commands) and [Keybindings](/keybindings) pages.
+go. The full list lives on the [Commands](/commands) and
+[Keybindings](/keybindings) pages.
+
+A command that can't run right now stays listed and dimmed rather than
+disappearing, so you can still discover it. That covers both reasons it might
+not apply: its **feature is switched off** (a Git command with Git disabled), or
+there's **nothing to act on** (a Markdown command outside a Markdown file, a
+debugger step with nothing suspended, a Git command outside a repository). Hover
+a dimmed row and it tells you which, and names the command that would fix it.
+The toggle that switches a feature back on is never dimmed itself.
 
 ## Make it yours
 

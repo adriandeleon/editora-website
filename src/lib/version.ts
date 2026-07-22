@@ -4,4 +4,4 @@
 // Committed so the build needs no access to the Editora repo (it isn't
 // checked out in CI).
 
-export const version = "0.9.8";
+export const version = "0.9.9";
