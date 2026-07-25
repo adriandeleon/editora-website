@@ -1,0 +1,161 @@
+---
+// Cold-start bar chart for the "Built for speed" section.
+//
+// Every number here must come from a real run of scripts/measure-startup.sh in
+// the Editora repo, which reports the median time from process start to the
+// first rendered frame that actually shows the file. Do not add a bar you have
+// not measured yourself on the same machine, with the same metric: a startup
+// comparison is only meaningful if every entry was timed the same way, and a
+// figure taken from someone else's blog post measures a different thing on
+// different hardware.
+//
+// `methodology` renders under the chart and is not optional. A benchmark
+// without its conditions stated is a claim nobody can check.
+const bars = [
+  { label: "Editora", sub: "0.9.9", ms: 1493, highlight: true },
+  { label: "VS Code", sub: "1.125.0", ms: 1491 },
+  { label: "IntelliJ IDEA", sub: "2026.2.0.1", ms: 5602 },
+];
+
+const methodology =
+  "Median of five timed runs per editor (a discarded warm-up first), all on " +
+  "one Apple M5 running macOS 26.4.1, each opening the same 710-line Markdown " +
+  "file with no project or workspace loaded. Every editor was fully quit " +
+  "between runs and launched the same way. The clock stops when the editor " +
+  "window showing the file appears, not when a splash screen does: IntelliJ " +
+  "puts a splash up around 1.8s and reaches the file at 4.3s, so timing the " +
+  "first window would have understated it by about three seconds. These are " +
+  "relaunches on a warm page cache rather than a first boot, and none of them " +
+  "measure background work that continues after the file is on screen.";
+
+const max = Math.max(...bars.map((b) => b.ms));
+const pct = (ms: number) => Math.round((ms / max) * 100);
+const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
+---
+
+<figure class="speed">
+  <div class="speed-rows">
+    {
+      bars.map((b) => (
+        <div class={`speed-row${b.highlight ? " is-primary" : ""}`}>
+          <div class="speed-label">
+            <strong>{b.label}</strong>
+            <span>{b.sub}</span>
+          </div>
+          <div class="speed-track">
+            <div class="speed-bar" style={`--w:${pct(b.ms)}%`}>
+              <span class="speed-value">{secs(b.ms)}</span>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <figcaption>
+    <strong>Time from launch to the editor window showing your file.</strong>
+    {methodology}{" "}
+    <a href="/compare">Full method and a project-folder comparison</a>.
+  </figcaption>
+</figure>
+
+<style>
+  .speed {
+    margin: 2.5rem 0 0;
+  }
+  .speed-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .speed-row {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    align-items: center;
+    gap: 1rem;
+  }
+  .speed-label {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    text-align: right;
+  }
+  .speed-label strong {
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .speed-label span {
+    font-size: 0.78rem;
+    color: var(--faint);
+  }
+  .speed-track {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-soft);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .speed-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: var(--w);
+    min-width: 4.5rem;
+    height: 2.1rem;
+    padding-right: 0.65rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--muted) 30%, transparent);
+    /* Grow from the left on first paint; the width is the datum, so the
+       animation only affects how it arrives. */
+    animation: speed-grow 0.5s ease-out both;
+  }
+  .is-primary .speed-bar {
+    background: var(--accent);
+  }
+  .speed-value {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .is-primary .speed-value {
+    color: var(--on-accent);
+  }
+
+  @keyframes speed-grow {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--w);
+    }
+  }
+
+  .speed figcaption {
+    margin-top: 1.25rem;
+    color: var(--faint);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    max-width: 44rem;
+  }
+  .speed figcaption strong {
+    color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .speed-bar {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .speed-row {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+    .speed-label {
+      text-align: left;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+  }
+</style>

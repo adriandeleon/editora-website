@@ -1,0 +1,262 @@
+---
+// "How Editora compares" — the honest positioning page, and the proper home
+// for the startup benchmark (the home page only has room for one line of
+// methodology).
+//
+// Rules for this page: every number is one we measured ourselves, on one
+// machine, with one method, and the method is written out in full below the
+// table. Nothing here should claim a win Editora does not have; the single-file
+// result is a tie with VS Code and it says so.
+import Layout from "../layouts/Layout.astro";
+import { repo } from "../lib/editora";
+
+const startup = {
+  file: [
+    { name: "Editora", ver: "0.9.9", ms: 1493, lo: 1395, hi: 3637, self: true },
+    { name: "VS Code", ver: "1.125.0", ms: 1491, lo: 1231, hi: 2240 },
+    { name: "IntelliJ IDEA", ver: "2026.2.0.1", ms: 5602, lo: 4989, hi: 7703 },
+  ],
+  project: [
+    { name: "Editora", ver: "0.9.9", ms: 2286, lo: 2214, hi: 2627, self: true },
+    { name: "VS Code", ver: "1.125.0", ms: 2915, lo: 2597, hi: 2994 },
+    { name: "IntelliJ IDEA", ver: "2026.2.0.1", ms: 7328, lo: 6165, hi: 8877 },
+  ],
+};
+
+const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
+
+// Where Editora genuinely differs, and where it plainly does not.
+const rows = [
+  {
+    what: "Keybindings",
+    editora: "Five complete keymaps (Emacs, CUA, Sublime, VS Code, IntelliJ), every command rebindable",
+    others: "VS Code and IntelliJ ship keymap extensions for each other; Emacs is its own thing entirely",
+  },
+  {
+    what: "Reaching a command",
+    editora: "Everything is a registered command with an id, reachable by chord or fuzzy M-x search. No hidden actions",
+    others: "VS Code's palette is close in spirit. IntelliJ hides a lot behind menus and dialogs",
+  },
+  {
+    what: "Interface range",
+    editora: "Four modes in one app, from Zen (bare text) to a full IDE, switched by a keystroke",
+    others: "VS Code and IntelliJ both have a Zen/distraction-free mode, but no equivalent spread",
+  },
+  {
+    what: "Language support",
+    editora: "21 language servers, using the ones already installed on your machine",
+    others: "VS Code's extension marketplace is far larger. IntelliJ's Java and Kotlin tooling is deeper than anything here",
+  },
+  {
+    what: "Account and telemetry",
+    editora: "None. No sign-in, no usage reporting, no subscription",
+    others: "VS Code collects telemetry by default (it can be turned off). IntelliJ Ultimate is a paid licence",
+  },
+  {
+    what: "Extensibility",
+    editora: "A plugin API and a signed registry, small by comparison",
+    others: "Tens of thousands of extensions for VS Code, a mature plugin market for IntelliJ",
+  },
+];
+---
+
+<Layout
+  title="How Editora compares — Editora"
+  description="How Editora compares to VS Code, IntelliJ IDEA, and Emacs, including startup measurements we ran ourselves and the method behind them."
+  ogImage="og/compare.png"
+>
+  <main class="doc compare">
+    <h1>How Editora compares</h1>
+    <p class="lead">
+      Editora is not trying to replace every editor for every person. This page
+      is about where it genuinely differs, where it does not, and what we
+      measured rather than assumed.
+    </p>
+
+    <h2>Startup, measured</h2>
+    <p>
+      Both tables are the median of timed runs on one Apple&nbsp;M5 running
+      macOS&nbsp;26.4.1, with every editor fully quit between runs and launched
+      the same way. The clock starts at launch and stops when the editor window
+      showing the file or project appears.
+    </p>
+
+    <h3>Opening a single file</h3>
+    <table>
+      <thead>
+        <tr><th>Editor</th><th>Median</th><th>Range</th></tr>
+      </thead>
+      <tbody>
+        {
+          startup.file.map((r) => (
+            <tr class={r.self ? "is-self" : ""}>
+              <td>{r.name} <span class="ver">{r.ver}</span></td>
+              <td><strong>{secs(r.ms)}</strong></td>
+              <td class="range">{secs(r.lo)} to {secs(r.hi)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    <p class="note">
+      Five runs each, opening a 710-line Markdown file with no project loaded.
+      Editora and VS Code are level here; the difference between them is two
+      milliseconds, which is noise.
+    </p>
+
+    <h3>Opening a project folder</h3>
+    <table>
+      <thead>
+        <tr><th>Editor</th><th>Median</th><th>Range</th></tr>
+      </thead>
+      <tbody>
+        {
+          startup.project.map((r) => (
+            <tr class={r.self ? "is-self" : ""}>
+              <td>{r.name} <span class="ver">{r.ver}</span></td>
+              <td><strong>{secs(r.ms)}</strong></td>
+              <td class="range">{secs(r.lo)} to {secs(r.hi)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    <p class="note">
+      Three runs each, opening a 137&nbsp;MB source repository. Treat the gap
+      between Editora and VS Code as indicative rather than settled: repeat
+      sessions of the same test moved Editora's median between 1.40s and 2.29s,
+      a spread wider than the gap itself.
+    </p>
+
+    <h2>How the measurement works</h2>
+    <p>
+      Each editor is quit, the machine is left to settle, then the app is
+      launched with the file or folder as an argument. A watcher polls until the
+      application owns a window whose title names the file or project, and that
+      is the moment recorded. A discarded warm-up run precedes the timed ones,
+      so every editor is measured with a warm page cache.
+    </p>
+    <p>
+      Waiting for <em>any</em> window would be easier and wrong. IntelliJ puts up
+      a window literally called <code>splash</code> about 1.8s before its editor
+      is ready, and timing that understated it by roughly three seconds. Matching
+      on the window title is the only definition that means the same thing across
+      an Electron app, a JetBrains IDE, and a JavaFX app.
+    </p>
+    <p>
+      What these numbers are not: a cold boot, a measure of when indexing
+      finishes, or a claim about how any editor performs on your hardware. They
+      are relaunches on one machine, and all three editors continue working in
+      the background after their window appears.
+    </p>
+
+    <h2>Where each one is strong</h2>
+    <table class="matrix">
+      <thead>
+        <tr><th>&nbsp;</th><th>Editora</th><th>VS Code, IntelliJ, Emacs</th></tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((r) => (
+            <tr>
+              <th scope="row">{r.what}</th>
+              <td>{r.editora}</td>
+              <td class="others">{r.others}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h2>When Editora is probably the wrong choice</h2>
+    <ul>
+      <li>
+        You want a specific extension. Editora's plugin registry is small, and
+        VS Code almost certainly has what you are looking for.
+      </li>
+      <li>
+        You do heavy Java or Kotlin refactoring. IntelliJ's static analysis and
+        refactoring tools go well beyond what a language server exposes.
+      </li>
+      <li>
+        You already have a tuned Emacs configuration. Editora borrows the
+        editing model, not the extensibility; nothing here replaces Elisp.
+      </li>
+    </ul>
+
+    <h2>When it fits</h2>
+    <p>
+      You keep your hands on the keys and want every action to be a command you
+      can find or rebind. You want language servers, a debugger, git, and live
+      previews without an account or a subscription. And you want an editor that
+      can be a bare page for writing and a full IDE for the same project ten
+      seconds later.
+    </p>
+    <p>
+      <a href="/#download">Download Editora</a> or
+      <a href={repo}>read the source</a>.
+    </p>
+  </main>
+</Layout>
+
+<style>
+  .compare table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.92rem;
+  }
+  .compare th,
+  .compare td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: top;
+  }
+  .compare thead th {
+    color: var(--text);
+    border-bottom-color: var(--border);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .compare tbody td {
+    color: var(--muted);
+  }
+  .compare tr.is-self td {
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+  .compare .ver {
+    color: var(--faint);
+    font-size: 0.82em;
+    font-family: var(--mono);
+  }
+  .compare .range {
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 0.85em;
+  }
+  .compare .matrix th[scope="row"] {
+    color: var(--text);
+    width: 11rem;
+    font-weight: 600;
+  }
+  .compare .matrix .others {
+    color: var(--faint);
+  }
+  .compare .note {
+    color: var(--faint);
+    font-size: 0.86rem;
+    margin: 0 0 2rem;
+  }
+
+  @media (max-width: 620px) {
+    .compare .matrix th[scope="row"] {
+      width: auto;
+    }
+    .compare table {
+      font-size: 0.85rem;
+    }
+  }
+</style>

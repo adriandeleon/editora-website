@@ -1,14 +1,19 @@
 ---
 import { version, repo, docsBase } from "../lib/editora";
+import SiteSearch from "../components/SiteSearch.astro";
 
 interface Props {
   title?: string;
   description?: string;
+  /** Social-card image, relative to the site root (e.g. "og/compare.png").
+      Falls back to the shared card when a page has none. */
+  ogImage?: string;
 }
 
 const {
   title = "Editora: a keyboard-driven programmer's text editor",
   description = "Editora is a fast, keyboard-driven, cross-platform, open-source programmer's text editor. Every action is a command, reachable by your choice of keymap (Emacs, CUA, Sublime, VS Code, IntelliJ) or a fuzzy palette.",
+  ogImage,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -18,9 +23,10 @@ const docsRel = docsBase.slice(1);
 
 // Absolute URLs for SEO/social tags (Astro.site is set in astro.config).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL("/og-image.png", Astro.site).href;
+const ogImageUrl = new URL(ogImage ?? "/og-image.png", Astro.site).href;
 
 const nav = [
+  { href: url("#features"), label: "Features" },
   { href: url("news"), label: "News" },
   { href: url("blog"), label: "Blog" },
   { href: url(docsRel), label: "Docs" },
@@ -48,6 +54,7 @@ const footerCols = [
       { href: url("plugins"), label: "Plugins" },
       { href: url("blog"), label: "Blog" },
       { href: url("news"), label: "News" },
+      { href: url("compare"), label: "How it compares" },
       { href: url("roadmap"), label: "Roadmap" },
       { href: url("screenshots"), label: "Screenshots" },
       { href: `${repo}/blob/master/CHANGELOG.md`, label: "Changelog" },
@@ -98,12 +105,12 @@ const isActive = (href: string) => {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:site_name" content="Editora" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" type="image/png" href={url("favicon.png")} />
     <link rel="apple-touch-icon" href={url("apple-touch-icon.png")} />
     <link
@@ -141,6 +148,7 @@ const isActive = (href: string) => {
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#content">Skip to content</a>
     <header class="site-nav">
       <div class="nav-inner">
         <a class="brand" href={url("")}>
@@ -179,6 +187,7 @@ const isActive = (href: string) => {
               </a>
             ))
           }
+          <SiteSearch />
           <label class="theme-picker" title="Editor theme">
             <span class="sr-only">Theme</span>
             <select id="theme-select" aria-label="Editor theme">
@@ -212,7 +221,9 @@ const isActive = (href: string) => {
       })();
     </script>
 
-    <slot />
+    <div id="content" tabindex="-1">
+      <slot />
+    </div>
 
     <footer class="footer">
       <div class="footer-cols">
@@ -395,9 +406,42 @@ const isActive = (href: string) => {
     font-family: var(--sans);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    /* A long unbroken token (a command id, a path, a URL) in running text used
+       to push the page 25px wider than a 375px phone, so the whole page
+       scrolled sideways. Break those rather than let one word set the width. */
+    overflow-wrap: break-word;
     transition:
       background 0.2s ease,
       color 0.2s ease;
+  }
+
+  /* Inline code is the usual offender: ids like `view.toggleSimpleMode` and
+     shell snippets have no spaces to wrap at. */
+  :not(pre) > code {
+    overflow-wrap: anywhere;
+  }
+
+  #content {
+    outline: none;
+  }
+
+  /* Keyboard users otherwise tab through eight nav links, the search trigger
+     and the theme picker on every page before reaching the content. */
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: -3rem;
+    z-index: 200;
+    padding: 0.55rem 1rem;
+    border-radius: 0 0 8px 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+    transition: top 0.15s ease;
+  }
+  .skip-link:focus {
+    top: 0;
+    text-decoration: none;
   }
 
   a {
@@ -513,12 +557,24 @@ const isActive = (href: string) => {
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    font-size: 0.95rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    /* Eight links, the search trigger and the theme picker have to share the
+       980px bar, so the row is deliberately tight: keep enough slack that a
+       platform with wider font metrics still fits on one line. */
+    gap: 0.5rem 0.85rem;
+    font-size: 0.9rem;
+    min-width: 0;
   }
 
   .nav-links a {
     color: var(--muted);
+    /* Without this the trailing external-link icon wraps onto its own line
+       inside the anchor once the bar gets tight, which makes "Discussions" and
+       "GitHub" twice as tall as their neighbours and throws the row out of
+       alignment. Keep each label and its icon together and let the row wrap
+       between items instead. */
+    white-space: nowrap;
   }
 
   .nav-links a:hover,

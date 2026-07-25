@@ -68,8 +68,8 @@ const bindings = keymaps
   title={`${cmd.title} — Editora command`}
   description={cmd.desc || `The ${cmd.title} command in Editora (${cmd.id}).`}
 >
-  <main class="page">
-    <nav class="crumbs">
+  <main class="page" data-pagefind-body data-pagefind-meta="kind:Command">
+    <nav class="crumbs" data-pagefind-ignore>
       <a href={docsBase}>Docs</a>
       <span>›</span>
       <a href="/commands">Commands</a>

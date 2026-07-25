@@ -1,0 +1,312 @@
+---
+// "One editor, four ways to run it" — the Zen → Expert → Simple → full IDE
+// progression, each step drawn as a tiny CSS mockup so the difference is
+// visible rather than described. The mockups are deliberately faithful to what
+// each mode actually shows (verified against ui/Chrome.java):
+//   Zen     — hides all chrome AND the editor furniture (status bar, line
+//             numbers, minimap, ruler): bare text. Full power still running.
+//   Expert  — hides window chrome only; KEEPS line numbers, minimap, status bar.
+//   Simple  — keeps toolbar/tabs/status bar, drops the gutter + minimap, and
+//             switches the heavy features off (LSP, git, debug, plugins…).
+//   Full    — everything on.
+const modes = [
+  {
+    id: "zen",
+    name: "Zen",
+    how: "C-c z",
+    tag: "Focus",
+    blurb:
+      "Just the text. Every bar, the gutter, the minimap — gone. The language server is still running behind it.",
+    shows: ["Nothing but your file"],
+  },
+  {
+    id: "expert",
+    name: "Expert",
+    how: "C-c C-e",
+    tag: "Focus",
+    blurb:
+      "Window chrome disappears, the editor stays whole: line numbers, minimap, status bar, current-line highlight.",
+    shows: ["Line numbers", "Minimap", "Status bar"],
+  },
+  {
+    id: "simple",
+    name: "Simple UI",
+    how: "view.toggleSimpleMode",
+    tag: "Plain",
+    blurb:
+      "A plain text editor. Familiar toolbar and tabs, no gutter, and the heavy machinery switched off entirely.",
+    shows: ["Toolbar + tabs", "No LSP, git, or debug"],
+  },
+  {
+    id: "full",
+    name: "Full IDE",
+    how: "Default",
+    tag: "Everything",
+    blurb:
+      "The lot: language servers for 21 languages, step debugging, git and GitHub, build tools, live previews.",
+    shows: ["Tool windows", "Gutter + minimap", "All features"],
+  },
+];
+---
+
+<div class="ladder">
+  {
+    modes.map((m, i) => (
+      <div class={`rung rung-${m.id}`}>
+        <div class="rung-shot" aria-hidden="true">
+          {/* top chrome: toolbar + tabs (Simple + Full only) */}
+          <span class="mk-toolbar">
+            <i /> <i /> <i />
+          </span>
+          <span class="mk-tabs">
+            <b class="is-on" /> <b /> <b />
+          </span>
+          <span class="mk-body">
+            <span class="mk-stripe" />
+            <span class="mk-gutter">
+              <u /> <u /> <u /> <u /> <u /> <u />
+            </span>
+            <span class="mk-text">
+              <s style="width:78%" /> <s style="width:56%" />
+              <s style="width:88%" /> <s style="width:42%" />
+              <s style="width:70%" /> <s style="width:60%" />
+            </span>
+            <span class="mk-minimap" />
+          </span>
+          <span class="mk-status">
+            <i /> <i />
+          </span>
+        </div>
+
+        <div class="rung-head">
+          <span class="rung-step">{i + 1}</span>
+          <h4>{m.name}</h4>
+          <span class="rung-tag">{m.tag}</span>
+        </div>
+        <p class="rung-blurb">{m.blurb}</p>
+        <ul class="rung-shows">
+          {m.shows.map((s) => (
+            <li>{s}</li>
+          ))}
+        </ul>
+        <code class="rung-how">{m.how}</code>
+      </div>
+    ))
+  }
+</div>
+
+<p class="ladder-note">
+  Zen and Expert only <em>hide</em> the interface &mdash; everything keeps
+  running underneath. Simple UI is the one that actually switches the heavy
+  features off. All four are a keystroke or a palette command away, and Editora
+  can launch straight into any of them (<code>--zen</code>, <code>--expert</code>,
+  <code>--simple</code>).
+</p>
+
+<style>
+  .ladder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .rung {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem 1.15rem;
+    transition:
+      border-color 0.15s ease,
+      transform 0.06s ease;
+  }
+  .rung:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  /* --- the mini editor mockup --- */
+  .rung-shot {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    height: 92px;
+    padding: 5px;
+    background: var(--bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-bottom: 0.9rem;
+  }
+  .mk-toolbar,
+  .mk-tabs,
+  .mk-status {
+    display: flex;
+    gap: 3px;
+    flex: none;
+  }
+  .mk-toolbar i,
+  .mk-status i {
+    height: 4px;
+    width: 14px;
+    border-radius: 2px;
+    background: var(--faint);
+    opacity: 0.5;
+  }
+  .mk-tabs b {
+    height: 6px;
+    width: 22px;
+    border-radius: 2px 2px 0 0;
+    background: var(--border);
+  }
+  .mk-tabs b.is-on {
+    background: var(--accent);
+    opacity: 0.65;
+  }
+  .mk-body {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
+  }
+  .mk-stripe {
+    width: 5px;
+    border-radius: 2px;
+    background: var(--border);
+    flex: none;
+  }
+  .mk-gutter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    flex: none;
+  }
+  .mk-gutter u {
+    width: 5px;
+    height: 3px;
+    border-radius: 1px;
+    background: var(--faint);
+    opacity: 0.55;
+  }
+  .mk-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+  }
+  .mk-text s {
+    height: 3px;
+    border-radius: 1px;
+    background: var(--muted);
+    opacity: 0.55;
+    text-decoration: none;
+  }
+  .mk-minimap {
+    width: 8px;
+    border-radius: 2px;
+    background: repeating-linear-gradient(
+      var(--faint) 0 2px,
+      transparent 2px 5px
+    );
+    opacity: 0.5;
+    flex: none;
+  }
+
+  /* Per-mode visibility — faithful to ui/Chrome.java. */
+  .rung-zen .mk-toolbar,
+  .rung-zen .mk-tabs,
+  .rung-zen .mk-status,
+  .rung-zen .mk-stripe,
+  .rung-zen .mk-gutter,
+  .rung-zen .mk-minimap {
+    display: none;
+  }
+  .rung-expert .mk-toolbar,
+  .rung-expert .mk-tabs,
+  .rung-expert .mk-stripe {
+    display: none;
+  }
+  .rung-simple .mk-stripe,
+  .rung-simple .mk-gutter,
+  .rung-simple .mk-minimap {
+    display: none;
+  }
+
+  /* --- text --- */
+  .rung-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.4rem;
+  }
+  .rung-step {
+    display: grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .rung-head h4 {
+    margin: 0;
+    font-size: 1.02rem;
+    color: var(--text);
+  }
+  .rung-tag {
+    margin-left: auto;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+  }
+  .rung-blurb {
+    margin: 0 0 0.7rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .rung-shows {
+    list-style: none;
+    margin: 0 0 0.9rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .rung-shows li {
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+  }
+  .rung-how {
+    margin-top: auto;
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 5px;
+    padding: 0.12rem 0.45rem;
+  }
+
+  .ladder-note {
+    margin: 1.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    max-width: 46rem;
+  }
+</style>

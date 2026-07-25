@@ -21,8 +21,8 @@ const date = entry.data.date.toLocaleDateString("en-US", {
   title={`${entry.data.title} — Editora Blog`}
   description={entry.data.description ?? entry.data.title}
 >
-  <article class="doc">
-    <p class="back"><a href="/blog">← Blog</a></p>
+  <article class="doc" data-pagefind-body data-pagefind-meta="kind:Blog">
+    <p class="back" data-pagefind-ignore><a href="/blog">← Blog</a></p>
     <h1>{entry.data.title}{entry.data.beta && <span class="beta-pill">Beta</span>}</h1>
     <p class="meta">
       {date} · {entry.data.author}

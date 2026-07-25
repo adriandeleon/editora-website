@@ -1,0 +1,229 @@
+---
+// "Make it yours": live theme swatches. Each card renders a mini editor in its
+// own palette (inline CSS vars) regardless of the active site theme, and
+// clicking one recolors the whole site — reusing the same data-theme +
+// localStorage mechanism as the nav picker. Palettes mirror the six themes in
+// Layout.astro's global stylesheet; the app itself ships 25+.
+const themes = [
+  {
+    id: "primer-dark",
+    name: "Primer Dark",
+    bg: "#0d1117", soft: "#161b22", border: "#30363d", text: "#c9d1d9",
+    faint: "#6e7681", accent: "#58a6ff", kw: "#ff7b72", str: "#a5d6ff",
+    com: "#8b949e", fn: "#d2a8ff",
+  },
+  {
+    id: "primer-light",
+    name: "Primer Light",
+    bg: "#ffffff", soft: "#f6f8fa", border: "#d0d7de", text: "#24292f",
+    faint: "#8c959f", accent: "#0969da", kw: "#cf222e", str: "#0a3069",
+    com: "#6e7781", fn: "#8250df",
+  },
+  {
+    id: "dracula",
+    name: "Dracula",
+    bg: "#282a36", soft: "#21222c", border: "#44475a", text: "#f8f8f2",
+    faint: "#6272a4", accent: "#bd93f9", kw: "#ff79c6", str: "#f1fa8c",
+    com: "#6272a4", fn: "#50fa7b",
+  },
+  {
+    id: "nord",
+    name: "Nord",
+    bg: "#2e3440", soft: "#353c4a", border: "#434c5e", text: "#d8dee9",
+    faint: "#6c7689", accent: "#88c0d0", kw: "#81a1c1", str: "#a3be8c",
+    com: "#7b88a1", fn: "#88c0d0",
+  },
+  {
+    id: "cupertino-dark",
+    name: "Cupertino Dark",
+    bg: "#1e1e1e", soft: "#262626", border: "#3a3a3c", text: "#dfdfe0",
+    faint: "#6f6f73", accent: "#0a84ff", kw: "#fc5fa3", str: "#fc6a5d",
+    com: "#6c7986", fn: "#67b7a4",
+  },
+  {
+    id: "islands-dark",
+    name: "Islands Dark",
+    bg: "#191a1c", soft: "#1f2024", border: "#323438", text: "#bcbec4",
+    faint: "#4b5059", accent: "#56a8f5", kw: "#cf8e6d", str: "#6aab73",
+    com: "#7a7e85", fn: "#56a8f5",
+  },
+];
+const styleFor = (t: (typeof themes)[number]) =>
+  `--sbg:${t.bg};--ssoft:${t.soft};--sbd:${t.border};--stext:${t.text};` +
+  `--sfaint:${t.faint};--sacc:${t.accent};--skw:${t.kw};--sstr:${t.str};` +
+  `--scom:${t.com};--sfn:${t.fn}`;
+---
+
+<div class="tg">
+  <div class="tg-grid">
+    {
+      themes.map((t) => (
+        <button
+          class="swatch"
+          type="button"
+          data-theme-set={t.id}
+          style={styleFor(t)}
+          aria-label={`Use the ${t.name} theme`}
+        >
+          <span class="sw-bar">
+            <i /> <i /> <i />
+            <em>{t.name}</em>
+          </span>
+          <span class="sw-code">
+            <span class="sw-line">
+              <span class="sw-ln">1</span>
+              <span class="sw-com"># greet the reader</span>
+            </span>
+            <span class="sw-line">
+              <span class="sw-ln">2</span>
+              <span class="sw-kw">def</span> <span class="sw-fn">greet</span>
+              (name):
+            </span>
+            <span class="sw-line">
+              <span class="sw-ln">3</span>
+              &nbsp;&nbsp;<span class="sw-kw">return</span>{" "}
+              <span class="sw-str">f"Hi &#123;name&#125;"</span>
+            </span>
+          </span>
+          <span class="sw-check" aria-hidden="true">&#10003;</span>
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var swatches = document.querySelectorAll(".swatch[data-theme-set]");
+    function mark(active) {
+      swatches.forEach(function (s) {
+        s.classList.toggle(
+          "is-active",
+          s.getAttribute("data-theme-set") === active,
+        );
+      });
+    }
+    mark(document.documentElement.dataset.theme || "primer-dark");
+    swatches.forEach(function (s) {
+      s.addEventListener("click", function () {
+        var t = s.getAttribute("data-theme-set");
+        if (t === "primer-dark") delete document.documentElement.dataset.theme;
+        else document.documentElement.dataset.theme = t;
+        try {
+          localStorage.setItem("editora-theme", t);
+        } catch (e) {}
+        var sel = document.getElementById("theme-select");
+        if (sel) sel.value = t;
+        mark(t);
+      });
+    });
+  })();
+</script>
+
+<style>
+  .tg {
+    margin-top: 1rem;
+  }
+  .tg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .swatch {
+    position: relative;
+    display: block;
+    text-align: left;
+    padding: 0;
+    cursor: pointer;
+    border: 1px solid var(--sbd);
+    border-radius: var(--radius);
+    background: var(--sbg);
+    overflow: hidden;
+    font-family: var(--mono);
+    transition:
+      transform 0.06s ease,
+      box-shadow 0.15s ease;
+  }
+  .swatch:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px -12px rgba(0, 0, 0, 0.55);
+  }
+  .swatch.is-active {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .sw-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 0.7rem;
+    background: var(--ssoft);
+    border-bottom: 1px solid var(--sbd);
+  }
+  .sw-bar i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sfaint);
+    opacity: 0.55;
+  }
+  .sw-bar em {
+    margin-left: auto;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--stext);
+  }
+  .sw-code {
+    display: block;
+    padding: 0.7rem 0.8rem 0.85rem;
+    font-size: 0.78rem;
+    line-height: 1.75;
+    color: var(--stext);
+  }
+  .sw-line {
+    display: block;
+    white-space: pre;
+  }
+  .sw-ln {
+    display: inline-block;
+    width: 1.2rem;
+    color: var(--sfaint);
+  }
+  .sw-com {
+    color: var(--scom);
+    font-style: italic;
+  }
+  .sw-kw {
+    color: var(--skw);
+  }
+  .sw-fn {
+    color: var(--sfn);
+  }
+  .sw-str {
+    color: var(--sstr);
+  }
+  .sw-check {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.6rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--sacc);
+    color: var(--sbg);
+    font-size: 0.7rem;
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+  }
+  .swatch.is-active .sw-check {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>

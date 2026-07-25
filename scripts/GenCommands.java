@@ -45,10 +45,12 @@ static final String[] ORDER = {
 //             "view.toggleTestRunner",
 // Requiring the literal on the same line as `Command.of(` missed 96 of MainController's 492
 // registrations. Calls whose id is an expression rather than a literal (`id + ".stop"` per build
-// tool, `ExternalTool.commandIdFor(...)`, plugin ids) are deliberately not matched: those are
-// generated at runtime and have no fixed id or i18n title to document.
+// tool, `ExternalTool.commandIdFor(...)`, plugin ids) are not matched here.
 // The trailing `,` requires the literal to be the *whole* first argument, so a concatenation like
 // `Command.of("tool." + id, …)` is rejected instead of contributing a truncated id ("tool.").
+// Ids this pattern cannot see are recovered from the i18n catalog — see the completeness backstop
+// in main(). Truly runtime-generated ids (macro.run.<slug>, externalTool.run.<slug>, plugin ids)
+// carry an explicit title and no catalog key, so they stay out of both passes.
 static final Pattern COMMAND_OF = Pattern.compile("Command\\.of\\(\\s*\"([^\"]+)\"\\s*,");
 // Flat JSON "key": "value" pairs (escape-aware), scanned in file order.
 static final Pattern JSON_PAIR =
@@ -196,6 +198,21 @@ void main(String[] args) throws IOException {
             int eq = line.indexOf('=');
             props.put(line.substring("command.".length(), eq).strip(), line.substring(eq + 1).strip());
         }
+    }
+
+    // Completeness backstop. The source scan only sees ids written as string literals inside
+    // `Command.of(...)`, and three real registration shapes defeat that: a concatenation
+    // (`Command.of("tool." + id, …)`, one set per build tool), a constant reference
+    // (`Command.of(KeyDispatcher.UNIVERSAL_ARGUMENT, …)`), and literals that live outside
+    // com/editora/ui (BuildTool's own `view.toggle<Tool>Support` ids). Together those silently
+    // dropped 36 real commands — the entire Maven/npm/Cargo/Go/Gradle family among them — so the
+    // whole build-tool feature was missing from the site and unsearchable.
+    // Every *documentable* command has a `command.<id>` title in the catalog, because that is how
+    // the app resolves a title for a statically registered command; the runtime-generated ones pass
+    // an explicit title and have no key. So the catalog is the authoritative list: adopt any titled
+    // id the scan missed. This stays correct as new commands (and new build tools) are added.
+    for (String key : props.keySet()) {
+        if (!key.endsWith(".desc")) ids.add(key);
     }
 
     // Per-keymap chord lookup.

@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import pagefind from "astro-pagefind";
 import { version } from "./src/lib/version.ts";
 
 // Served at the custom apex domain editora-project.dev (www. redirects to it).
@@ -28,7 +29,9 @@ function rehypeVersionDocs() {
 
 export default defineConfig({
   site: "https://editora-project.dev",
-  integrations: [sitemap()],
+  // pagefind() runs the Pagefind indexer inside `astro build` (so it works no
+  // matter how CI invokes the build) and serves the index in `astro dev`.
+  integrations: [sitemap(), pagefind()],
   markdown: {
     rehypePlugins: [rehypeVersionDocs],
   },
