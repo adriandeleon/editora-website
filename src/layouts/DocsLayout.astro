@@ -47,12 +47,58 @@ const reference = [
 ];
 
 const { Content } = await render(entry);
+
+// The FAQ page is a flat list of `## Question?` headings followed by their
+// answer, which is exactly the shape schema.org's FAQPage wants. Emitting it
+// lets search engines show the questions directly. Built from the raw body so
+// it can never drift from what the page renders; answers are flattened to
+// plain text (links and code spans stripped) and capped, since the schema is a
+// summary rather than a copy of the page.
+const faqJsonLd =
+  entry.id === "faq"
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        // Split rather than a lookahead regex: an earlier version ended the
+        // answer at `(?=^##\s|\Z)`, but \Z is not a JavaScript anchor (it
+        // matches a literal "Z"), so the final question never matched and the
+        // page shipped 11 of its 12 questions.
+        mainEntity: entry.body
+          .split(/^##\s+/m)
+          .slice(1)
+          .map((block) => {
+            const nl = block.indexOf("\n");
+            const q = (nl === -1 ? block : block.slice(0, nl)).trim();
+            const a = nl === -1 ? "" : block.slice(nl + 1);
+            const text = a
+              .replace(/```[\s\S]*?```/g, " ")
+              .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+              .replace(/[`*_>#]/g, "")
+              .replace(/\s+/g, " ")
+              .trim()
+              .slice(0, 500);
+            return { q, text };
+          })
+          .filter((x) => x.q && x.text)
+          .map((x) => ({
+            "@type": "Question",
+            name: x.q,
+            acceptedAnswer: { "@type": "Answer", text: x.text },
+          })),
+      }
+    : null;
 ---
 
 <Layout
   title={`${entry.data.title} — Editora Docs`}
   description={entry.data.description ?? entry.data.title}
+  ogImage="og/docs.png"
 >
+  {
+    faqJsonLd && faqJsonLd.mainEntity.length > 0 && (
+      <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+    )
+  }
   <div class="docs-wrap">
     <aside class="docs-sidebar">
       <nav>
@@ -81,14 +127,14 @@ const { Content } = await render(entry);
       </nav>
     </aside>
 
-    <article class="docs-content doc">
+    <article class="docs-content doc" data-pagefind-body data-pagefind-meta="kind:Docs">
       <h1>
         {entry.data.beta && <span class="beta-pill">Beta</span>}
         {entry.data.title}
       </h1>
       <Content />
 
-      <nav class="docs-pager">
+      <nav class="docs-pager" data-pagefind-ignore>
         {
           prev ? (
             <a class="prev" href={href(prev)}>

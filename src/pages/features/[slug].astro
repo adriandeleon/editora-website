@@ -17,7 +17,9 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 
 // Screenshot: drop one at public/screenshots/features/<slug>.<ext> and it shows.
-const exts = ["png", "jpg", "jpeg", "webp", "gif", "avif"];
+// Real captures (png/jpg/…) win; an SVG stand-in is the last resort, so a
+// dropped-in real screenshot automatically replaces the generated placeholder.
+const exts = ["png", "jpg", "jpeg", "webp", "gif", "avif", "svg"];
 const shot = exts
   .map((e) => `screenshots/features/${entry.id}.${e}`)
   .find((p) => existsSync(resolve("public", p)));
@@ -32,7 +34,7 @@ const related = (group?.items ?? []).filter((f) => f.id !== entry.id).slice(0, 6
   title={`${entry.data.title} — Editora`}
   description={entry.data.summary.replace(/<[^>]+>/g, "")}
 >
-  <main class="doc feature">
+  <main class="doc feature" data-pagefind-body data-pagefind-meta="kind:Feature">
     <p class="back"><a href="/#features">← All features</a></p>
     <h1>
       {entry.data.title}

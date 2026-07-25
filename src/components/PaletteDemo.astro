@@ -1,0 +1,294 @@
+---
+// A self-contained, theme-aware animation of Editora's command palette:
+// a query types itself in, the result list filters, and the selection walks
+// down to a command that "runs". Pure CSS keyframes — no JS, no asset — so it
+// stays crisp on retina, recolors with the active site theme, and freezes on a
+// tidy frame under prefers-reduced-motion. This is the "shows the verb" motion
+// the hero needs; the real screen-capture <video> sits beside it in the hero.
+const rows = [
+  { title: "View: Toggle Markdown Preview", chord: "C-c p", match: true },
+  { title: "Git: Show File History", chord: "M-g h", match: false },
+  { title: "Edit: Add Cursor to Next Match", chord: "C-d", match: false },
+  { title: "Go to Symbol in File", chord: "M-g s", match: false },
+  { title: "LSP: Go to Definition", chord: "M-.", match: false },
+];
+---
+
+<div class="palette-demo" aria-hidden="true">
+  <div class="pd-editor">
+    <span class="pd-ln">1</span><span class="pd-code"
+      ><span class="k">package</span> com.editora;</span
+    >
+    <span class="pd-ln">2</span><span class="pd-code"> </span>
+    <span class="pd-ln">3</span><span class="pd-code"
+      ><span class="k">public</span> <span class="k">class</span>
+      <span class="t">App</span> {</span
+    >
+    <span class="pd-ln">4</span><span class="pd-code"
+      >  <span class="k">void</span> <span class="fn">main</span>() {</span
+    >
+    <span class="pd-ln">5</span><span class="pd-code"
+      >    <span class="k">var</span> name = <span class="s">"Editora"</span>;</span
+    >
+    <span class="pd-ln">6</span><span class="pd-code"
+      >    <span class="fn">IO</span>.<span class="fn">println</span>(<span
+        class="s">"Hi "</span
+      > + name);</span
+    >
+    <span class="pd-ln">7</span><span class="pd-code"
+      >    <span class="k">if</span> (<span class="fn">ready</span>()) {</span
+    >
+    <span class="pd-ln">8</span><span class="pd-code"
+      >      <span class="fn">run</span>();</span
+    >
+    <span class="pd-ln">9</span><span class="pd-code">    }</span>
+    <span class="pd-ln">10</span><span class="pd-code">  }</span>
+    <span class="pd-ln">11</span><span class="pd-code">}</span>
+  </div>
+
+  <div class="pd-palette">
+    <div class="pd-input">
+      <span class="pd-prompt">M-x</span>
+      <span class="pd-typed">preview</span><span class="pd-caret"></span>
+    </div>
+    <ul class="pd-list">
+      {
+        rows.map((r, i) => (
+          <li class={`pd-row${r.match ? " is-match" : ""}`} style={`--i:${i}`}>
+            <span class="pd-title">{r.title}</span>
+            <span class="pd-chord">{r.chord}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .palette-demo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    overflow: hidden;
+    box-shadow:
+      0 20px 50px -20px rgba(0, 0, 0, 0.6),
+      0 0 0 1px var(--border-soft);
+    font-family: var(--mono);
+    user-select: none;
+  }
+
+  /* faint editor backdrop the palette floats over */
+  .pd-editor {
+    position: absolute;
+    inset: 0;
+    padding: 1.1rem 1.25rem;
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    align-content: start;
+    gap: 0.15rem 0.75rem;
+    font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+    line-height: 1.7;
+    opacity: 0.5;
+  }
+  .pd-ln {
+    color: var(--faint);
+    text-align: right;
+  }
+  .pd-code {
+    color: var(--text);
+    white-space: pre;
+  }
+  .pd-code .k {
+    color: var(--tok-keyword);
+  }
+  .pd-code .t {
+    color: var(--tok-type);
+  }
+  .pd-code .fn {
+    color: var(--tok-function);
+  }
+  .pd-code .s {
+    color: var(--tok-string);
+  }
+
+  /* the floating palette */
+  .pd-palette {
+    position: absolute;
+    left: 50%;
+    top: 8%;
+    transform: translateX(-50%);
+    width: min(85%, 30rem);
+    background: color-mix(in srgb, var(--bg-soft) 92%, var(--bg));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    animation: pd-pop 0.5s ease both;
+  }
+
+  .pd-input {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: clamp(0.72rem, 1.5vw, 0.9rem);
+  }
+  .pd-prompt {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 5px;
+    padding: 0.05rem 0.4rem;
+    font-size: 0.78em;
+    font-weight: 600;
+  }
+  .pd-typed {
+    display: inline-block;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: bottom;
+    width: 7ch; /* "preview" is 7 chars */
+    /* typewriter: reveal the query by animating width in char-steps —
+       width-based reveal is bulletproof across browsers (unlike animating
+       the `content` property). */
+    animation: pd-type 8s steps(7, end) infinite;
+  }
+  .pd-caret {
+    width: 2px;
+    height: 1.05em;
+    background: var(--accent);
+    animation: pd-blink 1s steps(1) infinite;
+  }
+
+  .pd-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.3rem;
+  }
+  .pd-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.42rem 0.6rem;
+    border-radius: 7px;
+    font-size: clamp(0.68rem, 1.4vw, 0.85rem);
+    color: var(--muted);
+    /* non-matching rows fade out once the query has narrowed the list */
+    animation: pd-filter 8s ease infinite;
+  }
+  .pd-row.is-match {
+    color: var(--text);
+    /* the matching row keeps the selection highlight through the cycle */
+    animation: pd-select 8s ease infinite;
+  }
+  .pd-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pd-chord {
+    flex: none;
+    color: var(--faint);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.02rem 0.4rem;
+    font-size: 0.82em;
+  }
+
+  @keyframes pd-pop {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+  @keyframes pd-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  /* Reveal "preview" one glyph at a time, hold, then backspace for the loop. */
+  @keyframes pd-type {
+    0% {
+      width: 0;
+    }
+    21%,
+    92% {
+      width: 7ch;
+    }
+    100% {
+      width: 0;
+    }
+  }
+
+  /* Once the query is in (~24%), the non-matching rows collapse away. */
+  @keyframes pd-filter {
+    0%,
+    22% {
+      opacity: 1;
+      max-height: 2.2rem;
+      transform: none;
+    }
+    28%,
+    90% {
+      opacity: 0;
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      transform: translateY(-4px);
+    }
+    100% {
+      opacity: 1;
+      max-height: 2.2rem;
+    }
+  }
+  /* The matching row slides to the top and lights up as the "run" moment. */
+  @keyframes pd-select {
+    0%,
+    22% {
+      background: transparent;
+    }
+    30%,
+    82% {
+      background: var(--accent-soft);
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+    86% {
+      background: var(--accent);
+      box-shadow: none;
+    }
+    88%,
+    100% {
+      background: transparent;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pd-palette,
+    .pd-typed,
+    .pd-row,
+    .pd-caret {
+      animation: none !important;
+    }
+    .pd-typed {
+      width: 7ch;
+    }
+    /* freeze on the filtered, selected frame */
+    .pd-row:not(.is-match) {
+      display: none;
+    }
+    .pd-row.is-match {
+      background: var(--accent-soft);
+      box-shadow: inset 2px 0 0 var(--accent);
+      color: var(--text);
+    }
+  }
+</style>

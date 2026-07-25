@@ -1,0 +1,183 @@
+---
+// "Works with your stack": the 21 language-server languages and the live
+// preview formats, as theme-aware chips. Monogram swatches (brand-ish colors)
+// stand in for full brand logos — swap in real SVGs later without touching the
+// layout. Lists are kept in sync with LspServerRegistry / the preview features
+// in the Editora repo.
+const languages = [
+  { name: "Java", tag: "Jv", color: "#e76f00" },
+  { name: "JavaScript", tag: "JS", color: "#f7df1e", dark: true },
+  { name: "TypeScript", tag: "TS", color: "#3178c6" },
+  { name: "Python", tag: "Py", color: "#3776ab" },
+  { name: "Go", tag: "Go", color: "#00add8" },
+  { name: "Rust", tag: "Rs", color: "#c56a3a" },
+  { name: "C", tag: "C", color: "#5c6bc0" },
+  { name: "C++", tag: "C+", color: "#00599c" },
+  { name: "C#", tag: "C#", color: "#178600" },
+  { name: "Ruby", tag: "Rb", color: "#cc342d" },
+  { name: "PHP", tag: "PHP", color: "#777bb4" },
+  { name: "Kotlin", tag: "Kt", color: "#7f52ff" },
+  { name: "Lua", tag: "Lua", color: "#2c2d72" },
+  { name: "HTML", tag: "<>", color: "#e34c26" },
+  { name: "CSS", tag: "CSS", color: "#1572b6" },
+  { name: "JSON", tag: "{}", color: "#8a8f98", dark: true },
+  { name: "YAML", tag: "YML", color: "#cb171e" },
+  { name: "XML", tag: "XML", color: "#f6820c" },
+  { name: "TOML", tag: "TML", color: "#9c4221" },
+  { name: "SQL", tag: "SQL", color: "#e38c00" },
+  { name: "Shell", tag: "sh", color: "#4eaa25" },
+  { name: "Dockerfile", tag: "Dk", color: "#2496ed" },
+  { name: "Terraform", tag: "Tf", color: "#7b42bc" },
+];
+
+const previews = [
+  "Markdown",
+  "Mermaid",
+  "CSV grid",
+  "PDF",
+  "SVG",
+  "Graphviz DOT",
+  "PlantUML",
+  "Typst",
+  "JSON / YAML / TOML tree",
+  "XML tree",
+  "OpenAPI",
+  "GitHub Actions",
+  "Markwhen",
+  "Images",
+  "Hex",
+];
+---
+
+<div class="wall">
+  <div class="wall-block">
+    <h3 class="wall-label">
+      Language servers <span class="wall-count">21</span>
+    </h3>
+    <ul class="chips">
+      {
+        languages.map((l) => (
+          <li class="chip">
+            <span
+              class={`chip-badge${l.dark ? " on-light" : ""}`}
+              style={`--c:${l.color}`}
+            >
+              {l.tag}
+            </span>
+            <span class="chip-name">{l.name}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="wall-note">
+      &hellip;plus TextMate syntax highlighting for many more.
+    </p>
+  </div>
+
+  <div class="wall-block">
+    <h3 class="wall-label">
+      Live previews <span class="wall-count">{previews.length}+</span>
+    </h3>
+    <ul class="chips chips-plain">
+      {
+        previews.map((p) => (
+          <li class="chip chip-preview">
+            <span class="chip-dot" aria-hidden="true" />
+            <span class="chip-name">{p}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .wall {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 1rem;
+  }
+  .wall-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .wall-count {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+    font-size: 0.9em;
+  }
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.3rem 0.8rem 0.3rem 0.35rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: border-color 0.15s ease;
+  }
+  .chip:hover {
+    border-color: var(--accent);
+  }
+  .chip-badge {
+    display: grid;
+    place-items: center;
+    min-width: 1.55rem;
+    height: 1.55rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: var(--c);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .chip-badge.on-light {
+    color: #10141a;
+  }
+  .chip-name {
+    white-space: nowrap;
+  }
+  .wall-note {
+    color: var(--faint);
+    font-size: 0.85rem;
+    margin: 1rem 0 0;
+  }
+
+  .chips-plain .chip-preview {
+    padding: 0.3rem 0.85rem;
+  }
+  .chip-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .chip {
+      font-size: 0.82rem;
+    }
+  }
+</style>
