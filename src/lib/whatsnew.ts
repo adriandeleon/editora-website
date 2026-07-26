@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Workspace trust for build wrappers.", detail: "A repository that ships its own <code>./mvnw</code> or <code>./gradlew</code> gets that script run with your privileges the moment you trigger a…" },
-  { title: "Create a pull request from the GitHub tool window", detail: "a <code>+</code> button beside Refresh, opening the same form as the palette command, with the panel refreshing afterwards so the new PR appears in…" },
-  { title: "The Create Pull Request form gained reviewers, assignees and labels", detail: ", and can push a never-pushed branch first. <code>gh pr create</code> on a branch with no upstream used to fail with an opaque error, because it…" },
-  { title: "The Git Log file list gained a context menu", detail: "Show Diff / Open File / Show File History / Copy Path (Open File is disabled for a deleted file), plus Enter to open a diff." },
-  { title: "Startup instrumentation", detail: "(<code>EDITORA_PERF=1</code>, <code>scripts/measure-startup.sh</code>) measuring launch through to the first frame that actually carries the file's…" },
-  { title: "<code>view.toggleStructuredPreview</code> — the structured-data preview had a Settings…", detail: "" },
-  { title: "The HTTP Client is now the <code>.http</code> file's preview", detail: ", not a separate tool window. Every other rich file type in Editora presents itself through the shared Editor/Split/Preview view, and…" },
-  { title: "Console panels scroll with your configured keybindings.", detail: "Build Output, Run, External Tools and Debug marked themselves as owning their keys but had nothing to hand the chords to, so…" },
+  { title: "Code actions / quick fixes (LSP)", detail: "the language server's fixes and refactorings, at last reachable: <code>LSP: Code Actions</code> (palette, the editor right-click menu, and…" },
+  { title: "Rename symbol (LSP)", detail: "<code>F2</code> (VS Code/Sublime/IntelliJ keymaps), the editor right-click menu, or <code>LSP: Rename Symbol…</code> in the palette renames the…" },
+  { title: "Run &amp; debug Maven/Gradle project main classes", detail: "beyond single-file scripts, you can now run or debug a real project's <code>main</code> class. Run Main Class… / Debug Main Class… (command palette)…" },
+  { title: "Doctor — external-tool health screen", detail: "<code>View: Doctor</code> in the palette (also on the Welcome page) opens a full-tab report, like <code>flutter doctor</code>, of every external CLI…" },
+  { title: "The Emacs kill ring.", detail: "The kill commands — <code>C-k</code>, <code>M-d</code>, <code>M-DEL</code>, <code>C-M-k</code>, <code>C-S-DEL</code>, <code>M-z</code> — used to…" },
+  { title: "Signature help (LSP)", detail: "typing <code>(</code> or <code>,</code> in a call pops the server's overload list at the caret: the active signature with the current parameter…" },
+  { title: "Inlay hints (LSP)", detail: "the language server's parameter-name and inferred-type hints, drawn as grey italic annotations after each line (aggregated per line). Off by default…" },
+  { title: "Select all occurrences", detail: "place a cursor at every occurrence of the selection (or the word under the caret) at once, turning them all into editable cursors…" },
 ];

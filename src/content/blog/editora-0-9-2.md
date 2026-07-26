@@ -31,7 +31,7 @@ third-party XML dependency. Runs prefer the project's own `./mvnw` wrapper when
 present (falling back to `mvn` on PATH, or a Settings override) and stream to a
 dedicated Maven console tool window. It's on by default, inert until a pom is
 found, and disabled in Simple UI mode and for remote files. Read the
-[Maven guide](/docs/maven).
+[Maven guide](/docs/build-tools).
 
 ## AI, behind one switch
 

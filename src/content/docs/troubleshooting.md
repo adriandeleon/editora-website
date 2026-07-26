@@ -1,9 +1,31 @@
 ---
 title: Troubleshooting
-description: Unsigned installers, finding external tools, the debug log, performance, and resetting config.
+description: Doctor, unsigned installers, finding external tools, the debug log, performance, and resetting config.
 category: Help
 order: 3
 ---
+
+## Doctor
+
+**`View: Doctor`** in the command palette (also linked from the Welcome page)
+opens a full-tab health report of every external command Editora's features rely
+on, in the spirit of `flutter doctor`. It covers Git and the GitHub CLI
+(including whether `gh` is signed in), ripgrep, the preview and diagram tools
+(`mmdc`, `maid`, Graphviz, PlantUML, Typst), every enabled language server, the
+debug adapters (java-debug, debugpy, js-debug), the Run interpreters (with a
+JDK 25 check for Java), the build tools, the selected AI agent CLI, elevated
+save, browsers, and the in-app installer's prerequisites.
+
+Each row shows the resolved command and its version where available. When
+something is off, the row carries a plain-language tip plus an **Install…**
+button (the in-app installer) or a **Settings…** link straight to the right page.
+A feature you have switched off shows as a gray informational row and is never
+probed, so Doctor doesn't nag you about tools you don't want. All probes run off
+the UI thread, and only when you open or refresh the screen.
+
+Start here when something that should work doesn't: it answers "is the tool
+installed, is it the version I think, and is Editora looking at the right one" in
+one pass.
 
 ## A launcher is blocked on first run
 

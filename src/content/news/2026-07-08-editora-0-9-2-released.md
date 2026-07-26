@@ -12,7 +12,7 @@ for macOS (Intel & Apple Silicon), `.msi` for Windows (x64), and `.deb` for Linu
 
 New in this release:
 
-- **[Maven support](/docs/maven)**: a toolbar button (shown when a `pom.xml` is
+- **[Maven support](/docs/build-tools)**: a toolbar button (shown when a `pom.xml` is
   detected) opens a searchable popup that reads the pom directly, listing
   lifecycle phases, profiles, and each plugin's bound goals, and streams runs to
   a Maven console. It prefers your `./mvnw` wrapper and needs no external

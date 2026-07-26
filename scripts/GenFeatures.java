@@ -60,13 +60,15 @@ There's also an Emacs `find-file`-style **path finder** (`C-x C-f`) with prefix 
 """),
     new Feature("multiple-cursors", KB, 4, false,
         "Multiple cursors",
-        "Add a caret at the next occurrence or above/below, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once, VS Code-style.",
+        "Add a caret at the next occurrence, above/below, or on every occurrence at once, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once, VS Code-style.",
         """
 Edit many places at once, VS Code-style. Add a caret at the **next occurrence** of the selection, or **above / below** the current line, or **Alt-drag** a column/box selection. Type, and the edit fans out to every caret; `Esc` collapses back to one.
 
+**Select all occurrences** (`Ctrl+Shift+L` in the VS Code and Sublime keymaps) puts a cursor on every occurrence of the selection, or of the word under the caret, in one step. From the Find bar, **Alt+Enter** does the same for every match of the current query, so the query's case, regex and whole-word toggles decide what gets a cursor.
+
 It's powered by Editora's RichTextFX fork, which adds multiple cursors and column selection as a layered input map that's completely transparent when there's a single caret.
 
-*Note:* movement chords act on the primary caret and don't fan out, use the arrow keys for multi-caret movement.
+Movement chords fan out too: `C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`, `M-f` and `M-b` move every caret, like the arrow keys. Document, paragraph, sentence and page motions stay on the primary caret.
 """),
     new Feature("macros", KB, 5, false,
         "Keyboard macros",
@@ -213,7 +215,7 @@ It's **on by default**; toggle it in Settings → Editor or with *View: Toggle E
         "Undo History",
         "An in-session timeline of document checkpoints (one per typing burst). Jump back to any recent state from a filterable popup (<kbd>M-g v</kbd>) or the tool window (<kbd>M-g u</kbd>).",
         """
-Editora keeps an in-session **timeline of checkpoints** as you edit, one per typing burst, finer-grained than save-based [local file history](/docs/local-file-history).
+Editora keeps an in-session **timeline of checkpoints** as you edit, one per typing burst, finer-grained than save-based [local file history](/docs/workspace#local-file-history).
 
 - The **popup** (`undoHistory.jump`, `M-g v`) lists the active buffer's checkpoints, each with a caret-line preview and capture time, and filters as you type. Pick one to jump back to that state (a single undoable restore). It's the fast, keyboard-driven path.
 - The **Undo History tool window** (`M-g u`) shows the same timeline; double-click or Enter to jump back.
@@ -230,20 +232,28 @@ Tokenization is **stateful** (it carries grammar state across lines, so block co
 """),
     new Feature("lsp", CI, 2, true,
         "Language servers (LSP)",
-        "Go-to-definition, find references, hover docs, diagnostics, and completions via 20+ language servers (Java, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
+        "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 22 language servers (Java, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
         """
-Editora speaks the **Language Server Protocol**, so you get real language smarts:
+Editora speaks the **Language Server Protocol**, both halves of it: the requests that read your code, and the ones that change it.
 
-- **Go to definition**: `M-.`, or Ctrl/Cmd-click a symbol
+- **Go to definition**: `M-.`, or Ctrl/Cmd-click a symbol, and it works from inside an opened JDK or dependency source tab too
+- **Go to implementation / type definition / declaration**, offered only where the server supports them
 - **Find references**: `M-?`, listed in a browsable **References** tool window
+- **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
-- **Hover docs**: `C-c h`
+- **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.`, including organize imports and extract/inline refactorings
+- **Rename symbol**: `F2`, across the whole workspace, moving a public Java class's file with it
+- **Signature help** as you type `(` or `,`, with the current parameter highlighted
+- **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)
 - **Format Document**: reformat the whole file via the server (palette or right-click)
+- Server-provided **folding regions** and **expand/shrink selection**
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
-Over 20 servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Typst (tinymist), and more. Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
+Twenty-two servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (tinymist). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
 
-**One-click install** covers all 21 servers: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
+Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes.
+
+**One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
 Off by default. Enable it under Settings → LSP.
 """),
@@ -260,10 +270,14 @@ Completion appears as you type, debounced and off the hot path.
 Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets) live in Settings → Editor.
 """),
     new Feature("run-files", RD, 1, false,
-        "Run files",
-        "Run a Java compact source file, Python, or shell script from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and per-file arguments.",
+        "Run files & main classes",
+        "Run a script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
         """
 A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), a **Python** script, or a **shell** script.
+
+It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
+
+**Run configurations** are saved per project with the main class, program and VM arguments, environment variables and a working directory, re-runnable from the palette and editable in Settings → Run Configurations.
 
 Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. Bind it to `C-c r` or run from the palette.
 """),
@@ -277,7 +291,9 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 - A threads + call-stack view and a lazy variables tree with **set-value**
 - **Watches** and an evaluate console
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled. Off by default. Enable it under Settings → Debugging.
+For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening.
+
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging.
 """),
     new Feature("http-client", RD, 3, true,
         "HTTP client",
