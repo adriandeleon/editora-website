@@ -5,9 +5,9 @@ date: 2026-07-26
 version: "0.9.10"
 ---
 
-**Editora 0.9.10** is out, and it is the largest release so far: 45 new features,
+**Editora 0.9.10** is out, and it is the largest release so far: 51 new features,
 7 performance fixes and 18 bug fixes. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.10).
 
 ## Language servers grew up
 
