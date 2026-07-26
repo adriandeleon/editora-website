@@ -14,6 +14,8 @@ Editora speaks the **Language Server Protocol**, both halves of it: the requests
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
 - **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.`, including organize imports and extract/inline refactorings
+- **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, and override/implement methods, each with a checkbox picker
+- **Re-indent as you type** (`;`, `}`, Enter snap the line to the server's convention — indentation only, off by default) and a **whole-project Problems** view with a Build Project command
 - **Rename symbol**: `F2`, across the whole workspace, moving a public Java class's file with it
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
 - **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)

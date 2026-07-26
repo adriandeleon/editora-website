@@ -56,6 +56,21 @@ See the [LSP guide](/docs/lsp).
 - **Servers track external file changes.** A `git checkout`, a CLI build or an
   external editor is forwarded to the running servers, so their project models no
   longer go stale until a restart.
+- **Java code generation** from that same code-action menu: **Generate
+  toString()**, **hashCode() and equals()**, **Constructors** and
+  **Override/Implement Methods**, each with a checkbox list so you pick the
+  fields or methods to include. The server withholds these unless the editor says
+  it can drive the picker, which is why they were absent entirely.
+- **Three Java commands**: **Organize Imports** (directly, without the code-action
+  menu), **Copy Fully Qualified Name**, and **Reload Project Configuration**, for
+  when a dependency change hasn't been picked up.
+- **Project-wide problems.** The Problems window gained an **Open files / Whole
+  project** selector and a **Build Project** command that recompiles the Java
+  project and fills it, so a compile error in a file you hadn't opened is no
+  longer invisible. The default is unchanged, open files only.
+- **Re-indent as you type.** Typing `;`, `}` or Enter snaps the line to the
+  server's own indentation convention. Indentation only, never a reformat, with
+  the local auto-indent still acting first. Off by default.
 - **A crashed server restarts itself**, servers **shut down when their last file
   closes** (after a three-minute grace), and two windows on the same Java project
   no longer contend for one jdtls workspace.
@@ -86,6 +101,13 @@ file is open. **Debug via Build Tool** covers the projects where the build tool
 is the natural way to start the app: it launches Gradle `run`/`bootRun
 --debug-jvm` or Maven `spring-boot:run` under a suspended JVM and attaches when
 it is ready. See [Running and debugging](/docs/run-debug).
+
+Clicking a **Java stack-trace frame** in the Run, Test or Build console now asks
+the language server to resolve it, so a frame inside a dependency or the JDK
+opens its source instead of reporting "not found", and the ▶ beside a JUnit class
+is confirmed against the project's real test source folders, so a class in
+`src/main/java` that happens to carry a `@Test`-shaped annotation no longer gets
+a stray one.
 
 Two fixes here matter as much as the features. Java debugging stopped hiding from
 people whose jdtls already bundles the java-debug plugin (Homebrew's does), which

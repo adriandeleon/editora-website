@@ -74,6 +74,13 @@ the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures.
 
+The Problems window has an **Open files / Whole project** selector
+(`lsp.toggleProjectProblems`), plus a **Build Project** command
+(`lsp.buildWorkspace`) that recompiles the Java project and fills it. Until now
+problems only ever came from files you had open, so a compile error in a file you
+hadn't touched was invisible. The default is unchanged, open files only, so
+nothing gets noisier unless you ask for it.
+
 ## Changing the code
 
 | Feature | Command | Default key |
@@ -81,6 +88,10 @@ kinds, per-kind icons and method signatures.
 | Code actions / quick fixes | `lsp.codeActions` | `Ctrl-.` / `Cmd-.` |
 | Rename symbol | `lsp.rename` | `F2` |
 | Format Document | `lsp.formatDocument` | (palette) |
+| Organize imports | `lsp.organizeImports` | (palette) |
+| Copy fully qualified name | `lsp.copyQualifiedName` | (palette) |
+| Reload project configuration | `lsp.reloadProject` | (palette) |
+| Re-indent as you type | `view.toggleOnTypeFormatting` | (palette) |
 
 **Code actions** ask the server what it can do at the caret or selection: quick
 fixes for the diagnostics there, organize imports, generate methods, extract and
@@ -90,6 +101,19 @@ arrive back over `workspace/applyEdit`. Edits land as normal undoable edits, one
 undo step per file, and a multi-file fix opens the untouched files in background
 tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
+
+**Java code generation** rides that same menu: **Generate toString()**, **Generate
+hashCode() and equals()**, **Generate Constructors** and **Override/Implement
+Methods**. Each opens a checkbox list so you choose which fields or methods to
+include, with Space to toggle and Enter to generate. The server withholds these
+unless the editor says it can drive the picker, which is why they were absent
+before.
+
+Three Java commands sit outside the menu: **Organize Imports** sorts and prunes a
+file's imports directly, **Copy Fully Qualified Name** puts the full name of the
+symbol at the caret on the clipboard, and **Reload Project Configuration** makes
+the server re-read `pom.xml` or `build.gradle` when a dependency change hasn't
+been picked up.
 
 **Rename symbol** renames across the whole workspace. The prompt comes pre-filled
 with the current name, and the server validates the spot first, so you are told
@@ -102,6 +126,12 @@ keymaps.
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
 `.html`. In a language whose server supports range formatting, **Tab** also snaps
 the current line's indentation to the server's convention.
+
+**Re-indent as you type** does the same on `;`, `}` and Enter. It is indentation
+only, never a reformat of the line under you, and the local auto-indent still
+acts first, so nothing feels slower and the server only corrects the cases the
+heuristic gets wrong. Off by default: turn it on in Settings → Code Completion or
+with `view.toggleOnTypeFormatting`.
 
 ## Folding and selection
 
@@ -202,5 +232,6 @@ for details.
 Document sync is **incremental** for servers that accept it (most of them), with
 a periodic full resync as a divergence safety net, and semantic highlighting
 transfers only what changed on servers that support token deltas. Diagnostics for
-files that aren't open are dropped, to keep the Problems window focused on what
-you're editing. Still deferred: format-on-save and on-type formatting.
+files that aren't open are dropped by default, to keep the Problems window
+focused on what you're editing, and the whole-project selector above lifts that
+when you want it. Still deferred: format-on-save.

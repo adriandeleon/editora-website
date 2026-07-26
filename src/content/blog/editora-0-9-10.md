@@ -164,7 +164,19 @@ became the safe one and none of those callers changed.
 
 More than fits an essay, so here it is grouped.
 
-**More from the language server.** Occurrence highlighting, which washes every
+**More from the language server.** Java code generation from the code-action
+menu: generate `toString()`, `hashCode()` and `equals()`, constructors, and
+override or implement methods, each with a checkbox list to pick what goes in.
+Three Java commands beside it: organize imports directly, copy a symbol's fully
+qualified name, and reload the project configuration when a dependency change
+hasn't been picked up. A Problems window that can show the **whole project**
+rather than only your open files, with a Build Project command to fill it, so a
+compile error in a file you never opened stops being invisible. Re-indent as you
+type, where `;`, `}` and Enter snap the line to the server's own convention
+(indentation only, off by default, with the local heuristic still going first).
+And a clicked Java stack-trace frame is now resolved by the server, so a frame
+inside a dependency or the JDK opens its source instead of reporting "not found".
+Occurrence highlighting, which washes every
 use of the symbol under the caret and shades writes warmer than reads. Call and
 type hierarchy in a new Hierarchy tool window, each level fetched as you expand
 it. Go to Implementation, Type Definition and Declaration, offered in the
@@ -225,8 +237,11 @@ the first to the last match, keeping the untouched remainder out of the undo
 entry; a snippet's value is no longer stolen by a leading mirror, and snippet
 transforms are no longer discarded, which had been quietly breaking the bundled
 PowerShell snippets; Java debugging no longer reports itself unavailable when
-your jdtls already bundles the java-debug plugin; and a Gradle run configuration
-pre-fills the main class the build declares rather than whichever file is open.
+your jdtls already bundles the java-debug plugin; the ▶ beside a JUnit class is
+confirmed against the project's real test source folders, so a class in
+`src/main/java` carrying a `@Test`-shaped annotation stops getting a stray one;
+and a Gradle run configuration pre-fills the main class the build declares rather
+than whichever file is open.
 
 The [release note](/news/2026-07-26-editora-0-9-10-released) has the organized
 list and the [What's New](/whats-new) page has all of it.

@@ -9,21 +9,86 @@ title: What's New
 
 ### Added
 
-- **Code actions / quick fixes (LSP)** — the language server's fixes and refactorings, at last reachable:
-  `LSP: Code Actions` (palette, the editor right-click menu, and `Ctrl-.`/`Cmd-.` in the VS Code, Sublime
-  and IntelliJ keymaps) asks the server what it can do at the caret or selection — quick fixes for the
-  diagnostics there, organize imports, generate methods, extract/inline refactorings — and shows a picker
-  (the server's preferred fix first). Applying works for every action shape: an inline edit, a deferred
-  edit (resolved on demand), or a server-side command whose edits arrive via `workspace/applyEdit` — now
-  implemented, so server-initiated edits land in the editor as normal undoable edits (one undo step per
-  file; a multi-file fix opens untouched files in background tabs). (#670)
+- **Three Java commands** (palette) — **Organize Imports** sorts and prunes a file's imports directly,
+  without going through the code-action menu; **Copy Fully Qualified Name** puts the full name of the symbol
+  at the caret on the clipboard; **Reload Project Configuration** makes the language server re-read
+  `pom.xml` / `build.gradle` when a dependency change hasn't been picked up.
+- **Project-wide problems** — the Problems window gained an **Open files / Whole project** selector, and a
+  new **Build Project** command (palette) recompiles the Java project and fills it. Until now problems only
+  ever came from files you had open, so a compile error in a file you hadn't touched was invisible. The
+  default is unchanged — open files only — so nothing gets noisier unless you ask for it.
+- **Stack-trace frames into libraries** — clicking a Java stack-trace line in the Run, Test or Build console
+  now asks the language server to resolve it, so a frame inside a dependency or the JDK opens its source
+  instead of reporting "not found". Frames in your own code behave as before, and the previous
+  filename-matching still handles anything the server can't place (and every non-Java trace).
+- **Fewer stray test gutters** — the ▶ beside a JUnit class is now confirmed against the project's real test
+  source folders, so a class in `src/main/java` that happens to carry a `@Test`-shaped annotation no longer
+  gets one. If the server can't answer, the gutter stays as it was.
+- **Re-indent as you type** — with a language server running, typing `;`, `}` or Enter re-indents the current
+  line to the server's own convention. Indentation only: it never reformats the line under you. The local
+  auto-indent still acts first, so nothing feels slower and the server just corrects the cases it gets wrong.
+  **Off by default** — enable it in Settings → Code Completion, or via the `view.toggleOnTypeFormatting`
+  palette command.
+- **Java code generation** — with the Java language server running, the code-action menu (`Ctrl-.`, or the
+  editor right-click menu) now offers **Generate toString()**, **Generate hashCode() and equals()**,
+  **Generate Constructors** and **Override/Implement Methods**. Each opens a checkbox list so you choose
+  which fields or methods to include — Space toggles, Enter generates. These were previously absent
+  entirely: the server withholds them unless the editor says it can drive the picker.
+- **Go to Implementation, Type Definition and Declaration** — three navigation commands beside Go to
+  Definition. **Go to Implementation** jumps from an interface or abstract member to the concrete overrides
+  (a lone one jumps straight there, several fill the References tool window, and an implementation inside a
+  dependency opens as read-only source); **Go to Type Definition** goes from a variable to the declaration of
+  its type; **Go to Declaration** rounds out the set. All three are palette-discoverable, and the first two
+  also appear in the editor's right-click menu — but only when the language server actually supports them, so
+  the menu never offers a dead entry. Works for every language whose server provides them, not just Java.
+- **Language-server folding and selection** — where a language server is running, code folding now comes from
+  the server's own understanding of the file instead of brace/indent scanning: an import block folds as one
+  region, javadoc and block comments fold, and multi-line expressions no longer nest wrongly. Semantic
+  expand/shrink selection uses the same source, so it respects strings and comments rather than guessing at
+  brackets. Both fall back to the built-in behaviour whenever LSP is off, the file is remote, or the server
+  offers neither — nothing gets less foldable than it was.
+- **Deeper code folding** — fold by nesting level (Fold Level 1–7, like VS Code's `Ctrl+K Ctrl+1..7`), fold or
+  unfold the region at the caret **and everything nested inside it** (Fold/Unfold Recursively), and jump
+  between folds (Go to Parent / Next / Previous Fold — the target is revealed if it's hidden). Twelve new
+  palette commands; bind them to keys from Settings → Keymap.
+- **Subword navigation** — move and delete by camelCase / snake_case parts: stepping through `getUserName`
+  lands on `get` → `User` → `Name`, and acronyms split correctly (`HTMLParser` → `HTML` `Parser`). Four
+  palette commands (Go: Forward/Backward Subword, Edit: Delete Subword Forward/Backward); palette-discoverable
+  everywhere, and bind them to a key from Settings → Keymap if you want VS Code's `Ctrl+Alt+←/→`.
+- **Convert indentation** — two commands (palette: "Convert Indentation to Spaces" / "…to Tabs") rewrite the
+  whole file's leading indentation between tabs and spaces. Only leading whitespace is touched — alignment,
+  in-line content and string contents are left alone — and each direction reverses the other.
+- **Select all occurrences** — place a cursor at every occurrence of the selection (or the word under the
+  caret) at once, turning them all into editable cursors (`Ctrl+Shift+L` in the VS Code and Sublime keymaps;
+  palette-discoverable everywhere). From the Find bar, **Alt+Enter** does the same for every match of the
+  current query and closes the bar. Matching is literal and case-sensitive.
+- **Copy with syntax highlighting** — copying now also puts a colored HTML flavor on the clipboard, so
+  pasting code into Slack, an email or a document keeps its highlighting instead of arriving as a grey block.
+  On by default (Settings → Editor, and the `view.toggleCopyWithHighlighting` palette command); the colors
+  are the light GitHub-style palette, since pasted code usually lands on a light background. A forced
+  **Copy With Syntax Highlighting** command ignores both the setting and the size cap. Plain text is always
+  on the clipboard too, so pasting into a plain-text field is unchanged.
+- **Go to matching bracket** — jump the caret to the bracket paired with the one beside it, and press again
+  to jump back (`Ctrl+Shift+\` in the VS Code keymap, palette-discoverable everywhere as "Go: Matching
+  Bracket"). A companion **Select to Bracket** command selects everything between a bracket pair, both
+  brackets included. Matching is text-based, so a bracket inside a string or comment can pair with the wrong
+  one — the same best-effort as the existing bracket highlight.
+- **Environment variables in run configurations** — a saved run/debug configuration can now set environment
+  variables (`KEY=value`, quote values containing spaces). They apply to both Run and Debug, and are edited in
+  Settings → Run Configurations.
+- **Gradle `application` main class** — saving a run configuration in a Gradle project now pre-fills the main
+  class the build declares (`mainClass = '…'`, `mainClass.set("…")`, or the legacy `mainClassName`), so the
+  config matches what `gradle run` would launch instead of whichever file is open.
 
-- **Rename symbol (LSP)** — `F2` (VS Code/Sublime/IntelliJ keymaps), the editor right-click menu, or
-  `LSP: Rename Symbol…` in the palette renames the symbol under the caret across the whole workspace via
-  the language server. The prompt comes pre-filled with the current name (the server validates the spot
-  first, so you're told up front when something can't be renamed). Renaming a public Java class also
-  **moves its `.java` file** — the tab, session state, and language server all follow to the new path.
-  Edits land as one undo step per touched file; files without an open tab open in background tabs. (#676)
+
+- **Debug via build tool** — debug a Gradle or Spring Boot app by launching it under a suspended JVM
+  (Gradle `run`/`bootRun --debug-jvm`, Maven `spring-boot:run` with a JDWP agent) and attaching the debugger
+  when it's ready. Complements *Debug Main Class* (which uses the language server) for projects where the
+  build tool is the natural way to run the app. Command: *Debug: Debug via Build Tool*.
+
+- **Settings → Run Configurations** — a master-detail editor for the saved run/debug configurations
+  (name, kind, main class, module, program & VM arguments, working directory), so you can create, rename and
+  edit them in place instead of only from the palette.
 
 - **Run & debug Maven/Gradle project main classes** — beyond single-file scripts, you can now run or debug
   a real project's `main` class. **Run Main Class…** / **Debug Main Class…** (command palette) pick any main
@@ -37,6 +102,11 @@ title: What's New
   from the palette (*Run Configuration…* / *Save Run Configuration…* / *Delete Run Configuration…*); VM args
   apply to both Run and Debug.
 
+- **Right-click Select All / Copy in the Build Output and Test Runner consoles** — copies the selection, or
+  all the output when nothing is selected. Both read-only consoles share one helper.
+- **Tooltips on the Test Runner's per-row status icons** — hovering a test's pass/fail/skip/running glyph
+  now says what it means. (The toolbar buttons already had tooltips.)
+
 - **Doctor — external-tool health screen** — `View: Doctor` in the palette (also on the Welcome page)
   opens a full-tab report, like `flutter doctor`, of every external CLI Editora's features rely on: Git
   and the GitHub CLI (including its sign-in state), ripgrep, the preview/diagram tools (mmdc, maid,
@@ -48,59 +118,18 @@ title: What's New
   are switched off show as gray informational rows and are never probed; all probes run off the UI
   thread and only when the screen is opened or refreshed.
 
-- **The Emacs kill ring.** The kill commands — `C-k`, `M-d`, `M-DEL`, `C-M-k`, `C-S-DEL`, `M-z` — used to
-  simply delete, so `C-k` followed by `C-y` pasted whatever unrelated thing happened to be on the system
-  clipboard. They now put their text on a 120-entry ring that `C-y` yanks from, **`M-y`** (yank-pop) steps
-  back through, and a new palette command *Edit: Yank from Kill Ring…* lets you pick from directly.
-  Consecutive kills accumulate into one entry the way Emacs does, so `C-k C-k C-k` then `C-y` restores all
-  three lines — and backward kills prepend, so `M-DEL M-DEL` then `C-y` gives the words back in reading
-  order. Kills are still written to the system clipboard, so pasting into another application is unchanged;
-  conversely, text you copied in another application wins over the ring, so `C-y` never surprises you with a
-  stale kill. The ring is per window and lives only for the session.
-
-- **Signature help (LSP)** — typing `(` or `,` in a call pops the server's overload list at the caret:
-  the active signature with the **current parameter highlighted**, an "n/m" overload counter, and the
-  signature's documentation. It follows your typing (the highlighted parameter advances as arguments are
-  entered) and closes when the caret leaves the call, on Escape, or on scroll. Also on demand via
-  `LSP: Signature Help` in the palette. (#674)
-
-- **Inlay hints (LSP)** — the language server's parameter-name and inferred-type hints, drawn as grey
-  italic annotations after each line (aggregated per line). Off by default — toggle in Settings → Code
-  Completion or with `Toggle Inlay Hints` in the palette; costs nothing while off. (#681)
-
-- **Select all occurrences** — place a cursor at every occurrence of the selection (or the word under the
-  caret) at once, turning them all into editable cursors (`Ctrl+Shift+L` in the VS Code and Sublime keymaps;
-  palette-discoverable everywhere). From the Find bar, **Alt+Enter** does the same for every match of the
-  current query and closes the bar. Matching is literal and case-sensitive.
-
-- **Occurrence highlighting (LSP)** — rest the caret on a symbol and every occurrence in the file gets a
-  subtle wash, with **writes** (assignments) shaded warmer than reads — the IntelliJ/VS Code idle
-  affordance, powered by the language server so it's semantic (a local `x` doesn't light up an unrelated
-  field `x`). Clears the moment the caret moves; zero cost while the caret is typing or LSP is off. (#675)
+- **Navigate inside library source (LSP, Java)** — Go to Definition now also works *from within* an
+  opened JDK/dependency source tab: put the caret on a symbol inside `String.class`'s source and `M-.`
+  chains onward — into another library class (opened the same way) or back into your own code. (#684)
 
 - **Call & type hierarchy (LSP)** — `LSP: Call Hierarchy` shows who calls the method under the caret (or
   what it calls — flip with the Callers/Callees toggle) in a new **Hierarchy** tool window, each level
   fetched from the language server as you expand it; `LSP: Type Hierarchy` does the same for a type's
   supertypes and subtypes. Enter or double-click jumps to any entry. (#682)
 
-- **Go to Implementation, Type Definition and Declaration** — three navigation commands beside Go to
-  Definition. **Go to Implementation** jumps from an interface or abstract member to the concrete overrides
-  (a lone one jumps straight there, several fill the References tool window, and an implementation inside a
-  dependency opens as read-only source); **Go to Type Definition** goes from a variable to the declaration of
-  its type; **Go to Declaration** rounds out the set. All three are palette-discoverable, and the first two
-  also appear in the editor's right-click menu — but only when the language server actually supports them, so
-  the menu never offers a dead entry. Works for every language whose server provides them, not just Java.
-
-- **Navigate inside library source (LSP, Java)** — Go to Definition now also works *from within* an
-  opened JDK/dependency source tab: put the caret on a symbol inside `String.class`'s source and `M-.`
-  chains onward — into another library class (opened the same way) or back into your own code. (#684)
-
-- **Language-server folding and selection** — where a language server is running, code folding now comes from
-  the server's own understanding of the file instead of brace/indent scanning: an import block folds as one
-  region, javadoc and block comments fold, and multi-line expressions no longer nest wrongly. Semantic
-  expand/shrink selection uses the same source, so it respects strings and comments rather than guessing at
-  brackets. Both fall back to the built-in behaviour whenever LSP is off, the file is remote, or the server
-  offers neither — nothing gets less foldable than it was.
+- **Inlay hints (LSP)** — the language server's parameter-name and inferred-type hints, drawn as grey
+  italic annotations after each line (aggregated per line). Off by default — toggle in Settings → Code
+  Completion or with `Toggle Inlay Hints` in the palette; costs nothing while off. (#681)
 
 - **Real language-server progress** — servers that report their long-running work through the standard
   LSP progress channel (jdtls importing/indexing a project, gopls loading packages, rust-analyzer's first
@@ -113,59 +142,45 @@ title: What's New
   restart. Events come from the Project tree's filesystem watcher and the external-change reload paths,
   coalesced so a branch switch lands as one batch. (#677)
 
-- **Settings → Run Configurations** — a master-detail editor for the saved run/debug configurations
-  (name, kind, main class, module, program & VM arguments, working directory), so you can create, rename and
-  edit them in place instead of only from the palette.
+- **Rename symbol (LSP)** — `F2` (VS Code/Sublime/IntelliJ keymaps), the editor right-click menu, or
+  `LSP: Rename Symbol…` in the palette renames the symbol under the caret across the whole workspace via
+  the language server. The prompt comes pre-filled with the current name (the server validates the spot
+  first, so you're told up front when something can't be renamed). Renaming a public Java class also
+  **moves its `.java` file** — the tab, session state, and language server all follow to the new path.
+  Edits land as one undo step per touched file; files without an open tab open in background tabs. (#676)
 
-- **Debug via build tool** — debug a Gradle or Spring Boot app by launching it under a suspended JVM
-  (Gradle `run`/`bootRun --debug-jvm`, Maven `spring-boot:run` with a JDWP agent) and attaching the debugger
-  when it's ready. Complements *Debug Main Class* (which uses the language server) for projects where the
-  build tool is the natural way to run the app. Command: *Debug: Debug via Build Tool*.
+- **Occurrence highlighting (LSP)** — rest the caret on a symbol and every occurrence in the file gets a
+  subtle wash, with **writes** (assignments) shaded warmer than reads — the IntelliJ/VS Code idle
+  affordance, powered by the language server so it's semantic (a local `x` doesn't light up an unrelated
+  field `x`). Clears the moment the caret moves; zero cost while the caret is typing or LSP is off. (#675)
 
-- **Environment variables in run configurations** — a saved run/debug configuration can now set environment
-  variables (`KEY=value`, quote values containing spaces). They apply to both Run and Debug, and are edited in
-  Settings → Run Configurations.
+- **Signature help (LSP)** — typing `(` or `,` in a call pops the server's overload list at the caret:
+  the active signature with the **current parameter highlighted**, an "n/m" overload counter, and the
+  signature's documentation. It follows your typing (the highlighted parameter advances as arguments are
+  entered) and closes when the caret leaves the call, on Escape, or on scroll. Also on demand via
+  `LSP: Signature Help` in the palette. (#674)
 
-- **Gradle `application` main class** — saving a run configuration in a Gradle project now pre-fills the main
-  class the build declares (`mainClass = '…'`, `mainClass.set("…")`, or the legacy `mainClassName`), so the
-  config matches what `gradle run` would launch instead of whichever file is open.
+- **Code actions / quick fixes (LSP)** — the language server's fixes and refactorings, at last reachable:
+  `LSP: Code Actions` (palette, the editor right-click menu, and `Ctrl-.`/`Cmd-.` in the VS Code, Sublime
+  and IntelliJ keymaps) asks the server what it can do at the caret or selection — quick fixes for the
+  diagnostics there, organize imports, generate methods, extract/inline refactorings — and shows a picker
+  (the server's preferred fix first). Applying works for every action shape: an inline edit, a deferred
+  edit (resolved on demand), or a server-side command whose edits arrive via `workspace/applyEdit` — now
+  implemented, so server-initiated edits land in the editor as normal undoable edits (one undo step per
+  file; a multi-file fix opens untouched files in background tabs). (#670)
 
-- **Mark ring** — `C-SPC` now also records the spot on a per-buffer ring, and **`C-x C-SPC`** (pop-mark)
-  jumps the caret back to the most recent mark, cycling through older ones — and back to where you started —
-  on repeat. Marks follow their text as you edit, so returning to one lands on the right place even after
-  you've typed above it. The ring is per buffer and lives for the session; it's separate from the
-  automatic jump-history (the palette's Navigate Back / Forward), which tracks large motions on its own.
-
-- **Narrowing** (`C-x n …`) — restrict the buffer to a region and work on it alone: `C-x n n` narrows to the
-  selection, `C-x n d` to the enclosing function, `C-x n f` to the foldable block around the caret, and
-  `C-x n w` widens again. This is real narrowing, not a display filter — the rest of the file is genuinely
-  out of reach, so search, replace, macros and Select All all act on the region only. An amber **Narrowed**
-  badge in the status bar shows the state and widens on click, because a narrowed buffer otherwise just
-  looks like a truncated one. Saving always writes the whole file. Language-server support is suspended
-  while narrowed (every position would be offset), and bookmarks, notes and breakpoints stop persisting
-  until you widen; undo history is dropped at the narrowing boundary, though edits made while narrowed undo
-  normally.
-
-- **Emacs rectangle commands** (`C-x r …`) — operate on the *columns* between point and mark instead of the
-  linear span: kill (`C-x r k`), copy (`C-x r M-w`), yank (`C-x r y`), delete (`C-x r d`), clear to spaces
-  (`C-x r c`), open/shift-right (`C-x r o`), replace every line's segment with a string (`C-x r t`) and
-  number the lines down the left edge (`C-x r N`). A zero-width rectangle makes `C-x r t` the
-  prefix-a-block-of-lines idiom. Each command is one undo step, and the rectangle is remembered separately
-  from the kill ring, as in Emacs. Columns are character columns, so a rectangle over tab-indented text does
-  not follow what is on screen — that, and rectangle registers, are still to come.
-
-- **Interactive query-replace** (`M-%`, and `C-M-%` for regexp) — the Emacs replace-with-confirmation loop:
-  it stops on each match, highlights it, and waits for a keystroke — `y`/Space to replace, `n`/Backspace to
-  skip, `!` to replace all the rest at once, `.` to replace this one and stop, `q`/Enter/Esc to quit. Regexp
-  mode expands `$1` group references, honouring lookbehind/lookahead. In the **Emacs keymap only**, `M-%`
-  now runs query-replace instead of opening the find bar's replace mode; the find bar's replace is still on
-  the find bar (`C-s`) and in the palette. The other keymaps are unchanged.
-
-- **The `C-u` prefix (universal) argument.** `C-u` before a command gives it a numeric argument: `C-u 5 C-n`
-  moves down five lines, `C-u 3 C-k` kills three, `C-u 40 -` inserts forty dashes. A bare `C-u` is 4, `C-u
-  C-u` is 16 (each repeat multiplies by four), and `C-u` followed by digits is that number; `C-g` cancels a
-  half-typed argument. Most commands are simply run that many times; `C-u C-SPC` is special-cased to
-  **pop-mark** (as in Emacs). Only the Emacs keymap binds `C-u`, so the other keymaps are unaffected.
+- **Filter box in the Git Log and TODO tool windows** — type to narrow the commit list (by subject,
+  author, hash or date) or the TODO list (by keyword, tag, text or file) as you go. Both fields have the
+  same clear (`✕`) button the Project/Bookmarks filters use.
+- **Clear (`✕`) button on the Find bar and Find in Files fields** — empties a search/replace (or glob)
+  field in one click, shown only while it has text. Matches the existing filter fields elsewhere in the app.
+- **`n` / `p` navigation in the TODO window** — the plain letters now move to the next/previous row just
+  like `C-n` / `C-p` (except while the filter field has focus, where they type normally).
+- **Label an existing revision in Local File History** — right-click a revision and choose *Set Label…* to
+  name it, so you can find it later by that name (the history filter already searches labels). Clearing the
+  text removes the label. This is separate from *Put Label*, which records a new labeled snapshot.
+- **Pop the AI Agent chat out into its own window** — a button in the chat toolbar detaches the panel into
+  a separate resizable window (the live conversation is kept); closing that window docks it back.
 
 - **Abbreviations** — a simple text-replacement dictionary: define short abbreviations that expand to longer
   text. Expand the word before the caret on demand with `C-x a e`, or turn on *Abbrev Mode* to expand
@@ -180,23 +195,11 @@ title: What's New
   wrapped line keeps the paragraph's indent (and a comment/quote marker in a comment). The fill column is
   the existing `C-x f` setting (default 70).
 
-- **Occur** (`M-s o`) — list every line in the current buffer matching a regular expression in a keyboard
-  picker; pick one to jump to it. The buffer-scoped counterpart to Find in Files.
-
-- **Tabify / Untabify** — convert the selection (or whole buffer) between tab and space indentation using
-  the tab width. Untabify expands tabs to spaces; tabify turns runs of spaces back into tabs where they
-  reach a tab stop.
-
-- **Align regexp** — pad the selection's lines with spaces so a regular expression lines up in a column
-  (e.g. align a block of `=` assignments or `:` key/values). It only adds spaces, so re-running it is a
-  no-op.
-
-- **Copy with syntax highlighting** — copying now also puts a colored HTML flavor on the clipboard, so
-  pasting code into Slack, an email or a document keeps its highlighting instead of arriving as a grey block.
-  On by default (Settings → Editor, and the `view.toggleCopyWithHighlighting` palette command); the colors
-  are the light GitHub-style palette, since pasted code usually lands on a light background. A forced
-  **Copy With Syntax Highlighting** command ignores both the setting and the size cap. Plain text is always
-  on the clipboard too, so pasting into a plain-text field is unchanged.
+- **The `C-u` prefix (universal) argument.** `C-u` before a command gives it a numeric argument: `C-u 5 C-n`
+  moves down five lines, `C-u 3 C-k` kills three, `C-u 40 -` inserts forty dashes. A bare `C-u` is 4, `C-u
+  C-u` is 16 (each repeat multiplies by four), and `C-u` followed by digits is that number; `C-g` cancels a
+  half-typed argument. Most commands are simply run that many times; `C-u C-SPC` is special-cased to
+  **pop-mark** (as in Emacs). Only the Emacs keymap binds `C-u`, so the other keymaps are unaffected.
 
 - **Expand / shrink selection** — grow the selection outward through syntactic levels (word → brackets or
   string → line → enclosing definition → paragraph → whole document) and shrink back through the exact same
@@ -204,63 +207,66 @@ title: What's New
   IntelliJ keymap (`Option+Up`/`Down` on macOS); palette-discoverable everywhere. Bracket and string matching
   is text-based (it doesn't yet consult a language server), so it's the always-available baseline rather than
   fully syntax-aware.
+- **Occur** (`M-s o`) — list every line in the current buffer matching a regular expression in a keyboard
+  picker; pick one to jump to it. The buffer-scoped counterpart to Find in Files.
+- **Tabify / Untabify** — convert the selection (or whole buffer) between tab and space indentation using
+  the tab width. Untabify expands tabs to spaces; tabify turns runs of spaces back into tabs where they
+  reach a tab stop.
+- **Align regexp** — pad the selection's lines with spaces so a regular expression lines up in a column
+  (e.g. align a block of `=` assignments or `:` key/values). It only adds spaces, so re-running it is a
+  no-op.
 
-- **Deeper code folding** — fold by nesting level (Fold Level 1–7, like VS Code's `Ctrl+K Ctrl+1..7`), fold or
-  unfold the region at the caret **and everything nested inside it** (Fold/Unfold Recursively), and jump
-  between folds (Go to Parent / Next / Previous Fold — the target is revealed if it's hidden). Twelve new
-  palette commands; bind them to keys from Settings → Keymap.
+- **Mark ring** — `C-SPC` now also records the spot on a per-buffer ring, and **`C-x C-SPC`** (pop-mark)
+  jumps the caret back to the most recent mark, cycling through older ones — and back to where you started —
+  on repeat. Marks follow their text as you edit, so returning to one lands on the right place even after
+  you've typed above it. The ring is per buffer and lives for the session; it's separate from the
+  automatic jump-history (the palette's Navigate Back / Forward), which tracks large motions on its own.
 
-- **Subword navigation** — move and delete by camelCase / snake_case parts: stepping through `getUserName`
-  lands on `get` → `User` → `Name`, and acronyms split correctly (`HTMLParser` → `HTML` `Parser`). Four
-  palette commands (Go: Forward/Backward Subword, Edit: Delete Subword Forward/Backward); palette-discoverable
-  everywhere, and bind them to a key from Settings → Keymap if you want VS Code's `Ctrl+Alt+←/→`.
+- **Interactive query-replace** (`M-%`, and `C-M-%` for regexp) — the Emacs replace-with-confirmation loop:
+  it stops on each match, highlights it, and waits for a keystroke — `y`/Space to replace, `n`/Backspace to
+  skip, `!` to replace all the rest at once, `.` to replace this one and stop, `q`/Enter/Esc to quit. Regexp
+  mode expands `$1` group references, honouring lookbehind/lookahead. In the **Emacs keymap only**, `M-%`
+  now runs query-replace instead of opening the find bar's replace mode; the find bar's replace is still on
+  the find bar (`C-s`) and in the palette. The other keymaps are unchanged.
 
-- **Convert indentation** — two commands (palette: "Convert Indentation to Spaces" / "…to Tabs") rewrite the
-  whole file's leading indentation between tabs and spaces. Only leading whitespace is touched — alignment,
-  in-line content and string contents are left alone — and each direction reverses the other.
-
-- **Go to matching bracket** — jump the caret to the bracket paired with the one beside it, and press again
-  to jump back (`Ctrl+Shift+\` in the VS Code keymap, palette-discoverable everywhere as "Go: Matching
-  Bracket"). A companion **Select to Bracket** command selects everything between a bracket pair, both
-  brackets included. Matching is text-based, so a bracket inside a string or comment can pair with the wrong
-  one — the same best-effort as the existing bracket highlight.
+- **Narrowing** (`C-x n …`) — restrict the buffer to a region and work on it alone: `C-x n n` narrows to the
+  selection, `C-x n d` to the enclosing function, `C-x n f` to the foldable block around the caret, and
+  `C-x n w` widens again. This is real narrowing, not a display filter — the rest of the file is genuinely
+  out of reach, so search, replace, macros and Select All all act on the region only. An amber **Narrowed**
+  badge in the status bar shows the state and widens on click, because a narrowed buffer otherwise just
+  looks like a truncated one. Saving always writes the whole file. Language-server support is suspended
+  while narrowed (every position would be offset), and bookmarks, notes and breakpoints stop persisting
+  until you widen; undo history is dropped at the narrowing boundary, though edits made while narrowed undo
+  normally.
 
 - **Snippet regex transforms** (`${1/regex/format/flags}`). A tab stop can now derive one occurrence's text
   from another's — the VS Code `FormatString` in full: group references, the seven case modifiers
   (`/upcase` `/downcase` `/capitalize` `/camelcase` `/pascalcase` `/snakecase` `/kebabcase`) and the four
   conditional forms (`${1:+if}` `${1:-else}` `${1:else}` `${1:?if:else}`). The transform updates live as you
   type into the field.
+- **Emacs rectangle commands** (`C-x r …`) — operate on the *columns* between point and mark instead of the
+  linear span: kill (`C-x r k`), copy (`C-x r M-w`), yank (`C-x r y`), delete (`C-x r d`), clear to spaces
+  (`C-x r c`), open/shift-right (`C-x r o`), replace every line's segment with a string (`C-x r t`) and
+  number the lines down the left edge (`C-x r N`). A zero-width rectangle makes `C-x r t` the
+  prefix-a-block-of-lines idiom. Each command is one undo step, and the rectangle is remembered separately
+  from the kill ring, as in Emacs. Columns are character columns, so a rectangle over tab-indented text does
+  not follow what is on screen — that, and rectangle registers, are still to come.
 
+- **The Emacs kill ring.** The kill commands — `C-k`, `M-d`, `M-DEL`, `C-M-k`, `C-S-DEL`, `M-z` — used to
+  simply delete, so `C-k` followed by `C-y` pasted whatever unrelated thing happened to be on the system
+  clipboard. They now put their text on a 120-entry ring that `C-y` yanks from, **`M-y`** (yank-pop) steps
+  back through, and a new palette command *Edit: Yank from Kill Ring…* lets you pick from directly.
+  Consecutive kills accumulate into one entry the way Emacs does, so `C-k C-k C-k` then `C-y` restores all
+  three lines — and backward kills prepend, so `M-DEL M-DEL` then `C-y` gives the words back in reading
+  order. Kills are still written to the system clipboard, so pasting into another application is unchanged;
+  conversely, text you copied in another application wins over the ring, so `C-y` never surprises you with a
+  stale kill. The ring is per window and lives only for the session.
 - **Preserve case when replacing** (the `AB` toggle in the find bar). Replacing `foo` with `bar` now rewrites
   `FOO` as `BAR` and `Foo` as `Bar` instead of flattening everything to lowercase, so a rename across
   mixed-case usages takes one pass rather than three. `snake_case` and `kebab-case` are cased per segment.
-
 - **Find in selection** (the `Sel` toggle). Opening the find bar with a **multi-line** selection now scopes the
   search and Replace All to it automatically; single-line selections keep seeding the query as before, so the
   two never fight over the same gesture. The scope follows its content as the buffer is edited.
-
-- **Right-click Select All / Copy in the Build Output and Test Runner consoles** — copies the selection, or
-  all the output when nothing is selected. Both read-only consoles share one helper.
-
-- **Tooltips on the Test Runner's per-row status icons** — hovering a test's pass/fail/skip/running glyph
-  now says what it means. (The toolbar buttons already had tooltips.)
-
-- **Filter box in the Git Log and TODO tool windows** — type to narrow the commit list (by subject,
-  author, hash or date) or the TODO list (by keyword, tag, text or file) as you go. Both fields have the
-  same clear (`✕`) button the Project/Bookmarks filters use.
-
-- **Clear (`✕`) button on the Find bar and Find in Files fields** — empties a search/replace (or glob)
-  field in one click, shown only while it has text. Matches the existing filter fields elsewhere in the app.
-
-- **`n` / `p` navigation in the TODO window** — the plain letters now move to the next/previous row just
-  like `C-n` / `C-p` (except while the filter field has focus, where they type normally).
-
-- **Label an existing revision in Local File History** — right-click a revision and choose *Set Label…* to
-  name it, so you can find it later by that name (the history filter already searches labels). Clearing the
-  text removes the label. This is separate from *Put Label*, which records a new labeled snapshot.
-
-- **Pop the AI Agent chat out into its own window** — a button in the chat toolbar detaches the panel into
-  a separate resizable window (the live conversation is kept); closing that window docks it back.
 
 ### Changed
 

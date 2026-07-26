@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Code actions / quick fixes (LSP)", detail: "the language server's fixes and refactorings, at last reachable: <code>LSP: Code Actions</code> (palette, the editor right-click menu, and…" },
-  { title: "Rename symbol (LSP)", detail: "<code>F2</code> (VS Code/Sublime/IntelliJ keymaps), the editor right-click menu, or <code>LSP: Rename Symbol…</code> in the palette renames the…" },
-  { title: "Run &amp; debug Maven/Gradle project main classes", detail: "beyond single-file scripts, you can now run or debug a real project's <code>main</code> class. Run Main Class… / Debug Main Class… (command palette)…" },
-  { title: "Doctor — external-tool health screen", detail: "<code>View: Doctor</code> in the palette (also on the Welcome page) opens a full-tab report, like <code>flutter doctor</code>, of every external CLI…" },
-  { title: "The Emacs kill ring.", detail: "The kill commands — <code>C-k</code>, <code>M-d</code>, <code>M-DEL</code>, <code>C-M-k</code>, <code>C-S-DEL</code>, <code>M-z</code> — used to…" },
-  { title: "Signature help (LSP)", detail: "typing <code>(</code> or <code>,</code> in a call pops the server's overload list at the caret: the active signature with the current parameter…" },
-  { title: "Inlay hints (LSP)", detail: "the language server's parameter-name and inferred-type hints, drawn as grey italic annotations after each line (aggregated per line). Off by default…" },
-  { title: "Select all occurrences", detail: "place a cursor at every occurrence of the selection (or the word under the caret) at once, turning them all into editable cursors…" },
+  { title: "Three Java commands", detail: "(palette) — Organize Imports sorts and prunes a file's imports directly, without going through the code-action menu; Copy Fully Qualified Name puts…" },
+  { title: "Project-wide problems", detail: "the Problems window gained an Open files / Whole project selector, and a new Build Project command (palette) recompiles the Java project and fills…" },
+  { title: "Stack-trace frames into libraries", detail: "clicking a Java stack-trace line in the Run, Test or Build console now asks the language server to resolve it, so a frame inside a dependency or the…" },
+  { title: "Fewer stray test gutters", detail: "the ▶ beside a JUnit class is now confirmed against the project's real test source folders, so a class in <code>src/main/java</code> that happens to…" },
+  { title: "Re-indent as you type", detail: "with a language server running, typing <code>;</code>, <code>}</code> or Enter re-indents the current line to the server's own convention.…" },
+  { title: "Java code generation", detail: "with the Java language server running, the code-action menu (<code>Ctrl-.</code>, or the editor right-click menu) now offers Generate toString(),…" },
+  { title: "Go to Implementation, Type Definition and Declaration", detail: "three navigation commands beside Go to Definition. Go to Implementation jumps from an interface or abstract member to the concrete overrides (a lone…" },
+  { title: "Language-server folding and selection", detail: "where a language server is running, code folding now comes from the server's own understanding of the file instead of brace/indent scanning: an…" },
 ];

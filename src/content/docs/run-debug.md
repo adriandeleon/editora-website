@@ -20,6 +20,12 @@ streams to the **Run** tool window (`M-9`), which accepts **stdin** so
 console-style programs work, and **stack-trace lines are clickable** (Java,
 Python, and Node frames) to jump to the file and line.
 
+A clicked **Java** frame in the Run, Test or Build console is resolved by the
+language server, so a frame inside a dependency or the JDK opens its source
+instead of reporting "not found". Frames in your own code behave as before, and
+filename matching still handles anything the server can't place, plus every
+non-Java trace.
+
 Pass per-file **program arguments** with `file.runWithArgs` (remembered across
 runs and reused by the debugger), and repeat the last run with `run.rerun`.
 Running a Java file needs JDK 25 on your `PATH`; Editora preflights this and
