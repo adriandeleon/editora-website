@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Three Java commands", detail: "(palette) — Organize Imports sorts and prunes a file's imports directly, without going through the code-action menu; Copy Fully Qualified Name puts…" },
-  { title: "Project-wide problems", detail: "the Problems window gained an Open files / Whole project selector, and a new Build Project command (palette) recompiles the Java project and fills…" },
-  { title: "Stack-trace frames into libraries", detail: "clicking a Java stack-trace line in the Run, Test or Build console now asks the language server to resolve it, so a frame inside a dependency or the…" },
-  { title: "Fewer stray test gutters", detail: "the ▶ beside a JUnit class is now confirmed against the project's real test source folders, so a class in <code>src/main/java</code> that happens to…" },
-  { title: "Re-indent as you type", detail: "with a language server running, typing <code>;</code>, <code>}</code> or Enter re-indents the current line to the server's own convention.…" },
-  { title: "Java code generation", detail: "with the Java language server running, the code-action menu (<code>Ctrl-.</code>, or the editor right-click menu) now offers Generate toString(),…" },
-  { title: "Go to Implementation, Type Definition and Declaration", detail: "three navigation commands beside Go to Definition. Go to Implementation jumps from an interface or abstract member to the concrete overrides (a lone…" },
-  { title: "Language-server folding and selection", detail: "where a language server is running, code folding now comes from the server's own understanding of the file instead of brace/indent scanning: an…" },
+  { title: "Per-project settings you can commit", detail: "a project can carry <code>.editora/settings.toml</code> saying which language server to run and whether to run it, overriding your global preferences…" },
+  { title: "New Project From Template", detail: "scaffold a whole project and open it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file template, fill…" },
+  { title: "Long-running work now says it's running", detail: "a find-in-files sweep over a big tree used to announce itself once and then go quiet, which looks identical to a hang. The status bar now shows…" },
+  { title: "Failures no longer slip past you", detail: "the status bar shows one message at a time and the next one replaces it, so an error that appeared while you were typing used to vanish without…" },
+  { title: "Rename now shows you what it will change", detail: "a rename that reaches beyond the current file lists every affected file first, with its change count and where it moves to, and you can untick any…" },
+  { title: "Run configurations gain a before-launch step, and can be shared with your team", detail: "a configuration can name a command to run first (a build, a codegen step); a non-zero exit aborts the launch, so a stale binary is never run by…" },
+  { title: "A run-configuration selector in the toolbar", detail: "pick a saved configuration and hit Run or Debug, with Stop beside them; the choice is remembered across restarts. Each configuration also becomes a…" },
+  { title: "A menu bar", detail: "File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help, so the things Editora can do are <em>browsable</em> rather than only…" },
 ];

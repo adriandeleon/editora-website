@@ -42,6 +42,22 @@ settings or session. The live path is shown in **About Editora**. See the
 
 Preferences are **TOML**; session and list files are **JSON**.
 
+### Inside a project
+
+Two files live in the project itself rather than in your config directory, so
+they can be committed and shared:
+
+| File | Holds |
+| --- | --- |
+| `.editora/settings.toml` | Toolchain overrides for this project: which language server to run for a language, and whether to run it |
+| `.editora/run-configurations.json` | [Run configurations](/docs/run-debug) exported for the team |
+
+Only toolchain settings can be overridden this way; appearance, keymap and fonts
+stay personal, because checking out a repository should not rearrange somebody
+else's editor. **Project: Edit Project Settings…** creates the first file with a
+commented example. See
+[projects](/docs/workspace#settings-a-project-can-commit).
+
 ## Preferences (settings.toml)
 
 Edit in the Settings window, or directly:
@@ -49,7 +65,7 @@ Edit in the Settings window, or directly:
 ```toml
 fontFamily = "JetBrains Mono"
 fontSize = 14
-theme = "Primer Dark"
+theme = "Editora Dark"
 tabSize = 4
 autoSave = "afterDelay"
 ```

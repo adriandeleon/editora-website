@@ -52,21 +52,85 @@ There are two paths under that, picked automatically:
   with `-pl <module> -am`, so a submodule that depends on an uninstalled sibling
   still runs.
 
-### Run configurations
+## Run configurations
 
-Save a configuration per project with **Run: Save Run Configuration…**: a name,
-the main class and module, **program arguments**, **VM arguments**,
-**environment variables** (`KEY=value`, quoting values that contain spaces) and a
-working directory. Re-run one with **Run: Run Configuration…** or remove it with
-**Run: Delete Run Configuration…**.
+A run configuration is a saved answer to "how is this launched": a name, what to
+launch, **program arguments**, **VM arguments**, **environment variables**
+(`KEY=value`, quoting values that contain spaces) and a working directory.
 
-**Settings → Run Configurations** is a master-detail editor for the same list, so
-you can create, rename and edit them in place instead of only through palette
-prompts. VM arguments and environment variables apply to both Run and Debug. In a
-Gradle project, saving a configuration pre-fills the main class the build itself
-declares (`mainClass`, `mainClass.set(…)`, or the legacy `mainClassName`), so the
-configuration matches what `gradle run` would launch rather than whichever file
-happens to be open.
+### What a configuration can launch
+
+Pick a **Type** in Settings → Run Configurations:
+
+| Type | Launches |
+| --- | --- |
+| Java main class | a `main` in the project, via the language server or the build tool |
+| Python script | a `.py` file with your `python3` |
+| Shell script | a script with `bash` |
+| Make target | a target in a makefile |
+
+Script and make configurations need **no project and no language server**.
+Debugging remains Java-only, and says so rather than reporting a confusing Java
+error.
+
+### The toolbar selector
+
+The toolbar carries a configuration dropdown with **Run**, **Debug** and **Stop**
+beside it; your choice is remembered across restarts. The dropdown ends with
+**Edit Configurations…**, which opens Settings on the Run Configurations page
+with the configuration you had selected already picked out — also available as
+**Run: Edit Run Configurations…** (`run.editConfigs`).
+
+The group only appears where you could actually launch something: with a project
+open and a Maven, Gradle, npm, Cargo or Go build file *inside* it, or a makefile
+at its root; with no project open, any detected build does. Anything you have
+already saved keeps the group visible regardless, because a configuration only
+needs a `main` method and a plain Java folder can hold one. The palette commands
+work anywhere either way.
+
+Each configuration also **becomes a real command**, so it appears in the palette
+by name and can be given its own keyboard shortcut in Settings → Keymaps — the
+same way saved [macros](/docs/macros) and
+[external tools](/docs/external-tools) already work.
+
+### A step before the launch
+
+A configuration can name a command to run first — a build, a codegen step. A
+**non-zero exit aborts the launch**, so a stale binary is never run by accident.
+
+### Sharing them with your team
+
+| Action | Command |
+| --- | --- |
+| Write them into the project | `run.exportConfigs` |
+| Merge the project's back in | `run.importConfigs` |
+
+**Export Configurations to Project** writes them to
+`.editora/run-configurations.json` inside the project, where they can be
+committed alongside the project's [committed settings](/docs/workspace).
+**Import** merges them back **by name**, so importing twice doesn't duplicate and
+a colleague's edit updates a configuration rather than doubling it.
+
+### Creating and editing them
+
+**Settings → Run Configurations** is a master-detail editor for the list, and
+**Run: Save Run Configuration…** creates one from the palette;
+**Run: Run Configuration…** runs one and **Run: Delete Run Configuration…**
+removes one.
+
+**Add** starts from the file you are looking at rather than a blank entry: it
+prefills the main class from the active Java file (or the one your Gradle build
+declares — `mainClass`, `mainClass.set(…)`, or the legacy `mainClassName`), names
+the configuration after that class, and puts the cursor in whichever field still
+needs you. Adding twice from the same file gets you "App" and "App (2)" rather
+than two entries sharing a name.
+
+Running an **incomplete** configuration opens its form at the field you need to
+fill in, rather than naming the problem and leaving you to find it. VM arguments
+and environment variables apply to both Run and Debug.
+
+A saved configuration no longer depends on which tab is in front: any open Java
+file in the project serves, and it only complains when there genuinely isn't one.
 
 ## Debugging
 

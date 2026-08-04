@@ -59,8 +59,8 @@ Running, tools, and version control:
 
 Workspace and customization:
 
-- **[Projects, windows & files](/docs/workspace)**: workspaces, tabs, splits,
-  focus modes, and local file history.
+- **[Projects, windows & files](/docs/workspace)**: workspaces, tabs, editor
+  groups, focus modes, and local file history.
 - **[Bookmarks & notes](/docs/bookmarks-notes)**: mark lines and annotate code.
 - **[TODO highlighting](/docs/todo)**: highlight and list TODO/FIXME patterns.
 - **[Server log viewer](/docs/log-viewer)**: severity highlighting, follow, and filtering for `.log` files.

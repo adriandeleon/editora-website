@@ -1,7 +1,7 @@
 ---
 title: "Find in files"
 group: "Workspace & files"
-order: 3
+order: 4
 beta: false
 summary: "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label."
 ---

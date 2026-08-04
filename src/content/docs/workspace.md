@@ -9,13 +9,15 @@ order: 1
 
 A project is a VS Code-style single-folder workspace: a root folder plus its
 **own saved session** (open files with carets and pins, the active tab, folds,
-and tool-window layout). Projects are **off by default**; enable them in
-Settings.
+the editor-group layout, and tool-window layout). Projects are **on by default**
+since 0.10.0; Settings → Workspace turns them off.
 
 | Action | Command | Default key |
 | --- | --- | --- |
 | Open a folder as a project | `project.open` | `C-x C-p` |
 | Switch project | `project.switch` | `C-x p` |
+| New project from a template | `project.newFromTemplate` | (palette) |
+| Edit this project's settings | `project.editSettings` | (palette) |
 
 The **Project** tool window shows the folder tree with keyboard navigation, a
 filter that runs a bounded project-wide filename search, per-file-type icons, and
@@ -35,6 +37,32 @@ With no project open, the Project tool window doesn't sit empty: it becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
 follows the focused tab as you switch files.
 
+### Starting a project from a template
+
+**New Project From Template** (`project.newFromTemplate`) scaffolds a whole
+project rather than pointing Editora at a folder you made yourself: pick a
+multi-file [template](/docs/snippets-templates), fill in its variables, choose
+where it goes, and the new folder is registered as a project and opened in its
+own window. A **Python Project** template ships with it (package layout, a test,
+`pyproject.toml`, README and `.gitignore`), and your own multi-file templates
+appear in the same picker.
+
+### Settings a project can commit
+
+A project can carry a `.editora/settings.toml` file saying **which language
+server to run for a language, and whether to run it**. It overrides your global
+preferences for anyone who opens that project, which is what you want when one
+repository needs a JDK 17 server and another a JDK 25 one — nobody has to
+remember to flip a global preference when switching between them.
+
+**Project: Edit Project Settings…** (`project.editSettings`) creates the file
+with a commented example and opens it.
+
+Only **toolchain** settings can be overridden this way. Appearance, keymap and
+fonts stay personal, because checking out a repository should not rearrange
+somebody else's editor. Run configurations have their own shared file — see
+[Run & debug](/docs/run-debug).
+
 ## Multiple windows
 
 When projects are enabled, **each project opens in its own window**, with its own
@@ -43,20 +71,55 @@ switcher: choosing a project focuses or opens that window. The set of open
 windows is remembered and restored on the next launch. With projects disabled,
 Editora stays a single window.
 
-## Tabs and splits
+## Tabs
 
 Tabs are draggable to reorder and can be **pinned**. The tab strip, the
 switcher, and the Open Files picker all show the same unsaved-file marker. Close
 the last tab and the editor is left empty (it doesn't recreate an Untitled
 buffer).
 
-Split the editor into two panes:
+## Editor groups: two files at once
+
+The editor area splits into independent **editor groups**, each with its own
+tabs and its own selection, so a header can sit beside its implementation or a
+test beside what it tests.
+
+| Action | Command | Default key |
+| --- | --- | --- |
+| Split the group to the right | `view.splitEditorRight` | (palette) |
+| Split the group downwards | `view.splitEditorDown` | (palette) |
+| Move the file to the next group | `view.moveToNextGroup` | (palette) |
+| Focus the next group | `view.focusNextGroup` | (palette) |
+| Merge every group back into one | `view.unsplitEditorGroups` | (palette) |
+
+All five are bindable in Settings → Keymaps like any other command.
+
+- Splits **nest**, so a side-by-side pair can hold a stacked pair and you can
+  build an L-shaped layout. Splitting the **same** direction twice widens the
+  existing row instead of chaining, which gives you three even columns rather
+  than one column and a shrinking remainder.
+- **Drag a tab onto another group** to move it there, or onto a group's **edge**
+  to split that group and drop the file on that side; a translucent highlight
+  shows where it will land.
+- Closing the last file in a group **collapses** it, so you never end up looking
+  at an empty pane.
+- The layout is **saved with the session** and restored on the next launch. A
+  file that has since disappeared no longer leaves a blank pane behind.
+
+### Two views of one file
+
+Separately from editor groups, you can split the *current file* into two views
+of the same buffer — useful for reading one part while editing another. The two
+can be combined.
 
 | Split | Command | Default key |
 | --- | --- | --- |
 | Side by side | `view.splitVertical` | `C-x 3` |
 | Stacked | `view.splitHorizontal` | `C-x 2` |
 | Unsplit | `view.unsplit` | (palette) |
+
+These buttons are disabled on tabs that aren't text buffers — the Welcome and
+Doctor pages and the image, hex, PDF and diff viewers.
 
 ## The Welcome page
 

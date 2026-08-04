@@ -28,6 +28,8 @@ String inlineRoadmap(String s) {
     s = esc(s);
     s = s.replaceAll("`([^`]+)`", "<code>$1</code>");
     s = s.replaceAll("\\*\\*([^*]+)\\*\\*", "<strong>$1</strong>");
+    // Single-asterisk emphasis, after bold so it can only match what bold left behind.
+    s = s.replaceAll("\\*([^*\\s][^*]*)\\*", "<em>$1</em>");
     s = s.replaceAll("\\[([^\\]]+)\\]\\([^)]+\\)", "$1");
     return s;
 }
@@ -37,6 +39,7 @@ String inlineNews(String s) {
     s = esc(s);
     s = s.replaceAll("`([^`]+)`", "<code>$1</code>");
     s = s.replaceAll("\\*\\*([^*]+)\\*\\*", "$1");
+    s = s.replaceAll("\\*([^*\\s][^*]*)\\*", "<em>$1</em>");
     s = s.replaceAll("\\[([^\\]]+)\\]\\([^)]+\\)", "$1");
     return s;
 }

@@ -24,13 +24,14 @@ static final String CE = "Customization & extensibility";
 static final List<Feature> FEATURES = List.of(
     new Feature("command-driven-core", KB, 1, false,
         "Command-driven core",
-        "Hunting through menus? Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. 200+ commands, nothing buried.",
+        "Hunting through menus? Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. 600+ commands, nothing buried.",
         """
-Editora has no hidden actions. Every capability (save, toggle a bookmark, start the debugger, switch a theme) is a registered `Command` with an id and a title. That one decision powers three things at once:
+Editora has no hidden actions. Every capability (save, toggle a bookmark, start the debugger, switch a theme) is a registered `Command` with an id and a title. That one decision powers four things at once:
 
-- The **command palette** (`M-x`) fuzzy-searches all 200+ commands, each with a one-line description.
+- The **command palette** (`M-x`) fuzzy-searches all 600+ commands, each with a one-line description.
 - **Keybindings** are just a map from a chord to a command id, so anything can be bound, or rebound.
 - **Toolbar buttons** dispatch the same commands, so the UI and the keyboard never drift apart.
+- The **[menu bar](/features/menu-bar)** is a curated view of the same registry, so each item shows its live keybinding and can never name an action that doesn't exist.
 
 If you can describe it, you can find it by typing a few letters. Browse the full [command list](/commands).
 """),
@@ -154,6 +155,22 @@ Registers, a global cross-buffer mark ring, and dabbrev are genuinely missing ra
 
 Browse the [full command list](/commands) or the [keybindings reference](/keybindings).
 """),
+    new Feature("menu-bar", KB, 7, false,
+        "A menu bar, over the same commands",
+        "Prefer to browse rather than recall? <strong>File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help</strong>, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke.",
+        """
+The command palette is complete but unbrowsable: it answers "what is this called?" and not "what can this thing do?". The menu bar answers the second question.
+
+**File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help.** Every item names a registered [command](/features/command-driven-core) — the same objects the palette lists and the keymap binds — so nothing in it can drift out of step with what Editora can actually do.
+
+- Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
+- A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
+- On **macOS** it sits in the system menu bar, where it belongs.
+
+It is deliberately a curated subset. Editora registers over six hundred commands and a menu that listed all of them would be a worse palette; the palette remains the complete index.
+
+Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen, Expert and [Simple](/features/simple-ui-mode) modes.
+"""),
     new Feature("snippets", ED, 1, false,
         "Snippets",
         "Retyping the same boilerplate? Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for all 21 languages.",
@@ -229,6 +246,12 @@ It's session-only and disabled for very large files. The tool-window stripe is o
 Highlighting uses **TextMate grammars** (via tm4e) for 21 languages (Java, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL) plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers.
 
 Tokenization is **stateful** (it carries grammar state across lines, so block comments and heredocs highlight correctly) and **incremental**, an edit re-tokenizes only from the changed line, off the UI thread. Token colors are themed per editor theme.
+
+## Bracket-pair colorization
+
+Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am I?" is readable without counting. It answers a different question from the matching-bracket highlight — which is "where does *this* one close?" — and the two combine on the same character.
+
+Brackets inside strings and comments are skipped. That is not a nicety: a stray `{` in a string would otherwise shift the colour of every bracket below it, which reads as the feature being broken rather than as one bracket being wrong. The depth pass rides the tokenize that was happening anyway, so it costs no extra repaint. On by default; Settings → Editor turns it off.
 """),
     new Feature("lsp", CI, 2, true,
         "Language servers (LSP)",
@@ -241,17 +264,18 @@ Editora speaks the **Language Server Protocol**, both halves of it: the requests
 - **Find references**: `M-?`, listed in a browsable **References** tool window
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
-- **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.`, including organize imports and extract/inline refactorings
+- **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.`, opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings
 - **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, and override/implement methods, each with a checkbox picker
 - **Re-indent as you type** (`;`, `}`, Enter snap the line to the server's convention — indentation only, off by default) and a **whole-project Problems** view with a Build Project command
-- **Rename symbol**: `F2`, across the whole workspace, moving a public Java class's file with it
+- **Rename symbol**: `F2`, across the whole workspace, moving a public Java class's file with it — and showing you every affected file first, with its change count, so you can untick any of them before applying
+- **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
 - **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)
 - **Format Document**: reformat the whole file via the server (palette or right-click)
 - Server-provided **folding regions** and **expand/shrink selection**
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
-Twenty-two servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (tinymist). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP).
+Twenty-two servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (tinymist). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
 
 Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes.
 
@@ -279,11 +303,43 @@ A green ▶ in the gutter runs the current file, a **Java compact source file** 
 
 It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
 
-**Run configurations** are saved per project with the main class, program and VM arguments, environment variables and a working directory, re-runnable from the palette and editable in Settings → Run Configurations.
+For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
 
 Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. Bind it to `C-c r` or run from the palette.
 """),
-    new Feature("debugging", RD, 2, true,
+    new Feature("run-configurations", RD, 2, false,
+        "Run configurations",
+        "Save how a thing is launched — Java main class, Python or shell script, or a make target — with a before-launch build step, a toolbar selector, and a file you can commit so your team gets the same ones.",
+        """
+A run configuration is a saved answer to "how is this launched": the main class or script, program and VM arguments, environment variables and a working directory. Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts.
+
+## Four kinds, not just Java
+
+Choose a **Type** in Settings → Run Configurations:
+
+- a **Java main class** (resolved through the language server, or through your Maven/Gradle build)
+- a **Python script**
+- a **shell script**
+- a **make target**
+
+Script configurations need no project and no language server at all. Debugging remains Java-only, and says so rather than reporting a confusing Java error.
+
+## A step before the launch
+
+A configuration can name a command to run first — a build, a codegen step. A **non-zero exit aborts the launch**, so a stale binary is never run by accident.
+
+## Shareable
+
+**Export Configurations to Project** writes them to `.editora/run-configurations.json` inside the project, where they can be committed alongside [per-project settings](/features/projects). **Import** merges them back **by name**, so importing twice doesn't duplicate and a colleague's edit updates the configuration rather than doubling it.
+
+## It stays out of your way
+
+- Each configuration **becomes a real command**, so it appears in the palette by name and can be given its own keyboard shortcut, the same way [saved macros](/features/macros) and [external tools](/features/external-tools) already work.
+- **Add** prefills from the file you are looking at: the main class from the active Java file (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you.
+- The toolbar group **only appears where you could actually launch something**, so a project of Markdown notes doesn't carry a dropdown that can never fill. Anything you have already saved keeps it visible regardless.
+- Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
+"""),
+    new Feature("debugging", RD, 3, true,
         "Debugging (DAP)",
         "Full debugging for Java, Python, and JavaScript: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console.",
         """
@@ -297,7 +353,7 @@ For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in
 
 While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging.
 """),
-    new Feature("http-client", RD, 3, true,
+    new Feature("http-client", RD, 4, true,
         "HTTP client",
         "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶, with environments, variables, request chaining, and a formatted response view. Built on the JDK HTTP client.",
         """
@@ -307,7 +363,7 @@ Define multiple requests separated by `###` and the feature reaches for IntelliJ
 
 The response is the `.http` file's own **preview**, in the same Editor / Split / Preview view every other rich file type uses, so it sits beside the request that produced it (and the view mode is remembered per file). It shows status, headers, timing, and a pretty-printed, content-type-highlighted body, with **Copy as cURL** / **Import cURL**, open-in-editor, and Save-response. Run one request or the whole file. Off by default. Enable it under Settings → HTTP Client.
 """),
-    new Feature("build-tools", RD, 4, false,
+    new Feature("build-tools", RD, 5, false,
         "Build tools",
         "Maven, npm, Cargo, Go, and Gradle each get an IntelliJ-style tasks tool window and a streaming console.",
         """
@@ -332,6 +388,7 @@ Native Git that shells out to your installed `git`, no bundled library.
 - The **Commit** tool window groups staged / changed / untracked files with stage, unstage, discard, and a commit box.
 - The **Project tree colors files by Git status** (added, modified, deleted, renamed, untracked), IntelliJ-style, with changed folders tinted.
 - Plus a **history / log** view, **inline blame**, and **stash**.
+- **A transcript of what it ran.** The **Output** console has a **Git** tab holding every `git` command Editora ran on your behalf, with its output, exit code and duration. It logs the ones you asked for (commit, push, pull, checkout, stash, clone…) and deliberately not the `status`/`diff` reads it re-runs on every tab switch, which would bury them. It never steals focus — the transcript is waiting when you open the window.
 
 Off by default. Enable it under Settings → Git.
 """),
@@ -344,8 +401,8 @@ GitHub, through the [`gh` CLI](https://cli.github.com) you already have signed i
 - **Review a pull request in the editor.** A *Files changed* tab lists every file with its status and per-file `+` / `−` counts; click one for a read-only diff. The description renders as Markdown above the list, and `n` / `p` step through changes.
 - **Submit a review**, approve, request changes, or comment, without leaving the editor.
 - **Check out a PR**, **create a PR**, and **open the current file on GitHub** at the caret line.
-- A **pull request / issue / Actions-runs tool window**, plus a **status-bar CI checks** indicator for the current branch.
-- **A failed CI run's log opens in the Build Output console with clickable stack frames.** Runner paths are mapped back onto your local checkout, so a red build takes you straight to the line.
+- A **pull request / issue / Actions-runs tool window**, with one filter box across all three that matches anything a row shows — number, title, author, branch, state, labels — and a leading `#` optional, so `42` and `#42` both find PR 42. It opens with focus in the filter and the first row selected; `C-n` / `C-p` move without leaving the box, Down enters the list, Enter opens. Plus a **status-bar CI checks** indicator for the current branch.
+- **A failed CI run's log opens in the Output console with clickable stack frames.** Runner paths are mapped back onto your local checkout, so a red build takes you straight to the line. A **GitHub** tab beside it keeps a transcript of the `gh` commands Editora ran, with their exit codes and durations.
 
 On by default, and completely invisible until `gh` is signed in and the repo actually has an open PR, issue, or workflow run. See the [GitHub guide](/docs/github).
 """),
@@ -442,13 +499,51 @@ Off by default. Enable it under Settings → HTML Preview. Read the [deep-dive](
 """),
     new Feature("projects", WF, 1, false,
         "Projects",
-        "VS Code single-folder workspaces: a root folder plus its own saved session (open files, layout, folds), shown as a filterable file tree.",
+        "VS Code single-folder workspaces: a root folder plus its own saved session (open files, layout, folds), shown as a filterable file tree. Scaffold one from a template, and commit settings the whole team gets.",
         """
-Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, and tool-window layout.
+Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window.
 
-Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global session. The **Project tool window** shows the tree with keyboard navigation and a filter that runs a bounded project-wide filename search. Bookmarks and notes are scoped per project. Off by default. Enable it in Settings.
+Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global session. The **Project tool window** shows the tree with keyboard navigation and a filter that runs a bounded project-wide filename search. Bookmarks, notes and [run configurations](/features/run-configurations) are scoped per project. **On by default** since 0.10.0; Settings → Workspace turns it off.
+
+## Start from a template
+
+**New Project From Template** scaffolds a whole project and opens it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file [template](/features/file-templates), fill in its variables, choose where it goes, and the new folder is registered as a project and opened. A **Python Project** template ships with it (package layout, a test, `pyproject.toml`, README and `.gitignore`), and your own multi-file templates appear in the same picker.
+
+## Settings you can commit
+
+A project can carry `.editora/settings.toml` saying **which language server to run and whether to run it**, overriding your global preferences for anyone who opens that project. The case it's for: one repository needs a JDK 17 server and another a JDK 25 one, and nobody should have to remember to flip a global preference between them. **Project: Edit Project Settings…** creates the file with a commented example.
+
+Only toolchain settings can be overridden. Appearance, keymap and fonts stay personal, because checking out a repository should not rearrange somebody's editor.
 """),
-    new Feature("bookmarks-notes", WF, 2, false,
+    new Feature("editor-groups", WF, 2, false,
+        "Editor groups",
+        "Two files on screen at once. Split the editor into independent groups with their own tabs, nest the splits, drag a tab between them, and get the whole arrangement back on the next launch.",
+        """
+The editor area splits into independent **editor groups**, each with its own tabs and its own selection, so a header can sit beside its implementation or a test beside what it tests.
+
+- **Split Editor Group Right** and **Split Editor Group Down** move the current file into a new group.
+- **Move File to Next Editor Group** shifts it along, **Focus Next Editor Group** moves the keyboard between them, and **Merge Editor Groups** puts everything back.
+- Closing the last file in a group **collapses it**, so you never end up staring at an empty pane.
+
+All five are in the command palette and bindable like anything else.
+
+## Nesting
+
+Splits nest: a side-by-side pair can hold a stacked pair, so an L-shaped layout is reachable. Splitting the **same** direction twice widens the existing row instead of chaining, which gives you three even columns rather than one column and a shrinking remainder.
+
+## Drag and drop
+
+Drag a tab **onto another group** to move it there, or onto a group's **edge** to split that group and drop the file on that side. A translucent highlight shows where it will land before you let go.
+
+## It comes back
+
+The layout is saved with the [session](/features/projects), so the arrangement you left is what you get on the next launch. A file that has since disappeared no longer leaves a blank pane behind.
+
+## Not the same as Split Editor
+
+The older **Split Editor** commands show two views of the *same* file, for reading one part while editing another. Those work exactly as before, and the two can be combined.
+"""),
+    new Feature("bookmarks-notes", WF, 3, false,
         "Bookmarks & notes",
         "Line bookmarks (gutter markers, cross-file jump, per-project), plus Personal Notes attached to a word/line/range, stored outside the file, surviving renames, with Markdown bodies.",
         """
@@ -458,7 +553,7 @@ Two ways to mark up code.
 
 **Personal Notes** attach an annotation to a word, line, or range, stored *outside* the file (great for read-only or generated code). They survive edits and renames via content-hash identity and text anchoring, render Markdown, and have their own tool window and `M-g n` picker. See the [deep-dive](/blog/personal-notes-that-survive-edits).
 """),
-    new Feature("find-in-files", WF, 3, false,
+    new Feature("find-in-files", WF, 4, false,
         "Find in files",
         "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label.",
         """
@@ -466,15 +561,17 @@ Project-wide search with a results panel (`C-S-f`): matches grouped by file, wit
 
 In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count. And **AceJump** (`M-g j`) lets you leap the caret to any visible spot by typing the label that appears over it.
 """),
-    new Feature("file-templates", WF, 4, true,
+    new Feature("file-templates", WF, 5, true,
         "File templates",
         "New File From Template: single- or multi-file scaffolds with interactive placeholders (author, date, file name, …).",
         """
 **New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.
 
 Templates use the same `${var}` / `$0` syntax as snippets; bundled ones cover a Java class, an HTML page/bundle, a Markdown doc, and a Python script. Add your own under `~/.editora/templates/`.
+
+A multi-file template can also scaffold a **whole project**: **New Project From Template** writes it to a folder of your choosing, registers that folder as a [project](/features/projects) and opens it in its own window. A **Python Project** template ships with it — package layout, a test, `pyproject.toml`, README and `.gitignore`.
 """),
-    new Feature("read-only-view-mode", WF, 5, false,
+    new Feature("read-only-view-mode", WF, 6, false,
         "Read-only / View mode",
         "Toggle a buffer read-only to browse without editing; pager-style <kbd>Space</kbd>/<kbd>Backspace</kbd> paging and a Word-style View Mode banner.",
         """
@@ -482,7 +579,7 @@ Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident, typi
 
 A file that isn't writable on disk opens read-only automatically, and the per-file state is remembered. A Word-style **View Mode banner** docks above the editor with an *Enable Editing* button (when the file is writable), and while read-only, **Space pages down / Backspace pages up** like a pager.
 """),
-    new Feature("remote-sftp", WF, 6, true,
+    new Feature("remote-sftp", WF, 7, true,
         "Remote files (SFTP)",
         "Browse, edit, search, and save files on a remote host over SSH/SFTP. The project tree, search, bookmarks, and notes all work over the wire.",
         """
@@ -492,7 +589,7 @@ Saved sites have three surfaces beyond the palette: a **Remote Sites** tool wind
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Off by default; local-only features (running, LSP, Git) are gated off for remote files.
 """),
-    new Feature("local-file-history", WF, 7, false,
+    new Feature("local-file-history", WF, 8, false,
         "Local file history",
         "IntelliJ-style snapshots of your files over time, on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required.",
         """
@@ -508,7 +605,7 @@ It's grown closer to IntelliJ:
 
 Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
 """),
-    new Feature("todo-highlighting", WF, 8, false,
+    new Feature("todo-highlighting", WF, 9, false,
         "TODO highlighting",
         "Configurable regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a TODO tool window, with scrollbar and minimap stripes.",
         """
@@ -521,7 +618,7 @@ Editora highlights **TODO / FIXME-style patterns** everywhere they appear, Intel
 
 On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).
 """),
-    new Feature("log-viewer", WF, 9, false,
+    new Feature("log-viewer", WF, 10, false,
         "Server log viewer",
         "Open a <code>.log</code> file for severity highlighting, a <code>tail -f</code> Follow toggle, open-at-the-tail for huge logs, and live level + regex filtering.",
         """
@@ -533,7 +630,7 @@ On by default. Highlighting runs off the UI thread and is debounced; the project
 
 Logs open in **View mode** (read-only with an *Enable Editing* banner) by default, and follow keeps streaming while read-only. On by default (Settings → Editor → Logs). Commands: `log.toggleFollow`, `log.setLevelFilter`, `log.setRegexFilter`, `log.clearFilter`, `log.viewAsLog`, and `view.toggleLogViewer`. See the [log viewer guide](/docs/log-viewer).
 """),
-    new Feature("csv", WF, 10, false,
+    new Feature("csv", WF, 11, false,
         "CSV & TSV support",
         "Rainbow per-column coloring, a field readout, and an editable CSV Grid with sort/filter and export to Excel/ODF, plus align/shrink and Markdown-table interop.",
         """
@@ -566,11 +663,25 @@ Editora has optional AI, off by default and yours to configure.
 """),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",
-        "Six editor themes (Primer, Nord, Cupertino, Dracula, Islands, each light &amp; dark) that follow the app theme, plus five bundled monospace fonts, no install needed.",
+        "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus 26 more (Primer, Nord, Cupertino, Dracula and the community set). Five bundled monospace fonts, no install needed, and you can drop in a theme of your own.",
         """
-Six editor color themes (**Primer, Nord, Cupertino, Dracula**, and JetBrains-style **Islands** (light & dark)) that follow the AtlantaFX app theme by default and are independently selectable. Each themes the syntax tokens, editor surface, gutter, and project tree together.
+**Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for one thing — a keybinding. They are what a fresh install starts in.
 
-Five monospace fonts ship with the app (JetBrains Mono, Cascadia Code, Fira Code, IBM Plex Mono, and Source Code Pro) so no system install is needed, plus per-editor **text zoom**.
+Twenty-eight themes ship in total: the Editora pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and a community set of nineteen (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
+
+Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme follows the app theme until you pick one explicitly, after which the two are independent.
+
+## One vocabulary for state
+
+Colour means the same thing everywhere. **Amber** is "not saved yet" — the tab, the Switcher, the file tree, the pickers — and it follows the theme rather than being one fixed value that only suited a light background. **Red** is broken, **green** is verified, **olive** and **violet** are git's untracked and renamed, and **periwinkle** is only ever a keybinding.
+
+## Fonts
+
+Five monospace fonts ship with the app (**JetBrains Mono**, **Cascadia Code**, **Fira Code**, **IBM Plex Mono** and **Source Code Pro**), so nothing needs installing, and there is per-editor **text zoom**. The interface itself is set in **Inter** on every platform, so Editora looks the same wherever you run it.
+
+## Bring your own
+
+Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears in the picker under its filename, and **Reload User Themes** re-scans without a restart.
 """),
     new Feature("plugins", CE, 2, false,
         "Plugins",

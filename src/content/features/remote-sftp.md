@@ -1,7 +1,7 @@
 ---
 title: "Remote files (SFTP)"
 group: "Workspace & files"
-order: 6
+order: 7
 beta: true
 summary: "Browse, edit, search, and save files on a remote host over SSH/SFTP. The project tree, search, bookmarks, and notes all work over the wire."
 ---

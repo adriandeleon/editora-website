@@ -90,12 +90,22 @@ The **GitHub** tool window (`M-g p`, or `tool.github`) has three segments:
 The window is **repo-scoped, not file-scoped**, so it stays put as you switch
 tabs, including onto the Welcome tab.
 
+All three segments share **one filter box**, matching on everything a row shows
+or tooltips — number, title, author, branch, state, labels — with a leading `#`
+optional, so `42` and `#42` both find PR 42. The filter clears when you switch
+segment (a query typed against pull requests means nothing for runs) and survives
+a refresh.
+
+The window opens with focus in the filter and the first row selected. `C-n` /
+`C-p` move the selection **without leaving the box**, Down enters the list (where
+bare `n` / `p` also move, since the list holds no text input), and Enter opens.
+
 ## Reading a failed CI run
 
 This is the part that saves the most time. Double-clicking a failed run, or
 running **GitHub: View CI Failure Log…** (`github.viewRunLog`), pulls that run's
 failure log into a **CI** tab of the shared
-[Build Output](/docs/build-tools) console, with errors and warnings colored.
+[Output](/docs/build-tools) console, with errors and warnings colored.
 
 The useful bit: **the stack frames are clickable.** A CI log prints paths as they
 existed on the runner, like

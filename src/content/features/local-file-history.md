@@ -1,7 +1,7 @@
 ---
 title: "Local file history"
 group: "Workspace & files"
-order: 7
+order: 8
 beta: false
 summary: "IntelliJ-style snapshots of your files over time, on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required."
 ---

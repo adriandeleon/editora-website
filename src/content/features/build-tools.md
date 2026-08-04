@@ -1,7 +1,7 @@
 ---
 title: "Build tools"
 group: "Run & debug"
-order: 4
+order: 5
 beta: false
 summary: "Maven, npm, Cargo, Go, and Gradle each get an IntelliJ-style tasks tool window and a streaming console."
 ---

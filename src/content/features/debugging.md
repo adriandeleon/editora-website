@@ -1,7 +1,7 @@
 ---
 title: "Debugging (DAP)"
 group: "Run & debug"
-order: 2
+order: 3
 beta: true
 summary: "Full debugging for Java, Python, and JavaScript: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
 ---

@@ -10,18 +10,35 @@ preview that recolors as you change things.
 
 ## Themes
 
-The app chrome is themed by AtlantaFX. The editor surface, gutter, syntax
-tokens, and project tree are themed separately, with six editor color themes:
+**Editora Light** and **Editora Dark** are the app's own pair, drawn from the
+palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved
+for one job — a keybinding. They are what a fresh install starts in. An existing
+install keeps whatever theme it was already on; the pair simply joins the list.
 
-- **Primer** (the default, GitHub-style)
-- **Nord**
-- **Cupertino**
+Twenty-eight themes ship in total:
+
+- **Editora** (light and dark) — the default
+- **Primer** (GitHub-style), **Nord** and **Cupertino** — each light and dark
 - **Dracula**
-- **Islands** (JetBrains-style)
+- A community set of nineteen: Army, Autumn, Blacky, Blue, Browny, Fall, Navy,
+  News, Spring, Summer, Winter and Yacht
 
-Each comes in **light and dark**. By default the editor theme follows the
-AtlantaFX app theme; pick one explicitly and it sticks. A theme colors the syntax
-tokens, editor surface, gutter, and the Project tree together.
+The app chrome is themed by AtlantaFX; the editor surface, gutter, syntax tokens
+and project tree are themed separately. By default the **editor** theme follows
+the app theme; pick one explicitly and it sticks.
+
+### What the colors mean
+
+Colors carry a fixed meaning across the whole interface, and they follow the
+theme rather than being fixed values that only suit one background:
+
+| Color | Means |
+| --- | --- |
+| Amber | Not saved yet — an unsaved tab, a read-only or narrowed buffer, a snapshot |
+| Red | Broken |
+| Green | Verified |
+| Olive / violet | Git's untracked / renamed |
+| Periwinkle | A keybinding, and only ever a keybinding |
 
 The Markdown preview can be themed independently of the app with its own
 light/dark toggle (a sun/moon button on the preview's zoom control), so you can
@@ -42,8 +59,11 @@ Five monospace families ship with the app, so nothing needs a system install:
 - **IBM Plex Mono**
 - **Source Code Pro**
 
-They're listed ahead of your system monospace families in the font picker. The
-Markdown preview and PDF prose use **Inter** on every platform.
+They're listed ahead of your system monospace families in the font picker.
+
+The **interface itself** is set in **Inter** on every platform, so Editora looks
+the same wherever you run it rather than inheriting each system's default UI
+font. The Markdown preview and PDF prose use Inter too.
 
 ## Text zoom
 

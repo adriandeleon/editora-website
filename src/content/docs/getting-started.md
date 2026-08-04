@@ -55,6 +55,12 @@ you want, and run it. Each entry shows its key, so you pick up shortcuts as you
 go. The full list lives on the [Commands](/commands) and
 [Keybindings](/keybindings) pages.
 
+If you'd rather browse than recall, there is also a **menu bar** — File / Edit /
+Find / View / Navigate / Code / Run / VCS / Tools / Window / Help — built over
+those same commands, so every item shows its current keybinding and updates when
+you switch keymaps. It's a curated subset; the palette remains the complete
+index. Hide it from Settings → Interface or with **View: Toggle Menu Bar**.
+
 A command that can't run right now stays listed and dimmed rather than
 disappearing, so you can still discover it. That covers both reasons it might
 not apply: its **feature is switched off** (a Git command with Git disabled), or
@@ -66,13 +72,14 @@ The toggle that switches a feature back on is never dimmed itself.
 ## Make it yours
 
 - **Themes & fonts**: open Settings (the gear, or "Settings" in the palette) and
-  go to Appearance. Six editor themes, five bundled fonts. See
-  [Themes & fonts](/docs/themes-fonts).
+  go to Appearance. Editora Light and Dark are the default pair, with 26 more
+  themes and five bundled fonts. See [Themes & fonts](/docs/themes-fonts).
 - **Keymap**: prefer VS Code or IntelliJ chords? Switch live in
   **Settings → Keymaps**, or rebind individual commands. See
   [Keymaps & keybindings](/docs/keymaps).
-- **Projects**: off by default. Enable them in Settings, then `C-x C-p` opens a
-  folder as a workspace. See [Projects, windows & files](/docs/workspace).
+- **Projects**: on by default. `C-x C-p` opens a folder as a workspace, each in
+  its own window, and **New Project From Template** scaffolds one from scratch.
+  See [Projects, windows & files](/docs/workspace).
 
 ## Turning on the bigger features
 

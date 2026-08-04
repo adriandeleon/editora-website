@@ -59,6 +59,21 @@ it again to jump back. **Edit: Select to Bracket** selects everything between a
 pair, both brackets included. Matching is text-based, like the highlight, so a
 bracket inside a string or comment can pair with the wrong one.
 
+### Bracket-pair colorization
+
+Separately from that highlight, every `()`, `[]` and `{}` is **tinted by its
+nesting depth**, so "how far in am I?" is readable without counting. The two
+answer different questions — the highlight says where *this* bracket closes, the
+colour says how deep it is — and they combine on the same character.
+
+Brackets inside strings and comments are skipped, which matters more than it
+sounds: a stray `{` in a string would otherwise shift the colour of every bracket
+below it, and the feature would read as broken rather than as one bracket being
+wrong. Six depth colours cycle, and an unmatched closer is red.
+
+On by default. Turn it off in Settings → Editor or with
+`view.toggleBracketColors`.
+
 ## Expand and shrink selection
 
 **Edit: Expand Selection** grows the selection outward through syntactic levels:

@@ -1,7 +1,7 @@
 ---
 title: "Bookmarks & notes"
 group: "Workspace & files"
-order: 2
+order: 3
 beta: false
 summary: "Line bookmarks (gutter markers, cross-file jump, per-project), plus Personal Notes attached to a word/line/range, stored outside the file, surviving renames, with Markdown bodies."
 ---

@@ -92,11 +92,16 @@ nothing gets noisier unless you ask for it.
 | Copy fully qualified name | `lsp.copyQualifiedName` | (palette) |
 | Reload project configuration | `lsp.reloadProject` | (palette) |
 | Re-indent as you type | `view.toggleOnTypeFormatting` | (palette) |
+| Add imports for pasted Java | `view.togglePasteImports` | (palette) |
+| Smart semicolon placement | `view.toggleSmartSemicolon` | (palette) |
 
 **Code actions** ask the server what it can do at the caret or selection: quick
 fixes for the diagnostics there, organize imports, generate methods, extract and
-inline refactorings. The picker lists them with the server's preferred fix first.
-Every action shape is supported, including a server-side command whose edits
+inline refactorings. The list **opens at the caret**, where you are looking,
+with the server's preferred fix preselected so Enter usually does the right
+thing; arrow keys or `C-n` / `C-p` move, Enter applies, Escape or `C-g`
+dismisses. Every action shape is supported, including a server-side command whose
+edits
 arrive back over `workspace/applyEdit`. Edits land as normal undoable edits, one
 undo step per file, and a multi-file fix opens the untouched files in background
 tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
@@ -122,10 +127,35 @@ up front when something cannot be renamed. Renaming a public Java class also
 follow to the new path. `F2` is bound in the VS Code, Sublime and IntelliJ
 keymaps.
 
+A rename that reaches **beyond the file you're looking at** shows you what it
+will do first: every affected file, its change count, and where it moves to, with
+a tick beside each one so you can leave a file out. A rename confined to the
+current file applies straight away — it's on screen and one undo away, so there
+would be nothing to confirm.
+
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
 `.html`. In a language whose server supports range formatting, **Tab** also snaps
 the current line's indentation to the server's convention.
+
+### Two Java-only assists
+
+**Pasted code imports itself.** Paste a snippet into a Java file and the server
+is asked which imports the pasted text needs; they are added for you. This is the
+one paste behaviour nothing else in the stack can approximate, because it needs
+the type resolver. An answer that lost a race with your typing is dropped rather
+than applied to text it wasn't computed for.
+
+**Smart semicolon placement.** Typing `;` part-way through an expression puts it
+at the end of the statement: `compute(1, 2|)` becomes `compute(1, 2);|`. The
+semicolon is never held back waiting for the server — making a keystroke wait on
+a round trip is exactly the latency an editor cannot afford — so it lands where
+you typed it and moves afterwards if the server disagrees, as a single undo step.
+Type straight on through (the very common `;` then Enter) and the document has
+moved past the answer, so the correction is skipped rather than applied late.
+
+Both need the Java language server running, and both can be turned off in
+Settings → Code Completion.
 
 **Re-indent as you type** does the same on `;`, `}` and Enter. It is indentation
 only, never a reformat of the line under you, and the local auto-indent still
@@ -183,6 +213,15 @@ Each server has its own enable checkbox and a live found/not-found status on the
 **Settings → LSP** page, plus a per-server command field with a Browse button.
 [Doctor](/docs/troubleshooting#doctor) reports the same detection for every
 enabled server in one place.
+
+### Per-project overrides
+
+A project can commit a `.editora/settings.toml` naming **which server to run for
+a language and whether to run it**, which overrides your global preference for
+anyone who opens that project. That is the answer to one repository needing a
+JDK 17 server and another a JDK 25 one: neither of you has to remember to flip a
+setting when switching between them. See
+[projects](/docs/workspace#settings-a-project-can-commit).
 
 ## One-click install
 

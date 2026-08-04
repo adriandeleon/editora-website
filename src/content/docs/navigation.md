@@ -100,6 +100,11 @@ it:
 | Fold by nesting level (1 to 7) | `view.foldLevel1` … `7` | (palette) |
 | Fold / unfold recursively | `view.foldRecursively` / `view.unfoldRecursively` | (palette) |
 | Go to parent / next / previous fold | `view.gotoParentFold` … | (palette) |
+| Fold the selection | `view.createFoldFromSelection` | (palette) |
+| Remove your manual folds | `view.removeManualFolds` | (palette) |
+| Fold all block comments | `view.foldAllBlockComments` | (palette) |
+| Fold / unfold all `#region` markers | `view.foldAllMarkerRegions` | (palette) |
+| Fold / unfold all except the caret | `view.foldAllExcept` / `view.unfoldAllExcept` | (palette) |
 
 **Fold Level *n*** collapses everything at that nesting depth, like VS Code's
 `Ctrl+K Ctrl+1..7`. **Fold Recursively** collapses the region at the caret *and*
@@ -107,6 +112,23 @@ everything nested inside it, and unfolding recursively reveals the whole subtree
 The three **Go to … Fold** commands move the caret to a fold header, revealing it
 first if it is hidden. None of these has a default key; bind them from
 Settings → Keymap.
+
+### Folds of your own
+
+**Fold the selection** creates a range with no syntactic basis at all — whatever
+lines you picked. Unlike a detected region, which is recomputed from the text as
+you type, a manual range is tracked through your edits, and it **persists across
+restarts** with the rest of your session. **Remove Manual Fold Ranges** clears
+them for the file.
+
+**Fold All Block Comments** and **Fold All `#region` Markers** fold exactly
+those. The marker families recognized are `//#region`, `//region`, `#region`,
+`# region`, `#pragma region`, `<!-- #region -->` and `--region`; Markdown and
+Markwhen are deliberately excluded, since `# region` there is a legal heading.
+**Fold All Except Caret** collapses everything but the block you are in.
+
+All of these **merge** with the folds Editora detects, and with any a language
+server reports, rather than replacing them.
 
 Where a [language server](/docs/lsp#folding-and-selection) is running, the fold
 regions come from the server rather than from brace and indent scanning, so

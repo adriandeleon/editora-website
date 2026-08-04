@@ -1,7 +1,7 @@
 ---
 title: "HTTP client"
 group: "Run & debug"
-order: 3
+order: 4
 beta: true
 summary: "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶, with environments, variables, request chaining, and a formatted response view. Built on the JDK HTTP client."
 ---
