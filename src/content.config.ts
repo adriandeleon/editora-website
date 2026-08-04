@@ -2,15 +2,33 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
 // Documentation pages — Markdown, organized by category + order for the sidebar.
+const docsSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  category: z.string().default("Guide"),
+  order: z.number().default(100),
+  beta: z.boolean().default(false),
+});
+
 const docs = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/docs" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    category: z.string().default("Guide"),
-    order: z.number().default(100),
-    beta: z.boolean().default(false),
+  schema: docsSchema,
+});
+
+// Frozen copies of the docs as a past release shipped them, one directory per
+// version, so /docs/v-0.9.10/… keeps describing 0.9.10 rather than whatever the
+// docs say today. Entry ids are "<version>/<slug>" (e.g. "0.9.10/lsp"); the
+// version registry in src/lib/doc-versions.ts maps them onto routes.
+const docsArchive = defineCollection({
+  // The id must stay the literal "<version>/<slug>". The loader's default id
+  // generation slugifies, which eats the dots in a version number ("0.9.10/lsp"
+  // became "0910/lsp") and silently produced zero matching pages.
+  loader: glob({
+    pattern: "**/*.md",
+    base: "./src/content/docs-archive",
+    generateId: ({ entry }) => entry.replace(/\.md$/, ""),
   }),
+  schema: docsSchema,
 });
 
 // Short, release-style announcements.
@@ -67,4 +85,4 @@ const commandDocs = defineCollection({
   }),
 });
 
-export const collections = { docs, news, blog, features, commandDocs };
+export const collections = { docs, docsArchive, news, blog, features, commandDocs };

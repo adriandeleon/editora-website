@@ -1,12 +1,18 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import Layout from "./Layout.astro";
-import { docsBase } from "../lib/editora";
+import { currentDocVersion, docVersions, type DocVersion } from "../lib/doc-versions";
+
+type DocEntry = CollectionEntry<"docs"> | CollectionEntry<"docsArchive">;
 
 interface Props {
-  entry: CollectionEntry<"docs">;
+  entry: DocEntry;
+  /** Defaults to the current version, so a caller predating versioning still works. */
+  docVersion?: DocVersion;
 }
-const { entry } = Astro.props;
+const { entry, docVersion = currentDocVersion } = Astro.props;
+const base = docVersion.base;
+const archived = !docVersion.current;
 
 // Build the ordered sidebar: categories in a fixed order, docs by `order`.
 const CATEGORY_ORDER = [
@@ -20,23 +26,45 @@ const CATEGORY_ORDER = [
   "Customization",
   "Help",
 ];
-const all = (await getCollection("docs")).sort(
-  (a, b) =>
-    (a.data.order ?? 100) - (b.data.order ?? 100) ||
-    a.data.title.localeCompare(b.data.title),
-);
-const cats = [
-  ...new Set([...CATEGORY_ORDER, ...all.map((d) => d.data.category)]),
-].filter((c) => all.some((d) => d.data.category === c));
 
-const href = (d: CollectionEntry<"docs">) =>
-  d.id === "introduction" ? docsBase : `${docsBase}/${d.id}`;
+// The sidebar comes from the version being rendered, not from the live docs:
+// an archived release's page list is its own (0.9.10 has no editor-groups page).
+// Archived ids are "<version>/<slug>", stripped back to the slug the route uses.
+const prefix = docVersion.archive === null ? "" : `${docVersion.archive}/`;
+const pages = (
+  docVersion.archive === null
+    ? (await getCollection("docs")).map((e) => ({ entry: e as DocEntry, slug: e.id }))
+    : (await getCollection("docsArchive"))
+        .filter((e) => e.id.startsWith(prefix))
+        .map((e) => ({ entry: e as DocEntry, slug: e.id.slice(prefix.length) }))
+).sort(
+  (a, b) =>
+    (a.entry.data.order ?? 100) - (b.entry.data.order ?? 100) ||
+    a.entry.data.title.localeCompare(b.entry.data.title),
+);
+
+const cats = [
+  ...new Set([...CATEGORY_ORDER, ...pages.map((p) => p.entry.data.category)]),
+].filter((c) => pages.some((p) => p.entry.data.category === c));
+
+type Page = (typeof pages)[number];
+const href = (p: Page) => (p.slug === "introduction" ? base : `${base}/${p.slug}`);
 
 // Flat order for prev/next.
-const flat = cats.flatMap((c) => all.filter((d) => d.data.category === c));
-const idx = flat.findIndex((d) => d.id === entry.id);
+const flat = cats.flatMap((c) => pages.filter((p) => p.entry.data.category === c));
+const idx = flat.findIndex((p) => p.entry.id === entry.id);
 const prev = idx > 0 ? flat[idx - 1] : null;
 const next = idx >= 0 && idx < flat.length - 1 ? flat[idx + 1] : null;
+
+// Where "read the current version" goes. An archived page whose topic has since
+// been removed or renamed points at the current docs root rather than a 404.
+const thisSlug = prefix && entry.id.startsWith(prefix) ? entry.id.slice(prefix.length) : entry.id;
+const currentSlugs = new Set((await getCollection("docs")).map((d) => d.id));
+const latestHref = !archived
+  ? null
+  : thisSlug === "introduction" || !currentSlugs.has(thisSlug)
+    ? currentDocVersion.base
+    : `${currentDocVersion.base}/${thisSlug}`;
 
 const reference = [
   { href: "/commands", label: "Commands" },
@@ -93,6 +121,7 @@ const faqJsonLd =
   title={`${entry.data.title} — Editora Docs`}
   description={entry.data.description ?? entry.data.title}
   ogImage="og/docs.png"
+  canonicalPath={archived ? latestHref! : undefined}
 >
   {
     faqJsonLd && faqJsonLd.mainEntity.length > 0 && (
@@ -106,15 +135,15 @@ const faqJsonLd =
           cats.map((c) => (
             <div class="docs-cat">
               <h3>{c}</h3>
-              {all
-                .filter((d) => d.data.category === c)
-                .map((d) => (
+              {pages
+                .filter((p) => p.entry.data.category === c)
+                .map((p) => (
                   <a
-                    href={href(d)}
-                    class={d.id === entry.id ? "active" : ""}
+                    href={href(p)}
+                    class={p.entry.id === entry.id ? "active" : ""}
                   >
-                    {d.data.beta && <span class="beta-pill">Beta</span>}
-                    {d.data.title}
+                    {p.entry.data.beta && <span class="beta-pill">Beta</span>}
+                    {p.entry.data.title}
                   </a>
                 ))}
             </div>
@@ -124,10 +153,39 @@ const faqJsonLd =
           <h3>Reference</h3>
           {reference.map((r) => <a href={r.href}>{r.label}</a>)}
         </div>
+        {
+          docVersions.length > 1 && (
+            <div class="docs-cat docs-versions">
+              <h3>Version</h3>
+              {docVersions.map((v) => (
+                <a
+                  href={v.base}
+                  class={v.slug === docVersion.slug ? "active" : ""}
+                >
+                  {v.version}
+                  {v.current && <span class="docs-version-tag">latest</span>}
+                </a>
+              ))}
+            </div>
+          )
+        }
       </nav>
     </aside>
 
-    <article class="docs-content doc" data-pagefind-body data-pagefind-meta="kind:Docs">
+    <article
+      class="docs-content doc"
+      data-pagefind-body={archived ? undefined : true}
+      data-pagefind-meta="kind:Docs"
+    >
+      {
+        archived && (
+          <p class="docs-version-note" data-pagefind-ignore>
+            <strong>Editora {docVersion.version} docs.</strong> You are reading an
+            archived version, kept so links from that release keep working.{" "}
+            <a href={latestHref}>Read the {currentDocVersion.version} docs →</a>
+          </p>
+        )
+      }
       <h1>
         {entry.data.beta && <span class="beta-pill">Beta</span>}
         {entry.data.title}
@@ -139,7 +197,7 @@ const faqJsonLd =
           prev ? (
             <a class="prev" href={href(prev)}>
               <span>← Previous</span>
-              {prev.data.title}
+              {prev.entry.data.title}
             </a>
           ) : (
             <span />
@@ -149,7 +207,7 @@ const faqJsonLd =
           next && (
             <a class="next" href={href(next)}>
               <span>Next →</span>
-              {next.data.title}
+              {next.entry.data.title}
             </a>
           )
         }
@@ -213,6 +271,36 @@ const faqJsonLd =
   .docs-content h1 .beta-pill {
     margin-left: 0;
     margin-right: 0.4rem;
+  }
+
+  .docs-versions a {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .docs-version-tag {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+  }
+
+  /* Reading an archived version is a deliberate state, so it is stated at the
+     top of the page rather than only implied by the URL. */
+  .docs-version-note {
+    margin: 0 0 1.75rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .docs-version-note strong {
+    color: var(--text);
   }
 
   /* the .doc prose styles come from Layout's global stylesheet */

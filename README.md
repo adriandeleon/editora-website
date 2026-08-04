@@ -68,12 +68,50 @@ version; unversioned doc/command URLs are not served, so each app version pins
 its own `/docs/v-<appVersion>/…` links.
 
 The routes live under `src/pages/docs/[version]/` (`index.astro`,
-`[...slug].astro`, `commands/[id].astro`); the `[version]` param is fixed to
-`v-<version>` at build. Templates build versioned links from `docsBase` in
-`src/lib/editora.ts`. Markdown content is authored with plain `/docs/…` links;
-a small rehype plugin in `astro.config.mjs` rewrites them to the versioned base
-at build time, so content never hardcodes the version (bumping it just
-regenerates `version.ts`). On a version bump, the URLs move with it.
+`[...slug].astro`, `commands/[id].astro`); each emits one path per served
+version. Markdown content is authored with plain `/docs/…` links; a small rehype
+plugin in `astro.config.mjs` rewrites them to the versioned base at build time,
+so content never hardcodes the version — and for an archived page it rewrites to
+*that page's own* version, derived from its file path.
+
+### Past versions stay served
+
+The app deep-links `/docs/v-<appVersion>/…`, so those URLs have to keep working
+after a release — and they have to describe the version the reader is actually
+running, not whatever the docs say today. Each released version is therefore a
+**frozen copy**:
+
+- `src/content/docs/` — the current version (the one you edit).
+- `src/content/docs-archive/<version>/` — one directory per past release.
+- `src/lib/commands-archive/v<version-with-dashes>.ts` — that release's command
+  data, so a command added since then has no page under the old version.
+- `src/lib/doc-versions.ts` — the registry tying them together, and the only
+  file you edit to add or drop a version.
+
+**Archiving a release.** Do this *before* regenerating for the new version,
+while `src/content/docs/` and `src/lib/commands.ts` still hold the outgoing one:
+
+```bash
+V=0.9.10                                    # the version being archived
+mkdir -p src/content/docs-archive/$V
+cp src/content/docs/*.md src/content/docs-archive/$V/
+cp src/lib/commands.ts src/lib/commands-archive/v${V//./-}.ts
+```
+
+Then add an entry to `ARCHIVED` in `src/lib/doc-versions.ts`, importing that
+commands snapshot. Everything else follows from that list: the routes, the
+sidebar, the version picker, the "you're reading an archived version" banner,
+and the per-version `/commands` redirect.
+
+An archived page is a *record of a release*, which is why it's a copy rather
+than a re-render of current content: a later correction must not silently
+rewrite what a shipped version claimed. Archived pages are excluded from site
+search and carry a canonical link to the current version's equivalent, so they
+don't compete with it in search results.
+
+Note the archive collection pins `generateId` to the literal `<version>/<slug>`.
+The loader's default id generation slugifies, which eats the dots in a version
+number (`0.9.10/lsp` → `0910/lsp`) and silently yields zero matching pages.
 
 ## Per-command pages
 

@@ -1,20 +1,35 @@
 ---
 import { getCollection } from "astro:content";
 import DocsLayout from "../../../layouts/DocsLayout.astro";
-import { version } from "../../../lib/version";
+import { docVersions } from "../../../lib/doc-versions";
 
-// Each docs page under the current version: /docs/v-<version>/<slug>.
+// Every docs page, for every served version: /docs/v-<version>/<slug>.
+// The current version renders the live `docs` collection; an archived version
+// renders its frozen copy under `docsArchive`, so an old URL keeps describing
+// the release it belongs to.
 export async function getStaticPaths() {
-  const docs = await getCollection("docs");
-  return docs
-    .filter((d) => d.id !== "introduction") // introduction lives at /docs/v-<version>
-    .map((entry) => ({
-      params: { version: `v-${version}`, slug: entry.id },
-      props: { entry },
-    }));
+  const live = await getCollection("docs");
+  const archive = await getCollection("docsArchive");
+
+  return docVersions.flatMap((v) => {
+    const prefix = v.archive === null ? "" : `${v.archive}/`;
+    const entries =
+      v.archive === null
+        ? live.map((entry) => ({ entry, slug: entry.id }))
+        : archive
+            .filter((e) => e.id.startsWith(prefix))
+            .map((entry) => ({ entry, slug: entry.id.slice(prefix.length) }));
+
+    return entries
+      .filter((e) => e.slug !== "introduction") // lives at /docs/v-<version>
+      .map(({ entry, slug }) => ({
+        params: { version: v.slug, slug },
+        props: { entry, docVersion: v },
+      }));
+  });
 }
 
-const { entry } = Astro.props;
+const { entry, docVersion } = Astro.props;
 ---
 
-<DocsLayout entry={entry} />
+<DocsLayout entry={entry} docVersion={docVersion} />

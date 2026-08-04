@@ -1,33 +1,58 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
-import { commandGroups, keymaps, type Cmd } from "../../../../lib/commands";
-import { version } from "../../../../lib/version";
+import { type Cmd } from "../../../../lib/commands";
+import {
+  currentDocVersion,
+  docVersions,
+  type DocVersion,
+  type Keymap,
+} from "../../../../lib/doc-versions";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
-// One page per command, generated from src/lib/commands.ts. Versioned: the app
-// deep-links these as /docs/v-<appVersion>/commands/<command-id>.
+// One page per command, per served version. The app deep-links these as
+// /docs/v-<appVersion>/commands/<command-id>, so each version lists the commands
+// *it* shipped: a command added in 0.10.0 has no 0.9.10 page, and one that has
+// since been renamed keeps its old page under the old version.
 export async function getStaticPaths() {
   const docs = await getCollection("commandDocs");
   const docById = new Map(docs.map((d) => [d.id, d]));
   const paths: {
     params: { version: string; id: string };
-    props: { cmd: Cmd; category: string; doc: CollectionEntry<"commandDocs"> | null };
+    props: {
+      cmd: Cmd;
+      category: string;
+      doc: CollectionEntry<"commandDocs"> | null;
+      docVersion: DocVersion;
+    };
   }[] = [];
-  for (const g of commandGroups) {
-    for (const cmd of g.commands) {
-      paths.push({
-        params: { version: `v-${version}`, id: cmd.id },
-        props: { cmd, category: g.title, doc: docById.get(cmd.id) ?? null },
-      });
+  for (const v of docVersions) {
+    for (const g of v.commandGroups) {
+      for (const cmd of g.commands) {
+        paths.push({
+          params: { version: v.slug, id: cmd.id },
+          props: { cmd, category: g.title, doc: docById.get(cmd.id) ?? null, docVersion: v },
+        });
+      }
     }
   }
   return paths;
 }
 
-const { cmd, category, doc } = Astro.props;
+const { cmd, category, doc, docVersion } = Astro.props;
 const { Content } = doc ? await render(doc) : { Content: null };
 
-const docsBase = `/docs/v-${version}`;
+const keymaps: Keymap[] = docVersion.keymaps;
+const archived = !docVersion.current;
+const docsBase = docVersion.base;
+
+// Does this command still exist in the current version? Drives where "read the
+// current version" points, so a command that has since been removed doesn't 404.
+const stillExists =
+  !archived ||
+  currentDocVersion.commandGroups.some((g) => g.commands.some((c) => c.id === cmd.id));
+const latestHref = stillExists
+  ? `${currentDocVersion.base}/commands/${cmd.id}`
+  : currentDocVersion.base;
 // Map a command category to the most relevant guide (slug under the docs base).
 const GUIDE: Record<string, { slug: string; label: string }> = {
   Files: { slug: "workspace", label: "Projects, windows & files" },
@@ -67,8 +92,13 @@ const bindings = keymaps
 <Layout
   title={`${cmd.title} — Editora command`}
   description={cmd.desc || `The ${cmd.title} command in Editora (${cmd.id}).`}
+  canonicalPath={archived ? latestHref : undefined}
 >
-  <main class="page" data-pagefind-body data-pagefind-meta="kind:Command">
+  <main
+    class="page"
+    data-pagefind-body={archived ? undefined : true}
+    data-pagefind-meta="kind:Command"
+  >
     <nav class="crumbs" data-pagefind-ignore>
       <a href={docsBase}>Docs</a>
       <span>›</span>
@@ -76,6 +106,20 @@ const bindings = keymaps
       <span>›</span>
       <span class="crumb-cat">{category}</span>
     </nav>
+
+    {
+      archived && (
+        <p class="version-note" data-pagefind-ignore>
+          <strong>Editora {docVersion.version}.</strong> Archived, so links from
+          that release keep working.{" "}
+          <a href={latestHref}>
+            {stillExists
+              ? `Read the ${currentDocVersion.version} page →`
+              : `Not a command in ${currentDocVersion.version} — browse the current docs →`}
+          </a>
+        </p>
+      )
+    }
 
     <h1>{cmd.title}</h1>
     <code class="cmd-id">{cmd.id}</code>
@@ -134,6 +178,23 @@ const bindings = keymaps
 </Layout>
 
 <style>
+  /* Reading an archived version is a deliberate state, so it is stated on the
+     page rather than only implied by the URL. */
+  .version-note {
+    margin: 0 0 1.5rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .version-note strong {
+    color: var(--text);
+  }
+
   .page {
     max-width: 52rem;
     margin: 0 auto;

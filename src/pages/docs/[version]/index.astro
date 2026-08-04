@@ -1,15 +1,28 @@
 ---
-import { getEntry } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import DocsLayout from "../../../layouts/DocsLayout.astro";
-import { version } from "../../../lib/version";
+import { docVersions, type DocVersion } from "../../../lib/doc-versions";
 
-// The docs landing (introduction) for the current version: /docs/v-<version>/.
-export function getStaticPaths() {
-  return [{ params: { version: `v-${version}` } }];
+// The docs landing (introduction) for every served version: /docs/v-<version>/.
+export async function getStaticPaths() {
+  const archive = await getCollection("docsArchive");
+  return docVersions.map((v) => ({
+    params: { version: v.slug },
+    props: {
+      docVersion: v,
+      archived:
+        v.archive === null
+          ? null
+          : (archive.find((e) => e.id === `${v.archive}/introduction`) ?? null),
+    },
+  }));
 }
 
-const entry = await getEntry("docs", "introduction");
-if (!entry) throw new Error("docs/introduction.md is missing");
+const { docVersion, archived } = Astro.props;
+const entry = docVersion.archive === null ? await getEntry("docs", "introduction") : archived;
+if (!entry) {
+  throw new Error(`introduction.md is missing for docs version ${(docVersion as DocVersion).version}`);
+}
 ---
 
-<DocsLayout entry={entry} />
+<DocsLayout entry={entry} docVersion={docVersion} />
