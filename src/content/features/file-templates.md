@@ -1,7 +1,7 @@
 ---
 title: "File templates"
 group: "Workspace & files"
-order: 5
+order: 6
 beta: true
 summary: "New File From Template: single- or multi-file scaffolds with interactive placeholders (author, date, file name, …)."
 ---

@@ -1,7 +1,7 @@
 ---
 title: "TODO highlighting"
 group: "Workspace & files"
-order: 9
+order: 10
 beta: false
 summary: "Configurable regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a TODO tool window, with scrollbar and minimap stripes."
 ---

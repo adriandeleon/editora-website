@@ -1,7 +1,7 @@
 ---
 title: "Editor groups"
 group: "Workspace & files"
-order: 2
+order: 3
 beta: false
 summary: "Two files on screen at once. Split the editor into independent groups with their own tabs, nest the splits, drag a tab between them, and get the whole arrangement back on the next launch."
 ---

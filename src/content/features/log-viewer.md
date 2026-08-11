@@ -1,7 +1,7 @@
 ---
 title: "Server log viewer"
 group: "Workspace & files"
-order: 10
+order: 11
 beta: false
 summary: "Open a <code>.log</code> file for severity highlighting, a <code>tail -f</code> Follow toggle, open-at-the-tail for huge logs, and live level + regex filtering."
 ---

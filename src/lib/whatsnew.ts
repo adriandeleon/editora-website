@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Per-project settings you can commit", detail: "a project can carry <code>.editora/settings.toml</code> saying which language server to run and whether to run it, overriding your global preferences…" },
-  { title: "New Project From Template", detail: "scaffold a whole project and open it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file template, fill…" },
-  { title: "Long-running work now says it's running", detail: "a find-in-files sweep over a big tree used to announce itself once and then go quiet, which looks identical to a hang. The status bar now shows…" },
-  { title: "Failures no longer slip past you", detail: "the status bar shows one message at a time and the next one replaces it, so an error that appeared while you were typing used to vanish without…" },
-  { title: "Rename now shows you what it will change", detail: "a rename that reaches beyond the current file lists every affected file first, with its change count and where it moves to, and you can untick any…" },
-  { title: "Run configurations gain a before-launch step, and can be shared with your team", detail: "a configuration can name a command to run first (a build, a codegen step); a non-zero exit aborts the launch, so a stale binary is never run by…" },
-  { title: "A run-configuration selector in the toolbar", detail: "pick a saved configuration and hit Run or Debug, with Stop beside them; the choice is remembered across restarts. Each configuration also becomes a…" },
-  { title: "A menu bar", detail: "File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help, so the things Editora can do are <em>browsable</em> rather than only…" },
+  { title: "New Maven Project.", detail: "Editora could only ever <em>open</em> an existing folder as a project. There is now an IDEA-style wizard: pick an archetype, fill in the coordinates,…" },
+  { title: "Git: Initialize Repository…", detail: "you could clone a repository but not start one, so a folder opened as a project had to be taken to a terminal for <code>git init</code>. The command…" },
+  { title: "Copy the Markdown preview as rich text.", detail: "Copying from the preview now puts an HTML flavour on the clipboard beside the plain text, so one Copy pastes formatted into Word, Teams, Outlook or…" },
+  { title: "Each tool window remembers its own size.", detail: "Sizes were three numbers — one per side — shared by every window docked there, so sizing the Project tree and then opening the Structure outline left…" },
+  { title: "Create a file of any supported type from the Project tree.", detail: "Right-clicking a folder now opens a single carrying the icon the file will show in the tree. You are asked for a name, prefilled with a sensible one,…" },
+  { title: "Filter and keyboard-navigate the Commit window.", detail: "It now opens with a filter box focused, like Bookmarks and Personal Notes: type to narrow the changed files, Down or Enter to step into and open one.…" },
+  { title: "<code>C-n</code>/<code>C-p</code> now move the results from the filter box", detail: "in every filterable tool window — Project, Structure, Bookmarks, Personal Notes, the Commit window and the build task trees — so narrowing and then…" },
+  { title: "Stage or unstage several files at once.", detail: "The Commit window's file list is now multi-select: extend the selection with Shift+Up/Down from the keyboard or Shift/Ctrl-click with the mouse, then…" },
 ];

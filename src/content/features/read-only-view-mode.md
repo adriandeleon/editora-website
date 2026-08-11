@@ -1,7 +1,7 @@
 ---
 title: "Read-only / View mode"
 group: "Workspace & files"
-order: 6
+order: 7
 beta: false
 summary: "Toggle a buffer read-only to browse without editing; pager-style <kbd>Space</kbd>/<kbd>Backspace</kbd> paging and a Word-style View Mode banner."
 ---

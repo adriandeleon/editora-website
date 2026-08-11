@@ -1,7 +1,7 @@
 ---
 title: "CSV & TSV support"
 group: "Workspace & files"
-order: 11
+order: 12
 beta: false
 summary: "Rainbow per-column coloring, a field readout, and an editable CSV Grid with sort/filter and export to Excel/ODF, plus align/shrink and Markdown-table interop."
 ---

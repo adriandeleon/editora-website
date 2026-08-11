@@ -515,7 +515,31 @@ A project can carry `.editora/settings.toml` saying **which language server to r
 
 Only toolchain settings can be overridden. Appearance, keymap and fonts stay personal, because checking out a repository should not rearrange somebody's editor.
 """),
-    new Feature("editor-groups", WF, 2, false,
+    new Feature("starting-a-project", WF, 2, false,
+        "Starting a project",
+        "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written.",
+        """
+Editora used to only ever *open* an existing folder, which made it a poor place to begin something.
+
+## New Maven Project
+
+A wizard: pick an archetype, fill in the coordinates, and the generated project is registered and opened in its own window. Reachable from the File menu, the Project tree's **New ▸** submenu, and the palette.
+
+Archetypes come from a curated list that ships with the editor, with **Load full catalog…** to pull Maven Central's when you need something unusual. Where both list the same archetype the curated pin wins, because the published catalog is often years out of date. The package name is derived the way IntelliJ does it, so `my-app` becomes `my_app` and `2048` becomes `_2048`.
+
+The project arrives ready to run: a run configuration is seeded for its main class with `mvn -q compile` as its before-launch step, and that class is opened, so [Run](/features/run-files) works on the first press instead of failing on an empty `target/classes`. Generation shells out to `mvn archetype:generate` rather than writing a pom by hand, so Maven has to be on your `PATH`, which is checked before the wizard opens rather than after five fields have been typed.
+
+## Git: Initialize Repository
+
+Starts version control without dropping to a terminal. It prompts for a folder, defaults to the project root, and brings the [Git](/features/git) UI up the usual way: status bar, Commit window, gutter change bars. Creating a repository inside an existing one is refused, naming the enclosing root, since that is nearly always a mistake and awkward to undo.
+
+## New ▸ on any folder
+
+About fifty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
+
+A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. The name you type always wins over the type's extension, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing at all, and an existing file is never overwritten.
+"""),
+    new Feature("editor-groups", WF, 3, false,
         "Editor groups",
         "Two files on screen at once. Split the editor into independent groups with their own tabs, nest the splits, drag a tab between them, and get the whole arrangement back on the next launch.",
         """
@@ -543,7 +567,7 @@ The layout is saved with the [session](/features/projects), so the arrangement y
 
 The older **Split Editor** commands show two views of the *same* file, for reading one part while editing another. Those work exactly as before, and the two can be combined.
 """),
-    new Feature("bookmarks-notes", WF, 3, false,
+    new Feature("bookmarks-notes", WF, 4, false,
         "Bookmarks & notes",
         "Line bookmarks (gutter markers, cross-file jump, per-project), plus Personal Notes attached to a word/line/range, stored outside the file, surviving renames, with Markdown bodies.",
         """
@@ -553,7 +577,7 @@ Two ways to mark up code.
 
 **Personal Notes** attach an annotation to a word, line, or range, stored *outside* the file (great for read-only or generated code). They survive edits and renames via content-hash identity and text anchoring, render Markdown, and have their own tool window and `M-g n` picker. See the [deep-dive](/blog/personal-notes-that-survive-edits).
 """),
-    new Feature("find-in-files", WF, 4, false,
+    new Feature("find-in-files", WF, 5, false,
         "Find in files",
         "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label.",
         """
@@ -561,7 +585,7 @@ Project-wide search with a results panel (`C-S-f`): matches grouped by file, wit
 
 In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count. And **AceJump** (`M-g j`) lets you leap the caret to any visible spot by typing the label that appears over it.
 """),
-    new Feature("file-templates", WF, 5, true,
+    new Feature("file-templates", WF, 6, true,
         "File templates",
         "New File From Template: single- or multi-file scaffolds with interactive placeholders (author, date, file name, …).",
         """
@@ -571,7 +595,7 @@ Templates use the same `${var}` / `$0` syntax as snippets; bundled ones cover a 
 
 A multi-file template can also scaffold a **whole project**: **New Project From Template** writes it to a folder of your choosing, registers that folder as a [project](/features/projects) and opens it in its own window. A **Python Project** template ships with it — package layout, a test, `pyproject.toml`, README and `.gitignore`.
 """),
-    new Feature("read-only-view-mode", WF, 6, false,
+    new Feature("read-only-view-mode", WF, 7, false,
         "Read-only / View mode",
         "Toggle a buffer read-only to browse without editing; pager-style <kbd>Space</kbd>/<kbd>Backspace</kbd> paging and a Word-style View Mode banner.",
         """
@@ -579,7 +603,7 @@ Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident, typi
 
 A file that isn't writable on disk opens read-only automatically, and the per-file state is remembered. A Word-style **View Mode banner** docks above the editor with an *Enable Editing* button (when the file is writable), and while read-only, **Space pages down / Backspace pages up** like a pager.
 """),
-    new Feature("remote-sftp", WF, 7, true,
+    new Feature("remote-sftp", WF, 8, true,
         "Remote files (SFTP)",
         "Browse, edit, search, and save files on a remote host over SSH/SFTP. The project tree, search, bookmarks, and notes all work over the wire.",
         """
@@ -589,7 +613,7 @@ Saved sites have three surfaces beyond the palette: a **Remote Sites** tool wind
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Off by default; local-only features (running, LSP, Git) are gated off for remote files.
 """),
-    new Feature("local-file-history", WF, 8, false,
+    new Feature("local-file-history", WF, 9, false,
         "Local file history",
         "IntelliJ-style snapshots of your files over time, on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required.",
         """
@@ -605,7 +629,7 @@ It's grown closer to IntelliJ:
 
 Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
 """),
-    new Feature("todo-highlighting", WF, 9, false,
+    new Feature("todo-highlighting", WF, 10, false,
         "TODO highlighting",
         "Configurable regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a TODO tool window, with scrollbar and minimap stripes.",
         """
@@ -618,7 +642,7 @@ Editora highlights **TODO / FIXME-style patterns** everywhere they appear, Intel
 
 On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).
 """),
-    new Feature("log-viewer", WF, 10, false,
+    new Feature("log-viewer", WF, 11, false,
         "Server log viewer",
         "Open a <code>.log</code> file for severity highlighting, a <code>tail -f</code> Follow toggle, open-at-the-tail for huge logs, and live level + regex filtering.",
         """
@@ -630,7 +654,7 @@ On by default. Highlighting runs off the UI thread and is debounced; the project
 
 Logs open in **View mode** (read-only with an *Enable Editing* banner) by default, and follow keeps streaming while read-only. On by default (Settings → Editor → Logs). Commands: `log.toggleFollow`, `log.setLevelFilter`, `log.setRegexFilter`, `log.clearFilter`, `log.viewAsLog`, and `view.toggleLogViewer`. See the [log viewer guide](/docs/log-viewer).
 """),
-    new Feature("csv", WF, 11, false,
+    new Feature("csv", WF, 12, false,
         "CSV & TSV support",
         "Rainbow per-column coloring, a field readout, and an editable CSV Grid with sort/filter and export to Excel/ODF, plus align/shrink and Markdown-table interop.",
         """
