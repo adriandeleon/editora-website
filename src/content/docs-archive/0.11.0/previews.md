@@ -19,43 +19,12 @@ the active file previews as, so there's nothing per-type to remember. A floating
 ## Structured data and API docs
 
 - `.json`, `.yaml`, and `.toml` render a collapsible, type-colored **data tree**.
-- `.xml` (xsd, xsl, fxml, wsdl, rss, and so on) renders a faithful **DOM
-  tree** of tags, attributes, and text. A `pom.xml` gets [its own
-  rendering](#maven-poms) instead.
+- `.xml` (xsd, xsl, fxml, pom, wsdl, rss, and so on) renders a faithful **DOM
+  tree** of tags, attributes, and text.
 - A JSON or YAML file recognized as an **OpenAPI 3 / Swagger 2** spec instead
   renders as browsable **API docs**: endpoints with colored method badges,
   params, responses, and schemas. Toggle between the tree and the docs with
   `structured.toggleView`.
-
-## Maven poms
-
-A `pom.xml` previews as a **summary** rather than as the generic XML tree, which
-spreads every dependency over four nested rows. You get coordinates and parent,
-then modules, properties, dependencies, managed dependencies, plugins, managed
-plugins, and each profile's own set — with the artifact name and its version in
-aligned columns, so the versions read as a column rather than a hunt.
-
-The point is the two indirections that otherwise send you back up the file:
-
-- A **`${property}` version is resolved**, with the reference kept beside it
-  (`5.10.2  ${junit.version}`), including properties defined in terms of other
-  properties and the `project.*` built-ins.
-- A **blank version is filled in** from the file's own `<dependencyManagement>`
-  or `<pluginManagement>` and tagged *managed* (`2.0.17  managed`).
-
-What the file cannot answer, it says so about. **No parent pom is read**, so a
-version inherited from a parent reads *inherited* rather than a number Editora
-would be inventing, and an unresolvable `${…}` reports itself. This is a reading
-of one file, not an effective pom.
-
-Any file named `pom.xml` or `*.pom` qualifies, plus anything that sniffs as a
-pom, so a `pom-template.xml` or an `effective-pom.xml` gets the same view.
-**`pom.toggleView`** — or **Show as XML tree** in the preview's right-click menu
-— switches to the standard XML rendering and back. Settings → Editor → File
-previews turns the summary off entirely.
-
-Poms also carry a [Maven submenu](/docs/build-tools#the-maven-submenu) on their
-right-click menu.
 
 ## Config files, decoded to plain English
 

@@ -24,16 +24,9 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Type hierarchy | `lsp.typeHierarchy` | (palette) |
 
 The goto, references and hover commands are also in the editor right-click menu
-while a server is active, under a single **LSP** submenu, and you can
-**Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**
-and **Go to Type Definition** join that menu only when the server actually
-supports them, so it never offers a dead entry.
-
-The submenu is only a container — which actions a server contributes is
-unchanged. A fully-featured server offers up to eight, which flat in the menu
-pushed cut, copy, paste and the spelling suggestions far enough down to hunt
-for, and a bare "Go to Definition" sitting between "Paste" and a spelling
-suggestion named nothing about where it had come from.
+while a server is active, and you can **Ctrl/Cmd-click** a symbol to jump to its
+definition. **Go to Implementation** and **Go to Type Definition** join that menu
+only when the server actually supports them, so it never offers a dead entry.
 
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and

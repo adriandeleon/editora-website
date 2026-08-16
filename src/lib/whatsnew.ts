@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "New Maven Project.", detail: "Editora could only ever <em>open</em> an existing folder as a project. There is now an IDEA-style wizard: pick an archetype, fill in the coordinates,…" },
-  { title: "Git: Initialize Repository…", detail: "you could clone a repository but not start one, so a folder opened as a project had to be taken to a terminal for <code>git init</code>. The command…" },
-  { title: "Copy the Markdown preview as rich text.", detail: "Copying from the preview now puts an HTML flavour on the clipboard beside the plain text, so one Copy pastes formatted into Word, Teams, Outlook or…" },
-  { title: "Each tool window remembers its own size.", detail: "Sizes were three numbers — one per side — shared by every window docked there, so sizing the Project tree and then opening the Structure outline left…" },
-  { title: "Create a file of any supported type from the Project tree.", detail: "Right-clicking a folder now opens a single carrying the icon the file will show in the tree. You are asked for a name, prefilled with a sensible one,…" },
-  { title: "Filter and keyboard-navigate the Commit window.", detail: "It now opens with a filter box focused, like Bookmarks and Personal Notes: type to narrow the changed files, Down or Enter to step into and open one.…" },
-  { title: "<code>C-n</code>/<code>C-p</code> now move the results from the filter box", detail: "in every filterable tool window — Project, Structure, Bookmarks, Personal Notes, the Commit window and the build task trees — so narrowing and then…" },
-  { title: "Stage or unstage several files at once.", detail: "The Commit window's file list is now multi-select: extend the selection with Shift+Up/Down from the keyboard or Shift/Ctrl-click with the mouse, then…" },
+  { title: "Tool window docking.", detail: "A tool window can now be maximized over its split, re-docked to another stripe by dragging its button, shared with a second window on the same side,…" },
+  { title: "A pom.xml summary preview.", detail: "A <code>pom.xml</code> opens with its own rendering instead of the generic XML tree: coordinates and parent, then modules, properties, dependencies,…" },
+  { title: "Maven: update the versions in an existing project.", detail: "<code>maven.updateVersions</code> checks the nearest <code>pom.xml</code>'s dependencies and plugins against Maven Central and shows what would…" },
+  { title: "A Maven submenu on the right-click menu", detail: "on a <code>pom.xml</code> in the editor, and on a folder or a <code>pom.xml</code> row in the Project tree. One builder serves every surface, so they…" },
+  { title: "New Maven Project: advanced options.", detail: "A collapsed section carrying the project <code>&lt;url&gt;</code>, the Java release (a combo of the JDK majors actually installed, still editable),…" },
+  { title: "An LSP submenu", detail: "in the editor's right-click menu. A fully-featured server contributes up to eight actions, which pushed cut/copy/paste and the spelling suggestions…" },
+  { title: "File Templates is no longer labelled <em>beta</em> in Settings.", detail: "" },
+  { title: "The in-app jdtls install is pinned to a milestone build rather than the rolling…", detail: "" },
 ];

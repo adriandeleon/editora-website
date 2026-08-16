@@ -121,47 +121,6 @@ can be combined.
 These buttons are disabled on tabs that aren't text buffers — the Welcome and
 Doctor pages and the image, hex, PDF and diff viewers.
 
-## Tool window layout
-
-Tool windows live on three stripes — left, right, and bottom — and you can
-rearrange them without leaving the keyboard or reaching for a preference.
-
-| Action | Command | Default key |
-| --- | --- | --- |
-| Maximize / restore the tool window | `view.maximizeToolWindow` | (palette) |
-| Float it into its own window | `view.floatToolWindow` | (palette) |
-| Open a second window on one side | `view.splitToolWindow` | (palette) |
-| Close a focused tool window | (any tool window) | `M-g` |
-
-Maximize and float also have a button each in the tool window's header, and the
-header's right-click menu carries all three. Each acts on the focused tool
-window, or on the only open one; with two open and focus elsewhere, the command
-says so rather than guessing.
-
-- **Maximize** expands a tool window over its split and toggles back. It is
-  session-only and deliberately never saved, so a maximized window can't reopen
-  next launch covering the editor.
-- **Re-dock by dragging its stripe button** onto another stripe. Dropping it on
-  an existing button inserts it before or after; dropping it on empty stripe
-  space appends it to that side. A window that was open stays open on its new
-  side.
-- **Two windows can share a side** — Project over Structure, say. Use **Open in
-  Split** from the stripe button's right-click menu, or `view.splitToolWindow`,
-  which lists only the windows that could actually join a side right now. Left
-  and right split vertically; the bottom splits **horizontally**, which is the
-  only way two consoles side by side both stay readable. A third window evicts
-  the companion, not the primary. Opening a tool window normally still
-  *replaces*, so the stripe buttons, keybindings, and palette behave as before.
-- **Floating** puts a tool window in its own window, owned by the editor — it
-  floats above it, minimizes with it, and closes with it. Bounds are remembered,
-  and reused only when they still overlap a screen, so a window saved on a
-  since-detached monitor is re-centred rather than opened somewhere you can't
-  reach. Closing a floating window closes the tool window; reopening it from the
-  stripe docks it again.
-
-Each tool window remembers **its own size**, rather than sharing one number per
-side, and the whole layout is saved with the session.
-
 ## The Welcome page
 
 With no session to restore, Editora opens a **Welcome** page (a real tab) with

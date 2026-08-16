@@ -41,48 +41,6 @@ Discovery parses the marker file directly, with no shell-out and no new
 dependency, so it's instant and offline. Toggle each under **Settings →
 Languages & Tools → Build Tools**.
 
-## Maven
-
-### The Maven submenu
-
-A **Maven** submenu appears wherever there's a pom in hand: on a `pom.xml` in the
-editor's right-click menu, and on a folder or a `pom.xml` row in the Project
-tree. It carries Update Versions, Actions, Run…, Re-run, and Stop.
-
-One builder serves all three surfaces, so they can't drift into offering
-different actions, and it offers nothing at all when Maven is off, when there's
-no pom above the folder, or on a file that isn't itself a `pom.xml`.
-
-### Update the versions in an existing project
-
-**`maven.updateVersions`** checks the nearest `pom.xml`'s dependencies and
-plugins against Maven Central and **shows what would change before writing
-anything** — a row per artifact, current → latest, behind a dialog you can
-decline. Nothing is written until you accept.
-
-The update is applied **through the open buffer as a single edit**, so one
-`C-z` takes the whole thing back and the buffer is left dirty for you to save.
-Only a pom that isn't open is written to disk.
-
-Three deliberate limits, each because the obvious behaviour is wrong:
-
-- Maven Central's `<release>` marker is **not trusted**. It means "newest
-  non-snapshot published", which for `maven-surefire-plugin` was a milestone for
-  years; the full version list is filtered for stability instead.
-- A version is **never walked backwards**, which an unguarded set-to-latest
-  would do to a pom pinned on purpose.
-- A **property-driven version** (`${junit.version}`) is skipped. Rewriting the
-  reference would replace the indirection you chose, and rewriting the property
-  is a different edit with a different blast radius.
-
-Each artifact is resolved independently and best-effort, so one unreachable
-coordinate leaves that version alone rather than failing the rest. A plugin with
-no `<version>` is left alone too — its version comes from a parent, and writing
-one would change resolution rather than update it.
-
-The same option is offered up front when [generating a new
-project](/features/starting-a-project).
-
 ## Test runner
 
 Running a build tool's **test** task, from the tasks tree, the palette
