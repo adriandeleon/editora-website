@@ -24,6 +24,8 @@ const captions: Record<string, string> = {
     "Markdown split view — source on the left, live GitHub-style preview on the right",
   "markdown-preview-zen.jpg":
     "Markdown preview in Zen mode — distraction-free reading with rendered task lists",
+  "doctor.jpg":
+    "The Doctor screen — every external tool Editora can use, with found, warning, and missing status",
 };
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -36,15 +38,32 @@ const prettify = (name: string) =>
     .replace(/\b\w/g, (c) => c.toUpperCase())
     .trim();
 
-let shots: { src: string; alt: string; caption: string }[] = [];
+// Each shot ships as a WebP plus a JPG fallback of the same basename, so the
+// gallery groups by basename — listing both would show every picture twice.
+// The JPG is the <img> (universal fallback) and the WebP a <source>.
+let shots: { src: string; webp?: string; alt: string; caption: string }[] = [];
 try {
-  shots = readdirSync(dir)
-    .filter((f) => exts.has(parse(f).ext.toLowerCase()))
-    .sort()
-    .map((f) => {
-      const caption = captions[f] ?? prettify(parse(f).name);
-      return { src: url(`screenshots/${f}`), alt: caption, caption };
-    });
+  const files = readdirSync(dir).filter((f) =>
+    exts.has(parse(f).ext.toLowerCase()),
+  );
+  const byBase = new Map<string, string[]>();
+  for (const f of files) {
+    const base = parse(f).name;
+    byBase.set(base, [...(byBase.get(base) ?? []), f]);
+  }
+  shots = [...byBase.keys()].sort().map((base) => {
+    const group = byBase.get(base)!;
+    const webp = group.find((f) => parse(f).ext.toLowerCase() === ".webp");
+    // Fall back to whatever non-WebP variant exists, else the WebP itself.
+    const fallback = group.find((f) => f !== webp) ?? webp!;
+    const caption = captions[fallback] ?? captions[`${base}.jpg`] ?? prettify(base);
+    return {
+      src: url(`screenshots/${fallback}`),
+      webp: webp && webp !== fallback ? url(`screenshots/${webp}`) : undefined,
+      alt: caption,
+      caption,
+    };
+  });
 } catch {
   shots = [];
 }
@@ -67,7 +86,17 @@ try {
           {shots.map((s) => (
             <figure class="shot">
               <a href={s.src} target="_blank" rel="noopener">
-                <img src={s.src} alt={s.alt} loading="lazy" />
+                <picture>
+                  {s.webp && <source srcset={s.webp} type="image/webp" />}
+                  <img
+                    src={s.src}
+                    alt={s.alt}
+                    width="2720"
+                    height="1700"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </a>
               <figcaption>{s.caption}</figcaption>
             </figure>
@@ -130,6 +159,7 @@ try {
     display: block;
     width: 100%;
     height: auto;
+    aspect-ratio: 2720 / 1700;
     border-bottom: 1px solid var(--border);
   }
 

@@ -160,7 +160,7 @@ const platforms = [
           <video
             class="demo-video"
             src={url(heroVideo)}
-            poster={url("screenshots/editor.jpg")}
+            poster={url("screenshots/hero/editor.jpg")}
             autoplay
             loop
             muted
@@ -169,17 +169,23 @@ const platforms = [
           />
         ) : (
           <figure class="demo-poster">
-            <img
-              src={url("screenshots/editor.jpg")}
-              alt="The Editora editor: a Java file with syntax highlighting, a line-number gutter with bookmarks, a minimap, and a status bar"
-              width="3552"
-              height="2420"
-              fetchpriority="high"
-            />
+            <picture>
+              <source
+                srcset={url("screenshots/hero/editor.webp")}
+                type="image/webp"
+              />
+              <img
+                src={url("screenshots/hero/editor.jpg")}
+                alt="The Editora editor: a Java file with syntax highlighting, a line-number gutter with bookmarks, a minimap, and a status bar"
+                width="2720"
+                height="1700"
+                fetchpriority="high"
+              />
+            </picture>
             <figcaption>
               <span class="demo-badge">Stand-in</span>
               A short screen capture will play here. This is the real editor
-              (Primer&nbsp;Dark).
+              (Editora&nbsp;Dark).
             </figcaption>
           </figure>
         )
