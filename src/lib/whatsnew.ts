@@ -4,12 +4,6 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Tool window docking.", detail: "A tool window can now be maximized over its split, re-docked to another stripe by dragging its button, shared with a second window on the same side,…" },
-  { title: "A pom.xml summary preview.", detail: "A <code>pom.xml</code> opens with its own rendering instead of the generic XML tree: coordinates and parent, then modules, properties, dependencies,…" },
-  { title: "Maven: update the versions in an existing project.", detail: "<code>maven.updateVersions</code> checks the nearest <code>pom.xml</code>'s dependencies and plugins against Maven Central and shows what would…" },
-  { title: "A Maven submenu on the right-click menu", detail: "on a <code>pom.xml</code> in the editor, and on a folder or a <code>pom.xml</code> row in the Project tree. One builder serves every surface, so they…" },
-  { title: "New Maven Project: advanced options.", detail: "A collapsed section carrying the project <code>&lt;url&gt;</code>, the Java release (a combo of the JDK majors actually installed, still editable),…" },
-  { title: "An LSP submenu", detail: "in the editor's right-click menu. A fully-featured server contributes up to eight actions, which pushed cut/copy/paste and the spelling suggestions…" },
-  { title: "File Templates is no longer labelled <em>beta</em> in Settings.", detail: "" },
-  { title: "The in-app jdtls install is pinned to a milestone build rather than the rolling…", detail: "" },
+  { title: "Opening a file from the file manager now reuses the running Editora instead of starting a second one.", detail: "On Linux and Windows a file manager delivers the path as a command-line argument, which by definition means a new process — so clicking a file while…" },
+  { title: "Startup is ~225 ms faster to the first frame that shows your file", detail: "(measured on a packaged Linux build opening a file with <code>--expert</code>: median 1702 ms → 1477 ms, ~13%). Four pieces of work were running on…" },
 ];
