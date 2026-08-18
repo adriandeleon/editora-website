@@ -56,29 +56,17 @@ jump into a file in one command.
 ## One editor, not two
 
 If Editora is already running, a launch that just opens files **hands them to
-the running editor and exits** rather than starting a second one — reusing the
-process, with its language servers and its memory, instead of paying for a
-second set.
+the running editor and exits** rather than starting a second one. The files open
+in the focused window, and a focus mode you asked for (`--expert`, say) is
+applied to it — so a desktop entry like "Editora Expert Mode" still means Expert
+Mode.
 
-What you get is a **new window** for those files, brought to the front, with any
-focus mode you asked for (`--expert`, say) applied to it — so a desktop entry
-like "Editora Expert Mode" still means Expert Mode. What is reused is the
-*process*, not the window you happened to be working in: a file arriving as a
-tab in the middle of what you were doing, restyling that window's chrome on the
-way, is not what clicking a file should do.
-
-**Unless the file is already open**, in which case the window holding it is
-brought forward instead of opening it twice. Two independent buffers over one
-file loses edits — save one and the other is silently stale.
-
-These windows are deliberately left out of your saved layout, so a file opened
-from the file manager doesn't come back as an empty window on the next launch.
-
-The reason it exists: on Linux and Windows a file manager passes the path as a
-command-line argument, which by definition starts a new process, so clicking a
-file used to pay a full cold start *and* leave a second editor resident. (macOS
-never had the problem — Finder delivers an event to the running app — and the
-handoff routes into that same code path.)
+This is what you want when opening a file from a file manager. On Linux and
+Windows a file manager passes the path as a command-line argument, which by
+definition starts a new process, so clicking a file used to pay a full cold
+start *and* leave a second editor resident. (macOS never had the problem —
+Finder delivers an event to the running app — and the handoff routes into that
+same code path.)
 
 It is deliberately narrow. Only a launch that is purely *"open these files"* is
 handed over; these always get their own editor:

@@ -4,6 +4,5 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Opening a file from the file manager now reuses the running Editora instead of starting a second one.", detail: "On Linux and Windows a file manager delivers the path as a command-line argument, which by definition means a new process — so clicking a file while…" },
-  { title: "Startup is ~225 ms faster to the first frame that shows your file", detail: "(measured on a packaged Linux build opening a file with <code>--expert</code>: median 1702 ms → 1477 ms, ~13%). Four pieces of work were running on…" },
+  { title: "A file opened from the file manager now gets a window of its own", detail: "instead of landing as a tab in whatever window you were working in. Before the single-instance handoff, such a click started its own process and…" },
 ];

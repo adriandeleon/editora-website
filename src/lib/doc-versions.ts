@@ -23,6 +23,10 @@ import {
   type CmdGroup,
 } from "./commands";
 import {
+  commandGroups as commandGroups_0_12_1,
+  keymaps as keymaps_0_12_1,
+} from "./commands-archive/v0-12-1";
+import {
   commandGroups as commandGroups_0_12_0,
   keymaps as keymaps_0_12_0,
 } from "./commands-archive/v0-12-0";
@@ -64,6 +68,22 @@ type Spec = Pick<DocVersion, "version" | "archive" | "commandGroups" | "keymaps"
 
 // Newest first. Add an entry here when a release is archived.
 const ARCHIVED: Spec[] = [
+  // 0.12.2 shipped while the site still served the 0.12.1 docs — the website was
+  // never updated in between — so this snapshot is exactly what /docs showed for
+  // the whole time 0.12.2 was current, and it keeps that release's in-app deep
+  // links resolving instead of 404ing. Same commands: 0.12.2 added none.
+  {
+    version: "0.12.2",
+    archive: "0.12.2",
+    commandGroups: commandGroups_0_12_1,
+    keymaps: keymaps_0_12_1,
+  },
+  {
+    version: "0.12.1",
+    archive: "0.12.1",
+    commandGroups: commandGroups_0_12_1,
+    keymaps: keymaps_0_12_1,
+  },
   {
     version: "0.12.0",
     archive: "0.12.0",
