@@ -93,35 +93,6 @@ An instance is scoped to its **config directory**, so a `--dev` launch can never
 hand off to your real editor, and two `--config-dir` sessions stay independent.
 If the handoff fails for any reason, the launch simply starts its own editor.
 
-## Opening files from the file manager
-
-Editora registers itself as a text editor with the desktop, so it shows up where
-your file manager offers a choice of application. What the installer can claim
-differs by platform:
-
-| Package | Registration |
-| --- | --- |
-| **Windows `.msi`** | Editora appears under Explorer's *Open with* for the text and source types it edits |
-| **Linux `.deb`** | An *Open With* entry and an `editora` command on your `PATH`; it also sets *Editora Expert Mode* as the system default text editor, which your own per-user choice still overrides |
-| **macOS `.dmg`** | Finder's *Open With*, via the app bundle's declared document types |
-| **Linux `.rpm`** | No association — run `/opt/editora/bin/Editora`, or open files from inside Editora |
-
-Windows hands a file manager's chosen file to an application as a command-line
-argument, and nothing maps an extension to Editora unless the installer says so
-— so until 0.13.0 the MSI installed an editor that no file manager could hand a
-file to.
-
-**It doesn't take over your existing defaults.** On Windows 8+ the shell's
-per-user choice wins over anything an installer writes, so a type you already
-open with something else keeps opening with it and Editora is simply offered
-alongside. An extension nothing else claims *does* fall to Editora, which is the
-wanted outcome for the likes of `.tfvars`.
-
-The list is every extension Editora actually resolves to a language, minus
-`.html`, `.htm`, `.xhtml` and `.svg` — left to the browser and the image viewer.
-That's the same choice the Linux package already made, so the two installers
-can't drift apart in what they claim.
-
 ## Examples
 
 ```bash

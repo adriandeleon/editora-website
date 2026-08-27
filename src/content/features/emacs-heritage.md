@@ -1,7 +1,7 @@
 ---
 title: "Emacs heritage"
 group: "Keyboard & commands"
-order: 6
+order: 7
 beta: false
 summary: "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap."
 ---

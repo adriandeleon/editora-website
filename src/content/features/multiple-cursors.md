@@ -1,7 +1,7 @@
 ---
 title: "Multiple cursors"
 group: "Keyboard & commands"
-order: 4
+order: 5
 beta: false
 summary: "Add a caret at the next occurrence, above/below, or on every occurrence at once, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once, VS Code-style."
 ---

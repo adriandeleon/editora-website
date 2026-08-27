@@ -55,11 +55,6 @@ you want, and run it. Each entry shows its key, so you pick up shortcuts as you
 go. The full list lives on the [Commands](/commands) and
 [Keybindings](/keybindings) pages.
 
-If you don't yet know *which* picker holds the thing you want — a command, a
-file, a symbol — run **Search Everywhere** and just type its name. It has no
-default chord, so bind it in **Settings → Keymap**; see
-[Navigation & search](/docs/navigation#search-everywhere).
-
 If you'd rather browse than recall, there is also a **menu bar** — File / Edit /
 Find / View / Navigate / Code / Run / VCS / Tools / Window / Help — built over
 those same commands, so every item shows its current keybinding and updates when

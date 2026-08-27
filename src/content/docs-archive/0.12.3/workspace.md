@@ -78,12 +78,6 @@ switcher, and the Open Files picker all show the same unsaved-file marker. Close
 the last tab and the editor is left empty (it doesn't recreate an Untitled
 buffer).
 
-A file you're only *glancing* at — arrowing through a picker, following a
-definition — lands in a single reusable **preview tab**, shown in italic, so
-browsing costs one tab rather than one per glance. Editing it, or opening it
-explicitly, makes it permanent. See
-[preview tabs](/docs/code-navigation#preview-tabs).
-
 ## Editor groups: two files at once
 
 The editor area splits into independent **editor groups**, each with its own

@@ -22,29 +22,6 @@ bookmark instead of hitting what you aimed at.
 | Toggle bookmark | `bookmarks.toggle` | `C-c m` |
 | Next / previous in file | `bookmarks.next` / `previous` | `C-c ]` / `C-c [` |
 | Jump (cross-file) | `bookmarks.jump` | `M-g b` |
-| Set a mnemonic | `bookmarks.setMnemonic` | (palette) |
-
-### Mnemonics
-
-A bookmark can carry a **single character**, and that character becomes a
-shortcut that jumps to it from anywhere in the project. Set one with
-`bookmarks.setMnemonic` on the bookmarked line; an empty answer clears it.
-
-A mnemonic is **unique within a project** — `3` means one place, not one place
-per file — because the chord is a *name* for a location, and a name that resolves
-to several locations is a menu, not a shortcut. Assigning one that's already
-taken simply moves it, which is also the only behaviour that needs no error
-message.
-
-Each of the ten digits gets its own command, `bookmarks.gotoMnemonic0` through
-`bookmarks.gotoMnemonic9`, so you can bind each to a single chord in
-**Settings → Keymap** — one keystroke, no prompt, which is the entire point.
-Letters work as a mnemonic too and are reachable from the bookmarks picker; only
-the digits have a bindable command of their own.
-
-The panel shows the mnemonic **first on the row**. It's the only part of a
-bookmark that is otherwise invisible, and a shortcut you can't see is one you
-won't remember assigning.
 
 The **Bookmarks** tool window (`M-2`) lists them across files in an order you
 control: reorder a bookmark or a whole file group with Alt+Up/Down, a right-click

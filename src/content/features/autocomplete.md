@@ -1,7 +1,7 @@
 ---
 title: "Autocomplete"
 group: "Code intelligence"
-order: 3
+order: 4
 beta: false
 summary: "As-you-type completion: a popup for code (LSP + snippets) and inline ghost text for prose. Trigger with <kbd>C-M-i</kbd> / <kbd>M-/</kbd>."
 ---

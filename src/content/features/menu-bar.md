@@ -1,7 +1,7 @@
 ---
 title: "A menu bar, over the same commands"
 group: "Keyboard & commands"
-order: 7
+order: 8
 beta: false
 summary: "Prefer to browse rather than recall? <strong>File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help</strong>, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke."
 ---

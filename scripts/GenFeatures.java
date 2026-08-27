@@ -45,7 +45,20 @@ Prefer your own bindings? The built-in keybinding editor records multi-key chord
 
 On macOS the non-Emacs keymaps use ⌘ wherever the [keybindings reference](/keybindings) shows Ctrl.
 """),
-    new Feature("jump-to-popups", KB, 3, false,
+    new Feature("search-everywhere", KB, 3, false,
+        "Search Everywhere",
+        "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in — <code>&gt;</code>, <code>#</code> or <code>@</code> narrows it when you already know.",
+        """
+Editora had five pickers behind five chords, each asking you to decide *what kind* of thing you wanted before you could start typing its name. **Search Everywhere** asks for the name.
+
+- No prefix: commands, project files and symbols together
+- `>` commands only, `#` files only, `@` symbols only — VS Code's sigils, because the muscle memory already exists
+
+Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge hands the whole list to whichever is biggest and the other two disappear. Each source gets a guaranteed share, and the groups compete on their *best* result rather than their bulk.
+
+The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).
+"""),
+    new Feature("jump-to-popups", KB, 4, false,
         "Jump-to popups",
         "Lost in a big project? Fuzzy-jump to recent files, symbols, open tabs, and tool windows, plus an Emacs <code>find-file</code>-style path finder.",
         """
@@ -58,8 +71,10 @@ Keyboard-first navigation: fuzzy pickers that get you anywhere without the mouse
 - **Bookmarks**: `M-g b`, **Notes**, `M-g n`
 
 There's also an Emacs `find-file`-style **path finder** (`C-x C-f`) with prefix autocomplete, type and Tab to complete, Enter to descend a folder or open (or create) a file. Every picker shows a footer legend of its navigation keys.
+
+Every one of them **ranks** what you typed — contiguity, word and camelCase boundaries, exact case — and emboldens the characters responsible for the match, so `mcon` finds `MainController` and the best answer is first. Looking for something without knowing which picker holds it? That's [Search Everywhere](/features/search-everywhere).
 """),
-    new Feature("multiple-cursors", KB, 4, false,
+    new Feature("multiple-cursors", KB, 5, false,
         "Multiple cursors",
         "Add a caret at the next occurrence, above/below, or on every occurrence at once, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once, VS Code-style.",
         """
@@ -71,7 +86,7 @@ It's powered by Editora's RichTextFX fork, which adds multiple cursors and colum
 
 Movement chords fan out too: `C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`, `M-f` and `M-b` move every caret, like the arrow keys. Document, paragraph, sentence and page motions stay on the primary caret.
 """),
-    new Feature("macros", KB, 5, false,
+    new Feature("macros", KB, 6, false,
         "Keyboard macros",
         "Record a sequence of edits and replay it: <kbd>F3</kbd> to start, <kbd>F4</kbd> to stop, <kbd>C-x e</kbd> to replay. Name and save macros, and bind them to keys.",
         """
@@ -83,7 +98,7 @@ Record a sequence of editor actions and replay it, Emacs-style. Recording captur
 
 The recording hooks are inert when you're not recording, so there's no idle cost. See the [macros guide](/docs/macros).
 """),
-    new Feature("emacs-heritage", KB, 6, false,
+    new Feature("emacs-heritage", KB, 7, false,
         "Emacs heritage",
         "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap.",
         """
@@ -155,7 +170,7 @@ Registers, a global cross-buffer mark ring, and dabbrev are genuinely missing ra
 
 Browse the [full command list](/commands) or the [keybindings reference](/keybindings).
 """),
-    new Feature("menu-bar", KB, 7, false,
+    new Feature("menu-bar", KB, 8, false,
         "A menu bar, over the same commands",
         "Prefer to browse rather than recall? <strong>File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help</strong>, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke.",
         """
@@ -283,7 +298,25 @@ Document sync is incremental, semantic highlighting transfers only what changed 
 
 Off by default. Enable it under Settings → LSP.
 """),
-    new Feature("autocomplete", CI, 3, false,
+    new Feature("code-navigation", CI, 3, false,
+        "Code navigation",
+        "Go to symbol <strong>with no language server</strong>, sticky scroll, Peek Definition, preview tabs, and related-file jumps. Move around code without losing your place.",
+        """
+Navigation is two questions: can the thing be **found**, and can you jump **without losing your place**.
+
+**Go to Symbol in Project** answers the first with Editora's own declaration scanner across sixteen language ids, so it works on a first run and in every language that ships a grammar but has no server. The index is built lazily on first use — walking every file the moment a project opens spends real work for someone who may never ask it anything — and is incremental after that, rescanning exactly the file you saved. It under-reports on purpose: a missing declaration costs you one fallback to search, an invented one teaches you not to trust the feature. A running [language server](/features/lsp) is still the better answer and takes precedence.
+
+The rest is flow:
+
+- **Sticky scroll** pins the enclosing scope headers above the viewport, so deep in a long method you can still see what it belongs to.
+- **Peek Definition** shows a definition over the editor and leaves your place, scroll and tab count where they were. Enter commits to the real jump.
+- **Preview tabs** make browsing cost one tab, not one per glance — the reused slot's title is italic, and editing or explicitly opening the file promotes it.
+- **Recent Locations** lists the session's trail with the line you were on, and previews as you arrow through it.
+- **Go to Related File** pairs a file with its counterpart: a test and its subject, a header and its implementation, a component and its stylesheet.
+
+See [Code navigation](/docs/code-navigation).
+"""),
+    new Feature("autocomplete", CI, 4, false,
         "Autocomplete",
         "As-you-type completion: a popup for code (LSP + snippets) and inline ghost text for prose. Trigger with <kbd>C-M-i</kbd> / <kbd>M-/</kbd>.",
         """

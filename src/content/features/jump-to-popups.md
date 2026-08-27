@@ -1,7 +1,7 @@
 ---
 title: "Jump-to popups"
 group: "Keyboard & commands"
-order: 3
+order: 4
 beta: false
 summary: "Lost in a big project? Fuzzy-jump to recent files, symbols, open tabs, and tool windows, plus an Emacs <code>find-file</code>-style path finder."
 ---
@@ -15,3 +15,5 @@ Keyboard-first navigation: fuzzy pickers that get you anywhere without the mouse
 - **Bookmarks**: `M-g b`, **Notes**, `M-g n`
 
 There's also an Emacs `find-file`-style **path finder** (`C-x C-f`) with prefix autocomplete, type and Tab to complete, Enter to descend a folder or open (or create) a file. Every picker shows a footer legend of its navigation keys.
+
+Every one of them **ranks** what you typed — contiguity, word and camelCase boundaries, exact case — and emboldens the characters responsible for the match, so `mcon` finds `MainController` and the best answer is first. Looking for something without knowing which picker holds it? That's [Search Everywhere](/features/search-everywhere).

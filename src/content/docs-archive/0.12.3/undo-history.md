@@ -10,12 +10,6 @@ typing burst. It's finer-grained than save-based
 [local file history](/docs/workspace#local-file-history), and session-only
 (it's not persisted, and it's disabled for very large files).
 
-Up to **50** checkpoints are kept, within a memory budget — whichever binds
-first. Keeping 50 whole-document snapshots isn't a memory bound when the
-documents differ in size by three orders of magnitude, so an ordinary file still
-gets all 50 while a very large one keeps fewer, deeper-in-time ones. Closing a
-tab releases its checkpoints straight away.
-
 ## The popup (recommended)
 
 `undoHistory.jump` (`M-g v`) opens the active buffer's checkpoints as a

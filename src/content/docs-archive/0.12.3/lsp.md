@@ -15,8 +15,6 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Feature | Command | Default key |
 | --- | --- | --- |
 | Go to definition | `lsp.gotoDefinition` | `M-.` |
-| Peek definition | `lsp.peekDefinition` | (palette) |
-| Go to definition in a split | `lsp.gotoDefinitionInSplit` | (palette) |
 | Go to implementation | `lsp.gotoImplementation` | (palette) |
 | Go to type definition | `lsp.gotoTypeDefinition` | (palette) |
 | Go to declaration | `lsp.gotoDeclaration` | (palette) |
@@ -40,16 +38,7 @@ suggestion named nothing about where it had come from.
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and
 preview; a single result jumps straight there. **Go to Symbol in Workspace**
-opens a live search over every symbol in the project — and where no server is
-running, Editora's own
-[project symbol index](/docs/code-navigation#go-to-symbol-in-project) answers the
-same question.
-
-**Peek Definition** shows the definition over the editor instead of taking you
-to it, leaving your place, scroll position and tab count where they were; Enter
-commits to the real jump. **Go to Definition in a Split** puts the definition in
-a new editor group beside the code that referenced it. Both are covered in
-[Code navigation](/docs/code-navigation).
+opens a live search over every symbol in the project.
 
 **Definitions inside libraries work too.** A Java definition that lives in the
 JDK or a dependency is fetched from the server and opened in a read-only,

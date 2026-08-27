@@ -1,7 +1,7 @@
 ---
 title: "Keyboard macros"
 group: "Keyboard & commands"
-order: 5
+order: 6
 beta: false
 summary: "Record a sequence of edits and replay it: <kbd>F3</kbd> to start, <kbd>F4</kbd> to stop, <kbd>C-x e</kbd> to replay. Name and save macros, and bind them to keys."
 ---

@@ -8,70 +8,6 @@ order: 1
 Keyboard-first navigation: fuzzy pickers and search that get you anywhere
 without the mouse.
 
-For moving around *code* in particular — symbols, definitions, the scope you're
-in — see [Code navigation](/docs/code-navigation).
-
-## Search Everywhere
-
-**Search Everywhere** (`search.everywhere`) is one picker over **commands,
-project files and symbols**, so you can type the *name* of the thing instead of
-first deciding which finder it lives in. Editora had five pickers behind five
-chords; this one asks for the name.
-
-A leading sigil restricts it to a single source when you already know:
-
-| Prefix | Searches |
-| --- | --- |
-| (none) | commands, files and symbols together |
-| `>` | commands only |
-| `#` | files only |
-| `@` | symbols only |
-
-Those are VS Code's sigils rather than invented ones, since the muscle memory
-already exists.
-
-Results stay **grouped by source** rather than interleaved on raw score. The
-sources differ in size by orders of magnitude — tens of thousands of symbols,
-thousands of files, a few hundred commands — so a flat merge hands the whole
-list to whichever is biggest and the other two effectively disappear. Each
-source gets a guaranteed share (8 rows, 24 overall), the groups compete on their
-*best* result rather than their bulk, and the overall cap trims a group's tail
-instead of dropping a source outright.
-
-A single-line selection seeds the query, the same way the find bar and Find in
-Files do. A command the [command palette](/docs/keymaps) would gray out is
-omitted here rather than shown inert: in the palette a disabled row is the point
-— you learn the command exists and what would enable it — but in a short mixed
-list it is just noise.
-
-The symbol half is backed by Editora's own
-[project symbol index](/docs/code-navigation#go-to-symbol-in-project), so it
-works with no language server installed.
-
-It has no default chord; bind it from **Settings → Keymap**.
-
-## How matching works
-
-Every picker now scores what you typed rather than just testing whether it
-matched, and emboldens the characters actually responsible for the match.
-
-- **Contiguity, boundaries and case.** A character earns a bonus for landing on
-  a word boundary (the start, after a separator, a camelCase hump, a
-  letter→digit transition) or for continuing a run. Spread-out matches are
-  penalized. So an exact prefix beats an acronym beats a scattered subsequence.
-- **The best alignment, not the first.** The match is computed by dynamic
-  programming rather than greedily left to right, which is the difference
-  between `mc` meaning the two humps of `MainController` and meaning whichever
-  `c` happens to come first.
-- **Several terms, any order.** Whitespace splits the query into terms that must
-  all match, in any order — `toggle git` finds *Git: Toggle Blame*.
-- **Paths know their basename.** The Project tree's filter scores the whole
-  relative path, so a query can name a directory as well as a file.
-
-Grouped and structural lists — build actions, branches, the Structure tree —
-take the same matcher but keep their own order, because a tree that reorders
-under a filter is worse, not better.
-
 ## Jump pickers
 
 Each of these opens an in-scene picker with a footer legend of its keys. Type to
@@ -204,26 +140,6 @@ file and restored with your session.
 Jump around and step through your navigation history with **Go: Back**
 (`nav.back`) and **Go: Forward** (`nav.forward`), like a browser's back/forward
 for the caret.
-
-### Recent Locations
-
-**Go: Recent Locations…** (`nav.recentLocations`) lists the session's trail
-newest-first, each row showing **the line you were on** — which is the thing you
-actually lost when a jump took you elsewhere. `Foo.java:214` says nothing about
-why you were there; the line usually says it at a glance.
-
-It reads the same trail Back walks rather than keeping a second log, so the
-picker and Back can never disagree about where you have been.
-
-The picker also **previews**: the highlighted row is shown in the editor as the
-selection moves, and dismissing the picker puts everything back where it was.
-The undo is half the feature — without it, arrowing through a list and pressing
-Escape leaves you wherever the cursor stopped, which is worse than not
-previewing at all. Preview navigates without taking focus and without recording
-history, so browsing a picker can't itself become something to navigate back
-through, and a location whose file isn't open lands in the
-[preview tab](/docs/code-navigation#preview-tabs), so a list of twenty locations
-costs one tab rather than twenty.
 
 ## AceJump
 
