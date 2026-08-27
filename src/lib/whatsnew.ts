@@ -4,12 +4,5 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Search Everywhere", detail: "one picker over commands, files and symbols, so you can type the <em>name</em> of the thing instead of first choosing which finder it lives in. A…" },
-  { title: "Go to Symbol in Project, with no language server.", detail: "Editora now carries its own symbol scanner, so the question works on a first run and in every language that ships a grammar but has no server — 16…" },
-  { title: "Every picker now ranks what you typed, and shows why a row matched.", detail: "The pickers only ever asked whether a candidate matched, never how well, so a scattered accidental hit ranked alongside a clean prefix one — and…" },
-  { title: "Sticky scroll", detail: "pins the enclosing scope headers above the viewport, so deep in a long method you can still see what it belongs to. A header already on screen is not…" },
-  { title: "Peek Definition", detail: "shows a definition over the editor and leaves your place, scroll position and tab count where they were. Go-to-definition answers \"what is this\" by…" },
-  { title: "Preview tabs.", detail: "Browsing now costs one tab, not one per glance. Arrowing through a picker or following a definition to see what something is reuses a single slot,…" },
-  { title: "Recent Locations", detail: "lists the session's trail newest-first with the line you were on, which is the thing you actually lost when a jump took you elsewhere.…" },
-  { title: "Picker preview.", detail: "The highlighted row is shown in the editor as the selection moves, and dismissing the picker puts everything back. The undo is half the feature —…" },
+  { title: "Editora 0.13.0 crashed on startup on any CPU without AVX-512", detail: "most consumer Intel from 12th generation onward, and every AMD before Zen 4. The JVM aborted with <code>SIGILL</code> a fraction of a second in, on…" },
 ];

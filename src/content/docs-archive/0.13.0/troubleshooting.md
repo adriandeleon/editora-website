@@ -27,29 +27,6 @@ Start here when something that should work doesn't: it answers "is the tool
 installed, is it the version I think, and is Editora looking at the right one" in
 one pass.
 
-## Editora 0.13.0 quits instantly on startup
-
-If you are on **0.13.0**, upgrade to **0.13.1** or later — this is fixed, and
-there is no workaround worth applying on the old build.
-
-0.13.0 crashed a fraction of a second into startup on any CPU **without
-AVX-512**: most consumer Intel from the 12th generation onward, and every AMD
-before Zen 4. The crash was intermittent — it landed on whichever thread got
-there first, so on one affected machine it happened in four launches out of six
-and looked different each time.
-
-The cause was the ahead-of-time cache that makes cold start faster. As well as
-class metadata it archived generated machine code, and those call adapters were
-compiled for **the CPU that built the release** — GitHub's Linux runners have
-AVX-512, so the shipped adapters used instructions your processor refuses to
-execute. The JVM maps such an archive without complaint, because its CPU-feature
-validation doesn't cover cached adapters.
-
-0.13.1 stops caching adapters, so a cache built from then on contains no
-machine code of that kind, and a user still holding a bad one no longer runs it.
-**The startup win is kept in full** — the adapters were contributing nothing to
-it.
-
 ## A launcher is blocked on first run
 
 Installers are currently unsigned.
