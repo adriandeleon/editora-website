@@ -4,5 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Editora 0.13.0 crashed on startup on any CPU without AVX-512", detail: "most consumer Intel from 12th generation onward, and every AMD before Zen 4. The JVM aborted with <code>SIGILL</code> a fraction of a second in, on…" },
+  { title: "The menu bar can share the window's title bar.", detail: "Off by default, under Settings ▸ Interface; it applies on restart, since a window's style is fixed once it has been shown. With it on, the window is…" },
+  { title: "Every main-menu item that can carry an icon now does.", detail: "Right-click menus have carried glyphs throughout, while the menu bar carried none; Save is now the same icon wherever you reach it from. Partial on…" },
+  { title: "Search Everywhere can take over the palette's shortcut.", detail: "Off by default, under Settings ▸ Interface ▸ Pickers (or the <code>View: Toggle Palette Opens Search Everywhere</code> command). With it on, the…" },
+  { title: "Search Everywhere has a keybinding.", detail: "It shipped in 0.13.0 as a registered command with no chord in any of the bundled keymaps, so the only way to reach the picker that replaces the other…" },
+  { title: "SVG files preview as vector art instead of a scaled bitmap.", detail: "The <code>.svg</code> preview drew the file once into a fixed 2×-resolution image and scaled that, so zooming past 200% went soft — on the one…" },
+  { title: "The run-configuration group moved to the right end of the toolbar.", detail: "The selector and its Run, Debug and Stop buttons now sit beside the project switcher rather than in the middle of the icons, the way an IDE pins its…" },
+  { title: "Search Everywhere now teaches the way the command palette does.", detail: "Three things it was missing, all of which matter more now that it can stand in for the palette: A command whose feature is switched off is listed,…" },
+  { title: "Simple UI mode keeps a menu bar — simplified, not hidden.", detail: "It now shows File, Edit, Find, View and Help. The menus that go are exactly the ones Simple mode switches off — code intelligence, running and…" },
 ];

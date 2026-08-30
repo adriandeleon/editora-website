@@ -56,10 +56,9 @@ go. The full list lives on the [Commands](/commands) and
 [Keybindings](/keybindings) pages.
 
 If you don't yet know *which* picker holds the thing you want — a command, a
-file, a symbol — run **Search Everywhere** (`M-S-x`, or
-`Ctrl`/`Cmd`+`Shift`+`E` in the GUI keymaps) and just type its name. It can also
-take over the palette's own shortcut, from **Settings → Interface → Pickers**;
-see [Navigation & search](/docs/navigation#search-everywhere).
+file, a symbol — run **Search Everywhere** and just type its name. It has no
+default chord, so bind it in **Settings → Keymap**; see
+[Navigation & search](/docs/navigation#search-everywhere).
 
 If you'd rather browse than recall, there is also a **menu bar** — File / Edit /
 Find / View / Navigate / Code / Run / VCS / Tools / Window / Help — built over

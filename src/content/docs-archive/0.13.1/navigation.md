@@ -38,54 +38,17 @@ source gets a guaranteed share (8 rows, 24 overall), the groups compete on their
 *best* result rather than their bulk, and the overall cap trims a group's tail
 instead of dropping a source outright.
 
-**A single-source query is not capped.** When a sigil restricts the picker to
-one source — or when the query is empty, which lists commands — there is nothing
-for a large source to drown out, so you get the whole list. Before 0.14.0 a `>`
-search returned at most eight commands, which made the scoped mode strictly
-worse than the picker it stands in for.
-
-An **empty query lists every command** and touches no other corpus, so opening
-it is a browsable list rather than a blank box. A bare sigil is a *scope* rather
-than an empty query: it names what it will search and walks nothing.
-
 A single-line selection seeds the query, the same way the find bar and Find in
-Files do.
+Files do. A command the [command palette](/docs/keymaps) would gray out is
+omitted here rather than shown inert: in the palette a disabled row is the point
+— you learn the command exists and what would enable it — but in a short mixed
+list it is just noise.
 
 The symbol half is backed by Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project), so it
 works with no language server installed.
 
-### Commands you can't run yet
-
-A command whose feature is switched off is **listed, greyed, with an explanation
-naming the setting that would enable it** — the same way the
-[command palette](/docs/keymaps) treats it. Omitting it is tidier in a short
-mixed list, which is how this shipped in 0.13.0, but it also means you never
-learn the command exists. Greyed rows sort after everything you can actually
-run, and both the cursor and the mouse step over them.
-
-The highlighted row's **description** appears under the list, and **`C-h`**
-opens that command's documentation in your browser — both matching the palette
-exactly. The hint line along the bottom names them, alongside `C-n`/`C-p`.
-
-### Opening it
-
-| Keymap | Chord |
-| --- | --- |
-| Emacs | `M-S-x` |
-| CUA, Sublime, VS Code, IntelliJ | `Ctrl`/`Cmd`+`Shift`+`E` |
-
-`M-S-x` sits beside `M-x`, where the mnemonic explains itself. (Through 0.13.0
-the command had no chord in any bundled keymap, so the only way to reach it was
-the palette.)
-
-It can also **take over the command palette's shortcut**: switch on *Palette
-shortcut opens Search Everywhere* under **Settings → Interface → Pickers**, or
-run `view.togglePaletteSearchEverywhere`. It is off by default — which picker a
-chord opens is muscle memory, so this is something you turn on rather than
-something a release does to you. Nothing is lost by switching: an empty query
-lists every command exactly as the palette does, and typing also reaches project
-files and symbols. Search Everywhere keeps its own chord either way.
+It has no default chord; bind it from **Settings → Keymap**.
 
 ## How matching works
 

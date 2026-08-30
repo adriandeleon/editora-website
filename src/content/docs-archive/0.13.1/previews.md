@@ -78,12 +78,7 @@ right-click menu.
 ## Viewers
 
 - `.pdf` files open in a read-only **page viewer** (rasterized via PDFBox).
-- `.svg` files stay editable XML but gain a live **vector** preview: it is drawn
-  through JSVG's JavaFX canvas and redrawn at whatever size it is shown at, so
-  it stays sharp at any zoom rather than going soft past 200% the way a scaled
-  bitmap does. Transparent files get a checkerboard behind them, so a white icon
-  on a transparent background is visible instead of looking like an empty pane.
-  Markdown badges and every export path (PDF, print, Word, ODF) still rasterize.
+- `.svg` files stay editable XML but gain a live rendered-image preview.
 - Binary files open as a read-only [hex dump](/docs/editing#hex-viewer).
 
 Every preview can **export to PDF** from its right-click menu.

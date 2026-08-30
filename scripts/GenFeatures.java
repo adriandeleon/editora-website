@@ -54,7 +54,11 @@ Editora had five pickers behind five chords, each asking you to decide *what kin
 - No prefix: commands, project files and symbols together
 - `>` commands only, `#` files only, `@` symbols only — VS Code's sigils, because the muscle memory already exists
 
-Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge hands the whole list to whichever is biggest and the other two disappear. Each source gets a guaranteed share, and the groups compete on their *best* result rather than their bulk.
+Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge hands the whole list to whichever is biggest and the other two disappear. Each source gets a guaranteed share, and the groups compete on their *best* result rather than their bulk. Restrict it to one source and nothing is capped — there is nothing left to drown out.
+
+It **teaches the way the command palette does**: an empty query lists every command, a command whose feature is switched off is listed greyed with the setting that would enable it, the highlighted row's description sits under the list, and `C-h` opens its documentation.
+
+`M-S-x` in the Emacs keymap, `Ctrl`/`Cmd`+`Shift`+`E` in the others — and it can take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
 
 The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).
 """),
@@ -180,11 +184,14 @@ The command palette is complete but unbrowsable: it answers "what is this called
 
 - Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
 - A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
+- Almost every item that can carry an **icon** does — the same glyph you see for that action in a right-click menu, so Save looks like Save wherever you reach it from. About a third are deliberately left blank rather than given an invented glyph; the icon column is reserved either way, so the titles still line up.
 - On **macOS** it sits in the system menu bar, where it belongs.
 
 It is deliberately a curated subset. Editora registers over six hundred commands and a menu that listed all of them would be a worse palette; the palette remains the complete index.
 
-Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen, Expert and [Simple](/features/simple-ui-mode) modes.
+On Linux and Windows it can **share the window's title bar** — menus, title and system buttons on one row, a full bar of vertical space back for the editor. Experimental, off by default, under **Settings → Interface**.
+
+Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen and Expert modes. [Simple mode](/features/simple-ui-mode) keeps a reduced one — File, Edit, Find, View, Help — because the mode aimed at someone new to the editor is the one that needs a browsable map most.
 """),
     new Feature("snippets", ED, 1, false,
         "Snippets",
@@ -762,7 +769,9 @@ Off by default. And plugins aren't sandboxed, so only install ones you trust.
         """
 One toggle strips the editor to the essentials (hiding the extra toolbar groups, the tool-window stripe, the breadcrumb, the **entire gutter** (line numbers, fold chevrons, and all markers), and the minimap) and turns off the heavier features (LSP, debugging, Git, multiple cursors) for a calm, minimal surface.
 
-Toggle it from Settings → Application, the toolbar, the palette, or the `--simple` CLI flag (session-only). Toggling off restores everything exactly.
+The [menu bar](/features/menu-bar) stays, **simplified rather than hidden** — File, Edit, Find, View, Help. The menus that go are exactly the ones the mode switches off, which would otherwise sit there entirely greyed out. Toggling Simple mode stays in that reduced View menu, so it is never a one-way door for anyone who entered it from there.
+
+Toggle it from Settings → Interface → Modes, the toolbar, the palette, or the `--simple` CLI flag (session-only). Toggling off restores everything exactly.
 """),
     new Feature("localized-ui", CE, 4, false,
         "Localized UI",

@@ -11,6 +11,10 @@ Editora had five pickers behind five chords, each asking you to decide *what kin
 - No prefix: commands, project files and symbols together
 - `>` commands only, `#` files only, `@` symbols only — VS Code's sigils, because the muscle memory already exists
 
-Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge hands the whole list to whichever is biggest and the other two disappear. Each source gets a guaranteed share, and the groups compete on their *best* result rather than their bulk.
+Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge hands the whole list to whichever is biggest and the other two disappear. Each source gets a guaranteed share, and the groups compete on their *best* result rather than their bulk. Restrict it to one source and nothing is capped — there is nothing left to drown out.
+
+It **teaches the way the command palette does**: an empty query lists every command, a command whose feature is switched off is listed greyed with the setting that would enable it, the highlighted row's description sits under the list, and `C-h` opens its documentation.
+
+`M-S-x` in the Emacs keymap, `Ctrl`/`Cmd`+`Shift`+`E` in the others — and it can take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
 
 The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).

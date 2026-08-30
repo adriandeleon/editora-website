@@ -27,13 +27,6 @@ Beyond GFM it also renders **YAML front matter** (as a metadata block),
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
 
-The parser caps pathological input — table cells, block nesting and inline
-nesting — which is the right default for an editor that renders whatever file
-you open. The nesting limits degrade to plain text; the **table cap** is
-reachable by a legitimate file (a 2.3 MB Markdown table trips it, well under the
-5 MB point where the preview switches off anyway), and the preview reports that
-rather than going blank.
-
 Zoom with the `−` / `+` control or Ctrl+wheel. In Preview mode, **Space** /
 **PageDown** and **Backspace** / **PageUp** scroll the page, and a right-click
 menu offers Select All, Copy, Export to PDF, and Print. A **link in the preview

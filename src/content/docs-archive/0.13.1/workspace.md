@@ -193,66 +193,8 @@ recent files, and version and license info. Reopen it with `view.welcome`.
   (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
   restores everything.
 
-  It **keeps a menu bar** — simplified rather than hidden: File, Edit, Find,
-  View and Help. The menus that go are exactly the ones the mode switches off
-  (code intelligence, running and debugging, version control, tool windows),
-  which would otherwise sit there entirely greyed out. A menu is the browsable
-  map of what the editor can do, which the mode aimed at someone new to it needs
-  most. Toggling Simple UI mode stays in the reduced View menu, so the mode is
-  never a one-way door for anyone who entered it from there.
-
-## Window chrome
-
-Each row of chrome can be hidden on its own under **Settings → Interface →
-Chrome**: the menu bar, toolbar, status bar, tab bar, breadcrumb and
-tool-window stripe. (Hiding the tool stripe takes precedence over each tool
-window's own visibility toggle.)
-
-**Merge the menu bar into the title bar** goes one further: the window is drawn
-without a system title bar, and the menus, the window title and the system
-buttons share that single row — a full bar of vertical space back for the
-editor. Minimise, maximise, close, drag-to-move, double-click-to-maximise, edge
-resize and snapping all stay the platform's own, so nothing about how the window
-behaves changes; only where the menus sit.
-
-It is **experimental**, off by default, and **applies on restart** — a window's
-style is fixed once it has been shown. **Linux and Windows only.** macOS is
-excluded because the menu belongs to the system menu bar at the top of the
-screen there, so drawing it inside the window would be a worse window rather
-than a taller one; the checkbox is disabled rather than hidden, so its note
-still explains why. Also on the palette as
-`view.toggleExtendedWindow`.
-
-The **breadcrumb** hangs under the editor area — as wide as the editor,
-directly under the text it names — rather than spanning the whole window above
-the status bar. It writes your home directory as a single `~` crumb, which still
-navigates there.
-
-In the **status bar**, indent, line endings and encoding are one segment
-(`Tab 4 · LF · UTF-8`): three facts about how the same file is written to disk.
-They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is actually open.
-
-### The toolbar
-
-**Settings → Toolbar** adds, removes and reorders the icons; right-click the
-toolbar and choose *Customize Toolbar…* to drag them directly on the bar (drag
-one off to remove it). *Restore Default Layout* puts it back.
-
-The bar is two containers on one row. The **icon cluster** is what you
-customize, and it is what collapses into the overflow chevron when the window
-gets narrow. The **tail** — the run-configuration selector with its Run, Debug
-and Stop buttons, the project switcher, Recent, the build badges and Settings —
-is pinned to the right end and never overflows, the way an IDE pins its run
-widget. The trade is that those four run controls are no longer draggable items
-in Settings → Toolbar: the control that starts a run is the wrong thing to lose
-to a window width, and every icon in the cluster is also reachable from the
-menus and the palette.
-
-Cut, copy and paste are not in the default layout — in a keyboard-driven editor
-they are the three actions nobody reaches for with the mouse — but they remain
-catalog items, one drag away. A bar you have already arranged is untouched by
-any of this.
+You can also hide the toolbar, the tool stripe, the breadcrumb, and the minimap
+individually in Settings.
 
 ## Local file history
 
