@@ -292,13 +292,3 @@ transfers only what changed on servers that support token deltas. Diagnostics fo
 files that aren't open are dropped by default, to keep the Problems window
 focused on what you're editing, and the whole-project selector above lifts that
 when you want it. Still deferred: format-on-save.
-
-The protocol library is **LSP 3.18 / DAP 1.70**. Two of its widened fields are
-worth naming. A diagnostic's message may now be markup rather than plain text;
-the markup's text is used, so a squiggle always carries its explanation. And a
-document edit may now be a **snippet** edit carrying `${1:name}` placeholders —
-Editora **refuses** one rather than applying it, since inserting it as plain
-text would write the placeholder markup into your file. That is the same
-all-or-nothing rule that already covers file creates and deletes, and in
-practice no server sends one, because Editora does not advertise the
-capability.

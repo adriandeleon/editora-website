@@ -11,3 +11,5 @@ Export **code** to a syntax-highlighted PDF (with optional line numbers), or the
 The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
 
 Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. Page size and options live in Settings → Editor → Export & Print.
+
+Pagination splits on whole blocks so nothing breaks across a page edge — and a block taller than a page is **regrouped into copies of itself** rather than shrunk to fit, so a long list becomes several lists with the text still vector and crisp. Uniform scaling is kept only for a genuinely atomic block, like an oversized image.

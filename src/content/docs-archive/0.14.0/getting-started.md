@@ -66,10 +66,6 @@ Find / View / Navigate / Code / Run / VCS / Tools / Window / Help — built over
 those same commands, so every item shows its current keybinding and updates when
 you switch keymaps. It's a curated subset; the palette remains the complete
 index. Hide it from Settings → Interface or with **View: Toggle Menu Bar**.
-Its **Help** menu links to this documentation — versioned, so a build lands on
-the docs for what it actually is rather than on whatever is current. The same
-link is in the palette as *Documentation*, and in Simple UI mode's shorter Help
-menu, where it belongs most.
 
 A command that can't run right now stays listed and dimmed rather than
 disappearing, so you can still discover it. That covers both reasons it might

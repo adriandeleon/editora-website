@@ -27,7 +27,7 @@ the window's label changed; its stripe placement and any keybinding you gave
 
 | Tool | Marker | Actions |
 | --- | --- | --- |
-| Maven | `pom.xml` | Lifecycle phases, declared profiles (checkable, composing via `-P`), each plugin's bound goals and its full goal list, and *Run custom…* |
+| Maven | `pom.xml` | Lifecycle phases, declared profiles (checkable, composing via `-P`), each plugin's bound goals, and *Run custom…* |
 | npm | `package.json` | One entry per `scripts` name, plus `install` / `ci` |
 | Cargo | `Cargo.toml` | Standard subcommands, `[[bin]]` / `[[example]]` targets, and a `--release` toggle |
 | Go | `go.mod` / `go.work` | Standard subcommands over the whole module |
@@ -42,31 +42,6 @@ dependency, so it's instant and offline. Toggle each under **Settings →
 Languages & Tools → Build Tools**.
 
 ## Maven
-
-### Every goal a plugin offers
-
-The tasks tree is built from a literal reading of `pom.xml`, so it could only
-ever show a goal written inside an explicit `<execution>`. A plugin declared for
-**direct invocation** — javafx-maven-plugin, spring-boot-maven-plugin,
-exec-maven-plugin — carries only `<configuration>` and no executions, so it
-contributed no row at all: `javafx:run` could be reached only by typing it into
-*Run custom…*, even though running it is the entire reason the plugin is in the
-pom.
-
-Each plugin now gets a **collapsed section listing every goal it offers**, read
-from the plugin's own descriptor, with each goal's description as its tooltip.
-Reading the descriptor rather than keeping a table of well-known goals means it
-covers whatever is in your pom instead of whatever somebody remembered.
-
-The flat *Plugins* section and these per-plugin groups overlap by design and
-answer different questions: the flat one is *what this build runs* (with the
-phase and execution id in its tooltip), a group is *what this plugin can run*.
-
-It reads your **local repository only, never the network**, so opening a project
-never fetches anything and a plugin you have not downloaded simply contributes
-nothing. Results are cached, since detection re-runs on every save and tab
-switch. A goal belonging to a plugin declared only inside a profile is not
-listed, even when that profile is checked.
 
 ### The Maven submenu
 

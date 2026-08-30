@@ -242,24 +242,17 @@ one off to remove it). *Restore Default Layout* puts it back.
 The bar is two containers on one row. The **icon cluster** is what you
 customize, and it is what collapses into the overflow chevron when the window
 gets narrow. The **tail** — the run-configuration selector with its Run, Debug
-and Stop buttons, the project switcher, Open Folder, the build badges and
-Settings — is pinned to the right end and never overflows, the way an IDE pins
-its run widget. The trade is that those four run controls are not draggable
-items in Settings → Toolbar: the control that starts a run is the wrong thing to
-lose to a window width, and every icon in the cluster is also reachable from the
+and Stop buttons, the project switcher, Recent, the build badges and Settings —
+is pinned to the right end and never overflows, the way an IDE pins its run
+widget. The trade is that those four run controls are no longer draggable items
+in Settings → Toolbar: the control that starts a run is the wrong thing to lose
+to a window width, and every icon in the cluster is also reachable from the
 menus and the palette.
-
-**Recent Files sits in the cluster**, between Save As and Undo. It is a file
-action — one of the ways to get a file on screen — and beside the project
-switcher it read as a project control. Being a catalog item, it can be dragged
-elsewhere or removed like any other. A toolbar you had already customized keeps
-the button: a saved layout is used verbatim, so it is inserted after Save As
-rather than disappearing from both halves.
 
 Cut, copy and paste are not in the default layout — in a keyboard-driven editor
 they are the three actions nobody reaches for with the mouse — but they remain
-catalog items, one drag away. A bar you have already arranged is otherwise
-untouched.
+catalog items, one drag away. A bar you have already arranged is untouched by
+any of this.
 
 ## Local file history
 

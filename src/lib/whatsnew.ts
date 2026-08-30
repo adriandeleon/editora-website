@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "The menu bar can share the window's title bar.", detail: "Off by default, under Settings ▸ Interface; it applies on restart, since a window's style is fixed once it has been shown. With it on, the window is…" },
-  { title: "Every main-menu item that can carry an icon now does.", detail: "Right-click menus have carried glyphs throughout, while the menu bar carried none; Save is now the same icon wherever you reach it from. Partial on…" },
-  { title: "Search Everywhere can take over the palette's shortcut.", detail: "Off by default, under Settings ▸ Interface ▸ Pickers (or the <code>View: Toggle Palette Opens Search Everywhere</code> command). With it on, the…" },
-  { title: "Search Everywhere has a keybinding.", detail: "It shipped in 0.13.0 as a registered command with no chord in any of the bundled keymaps, so the only way to reach the picker that replaces the other…" },
-  { title: "SVG files preview as vector art instead of a scaled bitmap.", detail: "The <code>.svg</code> preview drew the file once into a fixed 2×-resolution image and scaled that, so zooming past 200% went soft — on the one…" },
-  { title: "The run-configuration group moved to the right end of the toolbar.", detail: "The selector and its Run, Debug and Stop buttons now sit beside the project switcher rather than in the middle of the icons, the way an IDE pins its…" },
-  { title: "Search Everywhere now teaches the way the command palette does.", detail: "Three things it was missing, all of which matter more now that it can stand in for the palette: A command whose feature is switched off is listed,…" },
-  { title: "Simple UI mode keeps a menu bar — simplified, not hidden.", detail: "It now shows File, Edit, Find, View and Help. The menus that go are exactly the ones Simple mode switches off — code intelligence, running and…" },
+  { title: "Typst documents fold and outline by section.", detail: "A <code>.typ</code> file folded at its brace pairs and nowhere else, and the Structure window listed a single entry — <code>#align()</code> — for a…" },
+  { title: "<code>#let</code> and <code>#show</code> bindings join the Typst outline, and raw blocks fold.", detail: "A template file can be almost entirely bindings, so outlining headings alone left exactly those files with an empty Structure window. Bindings now…" },
+  { title: "The Maven tasks tree lists every goal a plugin actually offers", detail: ", read from the plugin's own descriptor. Until now it could only show a goal written inside an explicit <code>&lt;execution&gt;</code>, because the…" },
+  { title: "The Help menu links to the documentation.", detail: "It offered the palette, updates, the logs and About, but no way to reach the docs — the one entry that helps someone who does not yet know what the…" },
+  { title: "Upgraded Eclipse LSP4J from 0.23.1 to 1.0.0", detail: ", which implements LSP 3.18 and DAP 1.70. Language-server and debug-adapter behaviour is unchanged; this is the protocol library catching up. Two…" },
+  { title: "Each markup language's actions sit under one submenu in the editor's right-click menu.", detail: "A Typst buffer spliced eight flat <code>Typst: …</code> entries into it and a Markdown one seven, which pushed cut, copy, paste and the spelling…" },
+  { title: "The branch dropdown is drawn like the VCS menu it duplicates.", detail: "It offers the same commands — Commit, Push, Pull, Fetch, New Branch, Stash, Unstash — and drew them as bare text at a smaller size while the menu…" },
+  { title: "Recent Files moved into the customizable part of the toolbar", detail: ", between Save As and Undo. It is a file action — one of the ways to get a file on screen — and sitting beside the project switcher it read as a…" },
 ];

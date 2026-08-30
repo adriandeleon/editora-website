@@ -492,6 +492,7 @@ Off by default. Enable it under Settings → Mermaid (point it at your `mmdc`/`m
 Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered off-thread by the external **`typst`** CLI as a **multi-page** stack. The last good render stays on screen while you edit (no flicker), and a compile error keeps the pages visible under a small banner.
 
 - **Editing** has Markdown-style ergonomics: Enter continues a `-` / `+` / `N.` list, and selecting text pops a format bar (bold, emphasis, raw, link, bullet, heading) with matching right-click and palette actions. Bundled snippets cover figures, tables, and more.
+- **Structure and folding** follow the document's own sections: headings drive both the outline and folding, so a section collapses like one, and `#let` / `#show` bindings join the Structure window nested under the section they are written in. Long embedded listings collapse at their fence.
 - **Code intelligence** comes from the **tinymist** language server.
 - **Export** to PDF (a native single file), PNG, or SVG (`typst.export`); print paginates the pages.
 
@@ -526,6 +527,8 @@ Export **code** to a syntax-highlighted PDF (with optional line numbers), or the
 The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
 
 Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. Page size and options live in Settings → Editor → Export & Print.
+
+Pagination splits on whole blocks so nothing breaks across a page edge — and a block taller than a page is **regrouped into copies of itself** rather than shrunk to fit, so a long list becomes several lists with the text still vector and crisp. Uniform scaling is kept only for a genuinely atomic block, like an oversized image.
 """),
     new Feature("html-live-preview", DD, 4, true,
         "HTML live preview",

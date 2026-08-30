@@ -62,12 +62,6 @@ You can also insert a **table of contents** (`markdown.toc`) and a **task list**
 
 ## Tables
 
-Markdown's editing actions sit under a single **Markdown** submenu in the
-editor's right-click menu rather than spliced flat into it — seven top-level
-entries pushed cut, copy, paste and the spelling suggestions far enough down to
-hunt for, and made file-type actions read as ordinary editing ones. The Table
-submenu stays nested inside it.
-
 Beyond the format bar's reflow, the right-click **Table** submenu (and the
 palette) edits the table under the cursor: **insert** a table
 (`markdown.insertTable`), **add / delete** rows and columns
@@ -147,23 +141,3 @@ Commands: `editor.exportPdf`, `preview.exportPdf`, `preview.exportHtml`,
 `preview.exportDocx`, `preview.exportOdt`, `editor.print`, `preview.print`. Line
 numbers, syntax highlighting, and page size live in **Settings → Editor → Export
 & Print**.
-
-### Long documents
-
-Pagination splits on whole blocks, so nothing breaks across a page edge. A block
-**taller than a page** used to get a page of its own, scaled uniformly to fit —
-right for an oversized image, wrong for text, because a Markdown list is *one*
-top-level block however long it is.
-
-An over-tall container is now regrouped into copies of itself holding as many
-children as fit: a long list becomes several lists, a long paragraph several
-paragraphs, each carrying the original's styling so it renders identically. The
-text stays vector rather than being sliced as an image, so it is crisp on paper;
-the cost is a seam that does not hang-indent. Uniform scaling survives only for
-a genuinely **atomic** over-tall block, where it is the right answer. A plain
-paragraph has no emphasis to split at, so long runs are cut at whitespace and no
-word is broken.
-
-Editora's own `CLAUDE.md` is the worked example: it printed as 14 pages, six of
-its 19 top-level blocks over-tall, one a 296-page list rendered onto a single
-page at 0.3% scale. It is 382 pages, none scaled.
