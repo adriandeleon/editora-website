@@ -2,7 +2,7 @@
 title: "The black window: bounding GPU textures in JavaFX"
 description: "A bug that only showed up in the packaged build: open enough files and the window goes black. The cause was GPU texture exhaustion."
 date: 2026-06-05
-author: Adrian De Leon
+author: Adrián De León
 tags: [performance, javafx]
 ---
 

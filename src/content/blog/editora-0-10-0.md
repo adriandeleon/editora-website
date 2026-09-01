@@ -2,7 +2,7 @@
 title: "Editora 0.10.0: what a design system actually has to decide"
 description: "Giving an editor a look of its own is not picking colours. It is naming what each colour means, then discovering that the toolkit you build on has no last-child selector, shrinks every label in a row by an equal share, and silently refuses one flavour of SVG arc. Plus: the third time a language server shipped a feature switched off."
 date: 2026-08-03
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

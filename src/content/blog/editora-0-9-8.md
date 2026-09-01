@@ -2,7 +2,7 @@
 title: "Editora 0.9.8: GitHub without a token"
 description: "Pull request review, CI logs that link back to your own checkout, and a test runner that shows you the whole run up front. Plus why the GitHub integration never asks you to paste a token."
 date: 2026-07-20
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

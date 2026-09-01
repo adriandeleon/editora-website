@@ -2,7 +2,7 @@
 title: "Editora 0.15.0: fourteen pages for a 382-page document"
 description: "A print path whose failure the on-screen preview structurally clips away, an SVG that renders everywhere except in an actual installation, and a menu that decided it wasn't in a Git repository once and then never asked again. Four bugs that each worked fine on the path I happened to take."
 date: 2026-08-30
-author: Adrian De Leon
+author: Adrián De León
 tags: [release, printing, performance]
 ---
 

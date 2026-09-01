@@ -2,7 +2,7 @@
 title: "Editora 0.9.6: what a per-feature audit turns up"
 description: "0.9.6 came out of walking through the editor one feature at a time and asking what could go wrong. Here's what that found, and why the boring fixes are the ones that matter."
 date: 2026-07-17
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

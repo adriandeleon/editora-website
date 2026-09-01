@@ -2,7 +2,7 @@
 title: "Editora 0.9.5: safer by default"
 description: "A release that's mostly fixes, the unglamorous kind that keep your files, your config, and your machine safe, plus a mini file manager in the Project tree."
 date: 2026-07-15
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

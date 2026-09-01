@@ -2,7 +2,7 @@
 title: Extending Editora with plugins
 description: "How Editora's plugin system works, and how to write your own in a few minutes."
 date: 2026-06-16
-author: Adrian De Leon
+author: Adrián De León
 tags: [plugins, extensibility]
 ---
 

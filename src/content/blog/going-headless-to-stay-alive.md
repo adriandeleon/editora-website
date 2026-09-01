@@ -2,7 +2,7 @@
 title: "Going headless to stay alive: an AWT/JavaFX deadlock"
 description: "Why the very first line of Editora's main() sets java.awt.headless=true, and the intermittent macOS hang that forced it."
 date: 2026-06-03
-author: Adrian De Leon
+author: Adrián De León
 tags: [javafx, debugging]
 ---
 

@@ -2,7 +2,7 @@
 title: "Editora 0.9.10: the half of LSP that writes to your files"
 description: "Reading from a language server is easy. Acting on what it says means editing your code, and that is where the interesting bugs live: an ordering rule in the spec, a capability nobody declared, a feature the server ships switched off, and an off-by-one that made a whole feature look like it had nothing to say."
 date: 2026-07-26
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

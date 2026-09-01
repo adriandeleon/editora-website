@@ -2,7 +2,7 @@
 title: "Why your .app can't find git or node"
 description: A GUI-launched app inherits a stripped PATH. Here's how Editora recovers the real one so it can find git, node, and version-managed tools.
 date: 2026-06-07
-author: Adrian De Leon
+author: Adrián De León
 tags: [packaging, java]
 ---
 

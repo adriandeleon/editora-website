@@ -2,7 +2,7 @@
 title: "Editora 0.9.1: the first release"
 description: "The first tagged build of a keyboard-driven, cross-platform programmer's editor, plus the story behind why it's 0.9.1 and not 0.9.0."
 date: 2026-07-06
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

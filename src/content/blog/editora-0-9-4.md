@@ -2,7 +2,7 @@
 title: "Editora 0.9.4: Expert mode"
 description: "A lighter focus mode than Zen that keeps the full editor view, plus build-tool tasks tool windows and a few workspace conveniences."
 date: 2026-07-13
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

@@ -2,7 +2,7 @@
 title: Building a keyboard-first text editor
 description: "Why Editora treats every action as a command, and what that design buys you."
 date: 2026-06-09
-author: Adrian De Leon
+author: Adrián De León
 tags: [design, keyboard]
 ---
 

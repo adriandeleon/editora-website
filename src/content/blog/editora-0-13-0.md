@@ -2,7 +2,7 @@
 title: "Editora 0.13.0: whether it matched, or how well"
 description: "Every picker in the editor filtered on a boolean. Replacing it with a real score turned out to touch dynamic programming, a Turkish dotted capital I, and an optimization that quietly reintroduced the exact bug it was written to avoid. Plus: a symbol scanner that under-reports on purpose."
 date: 2026-08-26
-author: Adrian De Leon
+author: Adrián De León
 tags: [release, search]
 ---
 

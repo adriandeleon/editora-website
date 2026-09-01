@@ -2,7 +2,7 @@
 title: "Editora 0.9.3: Typst, diagrams, and previews for everything"
 description: "The 0.9.2 and 0.9.3 releases add Typst, diagram-as-code, smart previews for data and config files, and build-tool integration."
 date: 2026-07-10
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

@@ -2,7 +2,7 @@
 title: "Rendering Markdown like GitHub, without a WebView"
 description: "How Editora's Markdown preview renders natively to JavaFX nodes (task lists, code pills, images, SVG badges), with no embedded browser."
 date: 2026-06-04
-author: Adrian De Leon
+author: Adrián De León
 tags: [markdown, rendering]
 ---
 

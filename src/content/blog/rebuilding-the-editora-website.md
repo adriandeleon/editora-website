@@ -2,7 +2,7 @@
 title: "Rebuilding the website, and two bugs it turned up"
 description: "The old home page described a keyboard-driven editor without ever showing one. Fixing that surfaced a CSS trap that froze the new search, and 71 commands missing from the docs."
 date: 2026-07-24
-author: Adrian De Leon
+author: Adrián De León
 tags: [website, css]
 ---
 

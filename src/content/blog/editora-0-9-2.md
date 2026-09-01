@@ -2,7 +2,7 @@
 title: "Editora 0.9.2: Maven, an AI switch, and a Windows fix"
 description: "The second release adds IntelliJ-style Maven support, consolidates AI behind one master switch, makes preview links clickable, and fixes a Windows launch failure."
 date: 2026-07-08
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

@@ -2,7 +2,7 @@
 title: "One DAP client, three debuggers"
 description: "How Editora debugs Java, Python, and JavaScript through a single Debug Adapter Protocol client: three very different transports behind one UI."
 date: 2026-06-11
-author: Adrian De Leon
+author: Adrián De León
 tags: [debugging, dap]
 ---
 

@@ -2,7 +2,7 @@
 title: "Editora 0.14.0: the bug with no symptom"
 description: "Typing got slower the longer you typed, and nothing pointed at why. Chasing it turned up a measurement that allocated a timer nobody stopped, a probe that moved the thing it was probing, and four tests that could only ever pass. Plus a preview feature that throws, and a window that never appears."
 date: 2026-08-29
-author: Adrian De Leon
+author: Adrián De León
 tags: [release, performance, testing]
 ---
 

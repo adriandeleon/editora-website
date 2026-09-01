@@ -25,7 +25,7 @@ const date = entry.data.date.toLocaleDateString("en-US", {
     <p class="back" data-pagefind-ignore><a href="/blog">← Blog</a></p>
     <h1>{entry.data.title}{entry.data.beta && <span class="beta-pill">Beta</span>}</h1>
     <p class="meta">
-      {date} · {entry.data.author}
+      {date} · <a href="https://www.adeleon.dev">{entry.data.author}</a>
       {entry.data.tags.length > 0 && <span> · {entry.data.tags.join(", ")}</span>}
     </p>
     <Content />

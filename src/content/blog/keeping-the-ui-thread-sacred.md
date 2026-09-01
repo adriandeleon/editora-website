@@ -2,7 +2,7 @@
 title: "Keeping the UI thread sacred"
 description: "The performance doctrine behind Editora: off-thread work, incremental updates, coalesced redraws, and degrading gracefully on huge files."
 date: 2026-06-06
-author: Adrian De Leon
+author: Adrián De León
 tags: [performance]
 ---
 

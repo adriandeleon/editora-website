@@ -2,7 +2,7 @@
 title: "Shipping a JavaFX app to five platforms"
 description: "The release pipeline behind Editora: native installers and fat jars for five targets, jpackage, moditect, and the joys of automatic modules."
 date: 2026-06-12
-author: Adrian De Leon
+author: Adrián De León
 tags: [packaging, release]
 ---
 

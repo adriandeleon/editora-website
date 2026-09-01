@@ -2,7 +2,7 @@
 title: "Notes that survive edits and renames"
 description: "How Editora's Personal Notes stay attached to the right text, even after you edit the file in another program or rename it."
 date: 2026-06-10
-author: Adrian De Leon
+author: Adrián De León
 tags: [editor, design]
 ---
 

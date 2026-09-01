@@ -50,7 +50,7 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     date: z.coerce.date(),
-    author: z.string().default("Adrian De Leon"),
+    author: z.string().default("Adrián De León"),
     tags: z.array(z.string()).default([]),
     beta: z.boolean().default(false),
   }),

@@ -2,7 +2,7 @@
 title: "Editora 0.12.0: moving a panel is not moving a panel"
 description: "Letting a tool window maximize, re-dock, share a side and float looks like one layout feature. It is really six separate encounters with what a SplitPane, an unmanaged node, a drag gesture, a fresh Scene, and the order you restore things in will each quietly do instead. Plus: a pom preview that admits what it doesn't know."
 date: 2026-08-16
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

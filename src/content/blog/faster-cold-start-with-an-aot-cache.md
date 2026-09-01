@@ -2,7 +2,7 @@
 title: A faster cold start with a GUI-trained AOT cache
 description: "How Editora's installers shave ~300–480 ms (~28%) off the time to first frame using JDK 25's AOT cache, trained against a real GUI run."
 date: 2026-06-13
-author: Adrian De Leon
+author: Adrián De León
 tags: [performance, packaging]
 ---
 

@@ -2,7 +2,7 @@
 title: "Editora 0.9.7: keeping the UI thread sacred"
 description: "A performance release about one rule — never make the user wait on the thread that draws the screen — and the handful of places Editora was quietly breaking it."
 date: 2026-07-18
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

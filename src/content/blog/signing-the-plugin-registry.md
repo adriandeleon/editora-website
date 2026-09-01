@@ -2,7 +2,7 @@
 title: "Signing the plugin registry: consent, integrity, authenticity"
 description: "Plugins run unsandboxed, so the registry leans on three defenses: informed consent, download integrity, and a signed index. Here's how each works."
 date: 2026-06-14
-author: Adrian De Leon
+author: Adrián De León
 tags: [plugins, security]
 ---
 

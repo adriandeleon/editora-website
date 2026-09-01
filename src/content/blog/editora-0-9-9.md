@@ -2,7 +2,7 @@
 title: "Editora 0.9.9: asking before it builds"
 description: "Why opening a repository shouldn't be enough to run its code, what it takes for a dimmed command to be useful rather than annoying, and a class cache that quietly went missing on Apple silicon for eight releases."
 date: 2026-07-21
-author: Adrian De Leon
+author: Adrián De León
 tags: [release]
 ---
 

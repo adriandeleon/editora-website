@@ -2,7 +2,7 @@
 title: "Orphaned language servers and the symlink that ate my diagnostics"
 description: "Two LSP integration bugs (a process that wouldn't die, and diagnostics that silently vanished) and what they taught me about subprocesses and paths."
 date: 2026-06-08
-author: Adrian De Leon
+author: Adrián De León
 tags: [lsp, debugging]
 ---
 
