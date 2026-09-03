@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: The config folder, settings.json, session state, and how to export or reset it.
+description: The config folder, settings.toml, session state, and how to export or reset it.
 category: Customization
 order: 1
 ---
@@ -28,7 +28,7 @@ settings or session. The live path is shown in **About Editora**. See the
 
 | File | Holds |
 | --- | --- |
-| `settings.json` | Preferences: font, theme, keymap, tab size, view options, auto-save, keybinding overrides |
+| `settings.toml` | Preferences: font, theme, keymap, tab size, view options, auto-save, keybinding overrides |
 | `workspace-state.json` | Session: open files, folds, tool-window layout, window geometry |
 | `recent-files.json` | Recent files list |
 | `projects.json` + `projects/<id>.json` | Project index and each project's session |
@@ -40,9 +40,7 @@ settings or session. The live path is shown in **About Editora**. See the
 | `dictionary.txt` | Your added spell-check words |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
 
-Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
-Editora converts an existing `settings.toml` automatically and removes the old
-file only after the JSON replacement has been written safely.
+Preferences are **TOML**; session and list files are **JSON**.
 
 ### Inside a project
 
@@ -51,28 +49,25 @@ they can be committed and shared:
 
 | File | Holds |
 | --- | --- |
-| `.editora/settings.json` | Toolchain overrides for this project: which language server to run for a language, and whether to run it |
+| `.editora/settings.toml` | Toolchain overrides for this project: which language server to run for a language, and whether to run it |
 | `.editora/run-configurations.json` | [Run configurations](/docs/run-debug) exported for the team |
 
 Only toolchain settings can be overridden this way; appearance, keymap and fonts
 stay personal, because checking out a repository should not rearrange somebody
 else's editor. **Project: Edit Project Settings…** creates the first file with a
-example. An existing project TOML file remains readable and is converted when
-you open **Edit Project Settings**. See
+commented example. See
 [projects](/docs/workspace#settings-a-project-can-commit).
 
-## Preferences (settings.json)
+## Preferences (settings.toml)
 
 Edit in the Settings window, or directly:
 
-```json
-{
-  "fontFamily": "JetBrains Mono",
-  "fontSize": 14,
-  "theme": "Editora Dark",
-  "tabSize": 4,
-  "autoSave": "afterDelay"
-}
+```toml
+fontFamily = "JetBrains Mono"
+fontSize = 14
+theme = "Editora Dark"
+tabSize = 4
+autoSave = "afterDelay"
 ```
 
 `autoSave` accepts `off`, `afterDelay`, or `onFocusChange`. Text zoom is stored

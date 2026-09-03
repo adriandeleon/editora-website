@@ -105,7 +105,7 @@ stronger, and a section on when Editora is probably the wrong choice for you.
 
 Yes. In **Settings → Keymaps** you can switch between Emacs (default), CUA,
 Sublime Text, VS Code, and IntelliJ IDEA, and rebind any command with the
-built-in editor. Changes apply live and are saved in `settings.json`. See
+built-in editor. Changes apply live and are saved in `settings.toml`. See
 [Keymaps & keybindings](/docs/keymaps).
 
 ## Are plugins safe?

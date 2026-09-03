@@ -4,12 +4,11 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Typst documents fold and outline by section.", detail: "A <code>.typ</code> file folded at its brace pairs and nowhere else, and the Structure window listed a single entry — <code>#align()</code> — for a…" },
-  { title: "<code>#let</code> and <code>#show</code> bindings join the Typst outline, and raw blocks fold.", detail: "A template file can be almost entirely bindings, so outlining headings alone left exactly those files with an empty Structure window. Bindings now…" },
-  { title: "The Maven tasks tree lists every goal a plugin actually offers", detail: ", read from the plugin's own descriptor. Until now it could only show a goal written inside an explicit <code>&lt;execution&gt;</code>, because the…" },
-  { title: "The Help menu links to the documentation.", detail: "It offered the palette, updates, the logs and About, but no way to reach the docs — the one entry that helps someone who does not yet know what the…" },
-  { title: "Upgraded Eclipse LSP4J from 0.23.1 to 1.0.0", detail: ", which implements LSP 3.18 and DAP 1.70. Language-server and debug-adapter behaviour is unchanged; this is the protocol library catching up. Two…" },
-  { title: "Each markup language's actions sit under one submenu in the editor's right-click menu.", detail: "A Typst buffer spliced eight flat <code>Typst: …</code> entries into it and a Markdown one seven, which pushed cut, copy, paste and the spelling…" },
-  { title: "The branch dropdown is drawn like the VCS menu it duplicates.", detail: "It offers the same commands — Commit, Push, Pull, Fetch, New Branch, Stash, Unstash — and drew them as bare text at a smaller size while the menu…" },
-  { title: "Recent Files moved into the customizable part of the toolbar", detail: ", between Save As and Undo. It is a file action — one of the ways to get a file on screen — and sitting beside the project switcher it read as a…" },
+  { title: "The Project tool window now has a visual Map navigator.", detail: "A Tree/Map switch preserves the existing file-management tree while offering a Canvas hierarchy with focused Miller-style columns, pan, pointer-…" },
+  { title: "Settled edit work now uses one timer sequence per buffer.", detail: "Highlighting, live previews, completion, TODO scans, LSP synchronization, Undo History, lint, and AI completion retain their existing idle delays,…" },
+  { title: "Settled editor features now share one whole-document snapshot per revision.", detail: "Syntax highlighting, folding, TODO and lint scans, LSP synchronization, previews, run-target detection, saves, and Undo History no longer ask…" },
+  { title: "Find in Files now has one clear visual toggle.", detail: "Its duplicate tool-stripe icon has been removed in favor of the toolbar button, which now stays highlighted for as long as the Search tool window is…" },
+  { title: "Text files open without blocking the window on disk I/O.", detail: "Editora now shows the editor tab immediately for every text candidate, then stats, classifies, resolves EditorConfig/the charset, reads, and decodes…" },
+  { title: "Large CSV edits and live rendered previews stay responsive.", detail: "Rainbow CSV span construction now runs off the JavaFX thread and discards stale results instead of rescanning and restyling the whole document in the…" },
+  { title: "Preferences now use JSON instead of TOML.", detail: "Global settings move from <code>settings.toml</code> to <code>settings.json</code>, and committed project toolchain overrides move to…" },
 ];

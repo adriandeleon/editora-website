@@ -234,7 +234,7 @@ enabled server in one place.
 
 ### Per-project overrides
 
-A project can commit a `.editora/settings.json` naming **which server to run for
+A project can commit a `.editora/settings.toml` naming **which server to run for
 a language and whether to run it**, which overrides your global preference for
 anyone who opens that project. That is the answer to one repository needing a
 JDK 17 server and another a JDK 25 one: neither of you has to remember to flip a

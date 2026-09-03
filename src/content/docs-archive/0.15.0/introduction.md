@@ -20,7 +20,7 @@ Editora is built with the help of AI coding tools.
 
 - **[Getting Started](/docs/getting-started)**: install Editora and learn the
   handful of keys that make it feel fast.
-- **[Configuration](/docs/configuration)**: the config folder, `settings.json`,
+- **[Configuration](/docs/configuration)**: the config folder, `settings.toml`,
   and how preferences and session state are stored.
 - **[Keymaps & keybindings](/docs/keymaps)**: switch keymaps or rebind anything.
 

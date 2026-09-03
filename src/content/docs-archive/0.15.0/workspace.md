@@ -27,34 +27,6 @@ own menu** too (with rename omitted so you can't move the whole project).
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
-### Project Map
-
-Use the **Tree / Map** switch at the top of the Project tool window to replace
-the file tree with a spatial canvas. The map shows one focused branch as
-Miller-style columns: selecting a folder reveals its children in the next
-column, so the path to the current file stays visible without mixing unrelated
-expanded branches together.
-
-- Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow.
-  Connector direction and arrow-key navigation change together.
-- Drag empty canvas space to pan and use the mouse wheel to zoom around the
-  pointer. **Fit**, **Center selection**, and the overview recenter the layout.
-- Drag a column header to reposition it and use its lock to prevent accidental
-  movement. Columns size themselves to the longest loaded name.
-- Filter globally by open, modified, or Git-changed state and by file type.
-  Every non-root column also has a fuzzy name filter and a **Hidden** toggle.
-- Select a file for a movable, resizable, syntax-highlighted preview. The
-  preview uses unsaved buffer text when available; double-click the file or use
-  **Open** to promote it to a normal editor tab.
-- Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
-  Local History, and Git actions available in the tree.
-
-The canvas is fully keyboard-navigable. Arrows move with and across the chosen
-flow, `Ctrl-N` / `Ctrl-P` select siblings, `Page Down` / `Page Up` jump by ten,
-`Backspace` selects the parent, `Home` selects the root, `Alt-Left` /
-`Alt-Right` move through selection history, `/` focuses the current column's
-filter, and `Escape` fits all visible columns.
-
 It also works like a **mini file manager**: multi-select files and folders with
 Ctrl/Cmd- and Shift-click, then **drag them onto a folder** (or the root) to move
 them, with open tabs following to the new path; a name conflict is skipped rather
@@ -77,14 +49,14 @@ appear in the same picker.
 
 ### Settings a project can commit
 
-A project can carry a `.editora/settings.json` file saying **which language
+A project can carry a `.editora/settings.toml` file saying **which language
 server to run for a language, and whether to run it**. It overrides your global
 preferences for anyone who opens that project, which is what you want when one
 repository needs a JDK 17 server and another a JDK 25 one — nobody has to
 remember to flip a global preference when switching between them.
 
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
-with an example and opens it.
+with a commented example and opens it.
 
 Only **toolchain** settings can be overridden this way. Appearance, keymap and
 fonts stay personal, because checking out a repository should not rearrange
