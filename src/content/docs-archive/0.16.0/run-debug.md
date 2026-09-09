@@ -60,7 +60,7 @@ launch, **program arguments**, **VM arguments**, **environment variables**
 
 ### What a configuration can launch
 
-Pick a **Type** in the project/session-scoped **Run Configurations** window:
+Pick a **Type** in Settings → Run Configurations:
 
 | Type | Launches |
 | --- | --- |
@@ -68,7 +68,6 @@ Pick a **Type** in the project/session-scoped **Run Configurations** window:
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with `bash` |
 | Make target | a target in a makefile |
-| NPM script | a named `package.json` script via `npm run` |
 
 Script and make configurations need **no project and no language server**.
 Debugging remains Java-only, and says so rather than reporting a confusing Java
@@ -78,7 +77,7 @@ error.
 
 The toolbar carries a configuration dropdown with **Run**, **Debug** and **Stop**
 beside it; your choice is remembered across restarts. The dropdown ends with
-**Edit Configurations…**, which opens the separate Run Configurations window
+**Edit Configurations…**, which opens Settings on the Run Configurations page
 with the configuration you had selected already picked out — also available as
 **Run: Edit Run Configurations…** (`run.editConfigs`).
 

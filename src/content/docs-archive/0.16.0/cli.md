@@ -25,7 +25,6 @@ the jar.
 | `--single-window[=project]` | Open just one window, not the whole saved set (session-only) |
 | `--no-session` | Open only the files given here; don't restore the saved session |
 | `--new-instance` | Start a separate editor instead of handing the files to the running one |
-| `--diff-ui LEFT RIGHT` | Open files or folders in an isolated comparison workspace |
 
 `--single-window` opens exactly one window instead of restoring every window
 that was open at last quit: bare, it opens the no-project window; with a name

@@ -6,6 +6,15 @@ export type RoadmapSection = { title: string; items: RoadmapItem[] };
 
 export const roadmap: RoadmapSection[] = [
   {
+    title: "Controller decomposition",
+    items: [
+      { done: true, text: "Extract exports, editing, templates, settings, run configurations, navigation, previews, Git actions, chrome, MCP operations, file workflows, sessions, test navigation and install prompts into owners." },
+      { done: true, text: "Extract buffer completion/popups into <code>BufferCompletion</code>." },
+      { done: true, text: "Keep production Java files below 10,000 lines and enforce that ceiling in <code>SourceFileSizeTest</code>." },
+      { done: false, text: "Continue reducing window composition and buffer presentation complexity through cohesive owners; the size ceiling is not a target. See window coordinators." },
+    ],
+  },
+  {
     title: "Editing",
     items: [
       { done: true, text: "Smart backspace — clear the indent in one press / jump back on a blank auto-indented line" },
@@ -57,7 +66,7 @@ export const roadmap: RoadmapSection[] = [
     title: "Files & version control",
     items: [
       { done: true, text: "Git support — native CLI (branch/status, gutter change bars, commit workflow, fetch/pull/push)" },
-      { done: true, text: "Diff viewer + merge-conflict UI — side-by-side / unified diff (vs HEAD / commit / another file), word-level highlights, apply-hunk / apply-all, patch export, merge-conflict resolver" },
+      { done: true, text: "Diff viewer + merge-conflict UI — side-by-side / unified diff (vs HEAD / commit / another file), lazy recursive directory comparison, multi-file staged and working-tree review, word-level highlights, apply-hunk / apply-all, patch export, Git-stage Base/Ours/Theirs merge and an editable Result pane" },
       { done: true, text: "Local file history — IntelliJ-style snapshots on save / auto-save / before an external reload; a <strong>File History</strong> tool window (<code>M-g l</code>) lists revisions (date/time, reason, size; latest tagged <em>Current</em>), double-click for a read-only diff vs current, restore = undoable whole-file replace. Gzip'd content-addressed blobs + a per-project index under <code>&lt;configDir&gt;/history/</code>, deduped, with configurable retention (revisions/file, age, size/project). On by default; local-only; off in Simple UI" },
       { done: true, text: "Detect external file changes — prompt to reload when a file changes on disk (focus-regain / tab switch)" },
       { done: true, text: "Auto-reload modified files" },

@@ -27,10 +27,6 @@ own menu** too (with rename omitted so you can't move the whole project).
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
-Files open in any editor tab carry an accent marker in the tree; the active file
-uses a stronger marker. A file or folder menu can also add a first-line bookmark
-or Personal Note directly, with compact indicators showing both annotations.
-
 ### Project Map
 
 Use the **Tree / Map** switch at the top of the Project tool window to replace
@@ -52,11 +48,6 @@ expanded branches together.
   **Open** to promote it to a normal editor tab.
 - Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
   Local History, and Git actions available in the tree.
-
-Image previews support common bitmap formats. Text and image cards keep
-independent zoom levels, and Project Map searches reveal all ancestor columns
-needed to reach a match before restoring the previously open branches when the
-query is cleared.
 
 The canvas is fully keyboard-navigable. Arrows move with and across the chosen
 flow, `Ctrl-N` / `Ctrl-P` select siblings, `Page Down` / `Page Up` jump by ten,
