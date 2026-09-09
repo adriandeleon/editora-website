@@ -3,19 +3,20 @@ title: "Run configurations"
 group: "Run & debug"
 order: 2
 beta: false
-summary: "Save how a thing is launched — Java main class, Python or shell script, or a make target — with a before-launch build step, a toolbar selector, and a file you can commit so your team gets the same ones."
+summary: "Save how a thing is launched — Java main class, Python or shell script, make target, or named npm script — in a dedicated window, with a before-launch step and shareable project file."
 ---
 
 A run configuration is a saved answer to "how is this launched": the main class or script, program and VM arguments, environment variables and a working directory. Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts.
 
-## Four kinds, not just Java
+## Five kinds, not just Java
 
-Choose a **Type** in Settings → Run Configurations:
+Choose a **Type** in the project/session-scoped **Run Configurations** window:
 
 - a **Java main class** (resolved through the language server, or through your Maven/Gradle build)
 - a **Python script**
 - a **shell script**
 - a **make target**
+- a named **npm script** (`npm run`, with arguments passed after `--`)
 
 Script configurations need no project and no language server at all. Debugging remains Java-only, and says so rather than reporting a confusing Java error.
 

@@ -17,9 +17,6 @@ the gutter used to toggle a bookmark, but the breakpoint strip and the Run ▶ a
 narrow targets inside that same gutter, so a slightly-off click added a stray
 bookmark instead of hitting what you aimed at.
 
-The Project Tree and Map menus can add a bookmark to a file's first line without
-opening it first; both surfaces show a small bookmark indicator on that file.
-
 | Action | Command | Default key |
 | --- | --- | --- |
 | Toggle bookmark | `bookmarks.toggle` | `C-c m` |
@@ -81,9 +78,6 @@ Selection*) or `C-c n`. A noted span gets a soft highlight and an amber start
 marker you can **click to edit**, and hovering it shows the note body rendered as
 Markdown. Note bodies are edited in a multi-line dialog (Ctrl/Cmd+Enter saves)
 that honors your keymap's caret-movement keys.
-
-You can also add a first-line note from a file's Project Tree or Map menu. A
-small indicator makes noted files visible while navigating the project.
 
 Notes track their anchor through edits and re-locate themselves by surrounding
 text when a file changes externally, marking themselves orphaned only if the

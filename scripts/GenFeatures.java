@@ -349,18 +349,19 @@ Output streams to the Run console, which also accepts **stdin** so `readln`-styl
 """),
     new Feature("run-configurations", RD, 2, false,
         "Run configurations",
-        "Save how a thing is launched — Java main class, Python or shell script, or a make target — with a before-launch build step, a toolbar selector, and a file you can commit so your team gets the same ones.",
+        "Save how a thing is launched — Java main class, Python or shell script, make target, or named npm script — in a dedicated window, with a before-launch step and shareable project file.",
         """
 A run configuration is a saved answer to "how is this launched": the main class or script, program and VM arguments, environment variables and a working directory. Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts.
 
-## Four kinds, not just Java
+## Five kinds, not just Java
 
-Choose a **Type** in Settings → Run Configurations:
+Choose a **Type** in the project/session-scoped **Run Configurations** window:
 
 - a **Java main class** (resolved through the language server, or through your Maven/Gradle build)
 - a **Python script**
 - a **shell script**
 - a **make target**
+- a named **npm script** (`npm run`, with arguments passed after `--`)
 
 Script configurations need no project and no language server at all. Debugging remains Java-only, and says so rather than reporting a confusing Java error.
 
@@ -448,13 +449,13 @@ On by default, and completely invisible until `gh` is signed in and the repo act
 """),
     new Feature("diff-merge", GD, 3, true,
         "Diff & merge",
-        "Side-by-side and unified diff (vs HEAD, a commit, or another file) with word-level highlights and apply-hunk arrows, plus a merge-conflict resolver.",
+        "A multi-file diff workspace for files, folders, patches, and Git changes, with smart alignment, hunk actions, editable results, and true three-way merge resolution.",
         """
-Compare files in a dedicated tab (**side-by-side** or **unified**) with per-line backgrounds and intra-line **word-level** highlights.
+Compare files in a dedicated tab (**side-by-side** or **unified**) with per-line backgrounds, intra-line **word emphasis**, change ribbons, and a full-document overview.
 
-Diff a file against **HEAD** (`C-x v =`), a **commit**, or **another file**, and apply changes hunk-by-hunk with gutter arrows (or apply-all), all undoable. Open diffs **refresh live** when the underlying files change.
+Diff a file against **HEAD** (`C-x v =`), a **commit**, the clipboard, empty text, or **another file**. Review a multi-file patch, every staged or working-tree change, or compare two folders recursively. Ignore whitespace or case, use smart alignment, collapse context, wrap long lines, swap sides, and export a patch.
 
-When a file has Git conflict markers, the **merge resolver** lists each conflict with Accept Ours / Theirs / Both and writes the result back.
+Apply changes with guarded, undoable gutter actions or open an editable Result draft. Git reviews add Stage, Unstage, Revert, Copy Hunk, and Open Changed Line. The **merge resolver** reads Git's base, ours, and theirs stages, combines compatible edits automatically, and offers explicit choices for divergent regions.
 """),
     new Feature("markdown-preview", DD, 1, false,
         "Markdown preview",
@@ -554,7 +555,7 @@ The Project tool window now switches between the familiar file tree and a **visu
 
 Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and hidden-file toggle. Global filters narrow by open, modified, or Git-changed status and by file type without throwing away the surrounding path.
 
-Select a file to open a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Double-click or choose Open to promote it to a normal editor tab. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, Maven, and Git actions work in either view.
+Select a file to open a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Double-click or choose Open to promote it to a normal editor tab. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 
 The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away; the map is another way to understand the same project, not a replacement file manager.
 

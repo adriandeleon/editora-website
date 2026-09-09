@@ -96,7 +96,20 @@ void flushNews(List<News> items, String cur, Pattern title) {
     if (m.matches()) {
         items.add(new News(inlineNews(m.group(1)), truncate(inlineNews(m.group(2)), 150)));
     } else {
-        items.add(new News(truncate(inlineNews(cur), 90), ""));
+        int now = cur.indexOf(" now ");
+        if (now > 0) {
+            String head = cur.substring(0, now);
+            String tail = cur.substring(now + 5);
+            if (head.endsWith(" can")) {
+                head = head.substring(0, head.length() - 4);
+                tail = "Can " + tail;
+            } else {
+                tail = "Now " + tail;
+            }
+            items.add(new News(truncate(inlineNews(head), 90), truncate(inlineNews(tail), 150)));
+        } else {
+            items.add(new News(truncate(inlineNews(cur), 90), truncate(inlineNews(cur), 150)));
+        }
     }
 }
 

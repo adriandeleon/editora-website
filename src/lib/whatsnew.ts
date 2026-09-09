@@ -4,11 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "The Project tool window now has a visual Map navigator.", detail: "A Tree/Map switch preserves the existing file-management tree while offering a Canvas hierarchy with focused Miller-style columns, pan, pointer-…" },
-  { title: "Settled edit work now uses one timer sequence per buffer.", detail: "Highlighting, live previews, completion, TODO scans, LSP synchronization, Undo History, lint, and AI completion retain their existing idle delays,…" },
-  { title: "Settled editor features now share one whole-document snapshot per revision.", detail: "Syntax highlighting, folding, TODO and lint scans, LSP synchronization, previews, run-target detection, saves, and Undo History no longer ask…" },
-  { title: "Find in Files now has one clear visual toggle.", detail: "Its duplicate tool-stripe icon has been removed in favor of the toolbar button, which now stays highlighted for as long as the Search tool window is…" },
-  { title: "Text files open without blocking the window on disk I/O.", detail: "Editora now shows the editor tab immediately for every text candidate, then stats, classifies, resolves EditorConfig/the charset, reads, and decodes…" },
-  { title: "Large CSV edits and live rendered previews stay responsive.", detail: "Rainbow CSV span construction now runs off the JavaFX thread and discards stale results instead of rescanning and restyling the whole document in the…" },
-  { title: "Preferences now use JSON instead of TOML.", detail: "Global settings move from <code>settings.toml</code> to <code>settings.json</code>, and committed project toolchain overrides move to…" },
+  { title: "Project-tree folders", detail: "Can be compared recursively with HEAD, a branch, a tag, or a selected revision. The lazy multi-file review is scoped to that folder and includes…" },
+  { title: "<code>editora --diff-ui LEFT RIGHT</code>", detail: "Now opens an isolated, session-free diff workspace with only the comparison UI visible. A full-UI icon in the diff toolbar restores normal Editora…" },
+  { title: "Side-by-side diffs", detail: "Now draw JetBrains-style change ribbons between related hunks, with a compact right-edge overview track for changes across the full document." },
+  { title: "The diff viewer", detail: "Now opens multi-file patches as one navigable review with per-file statistics; supports exact, trimmed, or ignored-whitespace matching, context…" },
+  { title: "The Commit tool window and command palette", detail: "Can open all staged files or all unstaged/untracked files as one repository review, with per-file status, statistics, navigation, and the usual Git…" },
+  { title: "Recursive folder comparison", detail: "Now scans off-thread and opens only changed, left-only, or right-only files in a lazy multi-file review. It is available from the VCS menu, command…" },
+  { title: "Editable local comparisons", detail: "Can open a syntax-highlighted Result draft below the diff. Draft changes re-diff after a short idle delay and apply to the real editor as one…" },
+  { title: "The VCS menu and command palette can compare clipboard or empty text with the active…", detail: "The VCS menu and command palette can compare clipboard or empty text with the active file. Every full diff can swap left and right sides without…" },
 ];
