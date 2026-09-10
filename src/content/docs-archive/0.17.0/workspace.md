@@ -45,23 +45,18 @@ expanded branches together.
   pointer. **Fit**, **Center selection**, and the overview recenter the layout.
 - Drag a column header to reposition it and use its lock to prevent accidental
   movement. Columns size themselves to the longest loaded name.
-- Filter globally by open, modified, Git-changed, bookmarked, or Personal Notes
-  state and by file type.
+- Filter globally by open, modified, or Git-changed state and by file type.
   Every non-root column also has a fuzzy name filter and a **Hidden** toggle.
 - Select a file for a movable, resizable, syntax-highlighted preview. The
   preview uses unsaved buffer text when available; double-click the file or use
   **Open** to promote it to a normal editor tab.
-- A Personal Notes badge opens an independent editable note card for a file or
-  folder. Note cards can coexist with code previews and can be temporarily
-  hidden with **Hide all open Personal Notes**.
 - Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
   Local History, and Git actions available in the tree.
 
 Image previews support common bitmap formats. Text and image cards keep
 independent zoom levels, and Project Map searches reveal all ancestor columns
 needed to reach a match before restoring the previously open branches when the
-query is cleared. Preview and note cards keep a live connector to their source
-row while the map pans or zooms and while a card is moved or resized.
+query is cleared.
 
 The canvas is fully keyboard-navigable. Arrows move with and across the chosen
 flow, `Ctrl-N` / `Ctrl-P` select siblings, `Page Down` / `Page Up` jump by ten,

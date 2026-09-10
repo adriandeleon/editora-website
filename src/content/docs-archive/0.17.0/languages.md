@@ -18,14 +18,10 @@ Files without a bundled grammar are left unstyled rather than guessed at.
 
 ### Supported languages
 
-Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
+Grammars ship for Java, XML, shell, PowerShell, DOS batch, Python, Groovy,
 Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, SQL,
 TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, Mermaid, and the
 HTTP request format. The TypeScript grammar also covers plain JavaScript.
-
-Astro files use the official Astro TextMate grammar, including mixed
-frontmatter, HTML, and CSS regions. The same language integration supplies
-Structure symbols and can connect to `astro-ls` for code intelligence.
 
 Folding, comment syntax, and auto-indent rules are wired per language alongside
 the grammar. Many extension-less dotfiles and named config files (e.g.

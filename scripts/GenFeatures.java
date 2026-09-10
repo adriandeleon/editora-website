@@ -263,9 +263,9 @@ It's session-only and disabled for very large files. The tool-window stripe is o
 """),
     new Feature("syntax-highlighting", CI, 1, false,
         "Syntax highlighting",
-        "TextMate grammars (via tm4e) for 21 languages: Java, Python, Rust, Go, Kotlin, C/C++, C#, Ruby, SQL, Markdown, and more.",
+        "TextMate grammars (via tm4e) for Java, Astro, Python, Rust, Go, Kotlin, C/C++, C#, Ruby, SQL, Markdown, and more.",
         """
-Highlighting uses **TextMate grammars** (via tm4e) for 21 languages (Java, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL) plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers.
+Highlighting uses **TextMate grammars** (via tm4e) for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL, plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers. Astro uses the official grammar for mixed frontmatter, HTML, and CSS.
 
 Tokenization is **stateful** (it carries grammar state across lines, so block comments and heredocs highlight correctly) and **incremental**, an edit re-tokenizes only from the changed line, off the UI thread. Token colors are themed per editor theme.
 
@@ -277,7 +277,7 @@ Brackets inside strings and comments are skipped. That is not a nicety: a stray 
 """),
     new Feature("lsp", CI, 2, true,
         "Language servers (LSP)",
-        "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 22 language servers (Java, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
+        "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 23 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
         """
 Editora speaks the **Language Server Protocol**, both halves of it: the requests that read your code, and the ones that change it.
 
@@ -297,7 +297,7 @@ Editora speaks the **Language Server Protocol**, both halves of it: the requests
 - Server-provided **folding regions** and **expand/shrink selection**
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
-Twenty-two servers are supported, Java, TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (tinymist). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
+Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
 
 Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes.
 
@@ -543,7 +543,7 @@ Off by default. Enable it under Settings → HTML Preview. Read the [deep-dive](
 """),
     new Feature("projects", WF, 1, false,
         "Project Map navigation",
-        "Explore a project as a file tree or a <strong>spatial canvas</strong>: focused columns, pan and zoom, four flow directions, live filters, and a floating code preview — all navigable from the keyboard.",
+        "Explore a project as a file tree or a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards.",
         """
 Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window.
 
@@ -553,9 +553,9 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 The Project tool window now switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
-Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and hidden-file toggle. Global filters narrow by open, modified, or Git-changed status and by file type without throwing away the surrounding path.
+Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and hidden-file toggle. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
 
-Select a file to open a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Double-click or choose Open to promote it to a normal editor tab. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
+Select a file to open a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. Double-click or choose Open to promote a file to a normal editor tab. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 
 The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away; the map is another way to understand the same project, not a replacement file manager.
 
@@ -629,13 +629,13 @@ The older **Split Editor** commands show two views of the *same* file, for readi
 """),
     new Feature("bookmarks-notes", WF, 4, false,
         "Bookmarks & notes",
-        "Line bookmarks (gutter markers, cross-file jump, per-project), plus Personal Notes attached to a word/line/range, stored outside the file, surviving renames, with Markdown bodies.",
+        "Bookmarks and Markdown Personal Notes for lines, ranges, files, and folders, stored outside source and navigable across a project.",
         """
 Two ways to mark up code.
 
 **Bookmarks** toggle on a line (`C-c m`) with a gutter marker and an optional note; the Bookmarks tool window lists them across files, `C-c ]` / `C-c [` cycle within a file, and `M-g b` is a cross-file picker, reorderable and scoped per project.
 
-**Personal Notes** attach an annotation to a word, line, or range, stored *outside* the file (great for read-only or generated code). They survive edits and renames via content-hash identity and text anchoring, render Markdown, and have their own tool window and `M-g n` picker. See the [deep-dive](/blog/personal-notes-that-survive-edits).
+**Personal Notes** attach an annotation to a word, line, range, or project folder, stored *outside* the file (great for read-only or generated code, or project context that does not belong in source). They survive edits and renames via content-hash identity and text anchoring, render Markdown, and have their own tool window and `M-g n` picker. Folder notes appear as Project-tree tooltips, and activating one selects its folder in the explorer. See the [deep-dive](/blog/personal-notes-that-survive-edits).
 """),
     new Feature("find-in-files", WF, 5, false,
         "Find in files",

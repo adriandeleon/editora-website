@@ -1,6 +1,6 @@
 ---
 title: Language servers (LSP)
-description: Go to definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics, and completion from 23 language servers.
+description: Go to definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics, and completion from 22 language servers.
 category: Code intelligence
 order: 2
 beta: true
@@ -211,14 +211,14 @@ server that keeps crashing is not relaunched forever.
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
 Settings field can override the command per server) and uses it if present.
-Twenty-three servers are supported, plus a Maven-aware `pom.xml` server:
+Twenty-two servers are supported, plus a Maven-aware `pom.xml` server:
 
 - **Java** (`jdtls`), **TypeScript / JavaScript** (`typescript-language-server`),
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
   (`kotlin-language-server`), **Lua** (`lua-language-server`)
-- **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
+- **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
 
@@ -246,7 +246,7 @@ setting when switching between them. See
 If a server isn't installed, Editora can fetch it for you. **Every server** is
 covered through four channels, picked per server:
 
-- **npm** packages (Astro, JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
+- **npm** packages (JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
   Python/Pyright), needing Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
@@ -261,10 +261,6 @@ off with `view.toggleInstallPrompts`), and the **Install: Language Server…**
 picker (`install.languageServer`). After installing, the server is auto-detected
 and activates without a restart. Editora never installs the underlying runtimes
 (Node, Python, Go, …); if one is missing it tells you which to install first.
-
-For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
-whether it is hoisted in the workspace or installed alongside the server by
-Editora.
 
 ## Workspace roots and lifetime
 

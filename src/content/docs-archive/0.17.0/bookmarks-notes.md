@@ -1,6 +1,6 @@
 ---
 title: Bookmarks & notes
-description: Bookmarks and Personal Notes attached to code or project folders, with cross-file navigation.
+description: Line bookmarks with cross-file jump, and Personal Notes attached to a word, line, or range.
 category: Workspace
 order: 2
 ---
@@ -18,8 +18,7 @@ narrow targets inside that same gutter, so a slightly-off click added a stray
 bookmark instead of hitting what you aimed at.
 
 The Project Tree and Map menus can add a bookmark to a file's first line without
-opening it first, or attach a bookmark directly to a folder. Both surfaces show
-a compact bookmark indicator after the file or folder name.
+opening it first; both surfaces show a small bookmark indicator on that file.
 
 | Action | Command | Default key |
 | --- | --- | --- |
@@ -61,10 +60,10 @@ a file changes outside the editor, so they survive external edits. They live in
 
 ## Personal notes
 
-Personal Notes attach an annotation to a **word, line, range, or project
-folder**, stored *outside* the file. They're built for read-only, generated, or
-shared code—and for project context that does not belong in a source file.
-Notes are **off by default**; enable them in **Settings → Application**.
+Personal Notes attach an annotation to a **word, line, or range**, stored
+*outside* the file. They're built for read-only, generated, or shared code where
+you can't leave a comment in the source. Notes are **off by default**; enable
+them in **Settings → Application**.
 
 | Action | Command | Default key |
 | --- | --- | --- |
@@ -83,17 +82,13 @@ marker you can **click to edit**, and hovering it shows the note body rendered a
 Markdown. Note bodies are edited in a multi-line dialog (Ctrl/Cmd+Enter saves)
 that honors your keymap's caret-movement keys.
 
-You can also add a first-line note to a file, or a note directly to a folder,
-from the Project Tree or Map menu. An indicator after the name makes noted paths
-visible while navigating. Folder notes appear as tooltips in the Project tree;
-activating a folder entry in the Notes window opens the Project explorer with
-that folder selected.
+You can also add a first-line note from a file's Project Tree or Map menu. A
+small indicator makes noted files visible while navigating the project.
 
 Notes track their anchor through edits and re-locate themselves by surrounding
 text when a file changes externally, marking themselves orphaned only if the
 anchor truly disappears. The **Notes** tool window (`M-5`) groups them per file
 with a filter, and like Bookmarks it groups by project, General plus the current
-one, with a **Show all projects** toggle. File and folder rows use matching
-icons so their targets remain clear. They live in `notes.json`. A second
+one, with a **Show all projects** toggle. They live in `notes.json`. A second
 toggle, *Show note indicators*, hides just the gutter glyph and highlight while
 keeping notes on.
