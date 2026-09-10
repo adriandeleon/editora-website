@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Project-tree folders", detail: "Can be compared recursively with HEAD, a branch, a tag, or a selected revision. The lazy multi-file review is scoped to that folder and includes…" },
-  { title: "<code>editora --diff-ui LEFT RIGHT</code>", detail: "Now opens an isolated, session-free diff workspace with only the comparison UI visible. A full-UI icon in the diff toolbar restores normal Editora…" },
-  { title: "Side-by-side diffs", detail: "Now draw JetBrains-style change ribbons between related hunks, with a compact right-edge overview track for changes across the full document." },
-  { title: "The diff viewer", detail: "Now opens multi-file patches as one navigable review with per-file statistics; supports exact, trimmed, or ignored-whitespace matching, context…" },
-  { title: "The Commit tool window and command palette", detail: "Can open all staged files or all unstaged/untracked files as one repository review, with per-file status, statistics, navigation, and the usual Git…" },
-  { title: "Recursive folder comparison", detail: "Now scans off-thread and opens only changed, left-only, or right-only files in a lazy multi-file review. It is available from the VCS menu, command…" },
-  { title: "Editable local comparisons", detail: "Can open a syntax-highlighted Result draft below the diff. Draft changes re-diff after a short idle delay and apply to the real editor as one…" },
-  { title: "The VCS menu and command palette can compare clipboard or empty text with the active…", detail: "The VCS menu and command palette can compare clipboard or empty text with the active file. Every full diff can swap left and right sides without…" },
+  { title: "Project Canvas Personal Notes badges", detail: "Now open independent, editable note cards for files and folders. Each card keeps a parent connector, can coexist with its code preview, and can be…" },
+  { title: "The Project Map", detail: "Can filter its visible working set to bookmarked files or files with Personal Notes." },
+  { title: "Floating Project Map previews", detail: "Now have a live connector to their source file row, including while the map is panned or zoomed and while a preview is moved or resized." },
+  { title: "The Welcome page keeps long Recent lists compact.", detail: "It now shows the five newest valid files first and provides an accessible disclosure chevron to show or hide any remaining entries." },
+  { title: "The Quit confirmation", detail: "Now presents its destructive Quit action as a red danger button while keeping Cancel neutral." },
+  { title: "Save, history, bulk-replace, search, preview, process, and configuration shutdown paths", detail: "Now preserve acknowledged data and bounded lifecycle ownership during concurrent completion, cancellation, and exit." },
+  { title: "Personal Notes hover previews in the editor and Project tree", detail: "Now share a soft, light-yellow paper color reminiscent of a Post-it note." },
+  { title: "Editor overlays", detail: "Now cap their backing textures using the window's HiDPI output scale, preventing JavaFX Metal renderer crashes when an unwrapped long line makes an…" },
 ];
