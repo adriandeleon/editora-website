@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Project Canvas Personal Notes badges", detail: "Now open independent, editable note cards for files and folders. Each card keeps a parent connector, can coexist with its code preview, and can be…" },
-  { title: "The Project Map", detail: "Can filter its visible working set to bookmarked files or files with Personal Notes." },
-  { title: "Floating Project Map previews", detail: "Now have a live connector to their source file row, including while the map is panned or zoomed and while a preview is moved or resized." },
-  { title: "The Welcome page keeps long Recent lists compact.", detail: "It now shows the five newest valid files first and provides an accessible disclosure chevron to show or hide any remaining entries." },
-  { title: "The Quit confirmation", detail: "Now presents its destructive Quit action as a red danger button while keeping Cancel neutral." },
-  { title: "Save, history, bulk-replace, search, preview, process, and configuration shutdown paths", detail: "Now preserve acknowledged data and bounded lifecycle ownership during concurrent completion, cancellation, and exit." },
-  { title: "Personal Notes hover previews in the editor and Project tree", detail: "Now share a soft, light-yellow paper color reminiscent of a Post-it note." },
-  { title: "Editor overlays", detail: "Now cap their backing textures using the window's HiDPI output scale, preventing JavaFX Metal renderer crashes when an unwrapped long line makes an…" },
+  { title: "Local History garbage collection", detail: "Now preserves blobs written by an in-flight publication until its complete index becomes durable." },
+  { title: "Git file history", detail: "Now compares a selected revision with the editable working file on double-click or Enter, exposing the diff viewer's line, hunk, whole-file, Result,…" },
+  { title: "Undo after distributed multi-cursor paste", detail: "No longer fails when the edit batch shortens the document." },
+  { title: "ACP agent writes to closed files", detail: "Now use staged atomic replacement, so an interrupted write preserves the prior file instead of leaving it truncated or partially replaced; agent…" },
+  { title: "Remote SFTP saves", detail: "Now detect exact server-byte changes since the last open or successful save, prompt before overwriting them, use a server-side atomic rename when…" },
+  { title: "Git branch switches, discard, and stash operations", detail: "Now invalidate overlapping pending editor saves before and after the working tree changes; mixed tracked/untracked discards finish in order before…" },
+  { title: "LSP workspace resource edits", detail: "Now reject buffers changed, closed, or made read-only after filesystem staging, cancel older queued saves, restore earlier text edits after an…" },
+  { title: "Deleting files from the Project tree", detail: "Now resolves dirty-buffer Save/Discard/Cancel choices first, waits for recoverable Local History to become durable, rejects changed preimages as one…" },
 ];

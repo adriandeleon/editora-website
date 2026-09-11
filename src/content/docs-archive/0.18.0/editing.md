@@ -231,10 +231,6 @@ automatically. A Word-style **View Mode banner** docks above the editor with an
 *Enable Editing* button when the file is writable, and while read-only,
 **Space** pages down and **Backspace** pages up like a pager.
 
-For existing local files, Save writes a staged replacement and only swaps it
-into place after the complete new content is ready. If Editora cannot create a
-safe staging file, Save fails without touching the existing bytes.
-
 ## Whitespace and the column ruler
 
 View options in Settings toggle whitespace markers, a configurable column ruler,
