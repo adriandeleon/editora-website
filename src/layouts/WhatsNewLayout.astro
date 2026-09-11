@@ -1,26 +1,55 @@
 ---
 import Layout from "./Layout.astro";
+import { releaseSeries } from "../lib/release-series";
+
+const { frontmatter } = Astro.props;
+const activeSeries = frontmatter.series;
 ---
 
 <Layout
-  title="What's New — Editora"
+  title={`${frontmatter.title} — Editora`}
   description="Everything recently shipped in Editora, straight from the changelog."
 >
-  <main class="page doc">
-    <h1>What's New</h1>
-    <p class="lead">
-      Everything recently shipped, straight from the changelog. For curated
-      announcements and deep-dives, see <a href="/news">News</a>.
-    </p>
-    <slot />
+  <main class="page">
+    <header class="page-heading">
+      <h1>What's New in {activeSeries}.x</h1>
+      <p class="lead">
+        Everything shipped in the {activeSeries}.x release series, straight from
+        the changelog. For curated announcements and deep-dives, see <a href="/news">News</a>.
+      </p>
+    </header>
+    <div class="release-layout">
+      <aside class="series-nav" aria-label="Release series">
+        <span class="series-label">Release series</span>
+        <nav>
+          {
+            releaseSeries.map((item) => (
+              <a
+                href={item.href}
+                class:list={{ active: item.version === activeSeries }}
+                aria-current={item.version === activeSeries ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </aside>
+      <article class="doc release-notes">
+        <slot />
+      </article>
+    </div>
   </main>
 </Layout>
 
 <style>
   .page {
-    max-width: 52rem;
+    max-width: 72rem;
     margin: 0 auto;
     padding: 2.5rem 1.25rem 3rem;
+  }
+  .page-heading {
+    max-width: 52rem;
   }
   h1 {
     font-size: 2.4rem;
@@ -29,6 +58,85 @@ import Layout from "./Layout.astro";
   }
   .lead {
     color: var(--muted);
-    margin: 0 0 1rem;
+    margin: 0;
+  }
+  .release-layout {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 52rem);
+    gap: 2.5rem;
+    align-items: start;
+    margin-top: 2rem;
+  }
+  .series-nav {
+    position: sticky;
+    top: 5.25rem;
+  }
+  .series-label {
+    display: block;
+    margin-bottom: 0.65rem;
+    color: var(--faint);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .series-nav nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .series-nav a {
+    display: block;
+    padding: 0.45rem 0.65rem;
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .series-nav a:hover {
+    color: var(--text);
+    background: var(--bg-soft);
+  }
+  .series-nav a.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .release-notes {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-width: 760px) {
+    .page {
+      padding-top: 2rem;
+    }
+    .release-layout {
+      display: block;
+      margin-top: 1.5rem;
+    }
+    .series-nav {
+      z-index: 2;
+      top: 3.6rem;
+      margin: 0 -1.25rem 1.75rem;
+      padding: 0.7rem 1.25rem;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 94%, transparent);
+      backdrop-filter: blur(12px);
+    }
+    .series-label {
+      margin-bottom: 0.45rem;
+    }
+    .series-nav nav {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.35rem;
+    }
+    .series-nav a {
+      padding: 0.4rem 0.45rem;
+      text-align: center;
+    }
   }
 </style>
