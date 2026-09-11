@@ -73,9 +73,7 @@ It also works like a **mini file manager**: multi-select files and folders with
 Ctrl/Cmd- and Shift-click, then **drag them onto a folder** (or the root) to move
 them, with open tabs following to the new path; a name conflict is skipped rather
 than overwritten, and a folder can't be moved into its own subtree. **Delete**
-acts on the whole selection at once. Dirty files receive one
-Save/Discard/Cancel decision before the batch begins, and Editora records
-recoverable Local History before removing anything it has opened or edited.
+acts on the whole selection at once.
 
 With no project open, the Project tool window doesn't sit empty: it becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
@@ -327,10 +325,6 @@ It mirrors more of IntelliJ's Local History:
   under it that has history, with **deleted files badged**; restore a revision to
   recreate the file. Deleting a file in Editora snapshots it first, so an
   accidental delete is recoverable (for files Editora had opened or edited).
-
-Restore validates the stored revision and verifies that the file has not
-changed while it was loading. If either check fails, the current file and editor
-contents are left untouched.
 
 Snapshots are deduped by content and stored gzip-compressed in your config
 folder, pruned by configurable limits. It's on by default, local-only, and off in

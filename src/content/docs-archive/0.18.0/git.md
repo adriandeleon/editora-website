@@ -28,12 +28,6 @@ isn't installed, the integration stays inert.
   (`git.fileHistory`), **inline blame** (GitLens-style, current line; toggle
   with `git.toggleBlame`), and **stash** (`git.stash`, pop, drop).
 
-In a file's history, double-click a revision or press Enter to compare it with
-the editable working file. The full diff viewer opens, including line, hunk,
-whole-file, Result, Undo, and Save controls. The repository-wide Git Log keeps
-its parent-to-commit view; use **Compare with Working Tree** on a changed file
-when you want the editable comparison instead.
-
 | Action | Command | Default key |
 | --- | --- | --- |
 | Commit (open the Commit window) | `git.commit` | `C-x g` |
@@ -45,8 +39,6 @@ when you want the editable comparison instead.
 Cloning asks for a URL and a destination, then opens a file from the clone (its
 README if present) so Git activates without creating a project. Branch switch,
 pull, and push reload unmodified open buffers whose files changed on disk.
-Branch switches, discard, and stash never silently replace a dirty open copy;
-deleted and edited buffers remain available for recovery.
 
 Editora uses the `git` on your `PATH`; **Git: Set Git Command**
 (`git.setCommand`) points it somewhere else, and a blank value goes back to the

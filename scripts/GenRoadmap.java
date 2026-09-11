@@ -107,6 +107,11 @@ void flushNews(List<News> items, String cur, Pattern title) {
                 tail = "Now " + tail;
             }
             items.add(new News(truncate(inlineNews(head), 90), truncate(inlineNews(tail), 150)));
+        } else if (cur.indexOf(" no longer ") > 0) {
+            int noLonger = cur.indexOf(" no longer ");
+            String head = cur.substring(0, noLonger);
+            String tail = "No longer " + cur.substring(noLonger + 11);
+            items.add(new News(truncate(inlineNews(head), 90), truncate(inlineNews(tail), 150)));
         } else {
             items.add(new News(truncate(inlineNews(cur), 90), truncate(inlineNews(cur), 150)));
         }

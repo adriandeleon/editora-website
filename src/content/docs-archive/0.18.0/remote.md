@@ -9,8 +9,7 @@ beta: true
 Editora can edit files on a remote host over **SSH/SFTP**. A remote folder
 mounts as the Project tree, and from there editing, syntax highlighting, search,
 bookmarks, notes, and preview all work over the wire. Save writes straight back,
-no dialog when the server copy is unchanged. If it changed since you opened or
-last saved the file, Editora asks before overwriting it.
+no dialog.
 
 ## Connecting
 
@@ -67,6 +66,4 @@ trip remote URIs and reconnect once the connection is open.
 
 A remote path is a real `java.nio.file.Path` on an SFTP filesystem, so the same
 open, save, list, and search code paths work unchanged. The transport is Apache
-MINA SSHD. Saves use a server-side atomic rename when the host supports it. If a
-safe replacement cannot be completed, Editora retains the previous remote copy
-instead of risking a partial file.
+MINA SSHD. Saving over SFTP is just a normal save.
