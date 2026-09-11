@@ -4,12 +4,8 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Local History garbage collection", detail: "Now preserves blobs written by an in-flight publication until its complete index becomes durable." },
-  { title: "Git file history", detail: "Now compares a selected revision with the editable working file on double-click or Enter, exposing the diff viewer's line, hunk, whole-file, Result,…" },
-  { title: "Undo after distributed multi-cursor paste", detail: "No longer fails when the edit batch shortens the document." },
-  { title: "ACP agent writes to closed files", detail: "Now use staged atomic replacement, so an interrupted write preserves the prior file instead of leaving it truncated or partially replaced; agent…" },
-  { title: "Remote SFTP saves", detail: "Now detect exact server-byte changes since the last open or successful save, prompt before overwriting them, use a server-side atomic rename when…" },
-  { title: "Git branch switches, discard, and stash operations", detail: "Now invalidate overlapping pending editor saves before and after the working tree changes; mixed tracked/untracked discards finish in order before…" },
-  { title: "LSP workspace resource edits", detail: "Now reject buffers changed, closed, or made read-only after filesystem staging, cancel older queued saves, restore earlier text edits after an…" },
-  { title: "Deleting files from the Project tree", detail: "Now resolves dirty-buffer Save/Discard/Cancel choices first, waits for recoverable Local History to become durable, rejects changed preimages as one…" },
+  { title: "Added Emacs tool-window keys: <code>C-x 0</code> closes the current window, <code>C-x…", detail: "Added Emacs tool-window keys: <code>C-x 0</code> closes the current window, <code>C-x ^</code> grows the bottom window (<code>C-u C-x ^</code>…" },
+  { title: "Fixed the Emacs <code>C-x 1</code> command so it collapses independent editor groups as…", detail: "Fixed the Emacs <code>C-x 1</code> command so it collapses independent editor groups as well as a second view of the active document." },
+  { title: "Color Save buttons green and Discard buttons red throughout the application, while…", detail: "Color Save buttons green and Discard buttons red throughout the application, while neutral actions such as Cancel retain their existing appearance." },
+  { title: "Ordinary editable tab labels", detail: "Now pin the upright Inter UI face instead of inheriting an editor font or retaining the temporary italic read-only styling used while their contents…" },
 ];
