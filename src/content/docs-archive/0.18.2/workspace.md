@@ -48,10 +48,6 @@ expanded branches together.
 - Filter globally by open, modified, Git-changed, bookmarked, or Personal Notes
   state and by file type.
   Every non-root column also has a fuzzy name filter and a **Hidden** toggle.
-- **Keep current zoom** and **Focus new column** are on by default for the
-  session, so opening a folder preserves the current scale and centers its new
-  column. Turn either behavior off independently; disabling zoom preservation
-  restores fit-to-content when the map expands.
 - Select a file for a movable, resizable, syntax-highlighted preview. The
   preview uses unsaved buffer text when available; double-click the file or use
   **Open** to promote it to a normal editor tab.

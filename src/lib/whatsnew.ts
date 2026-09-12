@@ -4,8 +4,7 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Added Emacs tool-window keys: <code>C-x 0</code> closes the current window, <code>C-x…", detail: "Added Emacs tool-window keys: <code>C-x 0</code> closes the current window, <code>C-x ^</code> grows the bottom window (<code>C-u C-x ^</code>…" },
-  { title: "Fixed the Emacs <code>C-x 1</code> command so it collapses independent editor groups as…", detail: "Fixed the Emacs <code>C-x 1</code> command so it collapses independent editor groups as well as a second view of the active document." },
-  { title: "Color Save buttons green and Discard buttons red throughout the application, while…", detail: "Color Save buttons green and Discard buttons red throughout the application, while neutral actions such as Cancel retain their existing appearance." },
-  { title: "Ordinary editable tab labels", detail: "Now pin the upright Inter UI face instead of inheriting an editor font or retaining the temporary italic read-only styling used while their contents…" },
+  { title: "Added Project Map session options to keep the current zoom while opening folders and…", detail: "Added Project Map session options to keep the current zoom while opening folders and focus newly created columns independently." },
+  { title: "Changed the Emacs <code>C-x 1</code> command so that, when the editor is already unsplit,…", detail: "Changed the Emacs <code>C-x 1</code> command so that, when the editor is already unsplit, it closes every open tool window, including floating…" },
+  { title: "Structure, Bookmark, and Personal Note navigation", detail: "Now keep the selected line visible below sticky-scroll headers instead of placing it underneath the overlay." },
 ];
