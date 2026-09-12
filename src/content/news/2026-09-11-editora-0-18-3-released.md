@@ -1,7 +1,7 @@
 ---
 title: "Editora 0.18.3: steadier Project Map navigation"
 description: "Editora 0.18.3 adds independent Project Map zoom and column-focus options, improves C-x 1 for tool windows, and keeps navigation targets clear of sticky headers."
-date: 2026-09-11T20:25:38-06:00
+date: 2026-09-11T12:00:00-06:00
 version: "0.18.3"
 ---
 
