@@ -31,6 +31,12 @@ runs and reused by the debugger), and repeat the last run with `run.rerun`.
 Running a Java file needs JDK 25 on your `PATH`; Editora preflights this and
 reports a clear message if it finds an older Java.
 
+For Maven projects, **Settings → Languages & Tools → Build Tools → Default
+JDK** selects the toolchain used by Run, Debug, Maven classpath resolution,
+Maven tasks, and before-launch steps. Installed JDKs are discovered from the
+usual platform locations and common version managers. A run configuration's
+**JDK** field can inherit that choice or override it for one configuration.
+
 ## Running a project's main class
 
 Beyond single files, **Run: Run Main Class…** (`run.mainClass`) and
@@ -56,7 +62,8 @@ There are two paths under that, picked automatically:
 
 A run configuration is a saved answer to "how is this launched": a name, what to
 launch, **program arguments**, **VM arguments**, **environment variables**
-(`KEY=value`, quoting values that contain spaces) and a working directory.
+(`KEY=value`, quoting values that contain spaces), an optional **JDK override**,
+and a working directory.
 
 ### What a configuration can launch
 
@@ -81,6 +88,10 @@ beside it; your choice is remembered across restarts. The dropdown ends with
 **Edit Configurations…**, which opens the separate Run Configurations window
 with the configuration you had selected already picked out — also available as
 **Run: Edit Run Configurations…** (`run.editConfigs`).
+
+Starting a file or configuration always opens and focuses the **Run** tool
+window. If that process is already active, Run brings its existing console back
+instead of hiding the useful output behind a busy message.
 
 The group only appears where you could actually launch something: with a project
 open and a Maven, Gradle, npm, Cargo or Go build file *inside* it, or a makefile

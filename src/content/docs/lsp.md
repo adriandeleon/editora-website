@@ -73,8 +73,11 @@ double-click jumps to any entry.
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
 overload counter, and the signature's documentation. It follows your typing as
-arguments are entered and closes when the caret leaves the call, on Escape, or on
-scroll.
+arguments are entered, stays open across multiline calls, and lets you move
+between overloads with `lsp.nextSignature` and `lsp.previousSignature`. It
+closes when the caret leaves the call, on Escape, or on scroll. Finished
+zero-argument calls and method references do not open an irrelevant signature
+popup.
 
 **Inlay hints** are the server's parameter-name and inferred-type annotations,
 drawn in grey italics after each line. They are **off by default**; turn them on
@@ -91,6 +94,16 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures.
+
+Java completion reacts immediately after member access and begins identifier
+completion after a short pause. Enter and Tab accept the selected item without
+also inserting a newline or indentation; complete result lists filter locally,
+and obsolete requests are cancelled as you continue typing. Overloads remain
+distinct, commit characters and server ranges are honored, and method
+completion reuses parentheses already in the file before requesting signature
+help. Auto-imports can safely follow continued typing and remain grouped with
+the completion for undo and redo; an answer that can no longer be rebased is
+dropped instead of touching newer text.
 
 The Problems window has an **Open files / Whole project** selector
 (`lsp.toggleProjectProblems`), plus a **Build Project** command

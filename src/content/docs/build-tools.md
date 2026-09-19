@@ -37,6 +37,14 @@ Maven and Gradle prefer the project's own `./mvnw` / `./gradlew` wrapper, fallin
 back to `mvn` / `gradle` on your `PATH`. npm uses the detected package manager
 (npm / yarn / pnpm / bun) from the `packageManager` field or the lockfile.
 
+Choose the JDK used for Maven under **Settings → Languages & Tools → Build
+Tools → Default JDK**. The selector finds installed JDKs in standard platform
+locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
+**System default** keeps using `JAVA_HOME` / `PATH`. The choice supplies both
+`JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
+resolution, Java Run and Debug, and before-launch commands. A saved run
+configuration can override it for one project or launch.
+
 Discovery parses the marker file directly, with no shell-out and no new
 dependency, so it's instant and offline. Toggle each under **Settings →
 Languages & Tools → Build Tools**.
@@ -138,6 +146,11 @@ Tests** for the whole class. `test.runAtCaret` and `test.runClassAtCaret` do the
 same from the keyboard, and `test.rerun`, `test.rerunFailed`, and `test.stop`
 control the run. Gutter icons are JVM-only and need a detected Maven or Gradle
 project.
+
+**Debug Test at Caret** (`test.debugAtCaret`) and the test-results context menu
+launch the selected JUnit method or class through Maven or Gradle with its JVM
+suspended, then attach Editora's Java debugger automatically. This needs the
+same Java debug adapter as ordinary Java debugging.
 
 Toggle the whole feature under **Settings → Languages & Tools → Build Tools**
 (`view.toggleTestRunner`). It's off in [Simple UI mode](/docs/workspace).
