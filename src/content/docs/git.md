@@ -46,7 +46,11 @@ Cloning asks for a URL and a destination, then opens a file from the clone (its
 README if present) so Git activates without creating a project. Branch switch,
 pull, and push reload unmodified open buffers whose files changed on disk.
 Branch switches, discard, and stash never silently replace a dirty open copy;
-deleted and edited buffers remain available for recovery.
+deleted and edited buffers remain available for recovery. Git paths are passed
+literally, including names that look like options or contain unusual
+characters, and conflicted entries remain visible while a merge is unresolved.
+History mutations and refreshes also revalidate the active file and working-tree
+state before applying their result.
 
 Editora uses the `git` on your `PATH`; **Git: Set Git Command**
 (`git.setCommand`) points it somewhere else, and a blank value goes back to the

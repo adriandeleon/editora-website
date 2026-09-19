@@ -329,7 +329,9 @@ See [Code navigation](/docs/code-navigation).
         """
 Completion appears as you type, debounced and off the hot path.
 
-**Code** buffers get a popup that merges LSP results and snippets, Enter or Tab to accept. Accepting a snippet starts a full tab-stop session; accepting an LSP item can auto-add its import.
+**Code** buffers get a popup that merges LSP results and snippets, Enter or Tab to accept. Java member completion appears immediately; identifier completion waits for a short pause, filters complete lists locally, and cancels obsolete requests as you keep typing. Overloads stay distinct, method calls reuse existing parentheses, and commit characters behave as the server intended.
+
+Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its import even after safe continued typing; completion plus import undo and redo as one action, while later typing remains separate.
 
 **Prose** buffers get inline **ghost text**, a muted suffix you accept with Tab.
 
@@ -351,7 +353,7 @@ Output streams to the Run console, which also accepts **stdin** so `readln`-styl
         "Run configurations",
         "Save how a thing is launched — Java main class, Python or shell script, make target, or named npm script — in a dedicated window, with a before-launch step and shareable project file.",
         """
-A run configuration is a saved answer to "how is this launched": the main class or script, program and VM arguments, environment variables and a working directory. Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts.
+A run configuration is a saved answer to "how is this launched": the main class or script, program and VM arguments, environment variables, an optional JDK override, and a working directory. Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
 
 ## Five kinds, not just Java
 
@@ -410,7 +412,7 @@ The response is the `.http` file's own **preview**, in the same Editor / Split /
         """
 Each detected build tool gets its own **tasks tool window** (its stripe appears when the tool's marker file is found): a browsable tree of the tool's goals, scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…). Double-click or Enter runs a task, and the output streams to a separate per-tool console window. A searchable actions popup is also available from the command palette (*Maven: Show Actions*, and so on).
 
-- **Maven** (`pom.xml`): lifecycle phases, the pom's declared profiles (checkable, composing via `-P`), and each plugin's bound goals, plus a *Run custom…* box. Prefers `./mvnw`, else `mvn`.
+- **Maven** (`pom.xml`): lifecycle phases, the pom's declared profiles (checkable, composing via `-P`), and each plugin's bound goals, plus a *Run custom…* box. Prefers `./mvnw`, else `mvn`. A discovered-JDK selector controls Maven tasks, classpath resolution, Run, Debug, and before-launch steps; a run configuration can override it.
 - **npm** (`package.json`): one entry per `scripts` name (run as `<pm> run <name>`) plus `install` / `ci`. Uses the detected package manager (npm/yarn/pnpm/bun).
 - **Cargo** (`Cargo.toml`): the standard subcommands, any `[[bin]]` / `[[example]]` targets, and a `--release` toggle.
 - **Go** (`go.mod`): the standard subcommands over the whole module.

@@ -4,7 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Added Project Map session options to keep the current zoom while opening folders and…", detail: "Added Project Map session options to keep the current zoom while opening folders and focus newly created columns independently." },
-  { title: "Changed the Emacs <code>C-x 1</code> command so that, when the editor is already unsplit,…", detail: "Changed the Emacs <code>C-x 1</code> command so that, when the editor is already unsplit, it closes every open tool window, including floating…" },
-  { title: "Structure, Bookmark, and Personal Note navigation", detail: "Now keep the selected line visible below sticky-scroll headers instead of placing it underneath the overlay." },
+  { title: "Autosave", detail: "Now recognizes a preceding application save even when its UI acknowledgment arrives before the autosave worker checks the file, while still…" },
+  { title: "Improved continuous Java editing: completion owns Enter/Tab correctly, member triggers…", detail: "Now supports overload navigation across multiline calls; nested method snippets restore outer arguments, and completion with eager or safely rebased…" },
+  { title: "Added a global Maven JDK selector and per-project run-configuration override. Run, debug,…", detail: "Now use the selected toolchain; installed JDK discovery includes standard platform locations plus SDKMAN, asdf, mise, Jabba, and JetBrains-managed…" },
+  { title: "Running a file or saved configuration", detail: "Now always opens and focuses the Run tool window; pressing Run while a program is already active brings its existing console back into focus and…" },
+  { title: "Run, build, and external-tool console action buttons", detail: "Now retain their full labels when a long command line fills the status header instead of collapsing to ellipses." },
+  { title: "Save, Save As, close, reload, and Git working-tree operations", detail: "Now revalidate exact document and disk preimages, protect pending writes across windows, and preserve newer edits or external changes instead of…" },
+  { title: "LSP document renames, resource edits, saves, diagnostics, and navigation", detail: "Now retain URI/version/session identity through asynchronous delivery; stale or unverifiable edits are refused, and negotiated save text reflects the…" },
+  { title: "Diff and merge Result drafts participate in tab/window close protection. Binary or…", detail: "Diff and merge Result drafts participate in tab/window close protection. Binary or degraded comparisons stay read-only, stale local/index hunks are…" },
 ];

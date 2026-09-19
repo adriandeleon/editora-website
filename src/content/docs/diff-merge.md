@@ -38,7 +38,9 @@ side, and file-list divider.
 Comparison controls can ignore whitespace or case, use smart line alignment,
 collapse unchanged context, wrap long lines, switch layout, swap sides, and
 export a patch. Binary and very large inputs degrade to safe metadata or bounded
-line comparisons instead of being decoded or rendered as ordinary text.
+line comparisons instead of being decoded or rendered as ordinary text, and
+those degraded comparisons stay read-only. Patch output preserves a missing
+final newline on either changed side.
 
 ## Folder comparisons
 
@@ -70,7 +72,10 @@ preserved, and stale local content is rejected rather than overwritten.
 For a local comparison, **Edit Local Result** opens a syntax-highlighted Result
 draft below the diff. Editing the draft re-diffs after a short pause; applying
 it changes the real editor as one guarded, undoable operation. It is never saved
-implicitly.
+implicitly. Result drafts take part in tab and window close protection, so an
+edited result cannot disappear without the same Save / Discard / Cancel choice
+as an ordinary buffer. Stale Git/index hunks are rejected rather than applied
+to a newer working tree.
 
 ## Merge conflicts
 
@@ -78,4 +83,5 @@ When Git has unmerged index stages, `merge.resolve` opens a true three-way
 resolver using the common ancestor, ours, and theirs. Independent and identical
 edits combine automatically; divergent regions offer Base, Ours, and Theirs
 choices above an editable Result. Applying is undoable and protected against a
-buffer that changed while the resolver was open.
+buffer that changed while the resolver was open. Once you edit the Result by
+hand, choosing another resolution cannot silently erase those edits.

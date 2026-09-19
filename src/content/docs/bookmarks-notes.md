@@ -97,3 +97,6 @@ one, with a **Show all projects** toggle. File and folder rows use matching
 icons so their targets remain clear. They live in `notes.json`. A second
 toggle, *Show note indicators*, hides just the gutter glyph and highlight while
 keeping notes on.
+
+Source references in the Notes window use the same compact, subdued line-number
+style as Structure and Bookmarks, keeping the note text visually primary.

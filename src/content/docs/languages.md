@@ -34,13 +34,17 @@ they get highlighting too (and the matching language server when enabled).
 
 ## Autocomplete
 
-Completion appears as you type, debounced and kept off the hot path. It won't
-trigger below a two-character prefix.
+Completion appears as you type, debounced and kept off the hot path. Java member
+completion triggers immediately after `.`, while identifier completion begins
+after a short pause. Other word completion won't trigger below a two-character
+prefix.
 
 - **Code buffers** get a popup that merges sources and ranks them: language-server
   results (when [LSP](/docs/lsp) is on), then snippets, then nothing buried.
-  Press **Enter** or **Tab** to accept. Accepting a snippet starts a tab-stop
-  session; accepting an LSP item can auto-add its import.
+  Press **Enter** or **Tab** to accept. Complete result lists filter locally and
+  obsolete server requests are cancelled as you keep typing. Accepting a snippet
+  starts a tab-stop session; accepting a Java LSP item can safely add its import
+  after continued typing, grouped with the completion as one undo/redo action.
 - **Prose buffers** (plain text and Markdown) get inline **ghost text**, a muted
   suffix you accept with **Tab**.
 

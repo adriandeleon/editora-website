@@ -15,6 +15,21 @@ export const roadmap: RoadmapSection[] = [
     ],
   },
   {
+    title: "Java editing follow-up",
+    items: [
+      { done: true, text: "Audit and improve the complete typing → sync → completion → insertion → imports path, with real-key FX regressions and an opt-in portable JDT LS Maven-project probe. See Java editing review." },
+      { done: true, text: "Validate sibling-module resolution in disposable Maven/Gradle projects and 75 KB Java source; enable JDT lifecycle joining to prevent stale import edits." },
+      { done: true, text: "Add signature overload switching/multiline lifetime, nested snippet restoration, and grouped undo/redo for completion with eager or adjacent deferred imports." },
+      { done: true, text: "Add a reproducible sustained typing harness on disposable real Maven/Gradle project copies and profile 16 KB–4 MB normal-mode files; reduce synchronization range-scan cost." },
+      { done: false, text: "Complete a human desktop typing trial and measure painted-frame latency on representative hardware." },
+      { done: true, text: "Rebase disjoint delayed imports into their completion's undo step, retaining intervening typing, split-view history, redo branching, save marks, and bounded overlap fallback." },
+      { done: false, text: "Evaluate a context-preserving recency policy against the recorded repeated-selection ranks before changing semantic server ordering." },
+      { done: true, text: "Prepare a standalone JSON-RPC reproduction and compiler proof for JDT's same-file import conflict." },
+      { done: false, text: "Reproduce the intermittent <code>Str</code> popup timeouts from the warmed-workspace macro stress baseline with request/state capture; passing follow-up runs do not establish a fix or root cause." },
+      { done: false, text: "Track JDT LS's conflicting import proposal for a same-file class in broken source; rerun the strict live probe when evaluating server updates." },
+    ],
+  },
+  {
     title: "Editing",
     items: [
       { done: true, text: "Smart backspace — clear the indent in one press / jump back on a blank auto-indented line" },
