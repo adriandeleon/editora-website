@@ -6,6 +6,16 @@ export type RoadmapSection = { title: string; items: RoadmapItem[] };
 
 export const roadmap: RoadmapSection[] = [
   {
+    title: "Native Image experiment",
+    items: [
+      { done: true, text: "Isolate the StaticFX profile and add a shared real-editor stress/benchmark probe." },
+      { done: true, text: "Offer a separately labelled, best-effort Linux x64 Native Image release tarball with a bounded actual-application smoke test and separate user settings." },
+      { done: false, text: "Investigate the measured native tokenization/input-tail regressions and intermittent desktop probe stalls." },
+      { done: false, text: "Complete native desktop, peripheral-feature and long-session qualification before considering default distribution; see the measured experiment." },
+      { done: false, text: "Resolve the dynamic Java-plugin closed-world incompatibility only through a separate design, if a native product is pursued." },
+    ],
+  },
+  {
     title: "Controller decomposition",
     items: [
       { done: true, text: "Extract exports, editing, templates, settings, run configurations, navigation, previews, Git actions, chrome, MCP operations, file workflows, sessions, test navigation and install prompts into owners." },

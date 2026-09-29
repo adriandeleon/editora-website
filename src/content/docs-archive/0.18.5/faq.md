@@ -34,14 +34,9 @@ Windows-on-ARM runs the x64 installer under emulation.
 
 ## Do I need Java installed?
 
-Not for the regular platform installers; they bundle their own Java runtime.
-The portable fat jar does need JDK 25 (`java -jar`). Running a Java file from
-the gutter ▶ needs JDK 25 or newer, either selected in Settings as the Default
-JDK or available as `java` on your `PATH`.
-
-The separately labeled experimental GraalVM Native Image archives do not bundle
-a JVM. They use separate settings and have feature and performance limitations;
-the regular installers remain the recommended downloads.
+Not for the native installers; they bundle their own Java runtime. The portable
+fat jar does need JDK 25 (`java -jar`). Running a Java file from the gutter ▶
+also needs JDK 25 on your `PATH`.
 
 ## The installer says it's from an unidentified developer.
 

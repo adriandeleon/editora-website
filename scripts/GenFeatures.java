@@ -341,7 +341,7 @@ Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets) liv
         "Run files & main classes",
         "Run a script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
         """
-A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), a **Python** script, or a **shell** script.
+A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, or a **shell** script. Compact Java and Python files can run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`.
 
 It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
 
@@ -732,7 +732,7 @@ It builds on proper CSV/TSV syntax highlighting. Toggle rainbow and the grid in 
 """),
     new Feature("ai", CE, 0, true,
         "AI assistance",
-        "One-shot AI actions (explain, rewrite, commit message, inline completion) and an embedded coding agent over ACP. Anthropic or a local model. Off by default.",
+        "One-shot AI actions (explain, rewrite, commit message, inline completion) and an embedded coding agent over ACP. Anthropic, Codex, or a local model. Off by default.",
         """
 Editora has optional AI, off by default and yours to configure.
 
@@ -745,7 +745,7 @@ Editora has optional AI, off by default and yours to configure.
 
 **AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. The agent is a user-installed external tool, never bundled.
 
-**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings; models configurable) or switch to **Local (OpenAI-compatible)** to run everything against LM Studio, Ollama, or any local server, with no API key. Enable it under Settings → AI. See the [AI guide](/docs/ai).
+**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
 """),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",

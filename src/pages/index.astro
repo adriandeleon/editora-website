@@ -454,6 +454,11 @@ const platforms = [
         Installers are currently unsigned. On macOS, right-click the app and
         choose <em>Open</em> the first time.
       </p>
+      <p class="note">
+        The 0.18.6 release also has <a href={`${repo}/releases/tag/v${version}`}>experimental native archives</a>
+        for Linux x64 and macOS x64/arm64. They use separate settings and have
+        feature and performance limitations; the installers above are the regular builds.
+      </p>
     </section>
 
     <section id="quickstart" class="section">
@@ -476,7 +481,7 @@ const platforms = [
 ./mvnw javafx:run
 
 <span class="tok-comment"># Build a native installer (DMG / MSI / DEB)</span>
-./mvnw <span class="tok-flag">-Pdist</span> package
+./mvnw clean <span class="tok-flag">-Pdist</span> package
 
 <span class="tok-comment"># Build a self-contained runnable jar</span>
 ./mvnw <span class="tok-flag">-Pfatjar</span> package
