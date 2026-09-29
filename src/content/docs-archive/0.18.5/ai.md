@@ -55,18 +55,6 @@ Pick a provider in Settings:
 - **Local (OpenAI-compatible)**: point every AI feature at **LM Studio**,
   **Ollama**, or any local OpenAI-compatible server, with no API key and a
   configurable endpoint.
-- **LM Studio / Bionic**: a separate local provider with its own endpoint,
-  action model, inline model, and optional token. It can also supply the model
-  for the **OpenCode** ACP agent preset without writing OpenCode config files.
-- **Codex**: use the user-installed `codex-acp` adapter and an existing Codex
-  login for Explain, Rewrite, and commit-message generation. These actions use
-  separate text-only sessions and leave your Agent chat intact. Inline
-  completion is unavailable with this provider; its API key and endpoint
-  settings are ignored.
-
-When AI Actions are enabled and connected, the editor right-click menu includes
-**AI Actions → Explain** and **Rewrite**. Generated `explanation.md` buffers
-show the provider and response model when the server reports it.
 
 Each provider has its **own** stored key: the Settings key field shows only the
 selected provider's, and a key set for one provider is never sent to another's

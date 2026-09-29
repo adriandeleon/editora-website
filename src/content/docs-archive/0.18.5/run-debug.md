@@ -7,12 +7,11 @@ order: 1
 
 ## Running files
 
-You can run compact Java and Python files with [language services](/docs/lsp)
-disabled. A green ▶ appears in the gutter of a runnable file:
+With the [LSP feature](/docs/lsp) enabled, a green ▶ appears in the gutter of a
+runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
-  `void main`) or an extensionless Java file with a `java --source 25+`
-  shebang,
+  `void main`),
 - a **Python** script (the ▶ sits on the `if __name__ == "__main__"` guard), or
 - a **shell** script (only when the Bash language server is enabled).
 
@@ -29,16 +28,14 @@ non-Java trace.
 
 Pass per-file **program arguments** with `file.runWithArgs` (remembered across
 runs and reused by the debugger), and repeat the last run with `run.rerun`.
-Running a Java file needs JDK 25 or newer. Editora uses the selected Default JDK
-when one is configured, or `java` on your `PATH`, and checks that exact launcher
-before running. An extensionless shebang can request a newer source release.
+Running a Java file needs JDK 25 on your `PATH`; Editora preflights this and
+reports a clear message if it finds an older Java.
 
 For Maven projects, **Settings → Languages & Tools → Build Tools → Default
 JDK** selects the toolchain used by Run, Debug, Maven classpath resolution,
 Maven tasks, and before-launch steps. Installed JDKs are discovered from the
 usual platform locations and common version managers. A run configuration's
-**JDK** field can inherit that choice or override it for one configuration. The
-Default JDK also applies to standalone Java Run and Debug.
+**JDK** field can inherit that choice or override it for one configuration.
 
 ## Running a project's main class
 
@@ -173,12 +170,6 @@ Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form for all three: a **condition**, a **log message**
 (which turns it into a logpoint that logs and never suspends), and an
 **enabled** toggle. Breakpoints in closed files are honored too.
-
-Compact `.java` sources and extensionless Java `--source 25+` shebang files can
-be debugged with breakpoints, stepping, and local variables. Editora maps
-breakpoints and stack frames to the original file and removes its temporary
-compiled files after the session. Java debugging needs the Java language server
-and debug adapter described below.
 
 When the Debug panel has the keyboard (it shows an active-focus highlight),
 **gdb-style single keys** drive the session: `n` to step over, `s` to step into,

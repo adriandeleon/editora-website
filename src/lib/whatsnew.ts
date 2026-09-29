@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Autosave", detail: "Now recognizes a preceding application save even when its UI acknowledgment arrives before the autosave worker checks the file, while still…" },
-  { title: "Improved continuous Java editing: completion owns Enter/Tab correctly, member triggers…", detail: "Now supports overload navigation across multiline calls; nested method snippets restore outer arguments, and completion with eager or safely rebased…" },
-  { title: "Added a global Maven JDK selector and per-project run-configuration override. Run, debug,…", detail: "Now use the selected toolchain; installed JDK discovery includes standard platform locations plus SDKMAN, asdf, mise, Jabba, and JetBrains-managed…" },
-  { title: "Running a file or saved configuration", detail: "Now always opens and focuses the Run tool window; pressing Run while a program is already active brings its existing console back into focus and…" },
-  { title: "Run, build, and external-tool console action buttons", detail: "Now retain their full labels when a long command line fills the status header instead of collapsing to ellipses." },
-  { title: "Save, Save As, close, reload, and Git working-tree operations", detail: "Now revalidate exact document and disk preimages, protect pending writes across windows, and preserve newer edits or external changes instead of…" },
-  { title: "LSP document renames, resource edits, saves, diagnostics, and navigation", detail: "Now retain URI/version/session identity through asynchronous delivery; stale or unverifiable edits are refused, and negotiated save text reflects the…" },
-  { title: "Diff and merge Result drafts participate in tab/window close protection. Binary or…", detail: "Diff and merge Result drafts participate in tab/window close protection. Binary or degraded comparisons stay read-only, stale local/index hunks are…" },
+  { title: "Fixed Git output colors being overridden by the active editor theme; diffstat additions…", detail: "Now render in green and red while file links retain their accent color." },
+  { title: "Git output", detail: "Now colors diffstat additions and deletions separately, emphasizes file and change totals, and highlights create/delete modes and remote update…" },
+  { title: "Running a standalone compact source with an unreadable Java launcher", detail: "Now has its own status message, leaving the project main-class setup hint intact. Message-catalog tests reject duplicate keys." },
+  { title: "Local File History", detail: "Now queues blob cleanup before acknowledging a durable index write, so a later pre-delete snapshot cannot lose its recovery body to an older cleanup…" },
+  { title: "Markdown preview tables", detail: "Now account for cell padding when sizing columns, so compact values stay readable instead of wrapping or collapsing." },
+  { title: "Anchored popups, including the Welcome screen's Git menu,", detail: "Now stay within the window bounds." },
+  { title: "Tagged releases", detail: "Now attempt experimental Linux x64, macOS x64/arm64, and Windows x64 GraalVM Native Image archives alongside the usual JVM packages. Each extracted…" },
+  { title: "Added an isolated experimental StaticFX/GraalVM native build profile, a real EditorBuffer…", detail: "Added an isolated experimental StaticFX/GraalVM native build profile, a real EditorBuffer correctness/stress probe, and JVM/AOT/native measurement…" },
 ];
