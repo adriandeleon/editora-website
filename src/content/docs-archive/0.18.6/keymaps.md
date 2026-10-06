@@ -23,13 +23,7 @@ The four non-Emacs maps are non-modal: they're just different chord-to-command
 maps over the same command ids, so switching changes accelerators without
 stranding any feature. Switching is **live, with no restart**, and every chord
 hint updates with it: toolbar tooltips, the command palette, tool-window
-tooltips, and the Welcome shortcuts. Hints are written in the notation of the
-active keymap and platform: `Ctrl+Shift+P`, `⇧⌘P`, or Emacs notation in the
-Emacs keymap.
-
-Undo and toggle-comment also have chords that can be typed on keyboards where
-`/` is a shifted key: `C-x u`, `C-_`, and Ctrl+Shift+7 undo in the Emacs keymap,
-and Ctrl+Shift+7 or the numpad slash toggle a comment in the other keymaps.
+tooltips, and the Welcome shortcuts.
 
 On macOS the non-Emacs keymaps use ⌘ wherever the
 [keybindings reference](/keybindings) shows Ctrl. Emacs uses Control on every
@@ -47,9 +41,8 @@ filter. For any command:
 
 Changes apply live across all windows. Your overrides are saved in
 `settings.json` (the `keymap` name plus per-command entries) and layer on top of
-the active keymap, so you only store what you change. Overrides are kept **per
-keymap**: switching keymap does not unbind unrelated keys, and switching back
-restores the rebinds you made there. Overrides are also stored **per platform**, since a chord is
+the active keymap, so you only store what you change. Switching keymaps keeps
+your overrides on top. Overrides are stored **per platform**, since a chord is
 modifier-specific (⌘ on macOS, Ctrl elsewhere), so a config synced between a Mac
 and a Windows or Linux machine binds each OS's own chord instead of both.
 

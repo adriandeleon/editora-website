@@ -14,11 +14,6 @@ Both rasterize to PNG natively, so there's no headless browser, and results are
 cached by source hash so an unchanged diagram isn't re-rendered. Zoom resizes the
 image.
 
-PlantUML runs with `PLANTUML_SECURITY_PROFILE=SANDBOX`, so a diagram cannot
-`!include` local files or URLs. Export that variable yourself before starting
-Editora to choose another profile. The renderers also start without
-secret-looking environment variables.
-
 ## Export
 
 Export a diagram to **SVG**, **PNG**, or **PDF** with `diagram.export` (also on

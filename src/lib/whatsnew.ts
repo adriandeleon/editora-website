@@ -4,12 +4,12 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Fixed Git output colors being overridden by the active editor theme; diffstat additions…", detail: "Now render in green and red while file links retain their accent color." },
-  { title: "Git output", detail: "Now colors diffstat additions and deletions separately, emphasizes file and change totals, and highlights create/delete modes and remote update…" },
-  { title: "Running a standalone compact source with an unreadable Java launcher", detail: "Now has its own status message, leaving the project main-class setup hint intact. Message-catalog tests reject duplicate keys." },
-  { title: "Local File History", detail: "Now queues blob cleanup before acknowledging a durable index write, so a later pre-delete snapshot cannot lose its recovery body to an older cleanup…" },
-  { title: "Markdown preview tables", detail: "Now account for cell padding when sizing columns, so compact values stay readable instead of wrapping or collapsing." },
-  { title: "Anchored popups, including the Welcome screen's Git menu,", detail: "Now stay within the window bounds." },
-  { title: "Tagged releases", detail: "Now attempt experimental Linux x64, macOS x64/arm64, and Windows x64 GraalVM Native Image archives alongside the usual JVM packages. Each extracted…" },
-  { title: "Added an isolated experimental StaticFX/GraalVM native build profile, a real EditorBuffer…", detail: "Added an isolated experimental StaticFX/GraalVM native build profile, a real EditorBuffer correctness/stress probe, and JVM/AOT/native measurement…" },
+  { title: "Editing", detail: "The editor's right-click Cut and Copy are disabled when there are several carets and nothing is selected at any of them, whatever 'copy/cut the line…" },
+  { title: "Highlighting, folding and outline", detail: "Lines longer than 20,000 characters are not syntax-highlighted (the rest of the file is), and a single line gets at most one second of tokenizing.…" },
+  { title: "Files, encodings and saving", detail: "A file of 5 MB or more that would not fit in the memory that is left (typically a second or third very large file) opens as a read-only slice showing…" },
+  { title: "Both panes share one undo history", detail: "Undo in one pane no longer re-applies what the other pane just undid, an edit made in one pane is undone once from the other, and undo moves the…" },
+  { title: "Keyboard, mouse and accessibility", detail: "A right-click outside the selection moves the caret to the click and drops extra carets, so Paste, Run/Debug Test, Run/Debug Main, the…" },
+  { title: "Updated AtlantaFX to 3.0.0", detail: "The scrollbar thumb of a long file or list is no longer a 4px sliver in any theme, and menu rows keep the same height in every theme (Primer, Nord…" },
+  { title: "Settings", detail: "Settings schema 108, for the Debug console switch above; the migration changes nothing else." },
+  { title: "An agent reply appears as it streams (first text at once, then about eight updates a…", detail: "No longer gets slower to render as it grows." },
 ];

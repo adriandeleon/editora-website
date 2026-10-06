@@ -16,8 +16,7 @@ OS-detected button on the [home page](/)):
 
 - **macOS**: `.dmg` (Intel & Apple Silicon)
 - **Windows**: `.msi` (x64)
-- **Linux**: `.deb`, `.rpm`, or `.AppImage` (x64), or a `.tar.gz` with an
-  `install.sh` (x64 & arm64)
+- **Linux**: `.deb` (x64 & arm64)
 
 Installers bundle their own Java runtime, so there's nothing else to install.
 They're currently **unsigned**, so on first launch macOS Gatekeeper

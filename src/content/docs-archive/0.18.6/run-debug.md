@@ -174,44 +174,6 @@ Breakpoints live in a leftmost gutter strip and are saved per project.
 (which turns it into a logpoint that logs and never suspends), and an
 **enabled** toggle. Breakpoints in closed files are honored too.
 
-While a session runs, a breakpoint the debugger has **not verified** (its code
-is not loaded yet, or the line has no code) is drawn as a hollow ring, with the
-debugger's explanation on hover. Every breakpoint is hollow from the start of
-the session until the debugger answers, and the markers return to normal when
-the session ends.
-
-When the panel is wide enough, the call stack, variables, and console sit side
-by side; they stack when it is narrow. The call stack lists the innermost 1,000
-frames when the adapter supports partial stacks. The console is cleared at each
-launch and kept after the session ends, and its right-click menu has **Clear
-Console**. **Restart** is disabled for a debugger attached to a test or build
-run (its tooltip says why); a session started with *Debug → Attach* can still be
-restarted.
-
-### Program input in the Debug console
-
-A debugged **Java** program can read its standard input from the Debug console.
-The field does one of two things, and its prompt says which:
-
-- While the program **runs**, Enter sends the line to the program (an empty
-  line counts).
-- While it is **paused**, Enter evaluates an expression, as before.
-
-End the input with `Ctrl+D` in the field, the console's right-click menu, or
-*Debug: End Program Input (EOF)* (`debug.endProgramInput`).
-
-In this mode Editora starts the Java program itself rather than leaving it to
-the debugger, and stops it on Stop, Restart, a new launch, a failed launch, or
-closing the window. The session ends when the program exits, after its last
-output, and the console reports the exit code. Lines written to stdout and
-stderr at almost the same moment can appear in either order.
-
-It is **on by default**. The switch is under **Settings → Debugging → Java**
-(or *Debug: Toggle Program Input in the Debug Console*,
-`debug.toggleProgramConsole`) and takes effect at the next launch. Attached
-sessions, Python, and JavaScript are unaffected. It has not yet been confirmed
-on Windows.
-
 Compact `.java` sources and extensionless Java `--source 25+` shebang files can
 be debugged with breakpoints, stepping, and local variables. Editora maps
 breakpoints and stack frames to the original file and removes its temporary

@@ -41,10 +41,7 @@ opener.
 
 **Smart backspace** removes a whole indent level in one press. On a blank,
 auto-indented line, a single Backspace jumps back to the end of the previous
-line. The indent unit (tabs or spaces) is inferred from the file, including its
-width: a 2-space file gets 2-space Tab, Enter, and Shift-Tab whatever the tab
-size setting says. A tab character is drawn at the configured tab size (the
-setting or `.editorconfig`), 4 columns by default.
+line. The indent unit (tabs or spaces) is inferred from the file.
 
 ## Brackets and quotes
 
@@ -122,17 +119,7 @@ Fill re-wraps a paragraph to the fill column (70 by default), repeating any
 comment or quote prefix on each wrapped line. **Auto Fill mode**
 (`view.toggleAutoFill`, off by default) does it as you type, breaking the line
 when it passes the fill column. It is prose-only, so it never wraps code, and
-each wrapped line keeps the paragraph's indent. In code languages, Fill
-Paragraph and Fill Region fill **comments only** (line comments, and block
-comments that start a line); they never join code statements.
-
-Move Line Up/Down and Duplicate Line act on **every line of a selection**, not
-only the caret's line.
-
-A **right-click outside the selection** moves the caret to the click and drops
-extra carets, so Paste, Run/Debug, the language-server items, spelling
-suggestions, and Add Bookmark act on the place you clicked. A right-click inside
-a selection leaves it alone.
+each wrapped line keeps the paragraph's indent.
 
 **Subword navigation** moves and deletes by camelCase and snake_case parts:
 stepping through `getUserName` lands on `get`, `User`, `Name`, and acronyms split
@@ -240,21 +227,13 @@ bytes as hex, and *View: Open as Text* switches back.
 Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident.
 Typing and edit commands are blocked, while highlighting, folding, search, and
 copy keep working. A file that isn't writable on disk opens read-only
-automatically, and is never replaced silently: Save asks first (once per file),
-and auto-save reports that it cannot write. A Word-style **View Mode banner** docks above the editor with an
+automatically. A Word-style **View Mode banner** docks above the editor with an
 *Enable Editing* button when the file is writable, and while read-only,
 **Space** pages down and **Backspace** pages up like a pager.
 
 For existing local files, Save writes a staged replacement and only swaps it
 into place after the complete new content is ready. If Editora cannot create a
-safe staging file, Save fails without touching the existing bytes. A
-hard-linked file, or one owned by another user, is written in place instead, so
-every name of the file gets the new content and its ownership is kept.
-
-A file opened through a stand-in encoding (an unknown legacy encoding such as
-Shift-JIS or GBK) refuses a save that would re-encode it. If you type a
-character outside the stand-in charset, the status bar names the character and
-its line, and the file can be saved again once it is removed.
+safe staging file, Save fails without touching the existing bytes.
 
 ## Whitespace and the column ruler
 

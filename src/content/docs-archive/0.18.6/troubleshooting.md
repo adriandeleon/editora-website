@@ -97,14 +97,7 @@ session history of the transient status-bar messages.
 
 Editora aims to stay responsive on large files. Highlighting and the minimap
 turn off automatically at about 5 MB, and files of about 50 MB open read-only
-with a capped load. A file of 5 MB or more that would not fit in the memory that
-is left (typically a second or third very large file) opens the same way, as a
-read-only slice of its first part; close other large tabs and reopen it to edit
-it. Lines longer than 20,000 characters are not syntax-highlighted, though the
-rest of the file is. Find in a very large file searches in the background and
-holds at most 100,000 matches around the current one, so the count can read
-"N of 100,000+"; Next, Previous, Replace, and Replace All still reach every
-match. If editing or scrolling feels heavy:
+with a capped load. If editing or scrolling feels heavy:
 
 - Check whether a language server is busy (the LSP loading bar).
 - Try **Simple UI mode** (`view.toggleSimpleMode`), which drops the gutter,
