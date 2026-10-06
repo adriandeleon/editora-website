@@ -13,12 +13,8 @@ typing burst. It's finer-grained than save-based
 Up to **50** checkpoints are kept, within a memory budget — whichever binds
 first. Keeping 50 whole-document snapshots isn't a memory bound when the
 documents differ in size by three orders of magnitude, so an ordinary file still
-gets all 50 while a very large one keeps fewer, deeper-in-time ones. The budget
-is shared by **all open files together** (64 million characters), and the oldest
-checkpoints go first. Closing a tab releases its checkpoints straight away.
-
-Ordinary undo is bounded the same way: a document keeps up to 300 undo steps,
-and no more than 64 million characters of undo text.
+gets all 50 while a very large one keeps fewer, deeper-in-time ones. Closing a
+tab releases its checkpoints straight away.
 
 ## The popup (recommended)
 

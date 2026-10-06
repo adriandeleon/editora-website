@@ -254,11 +254,6 @@ JDK 17 server and another a JDK 25 one: neither of you has to remember to flip a
 setting when switching between them. See
 [projects](/docs/workspace#settings-a-project-can-commit).
 
-Because those commands are programs that run on your machine, they apply only
-to a **trusted folder**. In an untrusted folder the project's server commands
-(and any attempt to re-enable a server you switched off) are ignored until you
-run *LSP: Trust This Project's Server Settings* (`lsp.trustProjectSettings`).
-
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
@@ -282,9 +277,7 @@ and activates without a restart. Editora never installs the underlying runtimes
 
 For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
 whether it is hoisted in the workspace or installed alongside the server by
-Editora. A TypeScript SDK inside the project is loaded only from a trusted
-folder; otherwise Editora uses the SDK beside the server, or does not start the
-server until you trust the folder. The trust prompt lists the SDK.
+Editora.
 
 ## Workspace roots and lifetime
 

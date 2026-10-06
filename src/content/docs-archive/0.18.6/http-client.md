@@ -43,8 +43,7 @@ The client is close to IntelliJ's HTTP Client:
 - **Request chaining** references an earlier request's response, so a login can
   feed a token into the next call.
 - **Multipart** and external-file bodies are supported, with automatic URL
-  encoding. Body files and `>>` response targets stay inside the request's
-  folder; a symlink that leads out of it is refused.
+  encoding.
 - **Basic / Digest auth** shorthand, per-request directives, and
   response-to-file redirects.
 
@@ -54,7 +53,6 @@ The client is close to IntelliJ's HTTP Client:
 | --- | --- | --- |
 | Run the request at the caret | `http.runRequest` | (gutter ▶) |
 | Run every request in the file | `http.runFile` | (palette) |
-| Cancel the running request | `http.cancelRequest` | (Cancel button) |
 | Select environment | `http.selectEnvironment` | (palette) |
 
 The response appears as the `.http` file's own **preview**, in the same

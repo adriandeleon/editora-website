@@ -37,10 +37,7 @@ rather than going blank.
 Zoom with the `−` / `+` control or Ctrl+wheel. In Preview mode, **Space** /
 **PageDown** and **Backspace** / **PageUp** scroll the page, and a right-click
 menu offers Select All, Copy, Export to PDF, and Print. A **link in the preview
-is clickable** and shows a hand cursor. `http`, `https`, and `mailto` links open
-in your system browser or mail client; a relative or `file:` link opens inside
-Editora when it points at a file in the project or the document's folder. Any
-other link is refused with a status message.
+is clickable**, it shows a hand cursor and opens in your system browser.
 
 ## The format bar
 
@@ -127,8 +124,7 @@ Export a diagram to SVG, PNG, or PDF with `mermaid.export`.
 On any `.html` / `.htm` / `.xhtml` file, a floating globe button opens it in a
 detected browser (Safari, Chrome, Firefox, Edge, or the system default), served
 over a tiny loopback-only web server with live reload as you type. Sibling CSS,
-JS, and images load from disk. The server answers only its own browser tab and
-refuses to serve a home directory or a drive root.
+JS, and images load from disk.
 
 It's **off by default**; enable it in **Settings → HTML Preview**. The file must
 be saved so its assets resolve, and remote (SFTP) files are excluded. Commands:

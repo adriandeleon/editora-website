@@ -25,9 +25,6 @@ last saved the file, Editora asks before overwriting it.
 success it mounts the remote folder as the Project tree and opens the Project
 tool window. Connections are remembered in `connections.json`.
 
-**Disconnect** closes every connection of the window, not only the mounted one.
-When remote tabs have unsaved changes it names them and asks first.
-
 ## Saved sites
 
 Saved sites have three surfaces beyond the palette picker:
@@ -65,21 +62,6 @@ Features that run a local process or read sibling files on the local disk are
 gated off for remote files: language servers, debugging, running, the HTTP
 client, Git, HTML live preview, and external-change polling. Recent files round-
 trip remote URIs and reconnect once the connection is open.
-
-## Saving
-
-- **Save** writes back to the server, asking first when the server copy changed
-  since you opened or last saved it.
-- A file with **no write bit** on the server opens in
-  [View mode](/docs/editing#read-only-and-view-mode). It is never replaced
-  silently: Save asks first, and auto-save does not write it.
-- **Save As** on a remote tab writes a **local copy**, and the tab becomes that
-  local file. This also works after the connection is gone, so unsaved remote
-  work can always be kept.
-
-Personal notes on a remote file are stored under the path you opened it by, not
-the target of a symlink. Notes made in an earlier version on a file opened
-through a symlink may no longer be found.
 
 ## Behind the scenes
 

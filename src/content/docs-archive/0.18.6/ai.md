@@ -40,10 +40,6 @@ bundled**.
 - Its edits to open files apply as **undoable buffer edits** that you review and
   save.
 - Each action that needs permission pops a dialog.
-- Its file reads and writes are confined to the session folder, and can never
-  touch Editora's own configuration.
-- Replies appear as they stream. Remote images in a reply are not loaded; the
-  alt text and URL are shown instead.
 
 Commands: `tool.agent` (the tool window), `agent.newSession`,
 `agent.resumeSession`, `agent.selectClient`, `agent.selectMode`,

@@ -99,7 +99,13 @@ void flushNews(List<News> items, String cur, Pattern title) {
     if (m.matches()) {
         items.add(new News(inlineNews(m.group(1)), truncate(inlineNews(m.group(2)), 150)));
     } else {
-        int now = cur.indexOf(" now ");
+        // Split on "now"/"no longer" only inside the first sentence: a later one
+        // belongs to some other clause and would leave a detail without a subject.
+        int stop = cur.indexOf(". ");
+        String first = stop > 0 ? cur.substring(0, stop + 1) : cur;
+        String rest = stop > 0 ? cur.substring(stop + 2) : "";
+        int now = first.indexOf(" now ");
+        int noLonger = first.indexOf(" no longer ");
         if (now > 0) {
             String head = cur.substring(0, now);
             String tail = cur.substring(now + 5);
@@ -110,13 +116,14 @@ void flushNews(List<News> items, String cur, Pattern title) {
                 tail = "Now " + tail;
             }
             items.add(new News(truncate(inlineNews(head), 90), truncate(inlineNews(tail), 150)));
-        } else if (cur.indexOf(" no longer ") > 0) {
-            int noLonger = cur.indexOf(" no longer ");
+        } else if (noLonger > 0) {
             String head = cur.substring(0, noLonger);
             String tail = "No longer " + cur.substring(noLonger + 11);
             items.add(new News(truncate(inlineNews(head), 90), truncate(inlineNews(tail), 150)));
         } else {
-            items.add(new News(truncate(inlineNews(cur), 90), truncate(inlineNews(cur), 150)));
+            // No verb to split on: the first sentence is the title, what follows the detail.
+            String head = first.endsWith(".") ? first.substring(0, first.length() - 1) : first;
+            items.add(new News(truncate(inlineNews(head), 90), truncate(inlineNews(rest), 150)));
         }
     }
 }
@@ -153,28 +160,64 @@ List<News> parseWhatsNew(String md) {
     // (and unshipped [Unreleased] notes never leak into the teaser).
     String section = newestReleaseSection(md);
     // Within that section, lead with "### Added" (features/highlights) when
-    // present, so a release's leading "### Fixed"/"### Performance" block doesn't
-    // dominate the landing page; otherwise start at the top of the section.
+    // present, else "### Changed", so a release's leading "### Security"/"### Fixed"
+    // block doesn't dominate the landing page; otherwise start at the top.
     int start = section.indexOf("### Added");
+    if (start < 0) start = section.indexOf("### Changed");
     String body = start >= 0 ? section.substring(start) : section;
     Pattern title = Pattern.compile("^\\*\\*(.+?)\\*\\*\\s*(?:[—–-]+\\s*)?(.*)$");
-    List<News> items = new ArrayList<>();
+    // A changelog may group its entries by area: a top-level "- **Area**" bullet
+    // with the real entries nested under it. Each area is one group; an ungrouped
+    // entry is a group of its own. The teaser then takes the first entry of every
+    // group before the second of any, so one long area doesn't fill it.
+    List<List<String>> groups = new ArrayList<>();
+    List<String> areas = new ArrayList<>(); // parallel to groups; null for an ungrouped entry
+    boolean inArea = false;
     String cur = null;
     for (String raw : body.split("\n", -1)) {
         raw = stripCr(raw);
         if (raw.matches("- .*")) {
-            flushNews(items, cur, title);
+            if (cur != null) groups.getLast().add(cur);
             cur = raw.replaceFirst("^- ", "").trim();
-        } else if (cur != null && raw.matches("\\s+\\S.*") && !raw.matches("\\s*[-*].*")) {
+            inArea = cur.matches("\\*\\*[^*]+\\*\\*");
+            groups.add(new ArrayList<>());
+            areas.add(inArea ? cur.substring(2, cur.length() - 2) : null);
+            if (inArea) cur = null;
+        } else if (raw.matches("\\s+- .*")) {
+            if (cur != null) groups.getLast().add(cur);
+            // Outside an area, a nested bullet is detail of its parent: not an entry.
+            cur = inArea ? raw.replaceFirst("^\\s+- ", "").trim() : null;
+        } else if (cur != null && raw.matches("\\s+\\S.*")) {
             cur = cur + " " + raw.trim(); // wrapped continuation
         } else if (raw.matches("#{2,3}\\s.*") || raw.startsWith("[Unreleased]:")) {
-            flushNews(items, cur, title);
+            if (cur != null) groups.getLast().add(cur);
             cur = null;
+            inArea = false;
         }
-        if (items.size() >= 8) break;
     }
-    flushNews(items, cur, title);
-    return items.size() > 8 ? items.subList(0, 8) : items;
+    if (cur != null) groups.getLast().add(cur);
+    List<News> items = new ArrayList<>();
+    for (int round = 0; items.size() < 8; round++) {
+        boolean any = false;
+        for (int i = 0; i < groups.size(); i++) {
+            List<String> g = groups.get(i);
+            if (round >= g.size() || items.size() >= 8) continue;
+            any = true;
+            String entry = g.get(round);
+            int stop = entry.indexOf(". ");
+            int lead = stop > 0 ? stop : entry.length();
+            int verb = Math.max(entry.indexOf(" now "), entry.indexOf(" no longer "));
+            // An opening sentence too long for a title, with no verb to split it on,
+            // reads better under its area name than cut off mid-clause.
+            if (areas.get(i) != null && lead > 90 && (verb < 0 || verb > lead)) {
+                items.add(new News(inlineNews(areas.get(i)), truncate(inlineNews(entry), 150)));
+            } else {
+                flushNews(items, entry, title);
+            }
+        }
+        if (!any) break;
+    }
+    return items;
 }
 
 List<ReleaseSeries> releaseSeries(String md) {

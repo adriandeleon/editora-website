@@ -89,10 +89,7 @@ older build never clobbers a newer config.
 ## Export and reset
 
 - **Export Configuration…** (Settings → Advanced, or `config.export`) zips the
-  active config folder into a timestamped archive in your home directory. Local
-  history, `.bak` backups, and installed plugins are included. Runtime files are
-  not: downloaded language servers and debug adapters, `jdtls` workspaces, the
-  instance lock, the MCP endpoint file with its live token, and the session log.
+  active config folder into a timestamped archive in your home directory.
 - **Reset to Defaults** (Settings → Advanced) restores defaults while keeping
   your text zoom and keybinding overrides.
 

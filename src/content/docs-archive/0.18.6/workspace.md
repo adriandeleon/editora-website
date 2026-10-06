@@ -24,11 +24,6 @@ filter that runs a bounded project-wide filename search, per-file-type icons, an
 right-click actions: new file, **new folder**, new from template, rename, reveal,
 open terminal, local history, and Git stage/revert. The **project root has its
 own menu** too (with rename omitted so you can't move the whole project).
-From the keyboard, **F2** renames and **Delete** deletes the selected file, and
-the **Menu key** or **Shift+F10** opens the selected row's context menu (also in
-the Bookmarks, Notes, TODO, Git Log, and Structure tool windows). Renaming or
-moving a file or folder keeps its bookmarks, personal notes, breakpoints, fold
-state, and other per-file settings.
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
@@ -170,10 +165,6 @@ All five are bindable in Settings → Keymaps like any other command.
 Separately from editor groups, you can split the *current file* into two views
 of the same buffer — useful for reading one part while editing another. The two
 can be combined.
-
-Both views share **one undo history**: an edit made in one pane can be undone
-from the other, exactly once, and undo moves the caret of the pane it was issued
-in.
 
 | Split | Command | Default key |
 | --- | --- | --- |
@@ -340,13 +331,6 @@ It mirrors more of IntelliJ's Local History:
   under it that has history, with **deleted files badged**; restore a revision to
   recreate the file. Deleting a file in Editora snapshots it first, so an
   accidental delete is recoverable (for files Editora had opened or edited).
-- History **follows the file**. Renaming or moving a file from the Project tree
-  keeps its revisions, and a file created with **Save As** starts with a copy of
-  the original's history once its first save is recorded (the original keeps its
-  own). The copied revisions count towards the project's size limit.
-- **Deleting history for good**: *Local History: Delete History of Current
-  File…* (`localHistory.purgeFile`) and *Local History: Delete History of
-  Project…* (`localHistory.purgeProject`) remove snapshots permanently.
 
 Restore validates the stored revision and verifies that the file has not
 changed while it was loading. If either check fails, the current file and editor
