@@ -6,7 +6,7 @@ beta: false
 summary: "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in. A <code>&gt;</code>, <code>#</code> or <code>@</code> prefix narrows it when you already know."
 ---
 
-Before Search Everywhere, Editora had five pickers on five chords, and each one made you decide *what kind* of thing you wanted before you could start typing its name. **Search Everywhere** takes the name and searches all of them.
+Editora has five pickers on five chords, and each one makes you decide *what kind* of thing you want before you can start typing its name. **Search Everywhere** takes the name and searches all of them.
 
 - No prefix: commands, project files and symbols together
 - `>` commands only, `#` files only, `@` symbols only. These are VS Code's sigils, chosen because many people already know them.

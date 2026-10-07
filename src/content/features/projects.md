@@ -12,7 +12,7 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 ## Navigate on a canvas
 
-The Project tool window now switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
+The Project tool window switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
 Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** session options preserve the scale and center each newly opened column; either behavior can be disabled independently. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and hidden-file toggle. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
 

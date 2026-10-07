@@ -1,5 +1,5 @@
 ---
-title: "CSV and TSV get first-class support"
+title: "CSV and TSV support"
 description: "Rainbow columns, a field readout, and an editable CSV Grid with sort, filter, and export, plus align/shrink and Markdown-table interop."
 date: 2026-06-28
 ---

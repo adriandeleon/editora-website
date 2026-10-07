@@ -81,7 +81,7 @@ representative of what the exercise turns up:
   of lines away to the wrong occurrence after an edit. It's now marked orphaned,
   which is recoverable, instead of being attached to the wrong place.
 - **Reset to Defaults reset 23 of 181 settings.** It was a hand-written list of
-  setters that stopped being maintained years of features ago, so it silently left
+  setters that stopped being maintained many features ago, so it silently left
   about 87% of your preferences in place, including the AI API key. It's now driven
   off the same properties the settings file is written from, so a new setting is
   covered the day it's added.

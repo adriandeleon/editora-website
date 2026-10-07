@@ -50,7 +50,7 @@ On macOS the non-Emacs keymaps use ⌘ wherever the [keybindings reference](/key
         "Search Everywhere",
         "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in. A <code>&gt;</code>, <code>#</code> or <code>@</code> prefix narrows it when you already know.",
         """
-Before Search Everywhere, Editora had five pickers on five chords, and each one made you decide *what kind* of thing you wanted before you could start typing its name. **Search Everywhere** takes the name and searches all of them.
+Editora has five pickers on five chords, and each one makes you decide *what kind* of thing you want before you can start typing its name. **Search Everywhere** takes the name and searches all of them.
 
 - No prefix: commands, project files and symbols together
 - `>` commands only, `#` files only, `@` symbols only. These are VS Code's sigils, chosen because many people already know them.
@@ -463,7 +463,7 @@ Apply changes with guarded, undoable gutter actions or open an editable Result d
 """),
     new Feature("markdown-preview", DD, 1, false,
         "Markdown preview",
-        "A 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and Export to HTML. Live and theme-matched.",
+        "A 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and export to PDF, HTML, Word, and ODF. Live and theme-matched.",
         """
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
 
@@ -478,7 +478,7 @@ Markdown files get a full editing kit:
 - **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
 - **Export** the preview to PDF, **HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
 
-Zoom with the −/+ control or Ctrl+wheel; right-click to copy, or **export to PDF, HTML, or print**. See the [Markdown guide](/docs/markdown).
+Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print. See the [Markdown guide](/docs/markdown).
 """),
     new Feature("mermaid", DD, 2, false,
         "Mermaid diagrams",
@@ -555,7 +555,7 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 ## Navigate on a canvas
 
-The Project tool window now switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
+The Project tool window switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
 Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** session options preserve the scale and center each newly opened column; either behavior can be disabled independently. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and hidden-file toggle. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
 

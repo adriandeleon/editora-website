@@ -300,7 +300,7 @@ customize, and it is what collapses into the overflow chevron when the window
 gets narrow. The **tail** is pinned to the right end and never overflows, the way an
 IDE pins its run widget. It holds the run-configuration selector with its Run,
 Debug and Stop buttons, the project switcher, Open Folder, the build badges and
-Settings. As a result, those four run controls are not draggable items in
+Settings. As a result, the selector and its Run, Debug and Stop buttons are not draggable items in
 Settings → Toolbar. They are pinned so that a narrow window cannot hide the
 control that starts a run, whereas every icon in the cluster is also reachable
 from the menus and the palette.

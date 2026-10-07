@@ -3,7 +3,7 @@ title: "Markdown preview"
 group: "Docs & diagrams"
 order: 1
 beta: false
-summary: "A 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and Export to HTML. Live and theme-matched."
+summary: "A 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and export to PDF, HTML, Word, and ODF. Live and theme-matched."
 ---
 
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
@@ -19,4 +19,4 @@ Markdown files get a full editing kit:
 - **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
 - **Export** the preview to PDF, **HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
 
-Zoom with the −/+ control or Ctrl+wheel; right-click to copy, or **export to PDF, HTML, or print**. See the [Markdown guide](/docs/markdown).
+Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print. See the [Markdown guide](/docs/markdown).

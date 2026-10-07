@@ -14,7 +14,7 @@ million characters).
 Up to **50** checkpoints are kept, within a memory budget, whichever limit is
 reached first. A count of 50 whole-document snapshots does not bound memory when
 documents differ in size by three orders of magnitude, so an ordinary file
-gets all 50 while a big one keeps fewer, deeper-in-time ones. The budget
+gets all 50 while a big one keeps fewer. The budget
 is shared by **all open files together** (64 million characters), and the oldest
 checkpoints go first. Closing a tab releases its checkpoints straight away.
 

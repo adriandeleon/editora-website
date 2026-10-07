@@ -82,7 +82,7 @@ Pick a **Type** in the project/session-scoped **Run Configurations** window:
 | NPM script | a named `package.json` script via `npm run` |
 
 Script and make configurations need **no project and no language server**.
-Debugging remains Java-only, and says so rather than reporting a confusing Java
+Debugging a run configuration remains Java-only, and says so rather than reporting a confusing Java
 error.
 
 ### The toolbar selector

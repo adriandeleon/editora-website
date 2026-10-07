@@ -1,5 +1,5 @@
 ---
-title: "Editora 0.11.0: start a project, not just open one"
+title: "Editora 0.11.0: start a new project from the editor"
 description: "A New Maven Project wizard, git init from inside the editor, inlay hints that sit where they belong, and typing that stops getting slower the longer you leave the editor open."
 date: 2026-08-11
 version: "0.11.0"

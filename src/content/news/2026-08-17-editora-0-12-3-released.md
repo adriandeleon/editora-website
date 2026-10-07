@@ -1,5 +1,5 @@
 ---
-title: "Editora 0.12.2 and 0.12.3: finishing what the single-instance handoff started"
+title: "Editora 0.12.2 and 0.12.3: fixes for the single-instance handoff"
 description: "Opening a file from your file manager now raises the editor and gives the file a window of its own. Both are fixes to the handoff 0.12.1 introduced."
 date: 2026-08-17
 version: "0.12.3"

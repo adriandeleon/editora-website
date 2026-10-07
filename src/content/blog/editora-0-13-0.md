@@ -1,5 +1,5 @@
 ---
-title: "Editora 0.13.0: whether it matched, or how well"
+title: "Editora 0.13.0: ranking matches instead of filtering them"
 description: "Every picker in the editor filtered on a boolean. Replacing it with a real score involved dynamic programming, a Turkish dotted capital I, and an optimization that reintroduced the bug it was written to avoid. Also, a symbol scanner that under-reports on purpose."
 date: 2026-08-26
 author: Adrián De León
@@ -224,7 +224,7 @@ One more, because it surprised me. Peak memory on a four-file session dropped
 from ~908 MB to ~653 MB by setting a single flag.
 
 The maximum heap was pinned; the *initial* heap never was. The JVM's default for
-it is 1/64 of physical RAM, **clamped up to the maximum heap**. On a large-RAM
+it is 1/64 of physical RAM, **capped at the maximum heap**. On a large-RAM
 machine those two rules meet, and the entire 2 GB heap is committed before the
 application starts, sitting there for the best part of a minute until the
 periodic collector hands it back. The live heap when idle is 63–75 MB.

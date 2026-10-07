@@ -40,7 +40,7 @@ after a short pause. Other word completion won't trigger below a two-character
 prefix.
 
 - **Code buffers** get a popup that merges sources and ranks them: language-server
-  results (when [LSP](/docs/lsp) is on), then snippets, then nothing buried.
+  results (when [LSP](/docs/lsp) is on), then snippets.
   Press **Enter** or **Tab** to accept. Complete result lists filter locally and
   obsolete server requests are cancelled as you keep typing. Accepting a snippet
   starts a tab-stop session; accepting a Java LSP item can safely add its import

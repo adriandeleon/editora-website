@@ -1,5 +1,5 @@
 ---
-title: "Saved remote sites, front and center"
+title: "Saved remote sites"
 description: "Your saved SFTP connections now have a tool window, a Settings page, and a quick-connect list on the Welcome page."
 date: 2026-06-24
 ---
