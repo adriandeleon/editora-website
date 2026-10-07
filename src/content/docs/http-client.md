@@ -3,13 +3,13 @@ title: HTTP client
 description: Send HTTP requests from .http and .rest files, with environments, variables, and request chaining.
 category: Run & debug
 order: 2
-beta: true
 ---
 
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send
 it. It uses the JDK's built-in HTTP client, so there's no external tool to
-install. The HTTP client is **off by default**; enable it in
-**Settings → HTTP Client**.
+install. The HTTP client is **on by default**; its switch is the HTTP Client
+section of **Settings → Languages & Tools → Web** (or
+`view.toggleHttpClient`).
 
 ## Writing requests
 
@@ -33,8 +33,9 @@ Content-Type: application/json
 Substitute `{{var}}` and file-local `@var = value` declarations, plus **dynamic
 variables**: `{{$random.*}}`, `{{$datetime}}` (with date math), `{{$dotenv.X}}`,
 and more. Define named **environments** in `http-client.env.json` alongside the
-file (with a `$shared` section for common values) and pick one in the tool
-window; the choice is remembered per workspace.
+file (with a `$shared` section for common values) and pick one from the
+environment dropdown in the response preview (`http.selectEnvironment` takes
+you to it); the choice is remembered per workspace.
 
 ## Chaining, bodies, and auth
 

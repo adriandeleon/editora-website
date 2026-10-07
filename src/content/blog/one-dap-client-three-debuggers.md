@@ -41,7 +41,7 @@ work, plus a threading one:
   just the launcher; a wrapper script otherwise leaves the real adapter running.
 - **Don't block the reader thread.** When the `initialized` event arrives, you
   fire `setBreakpoints` / `setExceptionBreakpoints` / `configurationDone`. That
-  callback runs on the DAP **reader thread**: so if you `.join()` on those
+  callback runs on the DAP **reader thread**, so if you `.join()` on those
   requests, you deadlock, because the responses can't be read while you're
   blocking the reader. Fire and don't wait.
 

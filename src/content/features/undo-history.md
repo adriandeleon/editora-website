@@ -11,4 +11,4 @@ Editora keeps an in-session **timeline of checkpoints** as you edit, one per typ
 - The **popup** (`undoHistory.jump`, `M-g v`) lists the active buffer's checkpoints, each with a caret-line preview and capture time, and filters as you type. Pick one to jump back to that state (a single undoable restore). It's the fast, keyboard-driven path.
 - The **Undo History tool window** (`M-g u`) shows the same timeline; double-click or Enter to jump back.
 
-It's session-only and disabled for very large files. The tool-window stripe is off by default (the popup is the primary entry point); enable it in Settings → Tool Windows if you want it docked. This complements the **word/line-level undo** granularity, where one `C-z` undoes a word or line rather than a whole burst.
+It's session-only and disabled for very large files. The tool-window stripe is off by default (the popup is the primary entry point); enable it in Settings → Tool Windows if you want it docked. This complements the **word/line-level undo** granularity, where one undo (`C-/`, or `Ctrl+Z` in the other keymaps) undoes a word or line rather than a whole burst.

@@ -24,9 +24,15 @@ That is the hard kind, so it is the kind worth writing down.
 The first one announced itself, barely. Typing latency in a fresh window was
 fine. Typing latency after a few minutes was not, and it never came back.
 
-Measured over 2000 keystrokes: **5.6 ms → 28 ms**, climbing monotonically, with
-no recovery. Restarting fixed it. Nothing in the editing path allocates per
-keystroke in a way that would explain a fivefold degradation, and a profiler
+The fix for this half shipped earlier, in
+[0.11.0](/news/2026-08-11-editora-0-11-0-released). It is told here because
+0.14.0 found the same fault a second time, in the popups, and that find only
+makes sense next to the first.
+
+Measured over 2,000 keystrokes, the median keystroke went from **6.4 ms** at
+500 to **28.4 ms** at 2,000, climbing monotonically, with no recovery.
+Restarting fixed it. Nothing in the editing path allocates per keystroke in a
+way that would explain a degradation like that, and a profiler
 pointed at the JavaFX frame loop rather than at any of my code — which is the
 profiler telling you it is not the work, it is *how much of it there is*.
 
@@ -58,7 +64,8 @@ area.getCharacterBoundsOnScreen(caret, caret + 1)
 A non-empty range takes a completely different path and allocates nothing.
 Receivers went to **+0.03 per keystroke** and latency to a flat ~2 ms.
 
-Then the same fault turned up somewhere I had not thought to look. There are
+Then, in 0.14.0, the same fault turned up somewhere I had not thought to look.
+There are
 about thirty `getCharacterBoundsOnScreen` call sites — every overlay uses one —
 and most pass a real range. But the completion popup, its LSP variant and the
 quick-fix list all anchored themselves to the caret the leaking way, and leaked

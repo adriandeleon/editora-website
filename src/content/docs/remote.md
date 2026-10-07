@@ -43,10 +43,12 @@ passphrase is still prompted each time and is never stored.
 
 ## Authentication
 
-Three methods, tried in this order when set to default: your default `~/.ssh`
-keys, then a specific key file, then a password. Secrets are never stored, only
+Each connection uses the one method you pick in the form: your default `~/.ssh`
+keys, a specific private key file, or a password. Only that method is tried;
+there is no fallback from one to the next. Secrets are never stored, only
 the connection details (host, user, last path, and which method to use). The
-secret you type is wiped from memory as soon as the handshake completes.
+password or passphrase you type is never written to disk, and a password is
+removed from the SSH session as soon as authentication finishes.
 
 ## Host-key verification
 
@@ -63,8 +65,8 @@ notes, preview, and PDF or print.
 
 Features that run a local process or read sibling files on the local disk are
 gated off for remote files: language servers, debugging, running, the HTTP
-client, Git, HTML live preview, and external-change polling. Recent files round-
-trip remote URIs and reconnect once the connection is open.
+client, Git, HTML live preview, and external-change polling. Recent files
+round-trip remote URIs and reconnect once the connection is open.
 
 ## Saving
 

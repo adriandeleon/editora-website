@@ -8,7 +8,7 @@
 // table. Nothing here should claim a win Editora does not have; the single-file
 // result is a tie with VS Code and it says so.
 import Layout from "../layouts/Layout.astro";
-import { repo } from "../lib/editora";
+import { repo, lspServerCount } from "../lib/editora";
 
 const startup = {
   file: [
@@ -39,12 +39,12 @@ const rows = [
   },
   {
     what: "Interface range",
-    editora: "Four modes in one app, from Zen (bare text) to a full IDE, switched by a keystroke",
+    editora: "Four modes in one app, from Zen (bare text) to a full IDE, each a palette command away (Zen and Expert also have a chord in the Emacs keymap)",
     others: "VS Code and IntelliJ both have a Zen/distraction-free mode, but no equivalent spread",
   },
   {
     what: "Language support",
-    editora: "23 language servers, using the ones already installed on your machine",
+    editora: `${lspServerCount} language servers (Beta, switched on in Settings), using the ones already installed on your machine`,
     others: "VS Code's extension marketplace is far larger. IntelliJ's Java and Kotlin tooling is deeper than anything here",
   },
   {
@@ -75,6 +75,8 @@ const rows = [
 
     <h2>Startup, measured</h2>
     <p>
+      These measurements were taken in July&nbsp;2026 on Editora&nbsp;0.9.9, not
+      the current release, and have not been re-run since.
       Both tables are the median of timed runs on one Apple&nbsp;M5 running
       macOS&nbsp;26.4.1, with every editor fully quit between runs and launched
       the same way. The clock starts at launch and stops when the editor window
@@ -138,8 +140,9 @@ const rows = [
     </p>
     <p>
       Waiting for <em>any</em> window would be easier and wrong. IntelliJ puts up
-      a window literally called <code>splash</code> about 1.8s before its editor
-      is ready, and timing that understated it by roughly three seconds. Matching
+      a window literally called <code>splash</code> well before its editor is
+      ready, and timing that would have understated its 5.60s by several
+      seconds. Matching
       on the window title is the only definition that means the same thing across
       an Electron app, a JetBrains IDE, and a JavaFX app.
     </p>

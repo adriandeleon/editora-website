@@ -40,8 +40,10 @@ it doesn't look like a hang — and after that it is incremental: saving a file
 rescans exactly that file, from the text already in memory.
 
 There is no second filesystem watcher; the [project tree](/docs/workspace)
-already runs one. For files changed outside the editor, **Rebuild Symbol Index**
-(`index.rebuild`) scans the project again from scratch.
+already runs one, and a file it reports as changed outside the editor is
+rescanned on its own. When the tree cannot account for a change (many files at
+once, for example), the index is marked stale and the next query walks the
+project again. **Rebuild Symbol Index** (`index.rebuild`) forces that walk.
 
 It honours your `.gitignore` the same way Find in Files and the project tree do,
 skips files over 2 MB, and is bounded (20,000 files, 400,000 symbols) — an index
@@ -166,5 +168,6 @@ Three things work together here, and each is documented where it lives:
 - [**Bookmarks**](/docs/bookmarks-notes) mark places you want to return to
   deliberately, and a **mnemonic** turns one into a single chord.
 
-None of these commands has a default chord — bind the ones you use from
-**Settings → Keymap**.
+Bookmarks have default chords. Back, Forward and Recent Locations do not, and
+neither do Go to Symbol in Project, Peek Definition, Go to Definition in Split
+and Related File — bind the ones you use from **Settings → Keymaps**.

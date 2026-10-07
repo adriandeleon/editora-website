@@ -80,9 +80,12 @@ zero-argument calls and method references do not open an irrelevant signature
 popup.
 
 **Inlay hints** are the server's parameter-name and inferred-type annotations,
-drawn in grey italics after each line. They are **off by default**; turn them on
-in Settings → Code Completion or with `Toggle Inlay Hints`. They cost nothing
-while off.
+drawn in grey italics inline, at the position they describe. They are **off by
+default**; turn them on in Settings → Code Completion or with `Toggle Inlay
+Hints`. By default a parameter-name hint appears only where the argument is a
+literal; **LSP: Set Inlay Hint Filter** (`lsp.setInlayHintMode`) switches
+between that and hints on all arguments. Type hints are never filtered. They
+cost nothing while off.
 
 **Occurrence highlighting** needs no command: rest the caret on a symbol and
 every occurrence in the file gets a subtle wash, with writes (assignments) shaded
@@ -185,8 +188,10 @@ you typed it and moves afterwards if the server disagrees, as a single undo step
 Type straight on through (the very common `;` then Enter) and the document has
 moved past the answer, so the correction is skipped rather than applied late.
 
-Both need the Java language server running, and both can be turned off in
-Settings → Code Completion.
+Both need the Java language server running. Pasted-code imports are **on by
+default**; smart semicolon placement is **off by default**. Switch either in
+Settings → Code Completion, or with `view.togglePasteImports` and
+`view.toggleSmartSemicolon`.
 
 **Re-indent as you type** does the same on `;`, `}` and Enter. It is indentation
 only, never a reformat of the line under you, and the local auto-indent still
@@ -224,7 +229,7 @@ server that keeps crashing is not relaunched forever.
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
 Settings field can override the command per server) and uses it if present.
-Twenty-three servers are supported, plus a Maven-aware `pom.xml` server:
+Twenty-three servers are supported:
 
 - **Java** (`jdtls`), **TypeScript / JavaScript** (`typescript-language-server`),
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**

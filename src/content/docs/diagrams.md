@@ -29,6 +29,6 @@ the preview's right-click menu).
 It's **on by default**, self-gating on detection, so it stays inert until the
 tool is found. Install with your package manager, for example
 `brew install graphviz plantuml`. The toggles and tool paths live under
-**Settings → Languages & Tools → Diagrams**.
+**Settings → Diagrams**.
 
 For diagrams embedded in Markdown, see [Mermaid](/docs/markdown#mermaid-diagrams).

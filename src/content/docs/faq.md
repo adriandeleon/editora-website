@@ -45,9 +45,10 @@ the regular installers remain the recommended downloads.
 
 ## The installer says it's from an unidentified developer.
 
-Installers are currently unsigned. On macOS, right-click the app and choose
-*Open* the first time; on Windows, click "More info → Run anyway" in SmartScreen.
-Signing is on the roadmap. See [Troubleshooting](/docs/troubleshooting).
+Installers are currently unsigned, so macOS Gatekeeper and Windows SmartScreen
+stop the first launch until you allow it. The steps for both are in
+[Troubleshooting](/docs/troubleshooting#a-launcher-is-blocked-on-first-run).
+Signing is on the roadmap.
 
 ## Which features are off by default?
 
@@ -55,8 +56,8 @@ Fewer than you might expect, because there are two different things going on.
 
 **Off until you ask for them** are the features that run code, reach the
 network, or change how the editor works: language servers, debugging, plugins,
-the AI features, the MCP server, and projects. Turn on what you want in
-Settings; each has its own page in these docs.
+the AI features, and the MCP server. Turn on what you want in Settings; each has
+its own page in these docs.
 
 **On, but invisible until their tool exists** is the larger group. Git, GitHub,
 Mermaid, the diagram tools, Typst and the rest are enabled out of the box, and
@@ -65,6 +66,8 @@ Editora finds the command it needs. So a fresh install stays uncluttered
 without you having to switch anything on, and installing `git` or `mmdc` later
 lights the feature up on its own. [Doctor](/features/doctor) shows you exactly
 what was found.
+
+Projects are on from the start too; **Settings → Workspace** turns them off.
 
 ## How do I add a language, snippet, or dictionary word?
 

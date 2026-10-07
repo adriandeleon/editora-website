@@ -3,12 +3,12 @@ title: Git
 description: "The built-in Git integration: branch info, change bars, commits, log, blame, and stash."
 category: Version control
 order: 1
-beta: true
 ---
 
 Editora's Git support shells out to your installed `git`, with no bundled
-library. It's **off by default**; turn it on in **Settings → Git**. If `git`
-isn't installed, the integration stays inert.
+library. It's **on by default**; turn it off in **Settings → Version Control →
+Git** or with `view.toggleGit`. If `git` isn't installed, the integration stays
+inert.
 
 ## Git integration
 
@@ -55,6 +55,25 @@ state before applying their result.
 Editora uses the `git` on your `PATH`; **Git: Set Git Command**
 (`git.setCommand`) points it somewhere else, and a blank value goes back to the
 `PATH` one.
+
+## What runs automatically
+
+Some Git commands run without you asking: status, the gutter diff, log, blame
+and file-content lookups happen as you open files and switch tabs. Editora runs
+those background reads so that a repository's own configuration cannot start a
+program through them. `core.fsmonitor` and hooks are overridden, external diff
+and textconv drivers are switched off, and Git never waits on a terminal prompt.
+A partial clone is also told not to fetch missing objects on demand; that needs
+Git 2.45 or newer (or a 2.39.4–2.44.1 maintenance release), and older versions
+ignore it.
+
+One thing is not covered: filter drivers selected through `.gitattributes`
+(Git LFS, for example) still run when Git has to re-hash a modified file.
+
+Commands you start yourself (commit, checkout, pull, push and the rest) are
+not restricted, so your hooks run as they do in a terminal. A revision name
+that starts with `-` is refused rather than passed to Git, where it would be
+read as an option.
 
 ## Seeing what it ran
 

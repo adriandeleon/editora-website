@@ -146,4 +146,5 @@ Startup also reaches its first frame **~46 ms sooner**, by entering through a
 plain launcher so the configuration can load on a background thread while the
 JavaFX toolkit starts.
 
+There is a [0.13.0 blog post](/blog/editora-0-13-0) on how the ranking works.
 The complete list is on the [What's New](/whats-new) page.

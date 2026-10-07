@@ -2,7 +2,7 @@
 title: "Git integration"
 group: "Git & diff"
 order: 1
-beta: true
+beta: false
 summary: "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, fetch / pull / push + branches, plus a history/log view, inline blame, and stash."
 ---
 
@@ -15,4 +15,4 @@ Native Git that shells out to your installed `git`, no bundled library.
 - Plus a **history / log** view, **inline blame**, and **stash**.
 - **A transcript of what it ran.** The **Output** console has a **Git** tab holding every `git` command Editora ran on your behalf, with its output, exit code and duration. It logs the ones you asked for (commit, push, pull, checkout, stash, clone…) and deliberately not the `status`/`diff` reads it re-runs on every tab switch, which would bury them. It never steals focus — the transcript is waiting when you open the window.
 
-Off by default. Enable it under Settings → Git.
+On by default, and inert until `git` is found. Toggle it under Settings → Git.

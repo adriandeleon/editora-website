@@ -27,8 +27,8 @@ platform.
 ## Automatic modules vs. jlink
 
 Editora is a proper JPMS module, and the `dist` build uses `jlink` to produce a
-trimmed runtime. The problem: several key dependencies: RichTextFX (and its
-reactfx/flowless/undofx/wellbehavedfx friends), tm4e, PDFBox, lsp4j, are
+trimmed runtime. The problem: several key dependencies (RichTextFX and its
+reactfx/flowless/undofx/wellbehavedfx friends, tm4e, PDFBox, lsp4j) are
 **automatic modules**, which jlink refuses to link.
 
 The fix is the `moditect` plugin, which injects generated `module-info`
@@ -44,7 +44,7 @@ strips `META-INF/*.SF,*.RSA,*.DSA,*.EC` from it before linking.
 
 Windows-on-ARM gets the x64 installer (run under emulation), not a native ARM64
 build. A hosted `windows-11-arm` runner exists now, but OpenJFX 25 publishes no
-`win-aarch64` native jar on Maven Central ([JDK-8314064]), so a native ARM64
+`win-aarch64` native jar on Maven Central ([JDK-8314064](https://bugs.openjdk.org/browse/JDK-8314064)), so a native ARM64
 build literally can't link. It's on the list for whenever JavaFX ships those
 natives.
 

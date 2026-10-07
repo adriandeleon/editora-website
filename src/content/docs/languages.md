@@ -58,7 +58,7 @@ snippet, and so on), the matched characters highlighted, deprecated items struck
 through, and a **documentation popup** beside the list. The docs popup shows
 automatically and toggles with `C-q` (*Edit: Toggle Completion Documentation*).
 
-Toggles live in **Settings → Editor**: a master switch plus per-source switches
+Toggles live in **Settings → Code Completion**: a master switch plus per-source switches
 for words (prose), snippets, and Mermaid keywords. Palette equivalents are
 `view.toggleAutocomplete` and the per-source variants.
 

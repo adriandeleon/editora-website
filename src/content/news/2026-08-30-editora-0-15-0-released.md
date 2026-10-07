@@ -5,7 +5,7 @@ date: 2026-08-30
 version: "0.15.0"
 ---
 
-**Editora 0.15.0** is out — **4 new features, 5 changes and 4 fixes**, plus a
+**Editora 0.15.0** is out — **4 new features, 5 changes and 5 fixes**, plus a
 printing path that is roughly twice as fast. Grab it from the
 [releases page](https://github.com/adriandeleon/Editora/releases/latest).
 
@@ -175,4 +175,6 @@ Three smaller things in the same area:
   Language-server and debug-adapter behaviour is unchanged; this is the protocol
   library catching up.
 
-The complete list is on the [What's New](/whats-new) page.
+There is a [0.15.0 blog post](/blog/editora-0-15-0) on four of these bugs and
+what they had in common. The complete list is on the
+[What's New](/whats-new) page.

@@ -7,7 +7,7 @@ tags: [markdown, rendering]
 ---
 
 The easy way to add a Markdown preview is to embed a WebView, render to HTML, and
-call it a day. I didn't want to ship a browser engine inside the editor, it's
+call it a day. I didn't want to ship a browser engine inside the editor: it's
 heavy, it doesn't match the app's theme without fighting it, and it's a second
 rendering model to reason about. So Editora's preview renders **natively to
 JavaFX nodes**, and it aims to look like GitHub.

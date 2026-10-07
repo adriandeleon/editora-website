@@ -1,7 +1,7 @@
 ---
 title: "Editora 0.19.0: faster on large files, safer with untrusted ones"
 description: "Editora 0.19.0 makes highlighting incremental, opens large files without freezing, lets a debugged Java program read its input, and hardens what an opened file, repository, or link is allowed to do."
-date: 2026-10-06T15:12:35-06:00
+date: 2026-10-06
 version: "0.19.0"
 ---
 
@@ -77,7 +77,7 @@ Installers and archives now carry the license texts. The Windows MSI no longer
 registers script types such as `.bat`, `.ps1`, `.py`, and `.sh`, so a
 double-click keeps running the script instead of opening Editora. On Linux, the
 `.deb` no longer discards other applications' defaults, and the tarball's
-`install.sh` leaves a root-owned install.
+`install.sh` now leaves `/opt/editora` owned by root.
 
 This release's experimental Native Image archives cover Linux x64 and macOS x64.
 The regular installers remain the recommended downloads.

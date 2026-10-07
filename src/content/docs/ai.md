@@ -6,10 +6,21 @@ order: 7
 beta: true
 ---
 
-<span class="beta-pill">Beta</span>
-
 Editora has optional AI, **off by default** and entirely yours to configure. It
 comes in two parts: quick one-shot actions, and a full embedded agent.
+
+## Turning it on
+
+1. Turn on **Enable AI** in **Settings → AI** (or `view.toggleAiEnabled`). This
+   master switch gates everything on this page: while it is off, every AI
+   feature is disabled whatever its own setting says.
+2. Turn on the part you want: **AI Actions** (`view.toggleAi`), the **AI
+   Agent** (`view.toggleAgent`), or both.
+3. For AI Actions, choose a [provider](#providers), give it a key or an
+   endpoint, and run **AI: Test Connection** (`ai.testConnection`). For the
+   agent, install an ACP agent and check its command under Settings → AI Agent.
+4. Inline completion has its own switch under AI Actions
+   (`view.toggleAiCompletion`) and stays off until you turn it on.
 
 ## AI actions
 
@@ -79,6 +90,31 @@ provider. And Editora won't attach a key to a plain-`http://` endpoint on anothe
 machine, refusing before it connects and asking you to use `https` or a loopback
 address, so your key never crosses the network in the clear. Plain-http on
 `127.0.0.1` (the usual local-inference path) is unaffected.
+
+A key typed into Settings, for any provider, is saved in `settings.json` in your
+[config folder](/docs/configuration) as plain text. On a shared machine, leave
+the Anthropic field empty and set `ANTHROPIC_API_KEY` in your environment
+instead.
+
+## What leaves your machine
+
+AI Actions send the following to the provider you selected: Anthropic's API,
+the endpoint you configured for a local or LM Studio provider, or the
+`codex-acp` adapter running on your machine for Codex.
+
+- **Generate commit message** sends the staged diff (`git diff --cached`).
+- **Explain** sends the selected text and the file's language name.
+- **Rewrite** sends the selected text, the language name, and your instruction.
+- A diff or selection longer than 120,000 characters is cut at that length.
+- **Inline completion** sends the language name and the text around the caret,
+  up to 4,000 characters before it and 1,000 after, once per typing pause. It
+  only asks when the caret is at the end of a line.
+
+The **AI Agent** gets your prompt. With **Include editor context in prompts**
+on (the default; `view.toggleAgentContext`), each prompt is also prefixed with
+the active file's path, the cursor line, and the first 200 characters of any
+selection. Anything else the agent reads, it requests itself, within the limits
+listed under [AI Agent](#ai-agent).
 
 ## Related
 

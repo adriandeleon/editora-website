@@ -6,8 +6,6 @@ order: 5
 beta: true
 ---
 
-<span class="beta-pill">Beta</span>
-
 Editora can run a small [Model Context Protocol](https://modelcontextprotocol.io)
 server inside the editor, so an LLM agent (Claude Code, for example) can see what
 you're working on and act through Editora's own commands. It's **off by default**
@@ -30,7 +28,7 @@ HTTP server, so there's no new dependency.
 
 ## Enabling and connecting
 
-1. Turn it on in **Settings → MCP Server** (or run **Toggle MCP Server**,
+1. Turn it on in **Settings → MCP Server** (or run **View: Toggle MCP Server**,
    `view.toggleMcp`), and accept the security notice.
 2. A status-bar **MCP** indicator shows while it's running. Click it, or run
    **MCP: Copy Endpoint Command** (`mcp.copyEndpoint`), to copy a ready-to-paste
@@ -44,5 +42,14 @@ The server binds to loopback only (never the network), requires the bearer
 token, stays off until you enable it, and shows a security notice first. Even so,
 `execute_command` can run any command, so only connect agents you trust. Simple
 UI mode turns it off.
+
+`mcp-endpoint.json` holds the endpoint URL **and the bearer token**. Where the
+filesystem supports POSIX permissions (so not on Windows), Editora restricts the
+file to your user account. It deletes the file when the server stops and leaves
+it out of Export Configuration. The token is the only thing that stops another
+program on your computer from driving the editor, so any program that can read
+that file can connect. The port and token are new each time the server starts:
+after restarting Editora or toggling the server, copy the connection command
+again.
 
 Commands: `view.toggleMcp`, `mcp.copyEndpoint`.

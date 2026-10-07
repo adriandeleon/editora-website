@@ -2,7 +2,7 @@
 title: "HTML live preview"
 description: Open any HTML file in a real browser, served over a loopback web server, with live-as-you-type reload.
 date: 2026-06-18
-beta: true
+beta: false
 ---
 
 Editing HTML in Editora just got a lot nicer. A floating **browser-globe button**
@@ -20,3 +20,7 @@ the globe or the *Open in Browser* / *Open in Browser…* palette commands. No n
 dependency, it uses the JDK's built-in HTTP server.
 
 Read the [deep-dive on the blog](/blog/html-live-preview) for how it works.
+
+**Update (October 2026).** HTML live preview is no longer Beta and is now on by
+default. The preview server also answers only the browser tab it opened, under
+a per-session URL prefix.

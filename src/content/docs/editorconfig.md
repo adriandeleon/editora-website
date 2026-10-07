@@ -7,8 +7,8 @@ order: 4
 
 Editora reads a project's [`.editorconfig`](https://editorconfig.org) so your
 files follow the project's conventions without per-file fiddling. It's **on by
-default**; toggle it in **Settings → Editor** or with *View: Toggle
-EditorConfig*.
+default**; toggle it in **Settings → Editor → Indentation** or with *View:
+Toggle EditorConfig Support*.
 
 ## How resolution works
 
@@ -33,7 +33,8 @@ the file is written, so what's on disk matches the config.
 ## Without an .editorconfig
 
 The indent unit is normally inferred per file. You can force it with a global
-**Indent style** preference (Detect / Spaces / Tabs) in **Settings → Editor**, or
+**Indent style** preference (Detect / Spaces / Tabs) in **Settings → Editor →
+Indentation**, or
 the *Editor: Set Indent Style…* command. With an `.editorconfig` present, its
 `indent_style` takes precedence over the global preference.
 

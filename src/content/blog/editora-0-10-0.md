@@ -210,7 +210,7 @@ that push, *every* argument shape answers null — which is indistinguishable fr
 "there is nothing to do at this position", and reads as wrong parameters. You can
 spend a long time fixing a request that was never the problem.
 
-This is the third instance of the same pattern in a year: `signatureHelp.enabled`,
+This is the third instance of the same pattern: `signatureHelp.enabled`,
 then `provideFormatter`, now this. A capability advertised unconditionally in the
 handshake, with the feature behind it inert until a preference is pushed. The
 protocol has no way to express "supported, but off", so the server says

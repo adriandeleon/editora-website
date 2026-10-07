@@ -6,8 +6,9 @@ order: 2
 ---
 
 Editora has two related ways to stop retyping boilerplate: **snippets** for
-inline expansions, and **file templates** for whole new files. Both use the same
-VS Code / TextMate placeholder syntax.
+inline expansions, and **file templates** for whole new files. Templates use a
+similar placeholder syntax to the VS Code / TextMate one snippets use, with
+named variables instead of numbered tab stops.
 
 ## Snippets
 
@@ -21,15 +22,17 @@ Type a prefix and press **Tab**, or pick from the **Snippet: Insert…** list
 
 Bodies use the standard syntax: `$1`, `${1:default}`, mirrors (a repeated
 number), `${1|a,b|}` choices, and variables like `$TM_FILENAME`, `$CLIPBOARD`,
-the current selection, and date/time. Snippets ship for all 21 highlighted
-languages.
+the current selection, and date/time. Snippets ship for 23 languages, plus a
+global set that applies to every file.
 
 ### Your own snippets
 
 User snippets live in your config folder under `snippets/<language>.json` (or
-`global.json`), and override the bundled ones by prefix. Two commands manage
+`global.json`), and override the bundled ones by prefix. Three commands manage
 them:
 
+- **Snippet: Manage…** opens **Settings → Snippets**, where you add, edit, and
+  remove them without touching the JSON.
 - **Snippet: Edit User Snippets…** opens the file for the current language.
 - **Snippet: Reload Snippets** picks up changes without a restart.
 
@@ -39,17 +42,20 @@ real-world files (an array `prefix` registers every trigger, and an unknown
 
 ## File templates
 
-<span class="beta-pill">Beta</span>
-
 **New File From Template** (`C-c C-n`, also a toolbar button) scaffolds a file,
 or a whole set of files, from a reusable template. A picker chooses the
-template, then a small wizard prompts for any variables it declares (author,
-date, file name, package, and so on).
+template, then a small wizard prompts for any variables it declares that
+Editora can't fill in itself.
 
 Templates use the same `${var}` / `${var:default}` / `$0` syntax as snippets,
 plus a `${cursor}` marker for the final caret. Bundled templates cover a Java
-class, an HTML page, an HTML bundle (multiple files), a Markdown doc, and a
-Python script.
+class, a Java compact source file, an HTML page, an HTML bundle (multiple
+files), a Markdown doc, a Python script, a Python project (multiple files), a
+shell script, and a Zsh script.
+
+These variables are filled in for you rather than asked for: `${author}`,
+`${projectName}`, `${packageName}`, `${fileName}`, `${baseName}`,
+`${extension}`, `${date}`, `${year}`, and `${time}`.
 
 The wizard has an optional **Folder** field (with a Browse button): leave it
 blank to create an unsaved buffer (with tab stops live, so you fill the
@@ -62,8 +68,9 @@ also the `template.new` and `template.newInFolder` commands.
 
 Drop template JSON files in your config folder under `templates/`; a user
 template overrides a bundled one with the same id. The author name used by
-`${author}` comes from **Settings → Application → Templates** (it defaults to
-your OS user). **Template: Reload Templates** picks up changes.
+`${author}` comes from **Settings → Templates → Author** (it defaults to your OS
+user). **Template: Reload Templates** picks up changes, and **Template:
+Manage…** opens **Settings → Templates** to add, edit, or remove templates.
 
 ## Autocomplete overlap
 

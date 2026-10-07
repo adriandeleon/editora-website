@@ -179,9 +179,9 @@ in.
 | --- | --- | --- |
 | Side by side | `view.splitVertical` | `C-x 3` |
 | Stacked | `view.splitHorizontal` | `C-x 2` |
-| Unsplit | `view.unsplit` | (palette) |
+| Unsplit | `view.unsplit` | `C-x 1` |
 
-These buttons are disabled on tabs that aren't text buffers — the Welcome and
+These commands are disabled on tabs that aren't text buffers — the Welcome and
 Doctor pages and the image, hex, PDF and diff viewers.
 
 ## Tool window layout
@@ -191,10 +191,10 @@ rearrange them without leaving the keyboard or reaching for a preference.
 
 | Action | Command | Default key |
 | --- | --- | --- |
-| Maximize / restore the tool window | `view.maximizeToolWindow` | (palette) |
+| Maximize / restore the tool window | `view.maximizeToolWindow` | `C-x f` |
 | Float it into its own window | `view.floatToolWindow` | (palette) |
 | Open a second window on one side | `view.splitToolWindow` | (palette) |
-| Close a focused tool window | (any tool window) | `M-g` |
+| Close a focused tool window | `view.closeFocusedToolWindow` | `C-x 0`, or `M-g` |
 
 Maximize and float also have a button each in the tool window's header, and the
 header's right-click menu carries all three. Each acts on the focused tool
@@ -234,8 +234,8 @@ recent files, and version and license info. Reopen it with `view.welcome`.
 ## Focus modes
 
 - **Zen mode** hides the chrome for distraction-free writing, with a small
-  floating "Z" to exit. Toggle it from the palette or start with the `--zen`
-  flag.
+  floating "Z" to exit. Toggle it from the palette (`view.toggleZen`), `C-c z`,
+  or start with the `--zen` flag.
 - **Expert mode** is a lighter focus mode than Zen: it strips only the window
   chrome (toolbar, tab bar, breadcrumb, tool stripes, whitespace guides) but
   **keeps the full editor view**, line numbers, status bar, minimap, column

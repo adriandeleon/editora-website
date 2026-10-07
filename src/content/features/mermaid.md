@@ -10,4 +10,4 @@ Mermaid diagrams render inline. A fenced ` ```mermaid ` block in Markdown become
 
 Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), with **live linting** via `maid` that underlines errors with precise line/column messages as you type. Export a diagram to **SVG / PNG / PDF**.
 
-Off by default. Enable it under Settings → Mermaid (point it at your `mmdc`/`maid`, or use `npx`).
+On by default, and inert until `mmdc` is found. Configure it under Settings → Mermaid (point it at your `mmdc`/`maid`, or use `npx`).

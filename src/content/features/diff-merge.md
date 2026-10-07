@@ -2,7 +2,7 @@
 title: "Diff & merge"
 group: "Git & diff"
 order: 3
-beta: true
+beta: false
 summary: "A multi-file diff workspace for files, folders, patches, and Git changes, with smart alignment, hunk actions, editable results, and true three-way merge resolution."
 ---
 

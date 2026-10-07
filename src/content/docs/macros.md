@@ -12,7 +12,7 @@ auto-close and auto-indent assists as live typing.
 
 ## Record and replay
 
-| Action | Command | Default key |
+| Action | Command | Emacs key |
 | --- | --- | --- |
 | Start recording | `macro.startRecording` | `F3` |
 | Stop recording | `macro.stopRecording` | `F4` |
@@ -30,7 +30,9 @@ auto-close and auto-indent assists as live typing.
 Saved macros persist across sessions (in `macros.json` in your
 [config folder](/docs/configuration)). Each saved macro becomes its own palette
 command, so you can **bind it to a shortcut** in
-[Settings → Keymaps](/docs/keymaps) like any other command.
+[Settings → Keymaps](/docs/keymaps) like any other command. **Settings →
+Macros** lists your saved macros, where you can rename one, edit its steps,
+delete it, or assign its keybinding.
 
 ## Notes
 

@@ -32,11 +32,11 @@ than a filename.
 
 ## Finding the spot: anchors with context
 
-Within a file, a note stores a `TextAnchor`, not just a line and column, but the
+Within a file, a note stores a `TextAnchor`: not just a line and column, but the
 selected text plus a `prefix` and `suffix` of surrounding context. Relocating a
 note (the pure, unit-tested `NoteAnchors.relocate`) works in levels:
 
-- First, check the saved offset, if the text there still matches, nothing moved.
+- First, check the saved offset: if the text there still matches, nothing moved.
 - Otherwise, score the occurrences of the anchored text across the document,
   with a bonus for matching prefix/suffix context and for proximity to the
   original position, and move the note to the best one.

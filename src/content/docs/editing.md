@@ -13,8 +13,11 @@ the rest is a command away. See the full list on the [Commands](/commands) page.
 
 Edit many places at once, VS Code style.
 
-- **Add a caret at the next occurrence** of the selection, or **above** / **below**
-  the current line, from the palette (`edit.addCaret…`).
+- **Add a caret at the next occurrence** of the selection
+  (`edit.addCaretNextOccurrence`: `Ctrl+D` in the VS Code and Sublime keymaps,
+  `Alt+J` in IntelliJ), or **above** / **below** the current line
+  (`edit.addCaretAbove` / `Below`: `Ctrl+Alt+Up` / `Down` in the VS Code and
+  Sublime keymaps). The Emacs and CUA keymaps leave these to the palette.
 - **Select all occurrences** (`edit.selectAllOccurrences`, `Ctrl+Shift+L` in the
   VS Code and Sublime keymaps) turns every occurrence of the selection, or of the
   word under the caret, into a cursor at once. Matching is literal and
@@ -83,8 +86,9 @@ On by default. Turn it off in Settings → Editor or with
 word, then the enclosing brackets or string, the line, the enclosing definition,
 the paragraph, the whole document. **Edit: Shrink Selection** retraces the exact
 same steps back. `Shift+Alt+Right` / `Left` in the VS Code, CUA and Sublime
-keymaps; `Ctrl+W` / `Ctrl+Shift+W` in the IntelliJ keymap (`Option+Up` / `Down`
-on macOS); palette-discoverable everywhere.
+keymaps (`Ctrl+Cmd+Shift+Right` / `Left` on macOS); `Ctrl+W` / `Ctrl+Shift+W` in
+the IntelliJ keymap (`Option+Up` / `Down` on macOS); palette-discoverable
+everywhere, and unbound in the Emacs keymap.
 
 Where a [language server](/docs/lsp#folding-and-selection) is running, the ladder
 comes from the server's own parse, so it respects strings and comments. Without
@@ -108,9 +112,9 @@ commented.
 | Transpose lines | `edit.transposeLines` | `C-x C-t` |
 | Duplicate line | `edit.duplicateLine` | (keymap-specific) |
 | Move line up / down | `edit.moveLineUp` / `Down` | (keymap-specific) |
-| Select all | `edit.selectAll` | (keymap-specific) |
+| Select all | `edit.selectAll` | `C-x h` |
 | Fill paragraph | `edit.fillParagraph` | `M-q` |
-| Set fill column | `edit.setFillColumn` | `C-x f` |
+| Set fill column | `edit.setFillColumn` | (palette) |
 | Forward / backward subword | `nav.subwordForward` / `Backward` | (palette) |
 | Delete subword forward / backward | `edit.deleteSubword…` | (palette) |
 | Convert indentation to spaces / tabs | `edit.indentationTo…` | (palette) |
@@ -137,7 +141,7 @@ a selection leaves it alone.
 **Subword navigation** moves and deletes by camelCase and snake_case parts:
 stepping through `getUserName` lands on `get`, `User`, `Name`, and acronyms split
 correctly (`HTMLParser` gives `HTML` and `Parser`). These have no default key, so
-bind them from Settings → Keymap if you want VS Code's `Ctrl+Alt+←/→`.
+bind them from Settings → Keymaps if you want VS Code's `Ctrl+Alt+←/→`.
 
 **Convert indentation** rewrites the whole file's *leading* whitespace between
 tabs and spaces. Alignment inside a line and string contents are left alone, and
@@ -161,7 +165,7 @@ A text-replacement dictionary: define a short abbreviation that expands to longe
 text. Expand the word before the caret on demand with `C-x a e`, or turn on
 **Abbrev Mode** (`view.toggleAbbrevMode`) to expand automatically when you type a
 space or punctuation. Define a new one with `C-x a g`, and manage the whole
-dictionary in **Settings → Editor → Abbreviations** (`abbrev.manage`).
+dictionary in **Settings → Abbreviations** (`abbrev.manage`).
 
 Your typed case is carried onto the expansion, so `btw` gives *by the way*, `Btw`
 gives *By the way*, and `BTW` gives *BY THE WAY*; a lowercase abbreviation keeps
@@ -229,8 +233,9 @@ Manipulation…* (`C-c x`).
 
 ## Hex viewer
 
-Opening a **binary** file (an executable, archive, `.class`, `.pdf`, and so on)
-shows a read-only `offset | hex | ASCII` dump instead of garbage text. Binaries
+Opening a **binary** file (an executable, archive, `.class`, and so on) shows a
+read-only `offset | hex | ASCII` dump instead of garbage text. PDFs and images
+are the exception: they open in their own page and image viewers. Binaries
 are detected by content, and large files show their first slice with a
 truncation note. *View: Open as Hex* (`view.openAsHex`) force-opens any file's
 bytes as hex, and *View: Open as Text* switches back.

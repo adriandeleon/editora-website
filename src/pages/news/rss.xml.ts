@@ -2,10 +2,27 @@ import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import type { APIContext } from "astro";
 
+// Newest first. Several items can share a calendar day (0.12.1 and 0.12.3, 0.18.2
+// and 0.18.3), and dates are date-only, so ties are broken by release version
+// (higher first, a versioned item ahead of an unversioned one) and then by id.
+const versionParts = (v?: string) => (v ? v.split(".").map((n) => Number.parseInt(n, 10) || 0) : []);
+const byNewest = (
+  a: { id: string; data: { date: Date; version?: string } },
+  b: { id: string; data: { date: Date; version?: string } },
+) => {
+  const byDate = b.data.date.valueOf() - a.data.date.valueOf();
+  if (byDate !== 0) return byDate;
+  const va = versionParts(a.data.version);
+  const vb = versionParts(b.data.version);
+  for (let i = 0; i < Math.max(va.length, vb.length); i++) {
+    const d = (vb[i] ?? -1) - (va[i] ?? -1);
+    if (d !== 0) return d;
+  }
+  return b.id.localeCompare(a.id);
+};
+
 export async function GET(context: APIContext) {
-  const items = (await getCollection("news")).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
+  const items = (await getCollection("news")).sort(byNewest);
   return rss({
     title: "Editora News",
     description: "Release announcements and updates from the Editora project.",

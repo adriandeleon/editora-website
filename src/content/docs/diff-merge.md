@@ -3,7 +3,6 @@ title: Diff & merge
 description: File, folder, patch, and Git reviews; editable results; hunk actions; and three-way merge resolution.
 category: Version control
 order: 2
-beta: true
 ---
 
 Editora has a built-in diff viewer and a merge-conflict resolver. The Git-backed

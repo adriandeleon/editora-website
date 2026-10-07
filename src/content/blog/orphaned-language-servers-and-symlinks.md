@@ -13,7 +13,7 @@ satisfying root cause.
 
 ## Bug 1: the language server that wouldn't die
 
-Symptom: open a Java project, close it, open it again: and now there are no
+Symptom: open a Java project, close it, open it again, and now there are no
 diagnostics, no completion, just a server that seems to hang on startup.
 
 The cause was a zombie. Disposing a session killed the process I launched, but
@@ -55,5 +55,10 @@ difference between "LSP is broken" and "LSP works."
 Both bugs were invisible: no stack trace, no error dialog, just a feature
 quietly not working. And both came from a mismatch between what I *thought* I was
 managing (a process, a path) and what the OS actually had (a process *tree*, a
-*real* path). When you integrate external tools, those two gaps: descendant
-processes and canonical path, are worth checking first.
+*real* path). When you integrate external tools, those two gaps, descendant
+processes and canonical paths, are worth checking first.
+
+**Update (October 2026).** Editora no longer discards a language server's
+stderr. It is drained on a background thread into the Debug Log, with a cap.
+That still keeps the pipe from filling, and it also shows why a server failed
+to start, which discarding hid.

@@ -2,11 +2,11 @@
 title: "GitHub integration"
 group: "Git & diff"
 order: 2
-beta: true
+beta: false
 summary: "Review and check out pull requests, submit reviews, open a file on GitHub at the caret line, and jump from a failed CI log straight to the offending line. Uses your own <code>gh</code> CLI, so Editora never handles a token."
 ---
 
-GitHub, through the [`gh` CLI](https://cli.github.com) you already have signed in. **Editora never handles a token**, it shells out to `gh` the same way the Git support shells out to `git`, so GitHub Enterprise works with no extra setup.
+GitHub, through the [`gh` CLI](https://cli.github.com) you already have signed in. **Editora never handles a token**: it shells out to `gh` the same way the Git support shells out to `git`, so GitHub Enterprise works with no extra setup.
 
 - **Review a pull request in the editor.** A *Files changed* tab lists every file with its status and per-file `+` / `−` counts; click one for a read-only diff. The description renders as Markdown above the list, and `n` / `p` step through changes.
 - **Submit a review**, approve, request changes, or comment, without leaving the editor.

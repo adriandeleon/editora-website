@@ -31,7 +31,7 @@ recorded. And that's where it gets interesting for a GUI app.
 
 My first instinct was to train the cache in CI the cheap way: run the app
 headless, let it initialize, capture the cache. That gave **basically zero
-speedup.** :-O
+speedup.**
 
 The reason is the whole point: the expensive part of JavaFX startup is loading
 the scene/control/CSS classes, and **those don't load until a window actually
@@ -67,8 +67,8 @@ drops the app wherever the user puts it. The launcher's `.cfg` just carries
 ## It can't make things worse (*famous last words*)
 
 A performance optimization that can break a launch isn't worth it, so this one
-is **fully failure-tolerant.** If training fails, no display on a runner, any
-error at all, the build simply ships without the cache. And at runtime, a
+is **fully failure-tolerant.** If training fails (no display on a runner, any
+error at all), the build simply ships without the cache. And at runtime, a
 missing or invalid `-XX:AOTCache` file degrades gracefully to a normal start
 under JDK 25's default `AOTMode=auto`. Worst case, you get today's startup; best
 case, you get a noticeably quicker one.
@@ -76,11 +76,11 @@ case, you get a noticeably quicker one.
 The cost is disk: the cache is about **60 MB**. Installers compress it well: the
 macOS DMG stayed around 81 MB.
 
-## While I was in there: (footprint)
+## While I was in there: footprint
 
 The same change tuned the packaged runtime for a single-user desktop editor:
 
-- **`-Xmx2g` + `-XX:+UseSerialGC`** : predictable RSS and sub-millisecond GC
+- **`-Xmx2g` + `-XX:+UseSerialGC`**: predictable RSS and sub-millisecond GC
   pauses, with none of the parallel-GC thread overhead a mostly-idle editor
   doesn't need.
 - **Runtime stripping** at jlink time (`--strip-debug`, `--no-man-pages`,
@@ -98,3 +98,26 @@ quicker than before. As always, the gory details are in the
 [changelog](https://github.com/adriandeleon/Editora/blob/master/CHANGELOG.md).
 I'm happy to talk about it in
 [Discussions](https://github.com/adriandeleon/Editora/discussions).
+
+---
+
+**Update (October 2026).** Several claims above did not hold up in later
+releases, and the "famous last words" in that heading turned out to be accurate.
+
+- **Windows.** Stripping the runtime's `bin/` after training removed the JVM
+  itself on Windows, where it lives in that folder, so Windows installs failed
+  to launch. [0.9.2](/news/2026-07-08-editora-0-9-2-released) limits the strip
+  to macOS and Linux.
+- **Apple silicon.** macOS arm64 shipped without the cache from 0.9.1 through
+  0.9.8, because the training run crashed on the CI runner's virtual GPU. The
+  macOS figure above was not what those builds delivered until
+  [0.9.9](/news/2026-07-21-editora-0-9-9-released) fixed the training run.
+- **The garbage collector.** The serial collector did not give the short pauses
+  and small footprint described above. Measured on a real session it kept a
+  548 MB young generation against a live set of about 72 MB, and its longest
+  pause was 138 ms. [0.11.0](/news/2026-08-11-editora-0-11-0-released) moved
+  the packaged app to G1.
+- **Some CPUs.** 0.13.0 crashed at startup on processors without AVX-512,
+  because the cache also archived machine code compiled for the CPU that built
+  the release. [0.13.1](/news/2026-08-27-editora-0-13-1-released) leaves that
+  code out of the cache and keeps the startup gain.

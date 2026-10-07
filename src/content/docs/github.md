@@ -3,7 +3,6 @@ title: GitHub
 description: "Review and check out pull requests, submit reviews, open files on GitHub, and read failed CI logs, all through your own gh CLI."
 category: Version control
 order: 3
-beta: true
 ---
 
 Editora talks to GitHub through the [`gh` CLI](https://cli.github.com) you
@@ -121,8 +120,14 @@ Very large logs are trimmed to their last few thousand lines.
 
 When the current branch has a pull request, the status bar shows a compact checks
 indicator (a check, a cross, or a circle, plus a failure count). It refreshes on
-**GitHub: Refresh** and after checking out a pull request. There is **no
-background polling**, so it never surprises you with network activity.
+**GitHub: Refresh**, after checking out a pull request, and, once you have
+asked for it, after a branch switch in the same repository. There is **no
+background polling** on a timer.
+
+Editora does call `gh` on its own in one case. To decide whether to show the
+tool window, it checks that `gh` is signed in and, once per repository, asks
+GitHub whether there is an open pull request, an open issue, or a workflow
+run.
 
 ## Commands
 
@@ -133,6 +138,7 @@ background polling**, so it never surprises you with network activity.
 | GitHub: Check Out Pull Request… | `github.checkoutPr` |
 | GitHub: Create Pull Request… | `github.createPr` |
 | GitHub: Open File on GitHub | `github.openOnGitHub` |
+| GitHub: Show Workflow Runs | `github.showRuns` |
 | GitHub: View CI Failure Log… | `github.viewRunLog` |
 | GitHub: Refresh | `github.refresh` |
 | Tool Window: GitHub | `tool.github` (`M-g p`) |

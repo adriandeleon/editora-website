@@ -12,7 +12,7 @@ Keyboard-first navigation: fuzzy pickers that get you anywhere without the mouse
 - **Symbols / file structure**: `M-g i`
 - **Open tabs**: `C-x b`
 - **Tool windows**: `M-g t`
-- **Bookmarks**: `M-g b`, **Notes**, `M-g n`
+- **Bookmarks**: `M-g b`, **Notes**: `M-g n`
 
 There's also an Emacs `find-file`-style **path finder** (`C-x C-f`) with prefix autocomplete, type and Tab to complete, Enter to descend a folder or open (or create) a file. Every picker shows a footer legend of its navigation keys.
 

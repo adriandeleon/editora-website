@@ -21,3 +21,6 @@ session-only, and disabled for very large files. See the
 [Undo History guide](/docs/undo-history).
 
 An undo tree and a richer history panel are next.
+
+**Update (October 2026).** The undo tree has not shipped. It is still on the
+to-do list.

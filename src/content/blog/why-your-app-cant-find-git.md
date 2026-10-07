@@ -55,6 +55,6 @@ dirs plus any Settings override.)
 ## The takeaway
 
 If your app shells out and "works from the terminal but not when double-clicked,"
-this is almost certainly why. Don't trust the PATH a GUI launch hands you,
+this is almost certainly why. Don't trust the PATH a GUI launch hands you;
 reconstruct the one the user actually has, and resolve binaries to absolute paths
 yourself.

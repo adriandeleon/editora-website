@@ -5,7 +5,7 @@ date: 2026-06-14
 ---
 
 Editora has grown a lot. Here are the headline features that have shipped
-recently, see the
+recently. See the
 [full changelog](https://github.com/adriandeleon/Editora/blob/master/CHANGELOG.md)
 for everything.
 

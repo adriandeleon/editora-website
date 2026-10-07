@@ -5,7 +5,7 @@ category: Customization
 order: 4
 ---
 
-Editora can be extended with **plugins**, they add commands, keybindings, tool
+Editora can be extended with **plugins**, which add commands, keybindings, tool
 windows, editor-menu items, and status-bar segments. Browse the
 [plugin catalog](/plugins) for what's available, or write your own.
 
@@ -17,11 +17,37 @@ windows, editor-menu items, and status-bar segments. Browse the
 1. Enable plugins in **Settings → Plugins**.
 2. **Browse plugins…** (or the `plugins.browse` command) installs from the
    official registry; **Install from file…** installs a local `.zip`.
-3. Restart Editora to load newly installed plugins.
+3. Confirm the **Enable this plugin?** dialog, which lists what the plugin will
+   do. If you decline, the plugin stays installed but not enabled; its checkbox
+   in Settings → Plugins enables it later, behind the same dialog.
+4. Restart Editora to load newly installed plugins.
 
 Installed plugins live in your config folder under `plugins/<id>/`, and the
 enabled set is tracked in `plugins.json`. (Plugins are loaded at startup, so
 enabling/disabling takes effect on the next launch.)
+
+## Security
+
+Plugins are not sandboxed: an enabled plugin runs with the same access to your
+files and system as Editora itself. What Editora checks is where a plugin came
+from, and that you agreed to it.
+
+- **Signed registry.** The registry's `index.json` is verified against an
+  Ed25519 public key bundled with Editora. **Require signed plugins**
+  (Settings → Plugins, on by default; `plugins.toggleRequireSignature`) blocks
+  browsing and installing from a registry whose signature is missing or does
+  not verify. A registry of your own (`plugins.setRegistryUrl`) cannot be
+  signed with that key, so using one means turning the requirement off.
+- **Checksum.** A plugin downloaded from the registry must match the SHA-256
+  listed in the index, and the registry and its downloads are HTTPS-only. A
+  `.zip` installed from a file has no checksum to match.
+- **Consent.** Before a plugin is enabled, a dialog lists whether it runs
+  executable code (a Java plugin), which external commands it declares, and
+  which keyboard shortcuts it remaps. Each plugin has its own enable switch,
+  and a plugin whose capabilities cannot be shown stays disabled.
+
+A valid signature tells you who published the registry. It does not make a
+plugin safe.
 
 ## What a plugin can do
 

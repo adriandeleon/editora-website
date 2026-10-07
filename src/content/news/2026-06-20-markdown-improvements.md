@@ -33,3 +33,5 @@ The Markdown experience got a wide round of improvements.
   images) via *Preview: Export to HTML*.
 
 See the [Markdown guide](/docs/markdown) for the full picture.
+
+**Update (October 2026).** LaTeX math rendering is now on by default.

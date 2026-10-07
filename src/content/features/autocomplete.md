@@ -14,4 +14,4 @@ Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its
 
 **Prose** buffers get inline **ghost text**, a muted suffix you accept with Tab.
 
-Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets) live in Settings → Editor.
+Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets) live in Settings → Code Completion.

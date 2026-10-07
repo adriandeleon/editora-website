@@ -11,7 +11,8 @@ with *View: Toggle Log Viewer*).
 
 ## Severity highlighting
 
-Lines are colored by level (ERROR / WARN / INFO / DEBUG / TRACE), both inline and
+Lines are colored by level (ERROR / WARN / INFO / DEBUG / TRACE, with FATAL
+drawn like ERROR), both inline and
 as a **left-edge bar** that works even on huge logs. It recognizes common
 formats: Logback / Log4j, `java.util.logging`, syslog, nginx, structured / JSON,
 zerolog, and access logs.
@@ -41,6 +42,6 @@ an exception stays visible when you filter to `WARN` and above.
 | Filter by level | `log.setLevelFilter` |
 | Filter by pattern | `log.setRegexFilter` |
 | Clear the filter | `log.clearFilter` |
-| Next / previous error | `log.nextError` / `log.previousError` |
+| Next / previous line at warning level or higher | `log.nextError` / `log.previousError` |
 | Treat the file as a log | `log.viewAsLog` |
 | Enable/disable the feature | `view.toggleLogViewer` |

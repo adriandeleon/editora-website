@@ -49,7 +49,7 @@ selection with bold, italic, strikethrough, inline code, link, list, and a
 heading level picker. The same actions are commands with Emacs `markdown-mode`
 chords:
 
-| Action | Command | Default key |
+| Action | Command | Emacs key |
 | --- | --- | --- |
 | Bold / italic / strike / code | `markdown.bold` … | `C-c C-s b/i/s/c` |
 | Insert link | `markdown.link` | `C-c C-a l` |
@@ -58,7 +58,8 @@ chords:
 | Reflow table | `markdown.reflowTable` | `C-c C-s t` |
 
 List and quote continuation happens automatically on Enter. Ctrl/Cmd-click opens
-a link. The format bar can be turned off in **Settings → Editor**.
+a link. The format bar can be turned off in **Settings → Markdown → Editing**
+(or with `markdown.toggleFormatBar`).
 
 You can also insert a **table of contents** (`markdown.toc`) and a **task list**
 (`markdown.taskList`, `C-c C-s k`).
@@ -93,14 +94,16 @@ See [CSV & TSV](/docs/csv) for editing data files directly.
   punctuation, first-line H1, and more) shows as inline squiggles with hover
   messages, **scrollbar and minimap stripes**, and a **Markdown Lint** tool
   window. **Auto-fix** (`markdownLint.fix`) corrects the safely-mechanical issues
-  in one undoable edit. Turn individual rules off in *Settings → Markdown* or with
+  in one undoable edit. Turn individual rules off in *Settings → Markdown →
+  Linting* or with
   `markdownLint.toggleRule`, use inline `<!-- markdownlint-disable -->` comments,
   or a nearest `.markdownlint.json`. On by default; toggle with *View: Toggle
   Markdown Lint*.
 - **LaTeX math**: render inline `$…$` and display `$$…$$` math in the preview
   (and in PDF export) via JLaTeXMath, with GitHub-style delimiter rules so prose
-  dollar amounts are left alone. **Off by default** (Settings → Editor → *Render
-  LaTeX math*).
+  dollar amounts are left alone. **On by default**; toggle it in **Settings →
+  Markdown → Preview & PDF** (*Render LaTeX math*) or with *View: Toggle Math
+  Rendering* (`view.toggleMath`).
 - **Image paste and drag-drop**: paste an image from the clipboard, or drop image
   files onto a saved Markdown buffer, and the file is written into a sibling
   `assets/` folder with the `![](…)` link inserted.
@@ -114,15 +117,24 @@ See [CSV & TSV](/docs/csv) for editing data files directly.
 Mermaid renders inline. A fenced ` ```mermaid ` block in Markdown becomes a
 diagram in the preview, and standalone `.mmd` files get the same 3-mode preview.
 
-Mermaid is **off by default**. Enable it in **Settings → Mermaid** and point it
-at the `mmdc` (mermaid-cli) command, with optional `maid` for linting (a blank
-field uses `npx`). Rendering uses `mmdc` and is cached per diagram; `.mmd` files
-get live linting that underlines errors with precise line and column messages.
-Export a diagram to SVG, PNG, or PDF with `mermaid.export`.
+Mermaid is **on by default**, self-gating on detection, so it stays inert until
+the `mmdc` (mermaid-cli) command is found. Install it with
+`npm i -g @mermaid-js/mermaid-cli` (it needs Node.js) or the in-app
+**Install…** button in **Settings → Mermaid** (`install.mermaidSupport`). The
+same page holds the toggle and the two tool paths: a blank `mmdc` path resolves
+`mmdc` on your `PATH`, and a blank `maid` path (the optional linter) runs it
+through `npx`.
+
+`mmdc` drives a headless Chrome. If rendering fails with *"Could not find
+Chrome"*, install it once with
+`npx puppeteer browsers install chrome-headless-shell`; the in-app installer
+does this for you.
+
+Rendering uses `mmdc` and is cached per diagram; `.mmd` files get live linting
+that underlines errors with precise line and column messages. Export a diagram
+to SVG, PNG, or PDF with `mermaid.export`.
 
 ## HTML live preview
-
-<span class="beta-pill">Beta</span>
 
 On any `.html` / `.htm` / `.xhtml` file, a floating globe button opens it in a
 detected browser (Safari, Chrome, Firefox, Edge, or the system default), served
@@ -130,9 +142,10 @@ over a tiny loopback-only web server with live reload as you type. Sibling CSS,
 JS, and images load from disk. The server answers only its own browser tab and
 refuses to serve a home directory or a drive root.
 
-It's **off by default**; enable it in **Settings → HTML Preview**. The file must
-be saved so its assets resolve, and remote (SFTP) files are excluded. Commands:
-`htmlPreview.open` and `htmlPreview.openIn` (pick a browser).
+It's **on by default**; toggle it in **Settings → Web → HTML Preview** or with
+*View: Toggle HTML Live Preview*. The file must be saved so its assets resolve,
+and remote (SFTP) files are excluded. Commands: `htmlPreview.open` and
+`htmlPreview.openIn` (pick a browser).
 
 ## Export and print
 
@@ -142,7 +155,8 @@ native vector text. You can also export a Markdown file's preview to a
 **standalone, self-contained `.html` file** (embedded stylesheet, heading
 anchors, math as images) with *Preview: Export to HTML*, which opens the result
 in a new tab, or to **MS Word (`.docx`)** and **OpenDocument Text (`.odt`)** with
-*Preview: Export to Word / OpenDocument*. Headings, styling, lists, tables,
+*File: Export Preview to Word (.docx)* and *File: Export Preview to OpenDocument
+(.odt)*. Headings, styling, lists, tables,
 code, math, Mermaid diagrams, and images all carry over. Or print either, with a
 page-by-page preview first (what you preview is what prints). Output is always
 light-themed and generated off the UI thread.
@@ -168,6 +182,6 @@ a genuinely **atomic** over-tall block, where it is the right answer. A plain
 paragraph has no emphasis to split at, so long runs are cut at whitespace and no
 word is broken.
 
-Editora's own `CLAUDE.md` is the worked example: it printed as 14 pages, six of
-its 19 top-level blocks over-tall, one a 296-page list rendered onto a single
-page at 0.3% scale. It is 382 pages, none scaled.
+A document that is mostly one very long list therefore prints on as many pages
+as its text needs, at full size. Nothing is shrunk to fit except a single block,
+such as an oversized image, that cannot be split.

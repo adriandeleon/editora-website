@@ -3,7 +3,7 @@ title: "Localized UI"
 group: "Customization & extensibility"
 order: 4
 beta: false
-summary: "The whole interface is translated into English, Italian, Spanish, French, Portuguese, and German, selectable in Settings."
+summary: "The whole interface is translated into English, Italian, Spanish, French, Portuguese, and German, selectable in Settings → Appearance."
 ---
 
 Editora's entire interface is translated (**English, Italian, Spanish, French, Portuguese, and German**) covering the command palette, toolbar tooltips, tool windows, Settings, the status bar, dialogs, and menus.

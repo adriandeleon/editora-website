@@ -14,7 +14,7 @@ command first.**
 ## Commands are the foundation
 
 In Editora, there's no such thing as an action that isn't a command. Saving,
-toggling a bookmark, starting the debugger, switching a theme, each is a
+toggling a bookmark, starting the debugger, switching a theme: each is a
 registered `Command` with an id and a title. That single decision pays off
 everywhere:
 

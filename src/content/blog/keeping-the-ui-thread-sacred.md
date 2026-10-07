@@ -21,8 +21,8 @@ never freezes the cursor; it just gets superseded.
 
 ## Debounce and coalesce
 
-Re-highlighting is debounced. The document overlays: whitespace markers, the
-80-column ruler, the minimap, search highlights, the gutter, **coalesce to one
+Re-highlighting is debounced. The document overlays (whitespace markers, the
+80-column ruler, the minimap, search highlights, the gutter) **coalesce to one
 redraw per pulse** with a simple `pending` flag plus `Platform.runLater`. The
 rule for new code is strict: don't add per-keystroke or per-scroll work that
 isn't coalesced. A handful of listeners each doing "just a little" work per pulse
@@ -36,8 +36,8 @@ Two more multipliers:
   reusing stored per-line grammar state for the unchanged prefix, not the whole
   document.
 - **Visible-only.** Overlays iterate just the visible paragraphs
-  (`firstVisibleParToAllParIndex … last`) and skip folded lines. Nothing does
-  O(document) work on an edit or a scroll.
+  (`firstVisibleParToAllParIndex … last`) and skip folded lines. The rule is that
+  nothing does O(document) work on an edit or a scroll.
 
 There's also a subtle one: don't defeat JavaFX's per-node CSS style cache. Syntax
 tokens use a compound `.text.<class>` selector and adjacent same-style spans are
@@ -56,8 +56,14 @@ beats degrading by accident.
 ## The cultural part
 
 The technical rules only stick because of a habit: **every change is assessed for
-its cost on the hot paths**: allocation per keystroke, added FX-thread work,
-extra layout/CSS passes, and that cost gets stated, even when it's "negligible."
+its cost on the hot paths** (allocation per keystroke, added FX-thread work,
+extra layout/CSS passes), and that cost gets stated, even when it's "negligible."
 When something risks a regression, I measure (temporary `System.nanoTime`
 instrumentation) rather than guess. Performance isn't a milestone you hit once;
 it's a constraint you keep paying attention to.
+
+**Update (October 2026).** These are the rules, and later releases found places
+that were breaking them. The posts on [0.9.7](/blog/editora-0-9-7) and
+[0.14.0](/blog/editora-0-14-0) cover the main ones. Since
+[0.19.0](/news/2026-10-06-editora-0-19-0-released), an edit also re-tokenizes
+only the lines it affects instead of everything to the end of the file.

@@ -19,14 +19,36 @@ IntelliJ-style, and collects them in a **TODO** tool window. It's on by default.
 
 ## Patterns
 
-Configure patterns in **Settings → Editor → TODO Highlighting**: a name, a
-regex, a color picker, case sensitivity, and an enabled flag. **TODO** and
-**FIXME** ship by default, each in its own color. Add a quick one from the
-palette with **TODO: Add Highlight Pattern…** (`todo.addPattern`).
+Configure patterns in **Settings → TODO → TODO Highlighting**: a name, a
+regex, a color picker, case sensitivity, and an enabled flag. Six ship by
+default, each in its own color: **TODO**, **FIXME**, **HACK**, **NOTE**,
+**XXX**, and **DONE**. Add a quick one from the palette with **TODO: Add
+Highlight Pattern…** (`todo.addPattern`).
+
+## Structured TODOs
+
+A match can carry a tag and a priority after its keyword:
+
+```
+// TODO [auth] (high) fix token refresh
+```
+
+The form is `KEYWORD [tag] (priority) description`. Only the keyword is
+required; the tag and the priority are optional and come in that order. A colon
+straight after the keyword is fine (`TODO: fix it`). The priority is one of
+`critical`, `high`, `medium`, or `low`, in any letter case. Each part gets its
+own color, set in **Settings → TODO → TODO Part Colors** or with
+`todo.setPartColor`.
+
+The tool window's **Group by** selector groups matches by **File**,
+**Priority**, **Tag**, or **Keyword**. Right-click a match to edit it in your
+source: **Mark Done** rewrites its keyword to `DONE` (**Reopen** reverses it),
+**Priority** sets or clears the priority, and **Edit Description…** changes the
+text.
 
 ## Commands
 
-| Action | Command | Default key |
+| Action | Command | Emacs key |
 | --- | --- | --- |
 | Toggle the TODO tool window | `tool.todo` | `M-g o` |
 | Refresh the scan | `todo.refresh` | (palette) |

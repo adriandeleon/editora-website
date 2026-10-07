@@ -11,6 +11,27 @@ without the mouse.
 For moving around *code* in particular — symbols, definitions, the scope you're
 in — see [Code navigation](/docs/code-navigation).
 
+## Command palette
+
+The **command palette** (`palette.show`) lists every command by name. Type a few
+letters (matching is fuzzy, see [How matching works](/docs/navigation#how-matching-works)),
+press Enter, and it runs.
+
+| Keymap | Chord |
+| --- | --- |
+| Emacs | `M-x` |
+| CUA, Sublime, VS Code | `Ctrl`/`Cmd`+`Shift`+`P` (VS Code also `F1`) |
+| IntelliJ | `Ctrl`/`Cmd`+`Shift`+`A` |
+
+Each row shows the command's current keybinding, and the highlighted row's
+description appears under the list. The **docs key** opens that command's
+documentation in your browser: `C-h` in the Emacs keymap, and `F1` or
+`Shift+F1` in the keymaps that already use `Ctrl+H` or `F1` for something else.
+The hint line along the bottom names the key that applies.
+
+A command that can't run right now stays listed and dimmed, with an explanation
+of what would enable it, rather than disappearing.
+
 ## Search Everywhere
 
 **Search Everywhere** (`search.everywhere`) is one picker over **commands,
@@ -59,14 +80,14 @@ works with no language server installed.
 
 A command whose feature is switched off is **listed, greyed, with an explanation
 naming the setting that would enable it** — the same way the
-[command palette](/docs/keymaps) treats it. Omitting it is tidier in a short
+[command palette](/docs/navigation#command-palette) treats it. Omitting it is tidier in a short
 mixed list, which is how this shipped in 0.13.0, but it also means you never
 learn the command exists. Greyed rows sort after everything you can actually
 run, and both the cursor and the mouse step over them.
 
-The highlighted row's **description** appears under the list, and **`C-h`**
-opens that command's documentation in your browser — both matching the palette
-exactly. The hint line along the bottom names them, alongside `C-n`/`C-p`.
+The highlighted row's **description** appears under the list, and the docs key
+(**`C-h`** in the Emacs keymap) opens that command's documentation in your
+browser — both matching the palette exactly. The hint line along the bottom names them, alongside `C-n`/`C-p`.
 
 ### Opening it
 
@@ -116,10 +137,10 @@ filter; Enter opens.
 
 | Jump to | Command | Default key |
 | --- | --- | --- |
-| Recent files | `recent.open` | `C-x C-r` |
-| Symbols / file structure | `tool.structure` | `M-g i` |
+| Recent files | `recent.jump` | `C-x C-r` |
+| Symbols / file structure | `structure.jump` | `M-g i` |
 | Open tabs | `buffer.jump` | `C-x b` |
-| Tool windows | (picker) | `M-g t` |
+| Tool windows | `tool.jump` | `M-g t` |
 | Bookmarks (cross-file) | `bookmarks.jump` | `M-g b` |
 | Notes (cross-file) | `notes.jump` | `M-g n` |
 
@@ -135,8 +156,12 @@ directory.
 
 ## The tab switcher
 
-`Ctrl-Tab` opens an IntelliJ-style switcher over the most-recently-used tabs.
-Hold and press again to move down the list; release to switch.
+`C-x C-b` (`switcher.show`) opens an IntelliJ-style switcher over the open
+files, listed in tab order with the current tab preselected. `C-n` / `C-p` or
+the arrow keys move through the list, releasing Ctrl or pressing Enter switches,
+and `C-g` or Esc cancels. The chord is the Emacs keymap's; the other keymaps
+leave the command unbound, so run it from the palette or bind it in
+Settings → Keymaps.
 
 ## Find in the current file
 
@@ -161,10 +186,12 @@ error and leaves the buffer untouched. In literal (non-regex) mode `$` is
 inserted verbatim. **Alt+Enter** puts a cursor on every match at once (see
 [Multiple cursors](/docs/editing#multiple-cursors)).
 
-Open replace with `M-S-5`. In the **Emacs keymap** that chord runs
+Open the bar in replace mode with `Ctrl+H` in the CUA, Sublime and VS Code
+keymaps or `Ctrl+R` in IntelliJ (`Option+Cmd+F` and `Cmd+R` on macOS). The
+**Emacs keymap** has no chord for it: there `M-%` runs
 [query-replace](/docs/editing#the-emacs-editing-model) instead, the
-replace-with-confirmation loop; the find bar's own replace is still on the bar
-and in the palette.
+replace-with-confirmation loop, and the find bar's own replace is still on the
+bar and in the palette.
 
 ## Occur
 
@@ -196,8 +223,11 @@ it:
 
 | Action | Command | Default key |
 | --- | --- | --- |
-| Fold / unfold at the caret | `view.fold` | `C-c C-f` |
-| Fold all / unfold all | `view.foldAll` | `C-c f` |
+| Fold at the caret | `view.fold` | `C-c C-f` |
+| Unfold at the caret | `view.unfold` | `C-c C-u` |
+| Toggle the fold at the caret | `view.toggleFold` | `C-c C-t` |
+| Fold all | `view.foldAll` | `C-c f` |
+| Unfold all | `view.unfoldAll` | `C-c u` |
 | Fold by nesting level (1 to 7) | `view.foldLevel1` … `7` | (palette) |
 | Fold / unfold recursively | `view.foldRecursively` / `view.unfoldRecursively` | (palette) |
 | Go to parent / next / previous fold | `view.gotoParentFold` … | (palette) |
@@ -212,7 +242,7 @@ it:
 everything nested inside it, and unfolding recursively reveals the whole subtree.
 The three **Go to … Fold** commands move the caret to a fold header, revealing it
 first if it is hidden. None of these has a default key; bind them from
-Settings → Keymap.
+Settings → Keymaps.
 
 ### Folds of your own
 
@@ -272,4 +302,5 @@ move the caret to something you can see. **Line mode** (`nav.aceJumpLine`,
 ## Closing tool windows
 
 `M-g` closes a focused tool window (any of them) and returns focus to the
-editor.
+editor. *View: Close Current Tool Window* (`view.closeFocusedToolWindow`,
+`C-x 0`) does the same as a regular command.

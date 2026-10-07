@@ -8,7 +8,7 @@ tags: [plugins, extensibility]
 
 Editora just gained a plugin system, and it's built on the same idea that runs
 the rest of the editor: **everything is a command.** A plugin doesn't get a
-special back door, it registers the same kind of commands, keybindings, and
+special back door; it registers the same kind of commands, keybindings, and
 tool windows the core uses. That keeps the API small and the editor consistent.
 
 ## Two ways to write one
@@ -41,17 +41,17 @@ internals.
 
 ## Plugin registry
 
-Plugins install from a curated registry 
-[adriandeleon/editora-plugins](https://github.com/adriandeleon/editora-plugins) 
+Plugins install from a curated registry,
+[adriandeleon/editora-plugins](https://github.com/adriandeleon/editora-plugins),
 that ships **19 plugins** today: text transforms, encoders, hashers, a regex
 tester, a scratchpad, a calculator, a color picker, "Open on GitHub," and more.
 Editora fetches the index over HTTPS, verifies each download's sha-256, and
 unpacks it with a zip-slip-hardened extractor. You can also install a `.zip`
 straight from disk.
 
-## Plugin Security
+## Plugin security
 
-Plugins are **not sandboxed**! a Java plugin runs with the same access as the
+Plugins are **not sandboxed**: a Java plugin runs with the same access as the
 editor. That's deliberate (it's what makes them powerful), but it means you
 should only install plugins you trust, the same way you would a VS Code or
 IntelliJ extension. Plugins are off by default; you opt in per plugin.

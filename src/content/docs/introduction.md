@@ -47,6 +47,8 @@ Editing and code:
   and completion.
 - **[Navigation & search](/docs/navigation)**: jump pickers, find, and
   project-wide search.
+- **[Code navigation](/docs/code-navigation)**: go to symbol, peek definition,
+  sticky scroll, and related files.
 
 Running, tools, and version control:
 
@@ -55,6 +57,8 @@ Running, tools, and version control:
 - **[Build tools](/docs/build-tools)**: Maven, npm, Cargo, Go, and Gradle.
 - **[HTTP client](/docs/http-client)**: send requests from `.http` files.
 - **[Git](/docs/git)**: the built-in Git integration.
+- **[GitHub](/docs/github)**: pull requests, reviews, and CI logs through the
+  `gh` CLI.
 - **[Diff & merge](/docs/diff-merge)**: the diff viewer and merge resolver.
 
 Workspace and customization:

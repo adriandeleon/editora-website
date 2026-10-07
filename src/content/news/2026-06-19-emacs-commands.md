@@ -28,3 +28,7 @@ Navigation:
 A kill ring (yank-pop and consecutive-kill accumulation) is still deferred, so
 these "kill" commands delete, and cut/copy/paste keep using the system
 clipboard. See the [keybindings reference](/keybindings) for the full Emacs map.
+
+**Update (October 2026).** The kill ring shipped in
+[0.9.10](/news/2026-07-26-editora-0-9-10-released), so these commands now kill
+and yank as they do in Emacs.

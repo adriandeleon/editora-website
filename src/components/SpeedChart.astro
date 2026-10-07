@@ -18,13 +18,14 @@ const bars = [
 ];
 
 const methodology =
+  "Measured in July 2026 on Editora 0.9.9, not the current release. " +
   "Median of five timed runs per editor (a discarded warm-up first), all on " +
   "one Apple M5 running macOS 26.4.1, each opening the same 710-line Markdown " +
   "file with no project or workspace loaded. Every editor was fully quit " +
   "between runs and launched the same way. The clock stops when the editor " +
   "window showing the file appears, not when a splash screen does: IntelliJ " +
-  "puts a splash up around 1.8s and reaches the file at 4.3s, so timing the " +
-  "first window would have understated it by about three seconds. These are " +
+  "puts a splash window up well before its editor is ready, so timing the " +
+  "first window would have understated its 5.60s by several seconds. These are " +
   "relaunches on a warm page cache rather than a first boot, and none of them " +
   "measure background work that continues after the file is on screen.";
 

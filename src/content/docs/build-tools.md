@@ -37,6 +37,14 @@ Maven and Gradle prefer the project's own `./mvnw` / `./gradlew` wrapper, fallin
 back to `mvn` / `gradle` on your `PATH`. npm uses the detected package manager
 (npm / yarn / pnpm / bun) from the `packageManager` field or the lockfile.
 
+A wrapper is a script the repository ships, and it runs with your privileges.
+The first time a task (or Gradle's *Load all tasks…*) would run one, Editora
+shows a **Workspace Trust** notice naming the script and waits for your answer.
+Trust is remembered for the folder that ships the wrapper and the folders
+inside it. Declining cancels the run; it does not fall back to the `mvn` or
+`gradle` on your `PATH`. A project without a wrapper is not asked. Review or
+revoke trust under [Trusted folders](/docs/workspace#trusted-folders).
+
 Choose the JDK used for Maven under **Settings → Languages & Tools → Build
 Tools → Default JDK**. The selector finds installed JDKs in standard platform
 locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;

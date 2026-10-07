@@ -20,6 +20,9 @@ The folder is chosen by this precedence:
 | `--dev` flag | `~/.editora-dev/` |
 | default | `~/.editora/` |
 
+`~` is your home directory; on Windows that is `%USERPROFILE%`, so the default
+folder is `%USERPROFILE%\.editora`.
+
 Use `--dev` to run a development instance that never touches your everyday
 settings or session. The live path is shown in **About Editora**. See the
 [command-line reference](/docs/cli) for all the flags.
@@ -38,6 +41,9 @@ settings or session. The live path is shown in **About Editora**. See the
 | `connections.json` | Saved SFTP connections (no secrets) |
 | `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
+| `macros.json` | Saved keyboard macros |
+| `abbreviations.json` | Your abbreviations |
+| `trusted-folders.json` | Folders you have trusted to run their build wrappers |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
 
 Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
@@ -56,7 +62,7 @@ they can be committed and shared:
 
 Only toolchain settings can be overridden this way; appearance, keymap and fonts
 stay personal, because checking out a repository should not rearrange somebody
-else's editor. **Project: Edit Project Settings…** creates the first file with a
+else's editor. **Project: Edit Project Settings…** creates the first file with an
 example. An existing project TOML file remains readable and is converted when
 you open **Edit Project Settings**. See
 [projects](/docs/workspace#settings-a-project-can-commit).
@@ -93,8 +99,10 @@ older build never clobbers a newer config.
   history, `.bak` backups, and installed plugins are included. Runtime files are
   not: downloaded language servers and debug adapters, `jdtls` workspaces, the
   instance lock, the MCP endpoint file with its live token, and the session log.
-- **Reset to Defaults** (Settings → Advanced) restores defaults while keeping
-  your text zoom and keybinding overrides.
+- **Reset to Defaults** (Settings → Advanced) resets every preference, including
+  the keymap choice, which goes back to Emacs. Text zoom is kept, and your key
+  rebinds stay stored with the keymap you made them in, so they apply again when
+  you switch back to it.
 
 ## More
 

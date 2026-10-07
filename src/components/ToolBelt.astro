@@ -5,6 +5,7 @@
 // falls back to a generated stand-in until a real capture is dropped in as
 // public/screenshots/doctor.png (raster wins over the .svg).
 import { existsSync } from "node:fs";
+import { lspServerCount } from "../lib/editora";
 import { resolve } from "node:path";
 
 const base = import.meta.env.BASE_URL;
@@ -20,7 +21,7 @@ const tools = [
   { name: "git", note: "Version control, blame, diffs" },
   { name: "gh", note: "Pull requests, issues, CI runs" },
   { name: "ripgrep", note: "Faster Find in Files" },
-  { name: "22 language servers", note: "Completion, diagnostics" },
+  { name: `${lspServerCount} language servers`, note: "Completion, diagnostics" },
   { name: "Debug adapters", note: "Java, Python, JavaScript" },
   { name: "mmdc", note: "Mermaid diagrams" },
   { name: "dot / plantuml", note: "Graphviz and PlantUML" },
@@ -35,7 +36,7 @@ const reasons = [
   },
   {
     title: "Nothing you can't use is in the way",
-    body: "Every integration self-gates: it stays hidden until its tool is detected, so the interface only ever shows what actually works on your machine.",
+    body: "Git, Mermaid, the diagram tools and Typst stay hidden until their tool is detected, so the interface only shows what works on your machine. Language servers and debugging (both Beta) are opt-in: switch them on in Settings.",
   },
   {
     title: "A smaller, honest app",

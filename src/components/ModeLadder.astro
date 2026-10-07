@@ -8,7 +8,11 @@
 //   Expert  — hides window chrome only; KEEPS line numbers, minimap, status bar.
 //   Simple  — keeps toolbar/tabs/status bar, drops the gutter + minimap, and
 //             switches the heavy features off (LSP, git, debug, plugins…).
-//   Full    — everything on.
+//   Full    — the whole interface. Language servers and debugging are still
+//             opt-in (off by default in Settings, both Beta), so the copy must
+//             not say they are running out of the box.
+import { lspServerCount } from "../lib/editora";
+
 const modes = [
   {
     id: "zen",
@@ -16,7 +20,7 @@ const modes = [
     how: "C-c z",
     tag: "Focus",
     blurb:
-      "Just the text. Every bar, the gutter, the minimap — gone. The language server is still running behind it.",
+      "Just the text. Every bar, the gutter, the minimap — gone. Whatever you have switched on is still running behind it.",
     shows: ["Nothing but your file"],
   },
   {
@@ -31,7 +35,7 @@ const modes = [
   {
     id: "simple",
     name: "Simple UI",
-    how: "view.toggleSimpleMode",
+    how: "View: Toggle Simple UI Mode",
     tag: "Plain",
     blurb:
       "A plain text editor. Familiar toolbar and tabs, no gutter, and the heavy machinery switched off entirely.",
@@ -40,11 +44,10 @@ const modes = [
   {
     id: "full",
     name: "Full IDE",
-    how: "Default",
+    how: "Default layout",
     tag: "Everything",
-    blurb:
-      "The lot: language servers for 22 languages, step debugging, git and GitHub, build tools, live previews.",
-    shows: ["Tool windows", "Gutter + minimap", "All features"],
+    blurb: `The whole interface: git and GitHub, build tools and live previews out of the box, plus ${lspServerCount} language servers and step debugging (both Beta) once you switch them on in Settings.`,
+    shows: ["Tool windows", "Gutter + minimap", "Every feature available"],
   },
 ];
 ---
@@ -98,9 +101,9 @@ const modes = [
 <p class="ladder-note">
   Zen and Expert only <em>hide</em> the interface &mdash; everything keeps
   running underneath. Simple UI is the one that actually switches the heavy
-  features off. All four are a keystroke or a palette command away, and Editora
-  can launch straight into any of them (<code>--zen</code>, <code>--expert</code>,
-  <code>--simple</code>).
+  features off. Each is a palette command away (Zen and Expert also have a chord
+  in the Emacs keymap, shown above), and Editora can launch straight into any of
+  them (<code>--zen</code>, <code>--expert</code>, <code>--simple</code>).
 </p>
 
 <style>

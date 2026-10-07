@@ -27,36 +27,18 @@ Start here when something that should work doesn't: it answers "is the tool
 installed, is it the version I think, and is Editora looking at the right one" in
 one pass.
 
-## Editora 0.13.0 quits instantly on startup
-
-If you are on **0.13.0**, upgrade to **0.13.1** or later — this is fixed, and
-there is no workaround worth applying on the old build.
-
-0.13.0 crashed a fraction of a second into startup on any CPU **without
-AVX-512**: most consumer Intel from the 12th generation onward, and every AMD
-before Zen 4. The crash was intermittent — it landed on whichever thread got
-there first, so on one affected machine it happened in four launches out of six
-and looked different each time.
-
-The cause was the ahead-of-time cache that makes cold start faster. As well as
-class metadata it archived generated machine code, and those call adapters were
-compiled for **the CPU that built the release** — GitHub's Linux runners have
-AVX-512, so the shipped adapters used instructions your processor refuses to
-execute. The JVM maps such an archive without complaint, because its CPU-feature
-validation doesn't cover cached adapters.
-
-0.13.1 stops caching adapters, so a cache built from then on contains no
-machine code of that kind, and a user still holding a bad one no longer runs it.
-**The startup win is kept in full** — the adapters were contributing nothing to
-it.
-
 ## A launcher is blocked on first run
 
-Installers are currently unsigned.
+Installers are currently unsigned, so the operating system stops the first
+launch until you allow it. You only do this once.
 
-- **macOS**: right-click the app and choose *Open*, then confirm. After the first
-  time it launches normally.
-- **Windows**: in the SmartScreen dialog, click "More info → Run anyway".
+- **macOS** (15 and later): open Editora once and dismiss the warning, then go
+  to **System Settings → Privacy & Security**, scroll to the Security section,
+  and click **Open Anyway** next to the Editora message. Confirm, and it
+  launches normally from then on. On macOS 14 and earlier, Control-click the app
+  in Finder and choose *Open* instead.
+- **Windows**: in the SmartScreen dialog, click **More info**, then **Run
+  anyway**.
 
 ## External tools aren't found
 
@@ -76,8 +58,8 @@ nvm/fnm/asdf per-version bins). If a tool still isn't found:
 ## A language server starts but does nothing
 
 The status bar shows an **LSP: \<server\>** segment and a loading bar while a
-server initializes. If it never settles, restart servers with
-`lsp.restartServers`. For Java specifically, a stale `jdtls` process from a
+server initializes. If it never settles, restart servers with *LSP: Restart
+Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls` process from a
 previous run can hold its workspace lock; the loading bar clearing is the sign
 the handshake completed.
 
@@ -115,13 +97,23 @@ match. If editing or scrolling feels heavy:
 
 ## Reset or isolate your config
 
-- **Reset to Defaults** in **Settings → Advanced** restores defaults (keeping
-  text zoom and keybinding overrides).
+- **Reset to Defaults** in **Settings → Advanced** resets every preference,
+  including the keymap choice, which goes back to Emacs. Text zoom is kept, and
+  your key rebinds stay stored with the keymap you made them in, so they apply
+  again when you switch back to it.
 - **Export Configuration…** zips the active config folder for a backup or bug
   report.
 - Run with `--dev` or `--config-dir <path>` to use a separate config without
   touching your everyday one. See [Configuration](/docs/configuration) and the
   [command-line reference](/docs/cli).
+
+## Editora 0.13.0 quits instantly on startup
+
+If you are on **0.13.0**, upgrade to **0.13.1** or later. 0.13.0 crashed a
+fraction of a second into startup, intermittently, on any CPU without AVX-512
+(most consumer Intel from the 12th generation onward, and every AMD before
+Zen 4). It is fixed in 0.13.1, and there is no workaround worth applying on the
+old build.
 
 Still stuck? [Open an issue](https://github.com/adriandeleon/Editora/issues) and
 attach the Debug Log.

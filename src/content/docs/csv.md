@@ -1,6 +1,6 @@
 ---
 title: CSV & TSV
-description: Rainbow columns, a field readout, and an editable CSV Grid with sort, filter, and export, plus align/shrink and Markdown-table interop.
+description: Rainbow columns, a field readout, and an editable CSV Grid preview with sort, filter, and export, plus align/shrink and Markdown-table interop.
 category: Workspace
 order: 6
 ---
@@ -12,7 +12,7 @@ CSV/TSV syntax highlighting.
 
 - **Rainbow columns**: each column is colored distinctly (cycling every eight),
   so rows line up at a glance. On by default; toggle in **Settings → Editor →
-  CSV** or with *Toggle Rainbow CSV Columns*.
+  CSV** or with *View: Toggle Rainbow CSV Columns*.
 - **Field readout**: the status bar shows *Field N of M* for the caret's column.
 - **Align / shrink**: *CSV: Align Columns* (`csv.align`) pads fields with spaces
   so the delimiters line up in a monospace editor; *CSV: Shrink Columns*
@@ -21,15 +21,19 @@ CSV/TSV syntax highlighting.
 
 ## The CSV Grid
 
-The **CSV Grid** tool window shows the active file as a spreadsheet:
+The **CSV Grid** shows the active file as a spreadsheet. It isn't a tool
+window: it's the file's preview, embedded in the editor with the same 3-mode
+view (Editor / Split / Preview) as Markdown. Switch modes from the floating
+control at the top right of the editor, or with `view.togglePreview` and
+`view.toggleSplitPreview`.
 
 - Content-fit column widths, a **filter box**, **column sort**, and
   inconsistent-row highlighting.
 - **Editable** cells and headers, written straight back to the file.
 - Right-click to **Export to PDF / Print / Excel (`.xlsx`) / ODF (`.ods`)**.
 
-It's on by default for CSV/TSV files (Settings → Editor → CSV, or *Toggle CSV
-Grid Preview*).
+It's on by default for CSV/TSV files (**Settings → Editor → CSV**, or *View:
+Toggle CSV Grid Preview*).
 
 ## Markdown-table interop
 

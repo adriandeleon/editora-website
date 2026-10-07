@@ -14,7 +14,8 @@ disabled. A green ▶ appears in the gutter of a runnable file:
   `void main`) or an extensionless Java file with a `java --source 25+`
   shebang,
 - a **Python** script (the ▶ sits on the `if __name__ == "__main__"` guard), or
-- a **shell** script (only when the Bash language server is enabled).
+- a **shell** script (only when [LSP](/docs/lsp) is turned on and its Bash
+  server is enabled).
 
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
@@ -128,7 +129,9 @@ a colleague's edit updates a configuration rather than doubling it.
 
 ### Creating and editing them
 
-**Settings → Run Configurations** is a master-detail editor for the list, and
+The **Run Configurations** window (`run.editConfigs`, or **Edit
+Configurations…** in the toolbar dropdown) is a master-detail editor for the
+list, and
 **Run: Save Run Configuration…** creates one from the palette;
 **Run: Run Configuration…** runs one and **Run: Delete Run Configuration…**
 removes one.
@@ -158,13 +161,27 @@ is **off by default**; enable it in **Settings → Debugging**.
 | Action | Command | Default key |
 | --- | --- | --- |
 | Start / continue | `debug.start` | `C-c C-d d` |
-| Debug a project main class | `debug.mainClass` | (palette) |
-| Debug via build tool | `debug.viaBuild` | (palette) |
-| Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
+| Continue | `debug.continue` | `C-c C-d c` |
 | Pause | `debug.pause` | `C-c C-d p` |
+| Stop | `debug.stop` | `C-c C-d k` |
+| Restart | `debug.restart` | (palette) |
+| Step over | `debug.stepOver` | `C-c C-d n` |
+| Step into | `debug.stepInto` | `C-c C-d i` |
+| Step out | `debug.stepOut` | `C-c C-d o` |
 | Run to cursor | `debug.runToCursor` | `C-c C-d u` |
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
-| Step over / into / out | `debug.stepOver` … | (Debug window) |
+| Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
+| Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
+| Break on exceptions | `debug.toggleExceptionBreakpoints` | (palette) |
+| Debug a project main class | `debug.mainClass` | (palette) |
+| Debug a saved run configuration | `debug.config` | (palette) |
+| Debug via build tool | `debug.viaBuild` | (palette) |
+| Attach to a running JVM | `debug.attach` | `C-c C-d a` |
+| Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
+| Set an adapter's path | `debug.setAdapterPath` | (palette) |
+
+The keys are the Emacs keymap's; the step commands are also buttons in the
+Debug window.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
 **set-value**, **watches**, and an evaluate console. While suspended, **inline
@@ -237,8 +254,19 @@ server; a plain Maven `main` has no uniform build-tool debug mechanism, so use
 
 ### Installing adapters
 
-Adapters are user-installed, not bundled. Helper scripts in the Editora repo
-fetch each one:
+Adapters are not bundled. Three palette commands download each language's
+adapter, together with its language server, into your config folder:
+
+| Command | Installs | Needs |
+| --- | --- | --- |
+| **Install: Java Language Support** (`install.javaSupport`) | `jdtls` and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
+| **Install: Python Language Support** (`install.pythonSupport`) | Pyright and `debugpy` | Node.js with `npm`, and Python with `pip` |
+| **Install: JavaScript / Node Language Support** (`install.jsSupport`) | `typescript-language-server` and vscode-js-debug | Node.js with `npm`, and `tar` |
+
+Editora does not install those runtimes for you.
+
+To install an adapter by hand instead, the Editora repository has a helper
+script for each:
 
 - **Java**: the Microsoft java-debug plugin (layered onto `jdtls`),
   `scripts/install-java-debug.sh`. If your `jdtls` distribution already bundles
@@ -251,4 +279,6 @@ The Settings → Debugging page shows a live found/not-found status for each.
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, npm, Cargo, Go, and Gradle tasks,
-see [Build tools](/docs/build-tools).
+see [Build tools](/docs/build-tools). A build task that would run a project's
+own `./mvnw` or `./gradlew` asks you to
+[trust the folder](/docs/workspace#trusted-folders) first.

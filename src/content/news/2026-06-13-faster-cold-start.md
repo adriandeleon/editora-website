@@ -12,3 +12,10 @@ a launch can never be slower than before.
 Grab a [fresh installer](/#download) to feel it, and read the
 [deep-dive on the blog](/blog/faster-cold-start-with-an-aot-cache) for how it
 works.
+
+**Update (October 2026).** "Never slower than before" was too strong. The cache
+step later caused a Windows launch failure (fixed in
+[0.9.2](/news/2026-07-08-editora-0-9-2-released)), was missing from macOS arm64
+builds through 0.9.8 (fixed in [0.9.9](/news/2026-07-21-editora-0-9-9-released)),
+and caused a startup crash on some CPUs in 0.13.0 (fixed in
+[0.13.1](/news/2026-08-27-editora-0-13-1-released)).

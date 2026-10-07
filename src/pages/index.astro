@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import { groupedFeatures } from "../lib/features";
-import { version, repo } from "../lib/editora";
+import { version, repo, lspServerCount } from "../lib/editora";
 import { whatsNew } from "../lib/whatsnew";
 import { commandGroups } from "../lib/commands";
 import PaletteDemo from "../components/PaletteDemo.astro";
@@ -24,9 +24,10 @@ const logo = url("editora-icon.svg");
 // as commands.ts is regenerated.
 const commandCount = commandGroups.reduce((n, g) => n + g.commands.length, 0);
 
-// The hero's "See it in action" is a real screen capture when one is present
-// (drop screenshots/hero-demo.mp4|webm into public/); until then the section
-// falls back to a labelled poster stand-in over the real editor screenshot.
+// The "see-it" section plays a real screen capture when one is present (drop
+// screenshots/hero-demo.mp4|webm into public/). Without one it shows the editor
+// screenshot under a heading and lead that describe that screenshot, so nothing
+// on the page promises a video that is not there.
 const heroVideo = ["mp4", "webm"]
   .map((e) => `screenshots/hero-demo.${e}`)
   .find((p) => existsSync(resolve("public", p)));
@@ -49,16 +50,16 @@ const featureShot = (id: string) => {
 };
 
 // Latest entries for the home-page teaser — News first, then Blog.
-const byDate = (a, b) => b.data.date.valueOf() - a.data.date.valueOf();
-const newsItems = (await getCollection("news")).sort(byDate).map((e) => ({
+const newsItems = (await getCollection("news")).map((e) => ({
   kind: "News",
   href: `/news/${e.id}`,
   title: e.data.title,
   description: e.data.description,
   date: e.data.date,
+  version: e.data.version,
   beta: e.data.beta,
 }));
-const blogItems = (await getCollection("blog")).sort(byDate).map((e) => ({
+const blogItems = (await getCollection("blog")).map((e) => ({
   kind: "Blog",
   href: `/blog/${e.id}`,
   title: e.data.title,
@@ -68,8 +69,14 @@ const blogItems = (await getCollection("blog")).sort(byDate).map((e) => ({
 }));
 // Interleaved by date. Concatenating put every news item first, so the section
 // headed "From the blog & news" never actually showed a blog post.
+// Same-day items tie-break on version (newest release first), then on the link.
 const latest = [...newsItems, ...blogItems]
-  .sort((a, b) => b.date.valueOf() - a.date.valueOf())
+  .sort(
+    (a, b) =>
+      b.date.valueOf() - a.date.valueOf() ||
+      (b.version ?? "").localeCompare(a.version ?? "", undefined, { numeric: true }) ||
+      b.href.localeCompare(a.href),
+  )
   .slice(0, 4);
 const fmtDate = (d: Date) =>
   d.toLocaleDateString("en-US", {
@@ -103,14 +110,14 @@ const perfStats = [
 const platforms = [
   { name: "macOS", note: "DMG installer (x64 / arm64)" },
   { name: "Windows", note: "MSI installer (x64)" },
-  { name: "Linux", note: "DEB installer (x64 / arm64)" },
+  { name: "Linux", note: "DEB / RPM / AppImage / tar.gz (x64), tar.gz (arm64)" },
 ];
 ---
 
 <Layout>
   <PageToc />
 
-  <section class="hero">
+  <section id="top" class="hero">
     <div class="hero-inner">
       <img class="hero-logo" src={logo} alt="Editora logo" width="96" height="96" />
       <h2 class="hero-name">Editora</h2>
@@ -123,7 +130,7 @@ const platforms = [
       </p>
       <div class="cta">
         <a class="btn btn-primary" href="#download">Download</a>
-        <a class="btn btn-ghost" href="#see-it">See it in action</a>
+        <a class="btn btn-ghost" href="#see-it">See the editor</a>
       </div>
 
       <div class="badges">
@@ -143,17 +150,20 @@ const platforms = [
     <div class="hero-media">
       <PaletteDemo />
       <p class="hero-media-cap">
-        The command palette, live. Every action is searchable and rebindable.
+        The command palette, animated. Every action is searchable and rebindable.
       </p>
     </div>
   </section>
 
   <main>
     <section id="see-it" class="section see-it">
-      <h2>See it in action</h2>
+      <h2>{heroVideo ? "See it in action" : "A look at the editor"}</h2>
       <p class="section-lead">
-        The actual editor: syntax highlighting, a live preview, git gutters, LSP
-        completion, and a status bar that stays out of your way.
+        {
+          heroVideo
+            ? "The actual editor, recorded: editing, navigating, and running commands from the keyboard."
+            : "The actual editor: a Java file with syntax highlighting, bookmarks in the gutter, the minimap, the Project tool window, and a status bar that stays out of your way."
+        }
       </p>
       {
         heroVideo ? (
@@ -183,9 +193,7 @@ const platforms = [
               />
             </picture>
             <figcaption>
-              <span class="demo-badge">Stand-in</span>
-              A short screen capture will play here. This is the real editor
-              (Editora&nbsp;Dark).
+              Editora with the Editora&nbsp;Dark theme.
             </figcaption>
           </figure>
         )
@@ -217,9 +225,10 @@ const platforms = [
           </svg>
           <h3>A full IDE, no bloat</h3>
           <p>
-            LSP for 23 languages, step debugging, git &amp; GitHub, run &amp;
-            test &mdash; in one fast native app that stays responsive on huge
-            files. No accounts, no telemetry, no subscriptions.
+            {lspServerCount} language servers and step debugging (both Beta,
+            switched on in Settings), git &amp; GitHub, run &amp; test &mdash;
+            in one fast native app that stays responsive on huge files. No
+            accounts, no telemetry, no subscriptions.
           </p>
         </div>
         <div class="pillar">
@@ -229,9 +238,9 @@ const platforms = [
           </svg>
           <h3>Previews everything</h3>
           <p>
-            Markdown, Mermaid, CSV grids, diagrams, PDFs, and 20+ more file
-            types render live, side by side with the source &mdash; no external
-            browser.
+            Markdown, Mermaid, CSV grids, diagrams, PDFs, and more (15+ formats
+            in all) render live, side by side with the source &mdash; no
+            external browser.
           </p>
         </div>
       </div>
@@ -257,7 +266,9 @@ const platforms = [
       <p class="why-sub-lead">
         Editora doesn't bundle its own copy of your toolchain. It shells out to
         the CLIs already on your machine, so you get your versions and your
-        config &mdash; and a feature stays invisible until its tool is found.
+        config. Git, Mermaid, the diagram tools and Typst stay out of sight
+        until their tool is found; language servers and debugging are opt-in
+        (both Beta).
       </p>
       <ToolBelt />
     </section>
@@ -362,7 +373,8 @@ const platforms = [
       <p class="section-lead">
         Syntax highlighting for dozens of languages, and full language-server
         intelligence &mdash; completion, go-to-definition, diagnostics &mdash;
-        for 21 of them. Plus live previews for the formats you actually read.
+        from {lspServerCount} language servers. Plus live previews for the
+        formats you actually read.
       </p>
       <LanguageWall />
     </section>
@@ -408,8 +420,8 @@ const platforms = [
     <section id="download" class="section">
       <h2>Download</h2>
       <p class="section-lead">
-        Native installers and self-contained runnable jars for every platform
-        are attached to each release.
+        Native installers for macOS, Windows, and Linux are attached to each
+        release, along with self-contained runnable jars for Windows and Linux.
       </p>
       <div class="platforms">
         {
@@ -451,8 +463,10 @@ const platforms = [
         self-contained <code>java -jar</code> on JDK&nbsp;25.
       </p>
       <p class="note">
-        Installers are currently unsigned. On macOS, right-click the app and
-        choose <em>Open</em> the first time.
+        Installers are currently unsigned. On macOS&nbsp;15 and later, the first
+        launch is blocked: open <em>System Settings → Privacy &amp; Security</em>
+        and click <em>Open Anyway</em>. On Windows, if SmartScreen appears,
+        choose <em>More info → Run anyway</em>.
       </p>
       <p class="note">
         The {version} release also has <a href={`${repo}/releases/tag/v${version}`}>experimental native archives</a>
@@ -485,7 +499,7 @@ const platforms = [
 
 <span class="tok-comment"># Build a self-contained runnable jar</span>
 ./mvnw <span class="tok-flag">-Pfatjar</span> package
-<span class="tok-keyword">java</span> <span class="tok-flag">-jar</span> target/Editora-{version}.jar</code></pre>
+<span class="tok-keyword">java</span> <span class="tok-flag">-jar</span> target/Editora-*.jar</code></pre>
       </div>
       <p class="note built-note">
         Built in the open with the help of AI coding tools &mdash; every change
@@ -550,7 +564,12 @@ const platforms = [
         }
 
         detectArm(function (isArm) {
-          var archPrefs = isArm ? ["arm64", "x64"] : ["x64", "arm64"];
+          // Never hand a visitor a package built for the other CPU. The one
+          // cross-arch fallback is ARM macOS/Windows to x64, which both run
+          // under emulation; Linux ARM cannot run an x64 .deb, and no x64
+          // machine runs an arm64 build. With no match the button keeps its
+          // link to the releases page.
+          var archPrefs = isArm ? (os === "Linux" ? ["arm64"] : ["arm64", "x64"]) : ["x64"];
           // Try to deep-link the matching asset from the latest release.
           fetch(api + "/releases/latest")
             .then(function (r) {
@@ -559,24 +578,18 @@ const platforms = [
             .then(function (rel) {
               if (!rel || !rel.assets) return;
               var pick = null;
-              // Prefer an asset matching both the OS extension and the CPU arch
-              // (asset names end with e.g. "-linux-x64.deb"); fall back to any
-              // asset with the extension if no arch-specific match exists.
-              for (var e = 0; e < exts.length && !pick; e++) {
-                for (var a = 0; a < archPrefs.length && !pick; a++) {
+              // Arch first, then the OS's package types in order of preference
+              // (asset names end with e.g. "-linux-x64.deb"). So Linux ARM, which
+              // ships no .deb, gets "-linux-arm64.tar.gz" rather than the x64
+              // .deb. The "-native-experimental.tar.gz" archives never match:
+              // the arch is not directly before their extension.
+              for (var a = 0; a < archPrefs.length && !pick; a++) {
+                for (var e = 0; e < exts.length && !pick; e++) {
                   for (var i = 0; i < rel.assets.length; i++) {
-                    if (rel.assets[i].name.toLowerCase().endsWith(archPrefs[a] + exts[e])) {
+                    if (rel.assets[i].name.toLowerCase().endsWith("-" + archPrefs[a] + exts[e])) {
                       pick = rel.assets[i];
                       break;
                     }
-                  }
-                }
-              }
-              for (var e2 = 0; e2 < exts.length && !pick; e2++) {
-                for (var j = 0; j < rel.assets.length; j++) {
-                  if (rel.assets[j].name.toLowerCase().endsWith(exts[e2])) {
-                    pick = rel.assets[j];
-                    break;
                   }
                 }
               }

@@ -1,7 +1,7 @@
 ---
 title: "Editora 0.18.5: fluid Java completion and safer editing"
 description: "Editora 0.18.5 sharpens continuous Java completion, adds selectable Maven JDK toolchains, keeps Run output in reach, and strengthens save, LSP, Git, diff, and merge safety."
-date: 2026-09-19T13:15:00-06:00
+date: 2026-09-19
 version: "0.18.5"
 ---
 

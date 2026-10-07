@@ -21,7 +21,7 @@ The Project Tree and Map menus can add a bookmark to a file's first line without
 opening it first, or attach a bookmark directly to a folder. Both surfaces show
 a compact bookmark indicator after the file or folder name.
 
-| Action | Command | Default key |
+| Action | Command | Emacs key |
 | --- | --- | --- |
 | Toggle bookmark | `bookmarks.toggle` | `C-c m` |
 | Next / previous in file | `bookmarks.next` / `previous` | `C-c ]` / `C-c [` |
@@ -42,13 +42,15 @@ message.
 
 Each of the ten digits gets its own command, `bookmarks.gotoMnemonic0` through
 `bookmarks.gotoMnemonic9`, so you can bind each to a single chord in
-**Settings → Keymap** — one keystroke, no prompt, which is the entire point.
+**Settings → Keymaps** — one keystroke, no prompt, which is the entire point.
 Letters work as a mnemonic too and are reachable from the bookmarks picker; only
 the digits have a bindable command of their own.
 
 The panel shows the mnemonic **first on the row**. It's the only part of a
 bookmark that is otherwise invisible, and a shortcut you can't see is one you
 won't remember assigning.
+
+### The Bookmarks window
 
 The **Bookmarks** tool window (`M-2`) lists them across files in an order you
 control: reorder a bookmark or a whole file group with Alt+Up/Down, a right-click
@@ -64,9 +66,10 @@ a file changes outside the editor, so they survive external edits. They live in
 Personal Notes attach an annotation to a **word, line, range, or project
 folder**, stored *outside* the file. They're built for read-only, generated, or
 shared code—and for project context that does not belong in a source file.
-Notes are **off by default**; enable them in **Settings → Application**.
+Notes are **on by default**; toggle them in **Settings → Workspace → Features**
+(*Enable Personal Notes*).
 
-| Action | Command | Default key |
+| Action | Command | Emacs key |
 | --- | --- | --- |
 | Add a note | `notes.add` | `C-c n` |
 | Edit the note at the caret | `notes.editNote` | `C-c e` |
@@ -95,8 +98,8 @@ anchor truly disappears. The **Notes** tool window (`M-5`) groups them per file
 with a filter, and like Bookmarks it groups by project, General plus the current
 one, with a **Show all projects** toggle. File and folder rows use matching
 icons so their targets remain clear. They live in `notes.json`. A second
-toggle, *Show note indicators*, hides just the gutter glyph and highlight while
-keeping notes on.
+toggle, *Show note indicators* (**Settings → Editor → Display**), hides just the
+gutter glyph and highlight while keeping notes on.
 
 Source references in the Notes window use the same compact, subdued line-number
 style as Structure and Bookmarks, keeping the note text visually primary.

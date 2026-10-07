@@ -4,7 +4,7 @@ description: "How Editora previews HTML in a real browser: a loopback HTTP serve
 date: 2026-06-18
 author: Adrián De León
 tags: [web, feature]
-beta: true
+beta: false
 ---
 
 Editora's Markdown preview renders natively, on purpose. I didn't want to ship a
@@ -44,7 +44,7 @@ No WebSocket library, no SSE plumbing, just a held HTTP request and a counter. A
 cached daemon thread pool backs it so those parked requests don't starve normal
 asset serving.
 
-## The User's browsers
+## The user's browsers
 
 "Open in a detected browser" means actually detecting them, per OS: macOS app
 bundles (`open -a`), Linux binaries on `PATH`, Windows Program Files executables,
@@ -56,7 +56,7 @@ testable without actually launching Chrome in CI.
 ## Staying off the hot path
 
 The whole feature is careful not to tax the editor. Live reload is *one*
-`volatile` bump on the **already-debounced** 250 ms edit pulse,  no new
+`volatile` bump on the **already-debounced** 250 ms edit pulse, with no new
 per-keystroke work. The server runs on its own daemon threads. The browser is
 launched detached (fire-and-forget), so a slow-to-start browser can't stall the
 UI. And it's all **off by default**, behind a Settings toggle, with the commands
@@ -72,6 +72,12 @@ download. The only thing Editora adds is the live-reload glue.
 
 ---
 
-It's a Beta feature today, give it a try (enable it under Settings → HTML
+It's a Beta feature today. Give it a try (enable it under Settings → HTML
 Preview) and let me know how it holds up in
 [Discussions](https://github.com/adriandeleon/Editora/discussions).
+
+**Update (October 2026).** HTML live preview is no longer Beta and is now on by
+default. The server has also changed since this post: the worker pool is a
+fixed pool of 16 threads rather than a cached one, so held long-polls cannot
+exhaust threads; each preview is served under a per-session URL prefix; and a
+request whose `Host` header does not name the loopback listener is refused.

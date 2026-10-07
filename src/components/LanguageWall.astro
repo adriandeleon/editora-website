@@ -1,9 +1,12 @@
 ---
-// "Works with your stack": the languages covered by the 22 language servers, and the live
+// "Works with your stack": the languages covered by the language servers, and the live
 // preview formats, as theme-aware chips. Monogram swatches (brand-ish colors)
 // stand in for full brand logos — swap in real SVGs later without touching the
 // layout. Lists are kept in sync with LspServerRegistry / the preview features
-// in the Editora repo.
+// in the Editora repo. There are more languages than servers because one server
+// can cover several (TypeScript also serves JavaScript, clangd serves C and C++).
+import { lspServerCount } from "../lib/editora";
+
 const languages = [
   { name: "Java", tag: "Jv", color: "#e76f00" },
   { name: "JavaScript", tag: "JS", color: "#f7df1e", dark: true },
@@ -29,6 +32,7 @@ const languages = [
   { name: "Dockerfile", tag: "Dk", color: "#2496ed" },
   { name: "Terraform", tag: "Tf", color: "#7b42bc" },
   { name: "Typst", tag: "Ty", color: "#239dad" },
+  { name: "Astro", tag: "As", color: "#bc52ee" },
 ];
 
 const previews = [
@@ -53,7 +57,7 @@ const previews = [
 <div class="wall">
   <div class="wall-block">
     <h3 class="wall-label">
-      Language servers <span class="wall-count">21</span>
+      Languages <span class="wall-count">{languages.length}</span>
     </h3>
     <ul class="chips">
       {
@@ -71,7 +75,8 @@ const previews = [
       }
     </ul>
     <p class="wall-note">
-      &hellip;plus TextMate syntax highlighting for many more.
+      Covered by {lspServerCount} language servers, plus TextMate syntax
+      highlighting for many more.
     </p>
   </div>
 

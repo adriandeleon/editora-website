@@ -20,8 +20,9 @@ Twenty-eight themes ship in total:
 - **Editora** (light and dark) — the default
 - **Primer** (GitHub-style), **Nord** and **Cupertino** — each light and dark
 - **Dracula**
-- A community set of nineteen: Army, Autumn, Blacky, Blue, Browny, Fall, Navy,
-  News, Spring, Summer, Winter and Yacht
+- A community set of nineteen themes in twelve families: Army, Autumn, Blacky,
+  Blue, Browny, Fall, Navy, News, Spring, Summer, Winter and Yacht (seven of
+  them in light and dark)
 
 The app chrome is themed by AtlantaFX; the editor surface, gutter, syntax tokens
 and project tree are themed separately. By default the **editor** theme follows

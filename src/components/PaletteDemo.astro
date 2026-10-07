@@ -1,17 +1,25 @@
 ---
+import { commandGroups } from "../lib/commands";
 // A self-contained, theme-aware animation of Editora's command palette:
 // a query types itself in, the result list filters, and the selection walks
 // down to a command that "runs". Pure CSS keyframes — no JS, no asset — so it
 // stays crisp on retina, recolors with the active site theme, and freezes on a
 // tidy frame under prefers-reduced-motion. This is the "shows the verb" motion
 // the hero needs; the real screen-capture <video> sits beside it in the hero.
+// The rows are real commands, looked up by id in the generated command data,
+// so a title or chord that changes in the app changes here too.
+const byId = new Map<string, (typeof commandGroups)[number]["commands"][number]>();
+for (const g of commandGroups) for (const c of g.commands) byId.set(c.id, c);
 const rows = [
-  { title: "View: Toggle Markdown Preview", chord: "C-c p", match: true },
-  { title: "Git: Show File History", chord: "M-g h", match: false },
-  { title: "Edit: Add Cursor to Next Match", chord: "C-d", match: false },
-  { title: "Go to Symbol in File", chord: "M-g s", match: false },
-  { title: "LSP: Go to Definition", chord: "M-.", match: false },
-];
+  { id: "view.markdownSplit", match: true },
+  { id: "tool.gitLog", match: false },
+  { id: "search.inFiles", match: false },
+  { id: "structure.jump", match: false },
+  { id: "lsp.gotoDefinition", match: false },
+].flatMap(({ id, match }) => {
+  const c = byId.get(id);
+  return c ? [{ title: c.title, chord: c.keys ?? "", match }] : [];
+});
 ---
 
 <div class="palette-demo" aria-hidden="true">
@@ -56,7 +64,7 @@ const rows = [
         rows.map((r, i) => (
           <li class={`pd-row${r.match ? " is-match" : ""}`} style={`--i:${i}`}>
             <span class="pd-title">{r.title}</span>
-            <span class="pd-chord">{r.chord}</span>
+            {r.chord && <span class="pd-chord">{r.chord}</span>}
           </li>
         ))
       }

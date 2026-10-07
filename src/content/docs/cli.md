@@ -6,8 +6,24 @@ order: 2
 ---
 
 Editora takes a few command-line arguments. With the native installers the
-launcher binary accepts them too; from source, pass them after `javafx:run` or
-the jar.
+launcher binary accepts them; from source, build the jar and pass them to it:
+`java -jar target/Editora-*.jar <flags>`.
+
+## Where is the launcher?
+
+The examples on this page write the launcher as `editora`. Whether that command
+exists depends on how you installed:
+
+| Package | Launcher |
+| --- | --- |
+| **Linux `.deb`** | `editora` on your `PATH` (a `/usr/bin/editora` link to `/opt/editora/bin/Editora`) |
+| **Linux `.tar.gz`** | `editora` on your `PATH` after `./install.sh` (`~/.local/bin/editora`, or `/usr/local/bin/editora` with `sudo`); or run `./Editora/bin/Editora` in place |
+| **Linux `.rpm`** | `/opt/editora/bin/Editora`; no `editora` command is added, so add your own symlink if you want one |
+| **Linux `.AppImage`** | The `.AppImage` file itself; nothing is added to your `PATH` |
+| **macOS `.dmg`**, **Windows `.msi`** | The installed application's own launcher; no `editora` command is added to your `PATH` |
+| **Fat jar** | `java -jar Editora-<version>-<platform>.jar` (needs JDK 25) |
+
+Where there is no `editora` command, substitute the launcher in the examples.
 
 ## Flags
 
@@ -84,7 +100,7 @@ handoff routes into that same code path.)
 It is deliberately narrow. Only a launch that is purely *"open these files"* is
 handed over; these always get their own editor:
 
-- `--project`, `--new-file`, `--config-dir` and `--dev`, which shape how a
+- `--project`, `--new-file`, `--config-dir`, `--dev` and `--diff-ui`, which shape how a
   *process* starts and have no honest meaning inside a window that's already
   running
 - a launch with **no files at all**
@@ -106,6 +122,8 @@ differs by platform:
 | **Linux `.deb`** | An *Open With* entry and an `editora` command on your `PATH`; it also sets *Editora Expert Mode* as the system default text editor, which your own per-user choice still overrides |
 | **macOS `.dmg`** | Finder's *Open With*, via the app bundle's declared document types |
 | **Linux `.rpm`** | No association — run `/opt/editora/bin/Editora`, or open files from inside Editora |
+| **Linux `.tar.gz`** | `install.sh` adds an application-menu entry and the `editora` command |
+| **Linux `.AppImage`** | Nothing is registered — the file runs in place |
 
 Windows hands a file manager's chosen file to an application as a command-line
 argument, and nothing maps an extension to Editora unless the installer says so
@@ -142,6 +160,6 @@ editora --new-instance notes.md
 editora --expert --single-window --no-session README.md
 ```
 
-`--zen` and `--simple` only affect the current session; they don't change your
+`--zen`, `--expert` and `--simple` only affect the current session; they don't change your
 saved preferences. The config-folder flags are documented in
 [Configuration](/docs/configuration).
