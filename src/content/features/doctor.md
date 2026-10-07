@@ -1,7 +1,7 @@
 ---
 title: "Doctor"
 group: "Customization & extensibility"
-order: 7
+order: 10
 beta: false
 summary: "A health screen for every external tool Editora can use: what was found, which version, where it lives, what's only half-configured, and what's missing, with an <strong>Install…</strong> button where Editora can fetch it for you."
 ---

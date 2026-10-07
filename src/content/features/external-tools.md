@@ -1,7 +1,7 @@
 ---
 title: "External tools"
 group: "Customization & extensibility"
-order: 6
+order: 9
 beta: false
 summary: "Define your own CLI commands and run them on the current file or buffer, with <code>$Name$</code> macros, stdin piping, and output to a console or back into the text."
 ---

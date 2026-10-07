@@ -781,7 +781,37 @@ Install from the built-in **registry** of 19 plugins (*Browse plugins…*), or f
 
 Off by default. Plugins aren't sandboxed, so only install ones you trust.
 """),
-    new Feature("simple-ui-mode", CE, 3, false,
+    new Feature("zen-mode", CE, 3, false,
+        "Zen mode",
+        "Hides every bar, the line numbers, and the minimap, leaving only the text. Everything you have switched on keeps running.",
+        """
+Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, and the column ruler. Fold markers stay in the margin.
+
+Nothing is switched off. Language servers, Git, and every command and keybinding keep working, so the palette (`M-x`) and your chords still reach everything while the interface is hidden.
+
+- Toggle it with `C-c z` in the Emacs keymap, with **View: Toggle Zen Mode** from the palette, or start in it with the `--zen` flag.
+- A small floating **Z** button in the corner turns it off again.
+- It applies to one window and never changes your saved settings, so the interface comes back as you left it.
+- Zen and [Expert mode](/features/expert-mode) are mutually exclusive: turning one on turns the other off.
+
+The other three ways to run the editor are [Expert mode](/features/expert-mode), [Simple UI mode](/features/simple-ui-mode), and the [full IDE](/features/full-ide). See also [Focus modes](/docs/workspace#focus-modes) in the docs.
+"""),
+    new Feature("expert-mode", CE, 4, false,
+        "Expert mode",
+        "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay.",
+        """
+Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the column ruler, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
+
+It suits people who drive the editor from the keyboard and want the room back without losing their bearings in the file. Nothing is switched off, so language servers, Git, and every command keep working.
+
+- Toggle it with `C-c C-e` in the Emacs keymap, with **View: Toggle Expert Mode** from the palette, from Settings → Interface → Modes, or start in it with the `--expert` flag.
+- A small floating **E** button in the corner turns it off again.
+- It applies to one window and never changes your saved settings.
+- Expert and [Zen mode](/features/zen-mode) are mutually exclusive: turning one on turns the other off.
+
+The other three ways to run the editor are [Zen mode](/features/zen-mode), [Simple UI mode](/features/simple-ui-mode), and the [full IDE](/features/full-ide). See also [Focus modes](/docs/workspace#focus-modes) in the docs.
+"""),
+    new Feature("simple-ui-mode", CE, 5, false,
         "Simple UI mode",
         "One toggle strips the editor to the essentials, hiding the extra toolbar groups, tool-window stripe, breadcrumb, gutter, and minimap for a calm, minimal surface.",
         """
@@ -790,8 +820,23 @@ One toggle strips the editor to the essentials (hiding the extra toolbar groups,
 The [menu bar](/features/menu-bar) stays, **simplified rather than hidden**, with File, Edit, Find, View and Help. The menus that go are the ones for features the mode switches off, which would otherwise be entirely greyed out. The Simple mode toggle stays in that reduced View menu, so anyone who entered the mode from there can leave it the same way.
 
 Toggle it from Settings → Interface → Modes, the toolbar, the palette, or the `--simple` CLI flag (session-only). Toggling off restores everything exactly.
+
+The other three ways to run the editor are [Zen mode](/features/zen-mode), [Expert mode](/features/expert-mode), and the [full IDE](/features/full-ide).
 """),
-    new Feature("localized-ui", CE, 4, false,
+    new Feature("full-ide", CE, 6, false,
+        "Full IDE",
+        "The default layout: menu bar, toolbar, tabs, tool windows, gutter, minimap, and status bar, with every feature available.",
+        """
+The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, toolbar, tab bar, breadcrumb, gutter, minimap, and status bar are all on screen, and tool windows such as Project, Git Log, TODO, and Output dock around the editor.
+
+Some features work as soon as you open a folder, and some wait for you to switch them on:
+
+- **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [local file history](/features/local-file-history).
+- **Switched on in Settings (both Beta):** [language servers](/features/lsp) and [debugging](/features/debugging).
+
+Every piece of the interface can be shown or hidden on its own from the View menu or Settings → Interface. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode) and [Expert mode](/features/expert-mode) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode) hides more and also switches the heavier features off.
+"""),
+    new Feature("localized-ui", CE, 7, false,
         "Localized UI",
         "The whole interface is translated into English, Italian, Spanish, French, Portuguese, and German, selectable in Settings → Appearance.",
         """
@@ -799,7 +844,7 @@ Editora's entire interface is translated (**English, Italian, Spanish, French, P
 
 Pick a language in Settings → Appearance (or let it follow your OS locale); the choice applies on restart. A key-parity test keeps every translation complete.
 """),
-    new Feature("mcp", CE, 5, true,
+    new Feature("mcp", CE, 8, true,
         "MCP server",
         "Embed a Model Context Protocol server in the running editor so an LLM agent (Claude Code, …) can observe live state and drive the command registry. Loopback-only, token-authed, off by default.",
         """
@@ -815,7 +860,7 @@ So an agent can observe live state, make undoable edits, and drive the editor. T
 
 It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
 """),
-    new Feature("external-tools", CE, 6, false,
+    new Feature("external-tools", CE, 9, false,
         "External tools",
         "Define your own CLI commands and run them on the current file or buffer, with <code>$Name$</code> macros, stdin piping, and output to a console or back into the text.",
         """
@@ -827,7 +872,7 @@ Define your own command-line tools in **Settings → External Tools** and run th
 
 Every tool you define becomes its own palette command (and is bindable to a key), plus there's **External Tools: Run…** (a picker) and **Rerun Last**. Tools run off the UI thread with a timeout. Available by default (the list starts empty) and off in Simple UI mode. See the [external tools guide](/docs/external-tools).
 """),
-    new Feature("doctor", CE, 7, false,
+    new Feature("doctor", CE, 10, false,
         "Doctor",
         "A health screen for every external tool Editora can use: what was found, which version, where it lives, what's only half-configured, and what's missing, with an <strong>Install…</strong> button where Editora can fetch it for you.",
         """

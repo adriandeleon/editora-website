@@ -1,7 +1,7 @@
 ---
 title: "Localized UI"
 group: "Customization & extensibility"
-order: 4
+order: 7
 beta: false
 summary: "The whole interface is translated into English, Italian, Spanish, French, Portuguese, and German, selectable in Settings → Appearance."
 ---

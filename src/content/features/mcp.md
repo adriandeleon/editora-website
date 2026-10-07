@@ -1,7 +1,7 @@
 ---
 title: "MCP server"
 group: "Customization & extensibility"
-order: 5
+order: 8
 beta: true
 summary: "Embed a Model Context Protocol server in the running editor so an LLM agent (Claude Code, …) can observe live state and drive the command registry. Loopback-only, token-authed, off by default."
 ---

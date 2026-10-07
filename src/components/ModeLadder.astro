@@ -16,6 +16,7 @@ import { lspServerCount } from "../lib/editora";
 const modes = [
   {
     id: "zen",
+    href: "/features/zen-mode",
     name: "Zen",
     how: "C-c z",
     tag: "Focus",
@@ -25,6 +26,7 @@ const modes = [
   },
   {
     id: "expert",
+    href: "/features/expert-mode",
     name: "Expert",
     how: "C-c C-e",
     tag: "Focus",
@@ -34,6 +36,7 @@ const modes = [
   },
   {
     id: "simple",
+    href: "/features/simple-ui-mode",
     name: "Simple UI",
     how: "View: Toggle Simple UI Mode",
     tag: "Plain",
@@ -43,6 +46,7 @@ const modes = [
   },
   {
     id: "full",
+    href: "/features/full-ide",
     name: "Full IDE",
     how: "Default layout",
     tag: "Everything",
@@ -55,7 +59,7 @@ const modes = [
 <div class="ladder">
   {
     modes.map((m, i) => (
-      <div class={`rung rung-${m.id}`}>
+      <a class={`rung rung-${m.id}`} href={m.href} aria-label={`${m.name}: see the mode in detail`}>
         <div class="rung-shot" aria-hidden="true">
           {/* top chrome: toolbar + tabs (Simple + Full only) */}
           <span class="mk-toolbar">
@@ -93,7 +97,7 @@ const modes = [
           ))}
         </ul>
         <code class="rung-how">{m.how}</code>
-      </div>
+      </a>
     ))
   }
 </div>
@@ -117,6 +121,8 @@ const modes = [
   .rung {
     display: flex;
     flex-direction: column;
+    color: inherit;
+    text-decoration: none;
     background: var(--bg-soft);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -128,6 +134,10 @@ const modes = [
   .rung:hover {
     border-color: var(--accent);
     transform: translateY(-2px);
+  }
+  .rung:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   /* --- the mini editor mockup --- */
