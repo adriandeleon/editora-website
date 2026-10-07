@@ -15,15 +15,15 @@ Yes, it's free and released under the MIT License. Source is on
 There are no accounts, no telemetry, and no analytics. Nothing about you or your
 code is collected or sent anywhere as a matter of course.
 
-Two honest exceptions, so you don't have to discover them yourself:
+There are two exceptions:
 
 - **The update check.** Once a day at startup Editora asks GitHub whether a
   newer release exists. It sends nothing about you or your files, and it's a
   checkbox in **Settings → Workspace** if you'd rather it didn't.
 - **The AI features**, which are off by default. If you turn them on, the text
   you act on is sent to whichever endpoint you configure (a local model, or a
-  provider you supply a key for). That's the whole point of the feature, but it
-  is the one part of Editora that transmits your code, so it stays opt-in.
+  provider you supply a key for). That is how the feature works, and it is the
+  one part of Editora that transmits your code, so it stays opt-in.
 
 Plugins you install run with full access and can do their own thing (see below).
 
@@ -52,7 +52,7 @@ Signing is on the roadmap.
 
 ## Which features are off by default?
 
-Fewer than you might expect, because there are two different things going on.
+Fewer than you might expect. They fall into two groups.
 
 **Off until you ask for them** are the features that run code, reach the
 network, or change how the editor works: language servers, debugging, plugins,
@@ -60,12 +60,11 @@ the AI features, and the MCP server. Turn on what you want in Settings; each has
 its own page in these docs.
 
 **On, but invisible until their tool exists** is the larger group. Git, GitHub,
-Mermaid, the diagram tools, Typst and the rest are enabled out of the box, and
-they self-gate: the button, panel or gutter icon simply isn't there until
-Editora finds the command it needs. So a fresh install stays uncluttered
-without you having to switch anything on, and installing `git` or `mmdc` later
-lights the feature up on its own. [Doctor](/features/doctor) shows you exactly
-what was found.
+Mermaid, the diagram tools, Typst and the rest are enabled by default, and
+they self-gate: the button, panel or gutter icon isn't there until Editora finds
+the command it needs. A fresh install stays uncluttered without you having to
+switch anything on, and installing `git` or `mmdc` later makes the feature
+appear on its own. [Doctor](/features/doctor) shows you what was found.
 
 Projects are on from the start too; **Settings → Workspace** turns them off.
 
@@ -92,8 +91,8 @@ can fetch for you. See [Doctor](/features/doctor).
 
 ## Is this an Emacs clone? Do I need to know Emacs?
 
-No, and no. Emacs is the default keymap because the editing model is genuinely
-inherited: a kill ring, a mark ring, `C-x r` rectangles, narrowing,
+No, and no. Emacs is the default keymap because the editing model is inherited
+from Emacs: a kill ring, a mark ring, `C-x r` rectangles, narrowing,
 query-replace, `C-u` prefix arguments. If that's your muscle memory, most of it
 is already here, and [Emacs heritage](/features/emacs-heritage) lists what
 carried over and what deliberately didn't.
@@ -121,7 +120,7 @@ built-in editor. Changes apply live and are saved in `settings.json`. See
 Plugins are off by default and run with full access (no sandbox), like a VS Code
 or IntelliJ extension. The registry adds defenses (a capability disclosure
 before you enable one, sha-256 verification of downloads, and an Ed25519-signed
-index), but the honest rule is to only install plugins you trust. See
+index), but you should still only install plugins you trust. See
 [Plugins](/docs/plugins).
 
 ## Where are my settings and how do I reset them?
@@ -133,7 +132,7 @@ and run a throwaway config with `--dev` or `--config-dir`. See
 
 ## Is it slow to start? It's a Java app.
 
-That's the usual assumption, so it's measured rather than asserted. On one
+That's the usual assumption, so here are measurements. On one
 Apple M5, opening the same file, Editora and VS Code were level at about 1.5
 seconds, and IntelliJ IDEA took about 5.6. Opening a real project folder,
 Editora reached its window in about 2.3 seconds against 2.9 for VS Code and 7.3

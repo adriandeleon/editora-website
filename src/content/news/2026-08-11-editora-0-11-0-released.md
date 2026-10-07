@@ -38,7 +38,7 @@ the type's extension, so `notes.json` under Text File gives you JSON.
 **Inlay hints sit where they belong.** They used to be parked at the end of the
 line, so a call with several arguments produced a run of grey text whose only
 clue to which hint went with which argument was left-to-right order. Each hint
-now renders inline at the position it describes, gently pushing the code after it
+now renders inline at the position it describes, pushing the code after it
 aside. They are still annotations rather than text, so selecting or copying a
 line gives you exactly what is in the file.
 

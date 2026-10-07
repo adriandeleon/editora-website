@@ -7,9 +7,9 @@ tags: [performance, javafx]
 ---
 
 This one only reproduced in the *packaged* build, which made it especially fun:
-open enough files, and eventually the whole editor window would go **black**. No
-exception in the echo area, no crash, just a black rectangle where the UI used to
-be.
+open enough files, and eventually the whole editor window would go **black**. There
+was no exception in the echo area and no crash, only a black rectangle where the
+UI used to be.
 
 ## The clue: it scaled with open files
 
@@ -18,16 +18,16 @@ from any single document and toward something that *accumulated*. Digging into
 the render thread turned up NullPointerExceptions deep in JavaFX's Prism
 pipeline, on a null `RTTexture` / mask texture.
 
-That's the tell. JavaFX's Prism renderer keeps a **texture pool with a fixed
+That explained it. JavaFX's Prism renderer keeps a **texture pool with a fixed
 ceiling** (512 MB by default). When you exhaust it, texture allocation starts
-returning null, and the render thread NPEs trying to use it. The screen goes
+returning null, and the render thread NPEs trying to use it, so the screen goes
 black. It only showed up packaged because the dev run had different VRAM
-headroom. The classic "works on my machine."
+headroom.
 
 ## The fix: don't let GPU resources grow with open files
 
 The root problem was that GPU-backed resources scaled linearly with the number
-of open buffers. Two big offenders, two fixes.
+of open buffers. There were two big offenders.
 
 - **Minimaps.** Every open buffer kept a rendered minimap snapshot, a pinned
   GPU texture. Now a background (non-selected) tab drops its snapshot via
@@ -41,10 +41,11 @@ of open buffers. Two big offenders, two fixes.
 As a safety net, the packaged launcher (and `mvn javafx:run`, so dev matches
 prod) also raises the caps: `-Dprism.maxvram=2G -Dprism.maxTextureSize=16384`.
 
-## The rule it left behind
+## Bounding per-buffer GPU resources
 
-The lasting lesson is a checklist item now: **any per-buffer `Canvas` or
+This is now a checklist item: **any per-buffer `Canvas` or
 `Image` must be released or bounded.** GPU memory isn't garbage-collected the way
 heap is. A cached `Image` is a texture you're holding until you let go. If a
-resource's lifetime is "one per open file" and files can pile up, that's a leak
-waiting to turn into a black window in someone's packaged build, not yours.
+resource's lifetime is "one per open file" and files can pile up, that's a leak,
+and it will surface as a black window in a user's packaged build rather than in
+your dev run.

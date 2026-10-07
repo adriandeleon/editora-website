@@ -27,9 +27,8 @@ Beyond GFM it also renders **YAML front matter** (as a metadata block),
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
 
-The parser caps pathological input — table cells, block nesting and inline
-nesting — which is the right default for an editor that renders whatever file
-you open. The nesting limits degrade to plain text; the **table cap** is
+The parser caps pathological input (table cells, block nesting and inline
+nesting), because the editor renders whatever file you open. The nesting limits degrade to plain text; the **table cap** is
 reachable by a legitimate file (a 2.3 MB Markdown table trips it, well under the
 5 MB point where the preview switches off anyway), and the preview reports that
 rather than going blank.
@@ -67,9 +66,9 @@ You can also insert a **table of contents** (`markdown.toc`) and a **task list**
 ## Tables
 
 Markdown's editing actions sit under a single **Markdown** submenu in the
-editor's right-click menu rather than spliced flat into it — seven top-level
-entries pushed cut, copy, paste and the spelling suggestions far enough down to
-hunt for, and made file-type actions read as ordinary editing ones. The Table
+editor's right-click menu. Listed flat, the seven entries would push cut, copy,
+paste and the spelling suggestions well down the menu, and would make file-type
+actions read as ordinary editing ones. The Table
 submenu stays nested inside it.
 
 Beyond the format bar's reflow, the right-click **Table** submenu (and the
@@ -168,17 +167,17 @@ numbers, syntax highlighting, and page size live in **Settings → Editor → Ex
 
 ### Long documents
 
-Pagination splits on whole blocks, so nothing breaks across a page edge. A block
-**taller than a page** used to get a page of its own, scaled uniformly to fit —
-right for an oversized image, wrong for text, because a Markdown list is *one*
-top-level block however long it is.
+Pagination splits on whole blocks, so nothing breaks across a page edge. Giving a
+block **taller than a page** a page of its own, scaled uniformly to fit, is
+right for an oversized image but wrong for text, because a Markdown list is
+*one* top-level block however long it is.
 
-An over-tall container is now regrouped into copies of itself holding as many
+An over-tall container is therefore regrouped into copies of itself holding as many
 children as fit: a long list becomes several lists, a long paragraph several
 paragraphs, each carrying the original's styling so it renders identically. The
 text stays vector rather than being sliced as an image, so it is crisp on paper;
-the cost is a seam that does not hang-indent. Uniform scaling survives only for
-a genuinely **atomic** over-tall block, where it is the right answer. A plain
+the cost is a seam that does not hang-indent. Uniform scaling applies only to
+an **atomic** over-tall block. A plain
 paragraph has no emphasis to split at, so long runs are cut at whitespace and no
 word is broken.
 

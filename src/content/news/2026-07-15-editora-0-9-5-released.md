@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.9.5: a hardening release"
-description: "A big round of data-safety and security fixes, crash-safe saves, protected auto-save, and config integrity, plus the Project tree becomes a mini file manager."
+description: "A big round of data-safety and security fixes, including crash-safe saves, protected auto-save, and config integrity. The Project tree also becomes a mini file manager."
 date: 2026-07-15
 version: "0.9.5"
 ---
@@ -25,10 +25,10 @@ outside its target folder, and a catastrophic regex in Find no longer freezes th
 editor.
 
 **Robustness.** Quitting or closing a window now shuts down everything it
-started, and stopping a run or build kills the whole process tree, so no more
+started, and stopping a run or build kills the whole process tree, so there are no more
 orphaned `npm run dev` or `mvn` processes.
 
-Two things you'll actually see: the **Project tool window is now a mini file
+Two things you'll see: the **Project tool window is now a mini file
 manager** (multi-select, drag files onto a folder to move them, bulk delete), and
 it shows a **single-letter Git status** (M / A / D / R / U) on each changed file,
 matching the Commit window. See [Projects](/docs/workspace#projects) and

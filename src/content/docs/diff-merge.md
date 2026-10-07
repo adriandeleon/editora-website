@@ -78,7 +78,7 @@ to a newer working tree.
 
 ## Merge conflicts
 
-When Git has unmerged index stages, `merge.resolve` opens a true three-way
+When Git has unmerged index stages, `merge.resolve` opens a three-way
 resolver using the common ancestor, ours, and theirs. Independent and identical
 edits combine automatically; divergent regions offer Base, Ours, and Theirs
 choices above an editable Result. Applying is undoable and protected against a

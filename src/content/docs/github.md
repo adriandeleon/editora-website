@@ -7,25 +7,25 @@ order: 3
 
 Editora talks to GitHub through the [`gh` CLI](https://cli.github.com) you
 already have installed and signed in. **Editora never handles a token.** It
-shells out to `gh`, exactly the way the [Git integration](/docs/git) shells out
+shells out to `gh`, the same way the [Git integration](/docs/git) shells out
 to `git`, so whatever `gh` can reach, Editora can reach, including GitHub
 Enterprise, with no host configuration of its own.
 
-It's **on by default** but self-gating, so it stays completely invisible until
-all of these are true:
+It's **on by default** but self-gating, so it stays invisible until all of
+these are true:
 
 1. The GitHub integration is enabled in **Settings → Version Control → GitHub**.
 2. `gh` is on your `PATH` (or its location is set on that Settings page).
 3. `gh auth status` succeeds, meaning you're signed in.
 4. The current repository's remote points at a GitHub host.
-5. The repository actually has an open pull request, issue, or workflow run.
+5. The repository has an open pull request, issue, or workflow run.
 
-If any of those fail, the tool window and status-bar indicator simply don't
-appear, and each command reports the precise reason rather than failing quietly.
+If any of those fail, the tool window and status-bar indicator don't appear, and
+each command reports the reason.
 
 ## Signing in
 
-Authentication is deliberately outside the editor. Run:
+Authentication happens outside the editor. Run:
 
 ```bash
 gh auth login
@@ -66,7 +66,7 @@ and required for the other two.
 
 - **GitHub: Check Out Pull Request…** (`github.checkoutPr`) picks an open pull
   request and checks out its branch. Open files that are unmodified reload from
-  disk, and the Git surfaces refresh, the same choreography as switching branches.
+  disk, and the Git surfaces refresh, the same as when you switch branches.
 - **GitHub: Create Pull Request…** (`github.createPr`) creates one from the
   current branch. Fill in title, body, base branch, and whether it's a draft.
   Leaving the base blank uses the repository's default branch.
@@ -89,9 +89,9 @@ The **GitHub** tool window (`M-g p`, or `tool.github`) has three segments:
 The window is **repo-scoped, not file-scoped**, so it stays put as you switch
 tabs, including onto the Welcome tab.
 
-All three segments share **one filter box**, matching on everything a row shows
-or tooltips — number, title, author, branch, state, labels — with a leading `#`
-optional, so `42` and `#42` both find PR 42. The filter clears when you switch
+All three segments share **one filter box**. It matches on everything a row
+shows or tooltips (number, title, author, branch, state, labels), and a leading
+`#` is optional, so `42` and `#42` both find PR 42. The filter clears when you switch
 segment (a query typed against pull requests means nothing for runs) and survives
 a refresh.
 
@@ -101,17 +101,17 @@ bare `n` / `p` also move, since the list holds no text input), and Enter opens.
 
 ## Reading a failed CI run
 
-This is the part that saves the most time. Double-clicking a failed run, or
+Double-clicking a failed run, or
 running **GitHub: View CI Failure Log…** (`github.viewRunLog`), pulls that run's
 failure log into a **CI** tab of the shared
 [Output](/docs/build-tools) console, with errors and warnings colored.
 
-The useful bit: **the stack frames are clickable.** A CI log prints paths as they
+**The stack frames are clickable.** A CI log prints paths as they
 existed on the runner, like
 `/home/runner/work/your-repo/your-repo/src/main/java/…`, which doesn't exist on
 your machine. Editora maps those back onto your local checkout by matching
 progressively shorter repository-relative suffixes, so clicking a frame in a red
-build opens the actual file at the actual line.
+build opens the file at that line.
 
 Logs are fetched once, not streamed, because a finished run's log doesn't grow.
 Very large logs are trimmed to their last few thousand lines.
@@ -146,7 +146,7 @@ run.
 
 ## Limitations
 
-`gh` sets the ceiling on what's possible here. Inline and threaded review
+The integration can only do what `gh` can. Inline and threaded review
 comments, and GitHub's "suggested changes", have no `gh` subcommand, so they
 aren't supported yet. Neither are notifications, job-level drill-down into a run,
 or artifact downloads. Pull request diffs are fetched whole rather than per file,

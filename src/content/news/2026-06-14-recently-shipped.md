@@ -9,12 +9,12 @@ recently. See the
 [full changelog](https://github.com/adriandeleon/Editora/blob/master/CHANGELOG.md)
 for everything.
 
-- **Debugging (DAP)** for Java, Python, and JavaScript, breakpoints, stepping,
-  watches, inline values, and an interactive console.
+- **Debugging (DAP)** for Java, Python, and JavaScript, with breakpoints,
+  stepping, watches, inline values, and an interactive console.
 - **Git integration**: status-bar branch, gutter change bars, a Commit tool
   window, and fetch / pull / push + branch switching.
-- **Language servers (LSP)** for 20+ languages, go-to-definition, references,
-  hover docs, diagnostics, and completions.
+- **Language servers (LSP)** for 20+ languages, with go-to-definition,
+  references, hover docs, diagnostics, and completions.
 - **Diff & merge viewer**: side-by-side and unified, with apply-hunk arrows and
   a conflict resolver.
 - **HTTP client**: run `.http` / `.rest` requests from a gutter ▶.
@@ -22,5 +22,5 @@ for everything.
   templates**, **multiple cursors**, **Remote files over SFTP**, and a
   **localized UI** (six languages).
 
-Want the bigger picture? The [roadmap](/roadmap) shows what's shipped and what's
+The [roadmap](/roadmap) shows what's shipped and what's
 next.

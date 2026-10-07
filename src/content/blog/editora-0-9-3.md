@@ -8,18 +8,18 @@ tags: [release]
 
 Two releases have landed since 0.9.1: **0.9.2** and **0.9.3**. The theme this
 time is turning more of the files you already open into something you can read,
-plus a couple of larger additions. Here's the tour.
+plus a couple of larger additions.
 
 ## Typst
 
-If you write [Typst](https://typst.app), Editora now treats `.typ` files as a
-first-class document format. You get the same three-mode view as Markdown, Editor
-/ Split / Preview, with the document rendered off-thread by the `typst` CLI as a
-multi-page stack. The nice touch is that the preview doesn't flicker: the last
-good render stays on screen while you type, and a compile error just adds a small
-banner over the pages instead of blanking them.
+If you write [Typst](https://typst.app), Editora now supports `.typ` files as a
+document format. You get the same three-mode view as Markdown (Editor / Split /
+Preview), with the document rendered off-thread by the `typst` CLI as a
+multi-page stack. The preview doesn't flicker: the last good render stays on
+screen while you type, and a compile error adds a small banner over the pages
+instead of blanking them.
 
-Editing feels like Markdown. Enter continues a list, a format bar pops when you
+Editing works the way it does in Markdown. Enter continues a list, a format bar pops when you
 select text, and there are commands to insert a table, image, or table of
 contents. Code intelligence comes from the tinymist language server, and you can
 export to PDF, PNG, or SVG. It's on by default and self-gating, so it does

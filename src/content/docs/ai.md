@@ -6,7 +6,7 @@ order: 7
 beta: true
 ---
 
-Editora has optional AI, **off by default** and entirely yours to configure. It
+Editora has optional AI, **off by default** and yours to configure. It
 comes in two parts: quick one-shot actions, and a full embedded agent.
 
 ## Turning it on

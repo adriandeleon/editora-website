@@ -19,7 +19,7 @@ Editora ships five complete keymaps, selectable in **Settings → Keymaps** or w
 - **VS Code**
 - **IntelliJ IDEA**
 
-None of them is modal: they're just different chord-to-command
+None of them is modal: they're different chord-to-command
 maps over the same command ids, so switching changes accelerators without
 stranding any feature. Switching is **live, with no restart**, and every chord
 hint updates with it: toolbar tooltips, the command palette, tool-window

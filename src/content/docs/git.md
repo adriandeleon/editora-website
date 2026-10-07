@@ -81,11 +81,11 @@ The **Output** console (`tool.buildOutput`) has a **Git** tab holding a
 transcript of what Editora ran on your behalf: the command line, its output, and
 its exit code and duration.
 
-It logs the commands you *asked for* — commit, push, pull, fetch, checkout,
-stash, clone — and deliberately not the `status` and `diff` reads it re-runs on
-every tab switch, focus change and save, which would bury them. It never steals
-focus, either: nothing jumps in front of what you were doing, and the transcript
-is simply waiting when you open the window.
+It logs the commands you *asked for*: commit, push, pull, fetch, checkout,
+stash and clone. It leaves out the `status` and `diff` reads it re-runs on every
+tab switch, focus change and save, which would bury them. The tab never takes
+focus, so nothing jumps in front of what you were doing, and the transcript is
+there when you open the window.
 
 For comparing files and resolving merge conflicts, see
 [Diff & merge](/docs/diff-merge). For pull requests, reviews, and CI runs, see

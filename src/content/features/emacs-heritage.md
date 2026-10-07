@@ -10,7 +10,7 @@ Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto thei
 
 ## Killing and yanking
 
-A real kill ring, not a clipboard with extra steps. It holds the last 120 kills (Emacs' own `kill-ring-max`), consecutive kills accumulate into one entry, and the ring is shared with the system clipboard in both directions, so text copied in another application is yankable and a kill is pasteable elsewhere.
+The kill ring holds the last 120 kills (Emacs' own `kill-ring-max`), consecutive kills accumulate into one entry, and the ring is shared with the system clipboard in both directions, so text copied in another application is yankable and a kill is pasteable elsewhere.
 
 - **C-k** kill line, **M-d** kill word, **M-DEL** backward kill word, **C-S-DEL** kill whole line
 - **M-z** zap to char, **C-M-k** kill sexp
@@ -27,7 +27,7 @@ The full **C-x r** family over the columns between point and mark: kill, copy, y
 
 ## Narrowing
 
-**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. It is true narrowing: search, replace, Select All and macros all see only the region, which is the point of it. Writing the file still writes the whole file.
+**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. Search, replace, Select All and macros all see only the narrowed region. Writing the file still writes the whole file.
 
 ## Search, replace, and motion
 
@@ -45,15 +45,15 @@ The full **C-x r** family over the columns between point and mark: kill, copy, y
 
 The `C-x (`, `C-x )`, `C-x e` habit, on the function keys: **F3** starts recording, **F4** stops, **C-x e** replays. Recording captures the interleaved stream of commands and literally typed characters, so a replay reruns the same auto-indent and auto-close behaviour a human keystroke would, rather than pasting text in.
 
-Past that it goes somewhere Emacs needs a `defun` to reach. A macro can be named and saved, it persists across sessions, and each saved macro **becomes a command of its own**, so it shows up in the palette and can be bound to a key in Settings like anything else. There is also a replay-N-times prompt, and a run-saved picker. See [keyboard macros](/features/macros).
+It also does things that take a `defun` in Emacs. A macro can be named and saved, it persists across sessions, and each saved macro **becomes a command of its own**, so it shows up in the palette and can be bound to a key in Settings like anything else. There is also a replay-N-times prompt, and a run-saved picker. See [keyboard macros](/features/macros).
 
 ## M-x, and a palette that explains itself
 
-**M-x** does what you expect: fuzzy-match a command by name and run it. The difference is what the list can tell you, because every command is a registered object with an id, a title and a description rather than a symbol you have to already know.
+**M-x** fuzzy-matches a command by name and runs it. The difference is what the list can tell you, because every command is a registered object with an id, a title and a description rather than a symbol you have to already know.
 
 - Each result shows its **description** and its current **keybinding**, so the palette doubles as the way you learn the chords.
 - A command that cannot run right now is still **listed**, greyed out, and **says why**: the feature is switched off, or there is no file open, or you are not in a git repository. It points at the setting that would enable it instead of failing silently.
-- The same list drives keybindings and the toolbar, so the palette can never drift out of step with what the editor can actually do.
+- The same list drives keybindings and the toolbar, so the palette can never drift out of step with what the editor can do.
 
 ## The rest of the muscle memory
 
@@ -61,15 +61,15 @@ Transpose (**C-t**, **M-t**, **C-x C-t**), fill paragraph (**M-q**) with a fill 
 
 ## What we don't copy
 
-Some of Emacs is inheritance, and some of it is a different philosophy that Editora deliberately does not follow.
+Some parts of Emacs come from a different philosophy, and Editora does not follow them.
 
-- **No Elisp, and no editor-as-operating-system.** Emacs answers "can it do X?" by reimplementing X in Lisp. Editora answers it by [running the tool you already have](/features/doctor): your `git`, your `ripgrep`, your language servers. Extension is through [plugins](/features/plugins) and the [command system](/features/command-driven-core), so nothing here replaces a tuned Emacs configuration, and it is not trying to.
+- **No Elisp, and no editor-as-operating-system.** Emacs answers "can it do X?" by reimplementing X in Lisp. Editora answers it by [running the tool you already have](/features/doctor): your `git`, your `ripgrep`, your language servers. Extension is through [plugins](/features/plugins) and the [command system](/features/command-driven-core), so nothing here replaces a tuned Emacs configuration.
 - **Discoverability is not opt-in.** Emacs rewards knowing the name of the function. Here every action carries a title and a description, Settings is a real window with checkboxes, and the palette explains why something is unavailable. You should not need to have read the manual to find a feature.
-- **Emacs is a default, not a requirement.** Four other complete keymaps ship (CUA, Sublime, VS Code, IntelliJ), and any command can be rebound. Nobody is asked to convert.
+- **Emacs is a default, not a requirement.** Four other complete keymaps ship (CUA, Sublime, VS Code, IntelliJ), and any command can be rebound.
 - **Modern window conventions.** Tabs, tool windows, a project tree, drag and drop, and a working mouse, rather than the Emacs buffer and window model.
 
 ## Not yet
 
-Registers, a global cross-buffer mark ring, and dabbrev are genuinely missing rather than rejected. A few of the ports are also approximations, and the page says so where it matters: `C-u` repeats rather than passing a true numeric argument, and rectangles count character columns rather than display columns.
+Registers, a global cross-buffer mark ring, and dabbrev are not implemented yet. A few of the ports are also approximations: `C-u` repeats rather than passing a true numeric argument, and rectangles count character columns rather than display columns.
 
 Browse the [full command list](/commands) or the [keybindings reference](/keybindings).

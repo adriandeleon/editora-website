@@ -9,7 +9,7 @@ beta: true
 Editora can edit files on a remote host over **SSH/SFTP**. A remote folder
 mounts as the Project tree, and from there editing, syntax highlighting, search,
 bookmarks, notes, and preview all work over the wire. Save writes straight back,
-no dialog when the server copy is unchanged. If it changed since you opened or
+with no dialog when the server copy is unchanged. If it changed since you opened or
 last saved the file, Editora asks before overwriting it.
 
 ## Connecting

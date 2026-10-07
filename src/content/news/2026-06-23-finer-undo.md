@@ -4,7 +4,7 @@ description: "One Ctrl-Z now undoes a word or line instead of a whole typing bur
 date: 2026-06-23
 ---
 
-Undo got smarter, the first step in a planned undo arc.
+Undo got smarter. This is the first step in a planned series of undo changes.
 
 **Word- and line-level undo.** A single `C-z` no longer collapses an entire
 typing burst into one step. The undo manager starts a new group at word,

@@ -68,14 +68,13 @@ bracket inside a string or comment can pair with the wrong one.
 ### Bracket-pair colorization
 
 Separately from that highlight, every `()`, `[]` and `{}` is **tinted by its
-nesting depth**, so "how far in am I?" is readable without counting. The two
-answer different questions — the highlight says where *this* bracket closes, the
-colour says how deep it is — and they combine on the same character.
+nesting depth**, so you can see how deep you are without counting. The
+highlight shows where *this* bracket closes and the colour shows how deep it is,
+and the two combine on the same character.
 
-Brackets inside strings and comments are skipped, which matters more than it
-sounds: a stray `{` in a string would otherwise shift the colour of every bracket
-below it, and the feature would read as broken rather than as one bracket being
-wrong. Six depth colours cycle, and an unmatched closer is red.
+Brackets inside strings and comments are skipped, because a stray `{` in a
+string would otherwise shift the colour of every bracket below it. Six depth
+colours cycle, and an unmatched closer is red.
 
 On by default. Turn it off in Settings → Editor or with
 `view.toggleBracketColors`.
@@ -84,7 +83,7 @@ On by default. Turn it off in Settings → Editor or with
 
 **Edit: Expand Selection** grows the selection outward through syntactic levels:
 word, then the enclosing brackets or string, the line, the enclosing definition,
-the paragraph, the whole document. **Edit: Shrink Selection** retraces the exact
+the paragraph, the whole document. **Edit: Shrink Selection** retraces the
 same steps back. `Shift+Alt+Right` / `Left` in the VS Code, CUA and Sublime
 keymaps (`Ctrl+Cmd+Shift+Right` / `Left` on macOS); `Ctrl+W` / `Ctrl+Shift+W` in
 the IntelliJ keymap (`Option+Up` / `Down` on macOS); palette-discoverable
@@ -189,15 +188,15 @@ See [Emacs heritage](/features/emacs-heritage) for the full tour.
 The **kill ring** holds the last 120 kills, and consecutive kills accumulate into
 one entry, so `C-k C-k C-k` then `C-y` restores all three lines. Kills are still
 written to the system clipboard, and text copied in another application wins over
-a stale ring entry, so `C-y` never surprises you. *Edit: Yank from Kill Ring…*
+a stale ring entry. *Edit: Yank from Kill Ring…*
 picks an older entry directly. The ring is per window and lives for the session.
 
 The **mark ring** is per buffer. `C-SPC` records the spot, `C-x C-SPC` pops back
 through older marks and around to where you started, and marks follow their text
 as you edit above them.
 
-**Narrowing** is real, not a display filter: search, replace, macros and Select
-All see only the region, which is the point of it. An amber **Narrowed** badge in
+**Narrowing** restricts the buffer itself and is more than a display filter:
+search, replace, macros and Select All see only the region. An amber **Narrowed** badge in
 the status bar shows the state and widens on click. Saving always writes the
 whole file. Language-server support is suspended while narrowed, bookmarks, notes
 and breakpoints stop persisting until you widen, and undo history is dropped at

@@ -5,11 +5,11 @@ date: 2026-06-25
 ---
 
 Settings got a cleanup and a set of in-app editors, so more of Editora is
-configurable without touching a file by hand. Every setting is preserved, only
+configurable without touching a file by hand. Every setting is preserved. Only
 the organization and presentation changed.
 
-**Grouped sidebar.** The flat list is now five sections, General, Editor,
-Languages & Tools, Version Control, and System, with headers and indented items.
+**Grouped sidebar.** The flat list is now five sections with headers and
+indented items: General, Editor, Languages & Tools, Version Control, and System.
 The overloaded *Editor* page was split (Code Completion, TODO, and Markdown are
 their own pages), *Application* became **Interface** (window chrome, Simple/Zen
 modes) and **Workspace** (projects, notes, local history), and HTTP Client and

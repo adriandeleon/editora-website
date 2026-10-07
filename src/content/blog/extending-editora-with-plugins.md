@@ -7,9 +7,8 @@ tags: [plugins, extensibility]
 ---
 
 Editora just gained a plugin system, and it's built on the same idea that runs
-the rest of the editor: **everything is a command.** A plugin doesn't get a
-special back door; it registers the same kind of commands, keybindings, and
-tool windows the core uses. That keeps the API small and the editor consistent.
+the rest of the editor: **everything is a command.** A plugin registers the same kind of commands,
+keybindings, and tool windows the core uses, with no separate back door. That keeps the API small and the editor consistent.
 
 ## Two ways to write one
 
@@ -18,8 +17,7 @@ light or as deep as you like.
 
 **Declarative** plugins need no code at all. The manifest can register commands
 that run a shell command, bind keys, and point at `snippets/` and `templates/`
-folders to merge into the built-in sets. That's enough for a surprising amount:
-a formatter, a task runner, a code generator.
+folders to merge into the built-in sets. That's enough for a formatter, a task runner, or a code generator.
 
 **Java** plugins implement the `Plugin` interface against the exported
 `com.editora.plugin` API and get a `PluginContext`:
@@ -52,7 +50,7 @@ straight from disk.
 ## Plugin security
 
 Plugins are **not sandboxed**: a Java plugin runs with the same access as the
-editor. That's deliberate (it's what makes them powerful), but it means you
+editor. That access is what lets a plugin do real work, but it means you
 should only install plugins you trust, the same way you would a VS Code or
 IntelliJ extension. Plugins are off by default; you opt in per plugin.
 

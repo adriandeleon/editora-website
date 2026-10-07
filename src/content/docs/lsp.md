@@ -28,19 +28,18 @@ get real language smarts. LSP is **off by default**; turn it on in
 The goto, references and hover commands are also in the editor right-click menu
 while a server is active, under a single **LSP** submenu, and you can
 **Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**
-and **Go to Type Definition** join that menu only when the server actually
+and **Go to Type Definition** join that menu only when the server
 supports them, so it never offers a dead entry.
 
-The submenu is only a container — which actions a server contributes is
-unchanged. A fully-featured server offers up to eight, which flat in the menu
-pushed cut, copy, paste and the spelling suggestions far enough down to hunt
-for, and a bare "Go to Definition" sitting between "Paste" and a spelling
-suggestion named nothing about where it had come from.
+The submenu does not change which actions a server contributes. A
+fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
+and the spelling suggestions near the top of the menu, and labels entries such
+as "Go to Definition" as coming from the language server.
 
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and
 preview; a single result jumps straight there. **Go to Symbol in Workspace**
-opens a live search over every symbol in the project — and where no server is
+opens a live search over every symbol in the project. Where no server is
 running, Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project) answers the
 same question.
@@ -110,10 +109,10 @@ dropped instead of touching newer text.
 
 The Problems window has an **Open files / Whole project** selector
 (`lsp.toggleProjectProblems`), plus a **Build Project** command
-(`lsp.buildWorkspace`) that recompiles the Java project and fills it. Until now
-problems only ever came from files you had open, so a compile error in a file you
-hadn't touched was invisible. The default is unchanged, open files only, so
-nothing gets noisier unless you ask for it.
+(`lsp.buildWorkspace`) that recompiles the Java project and fills it. With
+**Open files** selected, problems come only from files you have open, so a
+compile error in a file you haven't touched is not listed. Open files is the
+default, so the window lists more only when you ask for it.
 
 ## Changing the code
 
@@ -141,12 +140,11 @@ undo step per file, and a multi-file fix opens the untouched files in background
 tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
 
-**Java code generation** rides that same menu: **Generate toString()**, **Generate
+**Java code generation** is in that same menu: **Generate toString()**, **Generate
 hashCode() and equals()**, **Generate Constructors** and **Override/Implement
 Methods**. Each opens a checkbox list so you choose which fields or methods to
-include, with Space to toggle and Enter to generate. The server withholds these
-unless the editor says it can drive the picker, which is why they were absent
-before.
+include, with Space to toggle and Enter to generate. The server offers these
+only when the editor declares that it can drive the picker, and Editora does.
 
 Three Java commands sit outside the menu: **Organize Imports** sorts and prunes a
 file's imports directly, **Copy Fully Qualified Name** puts the full name of the
@@ -164,8 +162,8 @@ keymaps.
 A rename that reaches **beyond the file you're looking at** shows you what it
 will do first: every affected file, its change count, and where it moves to, with
 a tick beside each one so you can leave a file out. A rename confined to the
-current file applies straight away — it's on screen and one undo away, so there
-would be nothing to confirm.
+current file applies straight away, because the result is on screen and one
+undo away.
 
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
@@ -175,18 +173,18 @@ the current line's indentation to the server's convention.
 ### Two Java-only assists
 
 **Pasted code imports itself.** Paste a snippet into a Java file and the server
-is asked which imports the pasted text needs; they are added for you. This is the
-one paste behaviour nothing else in the stack can approximate, because it needs
-the type resolver. An answer that lost a race with your typing is dropped rather
-than applied to text it wasn't computed for.
+is asked which imports the pasted text needs; they are added for you. Only the
+language server can do this, because it needs the type resolver. An answer that
+lost a race with your typing is dropped rather than applied to text it wasn't
+computed for.
 
 **Smart semicolon placement.** Typing `;` part-way through an expression puts it
 at the end of the statement: `compute(1, 2|)` becomes `compute(1, 2);|`. The
-semicolon is never held back waiting for the server — making a keystroke wait on
-a round trip is exactly the latency an editor cannot afford — so it lands where
-you typed it and moves afterwards if the server disagrees, as a single undo step.
-Type straight on through (the very common `;` then Enter) and the document has
-moved past the answer, so the correction is skipped rather than applied late.
+semicolon is never held back waiting for the server, since that would make a
+keystroke wait on a round trip. It lands where you typed it and moves afterwards
+if the server disagrees, as a single undo step. If you keep typing (the very
+common `;` then Enter), the document has moved past the answer, so the
+correction is skipped rather than applied late.
 
 Both need the Java language server running. Pasted-code imports are **on by
 default**; smart semicolon placement is **off by default**. Switch either in
@@ -204,12 +202,13 @@ with `view.toggleOnTypeFormatting`.
 Where a server is running, **code folding comes from the server's own
 understanding of the file** instead of brace and indent scanning: an import block
 folds as one region, javadoc and block comments fold, and multi-line expressions
-no longer nest wrongly. [Expand and shrink
+nest correctly. [Expand and shrink
 selection](/docs/editing#expand-and-shrink-selection) uses the same source, so it
 respects strings and comments rather than guessing at brackets.
 
 Both fall back to the built-in behaviour whenever LSP is off, the file is remote,
-or the server offers neither, so nothing is ever *less* foldable than it was.
+or the server offers neither, so a file is never less foldable with a server
+than without one.
 
 ## While the server works
 
@@ -218,9 +217,9 @@ importing and indexing a project, gopls loading packages, rust-analyzer's first
 check) drive the status-bar loading bar and show what they are doing, with a
 title and percentage, in the echo area.
 
-External file changes are forwarded to the running servers, so a `git checkout`,
-a branch switch, a CLI build or an external editor no longer leaves a server's
-project model quietly stale. A server that dies mid-session (a crash, an
+External file changes are forwarded to the running servers, so a server's
+project model stays current after a `git checkout`, a branch switch, a CLI build
+or an edit in an external editor. A server that dies mid-session (a crash, an
 OOM-kill, a failed handshake) is announced in the status bar, has its stale
 diagnostics cleared, and is restarted for the affected files, with a cap so a
 server that keeps crashing is not relaunched forever.
@@ -254,8 +253,8 @@ enabled server in one place.
 
 A project can commit a `.editora/settings.json` naming **which server to run for
 a language and whether to run it**, which overrides your global preference for
-anyone who opens that project. That is the answer to one repository needing a
-JDK 17 server and another a JDK 25 one: neither of you has to remember to flip a
+anyone who opens that project. This covers one repository needing a
+JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
 setting when switching between them. See
 [projects](/docs/workspace#settings-a-project-can-commit).
 
@@ -278,7 +277,7 @@ covered through four channels, picked per server:
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
   needs a JDK.
 
-Three entry points: an **Install…** button per server in **Settings → LSP**, an
+There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
 off with `view.toggleInstallPrompts`), and the **Install: Language Server…**
 picker (`install.languageServer`). After installing, the server is auto-detected
@@ -322,10 +321,10 @@ files that aren't open are dropped by default, to keep the Problems window
 focused on what you're editing, and the whole-project selector above lifts that
 when you want it. Still deferred: format-on-save.
 
-The protocol library is **LSP 3.18 / DAP 1.70**. Two of its widened fields are
-worth naming. A diagnostic's message may now be markup rather than plain text;
-the markup's text is used, so a squiggle always carries its explanation. And a
-document edit may now be a **snippet** edit carrying `${1:name}` placeholders —
+The protocol library is **LSP 3.18 / DAP 1.70**. Two fields it widened affect
+Editora. A diagnostic's message may be markup rather than plain text;
+the markup's text is used, so a squiggle always carries its explanation. A
+document edit may be a **snippet** edit carrying `${1:name}` placeholders.
 Editora **refuses** one rather than applying it, since inserting it as plain
 text would write the placeholder markup into your file. That is the same
 all-or-nothing rule that already covers file creates and deletes, and in

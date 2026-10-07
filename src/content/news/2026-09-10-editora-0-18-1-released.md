@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.18.1: safer saves, history, and Git workflows"
-description: "Editora 0.18.1 hardens local and remote saves, file history, Project-tree deletion, Git operations, agent edits, and LSP workspace changes."
+description: "Local and remote saves, file history, Project-tree deletion, Git operations, agent edits, and LSP workspace changes are safer when they overlap."
 date: 2026-09-10
 version: "0.18.1"
 ---
@@ -37,9 +37,9 @@ Save/Discard/Cancel choices before the batch starts, waits for recoverable
 history, rejects changed preimages together, and prevents an older pending save
 from recreating a deleted path.
 
-## Git history meets the working tree
+## Compare Git history with the working tree
 
-Double-click a revision in a file's Git history—or press Enter—to compare it
+Double-click a revision in a file's Git history, or press Enter, to compare it
 with the editable working file in the full diff viewer. From the repository-wide
 Git Log, **Compare with Working Tree** provides the same workflow for an
 individual changed file.

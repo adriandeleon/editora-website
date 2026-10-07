@@ -9,7 +9,7 @@ tags: [debugging, dap]
 Editora can debug Java, Python, and JavaScript, and it does it with **one**
 client. The Debug Adapter Protocol (DAP) is the same idea as LSP but for
 debuggers: a common wire protocol so an editor doesn't need bespoke code per
-language. The trick is that the three adapters are reached three completely
+language. The complication is that the three adapters are reached in three
 different ways.
 
 ## Three transports, one protocol
@@ -49,7 +49,7 @@ work, plus a threading one:
 
 It would have been faster, short-term, to write a Java-only debugger and stop
 there. But DAP meant Python and JavaScript were mostly a matter of "spawn the
-adapter differently and shape the launch arguments": the breakpoints, stepping,
-call stack, watches, inline values, and the console came along for free. The same
-bet LSP makes for language smarts, DAP makes for debugging: do the protocol once,
-get the languages cheaply.
+adapter differently and shape the launch arguments." The breakpoints, stepping,
+call stack, watches, inline values, and the console came along for free. DAP
+makes the same bet for debugging that LSP makes for language features:
+implement the protocol once and each further language is cheap.

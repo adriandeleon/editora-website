@@ -4,7 +4,7 @@ description: "A live 3-mode preview for .typ files via the Typst CLI, a tinymist
 date: 2026-07-09
 ---
 
-Editora now has first-class [Typst](https://typst.app) support. Standalone `.typ`
+Editora now supports [Typst](https://typst.app). Standalone `.typ`
 files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered
 off-thread by the `typst` CLI as a **multi-page** stack, one image per page.
 

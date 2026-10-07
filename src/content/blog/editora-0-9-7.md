@@ -1,21 +1,21 @@
 ---
 title: "Editora 0.9.7: keeping the UI thread sacred"
-description: "A performance release about one rule — never make the user wait on the thread that draws the screen — and the handful of places Editora was quietly breaking it."
+description: "A performance release about one rule, never make the user wait on the thread that draws the screen, and the handful of places Editora was breaking it."
 date: 2026-07-18
 author: Adrián De León
 tags: [release]
 ---
 
 A desktop app has one thread that draws the screen and handles your keystrokes.
-In JavaFX it's the Application Thread. The single most important rule for a
+In JavaFX it's the Application Thread. The most important rule for a
 responsive editor is that this thread never does anything slow. Every hitch you
 feel while typing, every beat where a click doesn't register, is that rule being
 broken somewhere.
 
 0.9.7 is mostly the result of going looking for those places. None of them were
 obvious, because a stall of a few dozen milliseconds doesn't show up as a bug
-report, it shows up as a vague sense that the editor is heavier than it should
-be. But they add up, and they're findable.
+report. It shows up as a vague sense that the editor is heavier than it should
+be. But they add up, and they can be found.
 
 ## The one you felt without knowing why
 
@@ -45,7 +45,7 @@ document and rebuilt its tree on every edit, closed or not.
 
 The pattern for fixing all of these is the same:
 
-- Only recompute when the thing being shown actually changed. The file size only
+- Only recompute when the thing being shown has changed. The file size only
   changes when the text does, not when the caret moves.
 - Do nothing while the panel is closed. Defer the work and do it once when it
   reopens.
@@ -56,16 +56,16 @@ in a big file felt sticky.
 
 ## The zoom that redetected your compilers
 
-My favorite one, because of how far the cause was from the symptom. Zooming the
-text with `Ctrl`+wheel felt slow. The reason: each notch re-ran the *entire*
+This is my favorite, because of how far the cause was from the symptom. Zooming
+the text with `Ctrl`+wheel felt slow because each notch re-ran the *entire*
 settings-apply cascade. That meant swapping the editor theme's stylesheet (a
 full-scene CSS reapply) and running about twenty feature `applySupport()` calls,
 re-detecting every language server, re-checking Git, rebuilding previews, none of
 which change when you change the font size.
 
-A font zoom now re-applies exactly two things: the fonts and the per-buffer view.
+A font zoom now re-applies two things: the fonts and the per-buffer view.
 A `Ctrl`+wheel gesture no longer churns the scene stylesheet or goes looking for
-your compilers. It just resizes the text, which is all you asked for.
+your compilers. It only resizes the text.
 
 ## Persistence that blocked on disk
 
@@ -76,9 +76,9 @@ on the UI thread. So a burst of edits above a marker turned into a burst of
 blocking disk writes.
 
 Now that persistence is coalesced: the writes collapse into a single save after
-editing settles. Deliberate actions, toggling a bookmark, adding a note,
-reordering, still save immediately, because there the save *is* the action. It's
-only the incidental line-shifting that waits.
+editing settles. Deliberate actions such as toggling a bookmark, adding a note
+or reordering still save immediately, because there the save *is* the action.
+Only the incidental line-shifting waits.
 
 ## And some things you can see
 
@@ -93,11 +93,11 @@ every time you aim for it.
 
 ## Why bother with milliseconds
 
-Because responsiveness isn't a feature you add, it's a property you either protect
-or slowly lose. Every one of these regressions got in the same way: a reasonable
-line of code that did a little too much, on the wrong thread, a little too often.
-The only defense is to keep going back and asking, of the thread that draws the
-screen, what is it doing that it doesn't need to.
+Because responsiveness is lost a little at a time. Every one of these regressions
+got in the same way: a reasonable line of code that did a little too much, on the
+wrong thread, a little too often. The only defense I know is to keep going back
+and asking what the thread that draws the screen is doing that it doesn't need
+to.
 
 Get 0.9.7 from the
 [releases page](https://github.com/adriandeleon/Editora/releases/latest). The full

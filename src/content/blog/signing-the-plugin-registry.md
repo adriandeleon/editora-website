@@ -1,12 +1,12 @@
 ---
 title: "Signing the plugin registry: consent, integrity, authenticity"
-description: "Plugins run unsandboxed, so the registry leans on three defenses: informed consent, download integrity, and a signed index. Here's how each works."
+description: "Plugins run unsandboxed, so the registry leans on three defenses: informed consent, download integrity, and a signed index."
 date: 2026-06-14
 author: Adrián De León
 tags: [plugins, security]
 ---
 
-Editora's plugins are powerful precisely because they're **not sandboxed**. A
+Editora's plugins are **not sandboxed**. A
 Java plugin runs with the same access as the editor, like a VS Code or IntelliJ
 extension. That's a deliberate v1 trade-off, but it raises the stakes on
 *installing* one. The registry's security rests on three layers: consent,
@@ -48,12 +48,12 @@ public key ships.
 This proves *who* published the index. It does not make plugins safe to run, and
 the UI is honest about that: signing is authenticity, not a sandbox.
 
-## Why bother, for a hobby-scale registry?
+## Doing this for a hobby-scale registry
 
-Because "small and trusted today" is exactly when the habits are cheap to build,
-and a plugin system is the one feature that turns "a bug in my code" into "a bug
-in code I downloaded." None of these layers makes unsandboxed plugins *safe* (the
-honest answer is to only install ones you trust), but together they make the
-common attacks meaningfully harder: tampered downloads, a spoofed registry, a
+The registry is small and trusted today, which is when these habits are cheap to
+build. A plugin system is also the one feature where a bug can come from code I
+downloaded and not only from code I wrote. None of these layers makes
+unsandboxed plugins *safe* (you should still only install ones you trust), but
+together they make the common attacks harder: tampered downloads, a spoofed registry, a
 malicious archive, an uninformed click. Real sandboxing is the deferred, harder
 follow-up.

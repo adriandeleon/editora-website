@@ -5,8 +5,8 @@ date: 2026-07-08
 ---
 
 A whole family of file types now gets the same 3-mode preview (Editor / Split /
-Preview) as Markdown, turning raw data and config into something readable. All on
-by default.
+Preview) as Markdown, turning raw data and config into something readable. They are all
+on by default.
 
 **Structured data.** `.json`, `.yaml`, and `.toml` render a collapsible,
 type-colored data tree, and `.xml` renders a faithful DOM tree. A JSON or YAML

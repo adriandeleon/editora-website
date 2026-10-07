@@ -12,13 +12,13 @@ preview that recolors as you change things.
 
 **Editora Light** and **Editora Dark** are the app's own pair, drawn from the
 palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved
-for one job — a keybinding. They are what a fresh install starts in. An existing
-install keeps whatever theme it was already on; the pair simply joins the list.
+for keybindings. They are what a fresh install starts in. An existing
+install keeps whatever theme it was already on; the pair is added to the list.
 
 Twenty-eight themes ship in total:
 
-- **Editora** (light and dark) — the default
-- **Primer** (GitHub-style), **Nord** and **Cupertino** — each light and dark
+- **Editora** (light and dark), the default
+- **Primer** (GitHub-style), **Nord** and **Cupertino**, each in light and dark
 - **Dracula**
 - A community set of nineteen themes in twelve families: Army, Autumn, Blacky,
   Blue, Browny, Fall, Navy, News, Spring, Summer, Winter and Yacht (seven of

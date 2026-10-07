@@ -1,14 +1,13 @@
 ---
 title: "Editora 0.9.5: safer by default"
-description: "A release that's mostly fixes, the unglamorous kind that keep your files, your config, and your machine safe, plus a mini file manager in the Project tree."
+description: "A release that's mostly fixes that keep your files, your config, and your machine safe, plus a mini file manager in the Project tree."
 date: 2026-07-15
 author: Adrián De León
 tags: [release]
 ---
 
-Not every release is about new features. 0.9.5 is mostly the other kind of work:
-making sure the editor never loses your data, never leaks anything, and cleans up
-after itself. Here's what changed and why it matters.
+0.9.5 is mostly fixes: making sure the editor never loses your data, never leaks
+anything, and cleans up after itself.
 
 ## Don't lose the file
 
@@ -27,15 +26,15 @@ you instead of silently writing a `?`.
 ## Don't lose the config
 
 The same atomic-write treatment now protects your bookmarks, notes, breakpoints,
-and session, a crash or a full disk while saving them can't wipe them out. A
-couple of sharper edges are gone too: running an older Editora after a newer one
-can't clobber the newer config, a deleted project can't quietly come back from a
+and session, so a crash or a full disk while saving them can't wipe them out. A
+few related bugs are gone too: running an older Editora after a newer one
+can't clobber the newer config, a deleted project can't come back from a
 queued save, and quitting no longer discards the unsaved work and session of
 every window except the one you closed.
 
 ## Don't leak, don't freeze
 
-A handful of security fixes. Previewing an **untrusted Markdown file** can no
+There are three security fixes. Previewing an **untrusted Markdown file** can no
 longer be used to probe your internal network or leak credentials through a
 crafted image or link. A **malicious file template** can't write outside the
 folder you targeted. And a **catastrophic regex** in Find, the kind that takes
@@ -43,7 +42,7 @@ exponential time on the wrong input, no longer freezes the editor.
 
 ## Clean up after yourself
 
-Closing a window now shuts down everything it started, the diff, external-tool,
+Closing a window now shuts down everything it started: the diff, external-tool,
 and HTTP-client workers, plus any language servers and debug adapters. And
 stopping (or quitting during) a run or a build now kills the **whole process
 tree**, so a `npm run dev` or `mvn` invocation doesn't leave orphaned processes
@@ -51,7 +50,7 @@ behind.
 
 ## The one visible change
 
-The **Project tool window** grew up into a small file manager. You can
+The **Project tool window** became a small file manager. You can
 multi-select files and folders with Ctrl/Cmd- and Shift-click, then drag them
 onto a folder to move them, with your open tabs following to the new path, and
 Delete now acts on the whole selection at once. It also shows a **single-letter

@@ -17,8 +17,8 @@ palette (`<tool>.showActions`, e.g. *Maven: Show Actions*). `tool.<tool>` opens
 the tasks window; `tool.buildOutput` opens the Output console. It's **on by
 default**, and each tool is inert until its marker file is found.
 
-The console is not only for builds — it was called "Build Output" until 0.10.0,
-and the rename reflects what it now holds. Alongside a tab per build tool it
+The console holds more than build output, and was called "Build Output" until
+0.10.0. Alongside a tab per build tool it
 carries a **CI** tab for a [failed GitHub Actions log](/docs/github), and a
 **Git** and **GitHub** tab holding a transcript of the `git` / `gh` commands
 Editora ran on your behalf, each with its output, exit code and duration. Only
@@ -61,25 +61,23 @@ Languages & Tools → Build Tools**.
 
 ### Every goal a plugin offers
 
-The tasks tree is built from a literal reading of `pom.xml`, so it could only
-ever show a goal written inside an explicit `<execution>`. A plugin declared for
-**direct invocation** — javafx-maven-plugin, spring-boot-maven-plugin,
-exec-maven-plugin — carries only `<configuration>` and no executions, so it
-contributed no row at all: `javafx:run` could be reached only by typing it into
-*Run custom…*, even though running it is the entire reason the plugin is in the
-pom.
+A literal reading of `pom.xml` can show only a goal written inside an explicit
+`<execution>`. A plugin declared for **direct invocation**, such as
+javafx-maven-plugin, spring-boot-maven-plugin or exec-maven-plugin, carries only
+`<configuration>` and no executions, so that reading gives it no row, and
+`javafx:run` would be reachable only by typing it into *Run custom…*.
 
-Each plugin now gets a **collapsed section listing every goal it offers**, read
-from the plugin's own descriptor, with each goal's description as its tooltip.
-Reading the descriptor rather than keeping a table of well-known goals means it
-covers whatever is in your pom instead of whatever somebody remembered.
+Each plugin therefore gets a **collapsed section listing every goal it offers**,
+read from the plugin's own descriptor, with each goal's description as its
+tooltip. Because the goals come from the descriptor and not from a built-in
+table of well-known goals, the section covers whatever plugins are in your pom.
 
 The flat *Plugins* section and these per-plugin groups overlap by design and
 answer different questions: the flat one is *what this build runs* (with the
 phase and execution id in its tooltip), a group is *what this plugin can run*.
 
 It reads your **local repository only, never the network**, so opening a project
-never fetches anything and a plugin you have not downloaded simply contributes
+never fetches anything and a plugin you have not downloaded contributes
 nothing. Results are cached, since detection re-runs on every save and tab
 switch. A goal belonging to a plugin declared only inside a profile is not
 listed, even when that profile is checked.
@@ -90,22 +88,22 @@ A **Maven** submenu appears wherever there's a pom in hand: on a `pom.xml` in th
 editor's right-click menu, and on a folder or a `pom.xml` row in the Project
 tree. It carries Update Versions, Actions, Run…, Re-run, and Stop.
 
-One builder serves all three surfaces, so they can't drift into offering
-different actions, and it offers nothing at all when Maven is off, when there's
-no pom above the folder, or on a file that isn't itself a `pom.xml`.
+One builder serves all three surfaces, so they always offer the same actions.
+It offers nothing when Maven is off, when there's no pom above the folder, or on
+a file that isn't itself a `pom.xml`.
 
 ### Update the versions in an existing project
 
 **`maven.updateVersions`** checks the nearest `pom.xml`'s dependencies and
 plugins against Maven Central and **shows what would change before writing
-anything** — a row per artifact, current → latest, behind a dialog you can
-decline. Nothing is written until you accept.
+anything**. A dialog lists a row per artifact, current → latest, and you can
+decline it. Nothing is written until you accept.
 
 The update is applied **through the open buffer as a single edit**, so one
 `C-z` takes the whole thing back and the buffer is left dirty for you to save.
 Only a pom that isn't open is written to disk.
 
-Three deliberate limits, each because the obvious behaviour is wrong:
+It has three limits:
 
 - Maven Central's `<release>` marker is **not trusted**. It means "newest
   non-snapshot published", which for `maven-surefire-plugin` was a milestone for
@@ -114,12 +112,12 @@ Three deliberate limits, each because the obvious behaviour is wrong:
   would do to a pom pinned on purpose.
 - A **property-driven version** (`${junit.version}`) is skipped. Rewriting the
   reference would replace the indirection you chose, and rewriting the property
-  is a different edit with a different blast radius.
+  is a different edit that can reach other artifacts.
 
 Each artifact is resolved independently and best-effort, so one unreachable
 coordinate leaves that version alone rather than failing the rest. A plugin with
-no `<version>` is left alone too — its version comes from a parent, and writing
-one would change resolution rather than update it.
+no `<version>` is left alone too, because its version comes from a parent and
+writing one would change how the plugin is resolved.
 
 The same option is offered up front when [generating a new
 project](/features/starting-a-project).

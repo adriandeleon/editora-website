@@ -32,10 +32,10 @@ the active file previews as, so there's nothing per-type to remember. A floating
 A `pom.xml` previews as a **summary** rather than as the generic XML tree, which
 spreads every dependency over four nested rows. You get coordinates and parent,
 then modules, properties, dependencies, managed dependencies, plugins, managed
-plugins, and each profile's own set — with the artifact name and its version in
-aligned columns, so the versions read as a column rather than a hunt.
+plugins, and each profile's own set. The artifact name and its version are in
+aligned columns, so the versions can be read down a column.
 
-The point is the two indirections that otherwise send you back up the file:
+The summary resolves the two indirections that otherwise send you back up the file:
 
 - A **`${property}` version is resolved**, with the reference kept beside it
   (`5.10.2  ${junit.version}`), including properties defined in terms of other
@@ -43,15 +43,15 @@ The point is the two indirections that otherwise send you back up the file:
 - A **blank version is filled in** from the file's own `<dependencyManagement>`
   or `<pluginManagement>` and tagged *managed* (`2.0.17  managed`).
 
-What the file cannot answer, it says so about. **No parent pom is read**, so a
-version inherited from a parent reads *inherited* rather than a number Editora
-would be inventing, and an unresolvable `${…}` reports itself. This is a reading
-of one file, not an effective pom.
+Where the file alone cannot answer, the summary says so. **No parent pom is
+read**, so a version inherited from a parent reads *inherited* rather than a
+guessed number, and an unresolvable `${…}` is reported as unresolved. The
+summary reads one file and is not an effective pom.
 
 Any file named `pom.xml` or `*.pom` qualifies, plus anything that sniffs as a
 pom, so a `pom-template.xml` or an `effective-pom.xml` gets the same view.
-**`pom.toggleView`** — or **Show as XML tree** in the preview's right-click menu
-— switches to the standard XML rendering and back. Settings → Editor → File
+**`pom.toggleView`**, or **Show as XML tree** in the preview's right-click menu,
+switches to the standard XML rendering and back. Settings → Editor → File
 previews turns the summary off entirely.
 
 Poms also carry a [Maven submenu](/docs/build-tools#the-maven-submenu) on their

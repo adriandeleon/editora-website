@@ -1,14 +1,13 @@
 ---
 title: "Editora 0.18.5: fluid Java completion and safer editing"
-description: "Editora 0.18.5 sharpens continuous Java completion, adds selectable Maven JDK toolchains, keeps Run output in reach, and strengthens save, LSP, Git, diff, and merge safety."
+description: "Java member completion appears immediately and stale requests are cancelled, Maven can run on a JDK you select, the Run window opens on every run, and save, LSP, Git, diff, and merge operations refuse stale state."
 date: 2026-09-19
 version: "0.18.5"
 ---
 
-**Editora 0.18.5** is out. This release makes Java editing feel continuous,
-lets each Maven project run on the right JDK, and hardens the asynchronous paths
-that protect work while files, language servers, Git, and diff views are all
-changing at once. Download it from the
+**Editora 0.18.5** is out. This release improves Java completion, lets you
+choose the JDK Maven runs on, and makes saves, language-server edits, Git
+operations, and diff views refuse work based on stale state. Download it from the
 [0.18.5 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.18.5).
 
 ## Java completion that keeps up
@@ -20,7 +19,7 @@ is open, overloads stay distinct, commit characters and server ranges survive
 the full trip, and completed methods reuse parentheses already in the file.
 
 Auto-imports can follow safe continued typing and undo with the completion as a
-single action. Signature help stays useful across multiline calls, supports
+single action. Signature help keeps working across multiline calls, supports
 overload navigation, and no longer appears for finished zero-argument calls or
 method references.
 

@@ -6,7 +6,7 @@ author: Adrián De León
 tags: [release]
 ---
 
-**Editora 0.9.2** is here, the second tagged release, with native installers for
+**Editora 0.9.2** is the second tagged release, with native installers for
 macOS, Windows, and Linux. It's a focused update: one substantial new feature, a
 cleanup of how AI is turned on, a couple of Markdown-preview touches, and an
 important fix for Windows users.
@@ -14,7 +14,7 @@ important fix for Windows users.
 ## Maven support
 
 The headline addition is **Maven support**. When the active project has a
-`pom.xml`, a Maven button appears on the toolbar (hidden until a pom is actually
+`pom.xml`, a Maven button appears on the toolbar (hidden until a pom is
 detected). Click it for a searchable popup, IntelliJ-style, that reads the pom
 directly:
 
@@ -38,8 +38,8 @@ found, and disabled in Simple UI mode and for remote files. Read the
 The AI Agent and AI Actions settings, previously scattered across separate
 groups, now live together under a new **AI** sidebar group with a single master
 **Enable/Disable AI** switch. It's **off by default**, and turning it off
-disables every AI feature at once, the agent chat, commit-message generation,
-explain and rewrite, and inline completion, regardless of the individual pages'
+disables every AI feature at once (the agent chat, commit-message generation,
+explain and rewrite, and inline completion) regardless of the individual pages'
 settings below it. (The [MCP server](/docs/mcp) is a separate feature and is
 unaffected.) There's a palette command for it too. A fresh install now has no AI
 usage until you explicitly turn it on.
@@ -53,9 +53,9 @@ so a fast stream could otherwise leave the preview blank until it finished).
 
 ## The Windows fix
 
-If you tried a Windows build recently and it wouldn't launch, this release is for
-you. Since the AOT startup cache landed, every Windows install failed with
-"Failed to find JVM in ...\runtime directory". The cause: the build strips the
+If you tried a Windows build recently and it wouldn't launch, this release fixes
+it. Since the AOT startup cache landed, every Windows install failed with
+"Failed to find JVM in ...\runtime directory". The cause was that the build strips the
 bundled runtime's `bin/` after AOT training to reclaim space, which is safe on
 macOS and Linux, where `bin/` holds only launcher executables. But the Windows
 JDK layout puts the JVM itself *inside* `bin/` (`jvm.dll` and the bootstrap

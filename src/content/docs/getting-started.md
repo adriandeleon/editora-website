@@ -130,12 +130,12 @@ and run it. Each entry shows its key, so you pick up shortcuts as you go. The
 full list lives on the [Commands](/commands) and [Keybindings](/keybindings)
 pages.
 
-If you don't yet know *which* picker holds the thing you want — a command, a
-file, a symbol — run **Search Everywhere** and just type its name. See
+If you don't yet know *which* picker holds the command, file or symbol you
+want, run **Search Everywhere** and type its name. See
 [Navigation & search](/docs/navigation#search-everywhere).
 
-If you'd rather browse than recall, there is also a **menu bar** — File / Edit /
-Find / View / Navigate / Code / Run / VCS / Tools / Window / Help — built over
+If you'd rather browse than recall, there is also a **menu bar** (File / Edit /
+Find / View / Navigate / Code / Run / VCS / Tools / Window / Help) built over
 the same commands, with each item showing its current keybinding. Its **Help**
 menu links to the documentation for the version you are running.
 
@@ -169,8 +169,8 @@ network. Enable the ones you want in Settings:
 **On, but dormant until their tool is installed** is the larger group:
 **[Git](/docs/git)**, **[GitHub](/docs/github)**,
 **[Mermaid](/docs/markdown#mermaid-diagrams)**,
-**[diagrams](/docs/diagrams)**, and **[Typst](/docs/typst)** are enabled out of
-the box, and their buttons and panels appear once Editora finds the command they
+**[diagrams](/docs/diagrams)**, and **[Typst](/docs/typst)** are enabled by
+default, and their buttons and panels appear once Editora finds the command they
 need (`git`, `gh`, `mmdc`, and so on). Run *View: Doctor* to see what was found;
 see [Troubleshooting](/docs/troubleshooting#doctor).
 

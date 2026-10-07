@@ -7,8 +7,8 @@ tags: [website, css]
 ---
 
 Editora's home page had a problem I had been ignoring: it described the editor
-instead of showing it. One screenshot, a download button, and a list of feature
-cards written as text. The single thing that makes the editor worth using, that
+instead of showing it. It had one screenshot, a download button, and a list of
+feature cards written as text. The single thing that makes the editor worth using, that
 every action is a command you can find by typing a few letters, was invisible on
 a static page.
 
@@ -16,14 +16,14 @@ So the site got rebuilt. Most of that work is unremarkable (write components,
 pick spacing, argue with yourself about headings) but two things went wrong in
 ways worth writing down.
 
-## Show the verb, not the noun
+## Showing the palette in motion
 
 A screenshot of a text editor looks like every other text editor. What separates
 Editora is a motion: you press `M-x`, type four letters, and the thing you
 wanted runs.
 
-The hero now animates exactly that. It is not a video or a GIF, just CSS
-keyframes over real markup: a query reveals itself one character at a time, the
+The hero now animates that, using CSS keyframes over real markup instead of a
+video or a GIF. A query reveals itself one character at a time, the
 non-matching rows collapse, and the match lights up. It costs nothing to
 download, stays sharp on any display, recolours with whichever of the six site
 themes you pick, and freezes on a tidy frame if you have asked your system to
@@ -32,10 +32,10 @@ reduce motion.
 The same reasoning drove the mode ladder further down the page. Editora has four
 levels of interface, from Zen (nothing but text) to the full IDE, and describing
 them in a paragraph never landed. Now each is a small mockup that shows what it
-hides. Building those honestly meant reading `ui/Chrome.java` rather than
+hides. Building those accurately meant reading `ui/Chrome.java` rather than
 trusting my own docs, which is how I noticed a distinction the page now states
 outright: Zen and Expert only *hide* the interface, with the language server
-still running behind it. Simple UI is the one that genuinely turns features off.
+still running behind it. Simple UI is the one that turns features off.
 
 ## The modal that ate the page
 
@@ -63,8 +63,8 @@ The site header is a translucent blurred bar:
 ```
 
 I had put the search trigger in the nav and the modal markup right next to it.
-So the modal, `position: fixed; inset: 0`, was not sized against the viewport at
-all. It was sized against the header. Measured in the browser:
+So the modal, `position: fixed; inset: 0`, was sized against the header instead
+of the viewport. Measured in the browser:
 
 ```text
 viewport:   1280 x 720
@@ -75,7 +75,7 @@ Everything followed from that. The input rendered outside the visible strip, so
 it never took focus, so every keystroke went to `<body>`. My Escape handler was
 bound to the input, which no longer had focus, so Escape was dead. And
 `openModal()` had already set `body { overflow: hidden }` to stop background
-scrolling. Locked page, no way out.
+scrolling. The page was locked with no way out.
 
 The fix is one line, moving the modal out from under the blurred ancestor before
 anything else runs:
@@ -99,15 +99,15 @@ input.dispatchEvent(new Event('input', { bubbles: true }));
 
 That exercises the search pipeline beautifully and skips the entire click,
 layout, and focus path where the bug lived. It told me the query engine worked,
-and I read it as "search works." Synthetic events are a fine way to test a
-function and a poor way to test a feature.
+and I read it as "search works."
 
 ## Seventy-one commands that were never there
 
 While testing search I looked up `rectangle`, expecting Editora's Emacs-style
-rectangle commands. One result, a blog post. `kill rectangle` returned nothing.
+rectangle commands. There was one result, a blog post. `kill rectangle`
+returned nothing.
 
-Search was right. The pages did not exist. The site's command reference is
+Search was right, because the pages did not exist. The site's command reference is
 generated from the app source by a script that finds registrations with a
 regular expression:
 
@@ -148,9 +148,8 @@ The count went from 517 to 588, which matches the app exactly, and it stays
 correct as commands are added because nobody has to remember to update a regular
 expression.
 
-Both bugs have the same shape, now that I look at them together. A check that
-was *nearly* right, believed because it produced a plausible answer. A regular
-expression that found most commands. A test that exercised most of the feature.
-The gap in each case was quiet, and neither would have surfaced without doing
-the boring thing: clicking the button, and searching for something I already
-knew should be there.
+Both bugs came from a check that was *nearly* right and that I believed because
+it produced a plausible answer: a regular expression that found most commands,
+and a test that exercised most of the feature. Neither gap would have surfaced
+without clicking the button and searching for something I already knew should
+be there.

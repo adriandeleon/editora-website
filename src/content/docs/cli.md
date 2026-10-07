@@ -51,10 +51,10 @@ untouched and the next normal launch restores everything.
 
 `--no-session` skips the saved session's files entirely and opens only what you
 named on the command line. It's for launching from a file manager or a script,
-where restoring the last session is pure cost — every restored file is a buffer
-to load and highlight and, once shown, a language server to run, for files you
-didn't ask to see. Also session-only: your saved tabs are left as they were
-rather than replaced by whatever you happened to open.
+where restoring the last session only costs time: every restored file is a
+buffer to load and highlight and, once shown, a language server to run, for
+files you didn't ask to see. It is also session-only, so your saved tabs are
+left as they were and are not replaced by the files you opened.
 
 ## Opening files
 
@@ -72,43 +72,39 @@ jump into a file in one command.
 
 ## One editor, not two
 
-If Editora is already running, a launch that just opens files **hands them to
-the running editor and exits** rather than starting a second one — reusing the
-process, with its language servers and its memory, instead of paying for a
-second set.
+If Editora is already running, a launch that only opens files **hands them to
+the running editor and exits**. The running process is reused, with its language
+servers and its memory, and no second editor is started.
 
-What you get is a **new window** for those files, brought to the front, with any
-focus mode you asked for (`--expert`, say) applied to it — so a desktop entry
-like "Editora Expert Mode" still means Expert Mode. What is reused is the
-*process*, not the window you happened to be working in: a file arriving as a
-tab in the middle of what you were doing, restyling that window's chrome on the
-way, is not what clicking a file should do.
+The files open in a **new window**, brought to the front, with any focus mode
+you asked for (`--expert`, say) applied to it, so a desktop entry like "Editora
+Expert Mode" still opens in Expert Mode. The window you were working in is left
+alone: the files do not arrive as tabs in it, and its chrome is not restyled.
 
-**Unless the file is already open**, in which case the window holding it is
-brought forward instead of opening it twice. Two independent buffers over one
-file loses edits — save one and the other is silently stale.
+The exception is a file that is **already open**. The window holding it is
+brought forward instead of opening it twice, because two independent buffers
+over one file lose edits: saving one leaves the other stale.
 
-These windows are deliberately left out of your saved layout, so a file opened
-from the file manager doesn't come back as an empty window on the next launch.
+These windows are left out of your saved layout, so a file opened from the file
+manager doesn't come back as an empty window on the next launch.
 
-The reason it exists: on Linux and Windows a file manager passes the path as a
-command-line argument, which by definition starts a new process, so clicking a
-file used to pay a full cold start *and* leave a second editor resident. (macOS
-never had the problem — Finder delivers an event to the running app — and the
-handoff routes into that same code path.)
+The handoff exists because on Linux and Windows a file manager passes the path
+as a command-line argument, which starts a new process. Without the handoff,
+clicking a file pays a full cold start and leaves a second editor resident.
+macOS does not have the problem, because Finder delivers an event to the running
+app, and the handoff routes into that same code path.
 
-It is deliberately narrow. Only a launch that is purely *"open these files"* is
-handed over; these always get their own editor:
+The handoff is narrow. Only a launch that does nothing but open files is handed
+over; these always get their own editor:
 
 - `--project`, `--new-file`, `--config-dir`, `--dev` and `--diff-ui`, which shape how a
-  *process* starts and have no honest meaning inside a window that's already
-  running
+  *process* starts and cannot apply to an editor that's already running
 - a launch with **no files at all**
 - anything passing **`--new-instance`**
 
 An instance is scoped to its **config directory**, so a `--dev` launch can never
 hand off to your real editor, and two `--config-dir` sessions stay independent.
-If the handoff fails for any reason, the launch simply starts its own editor.
+If the handoff fails for any reason, the launch starts its own editor.
 
 ## Opening files from the file manager
 
@@ -126,20 +122,20 @@ differs by platform:
 | **Linux `.AppImage`** | Nothing is registered — the file runs in place |
 
 Windows hands a file manager's chosen file to an application as a command-line
-argument, and nothing maps an extension to Editora unless the installer says so
-— so until 0.13.0 the MSI installed an editor that no file manager could hand a
-file to.
+argument, and nothing maps an extension to Editora unless the installer says
+so. Before 0.13.0 the MSI registered nothing, so no file manager could hand a
+file to the installed editor.
 
 **It doesn't take over your existing defaults.** On Windows 8+ the shell's
 per-user choice wins over anything an installer writes, so a type you already
-open with something else keeps opening with it and Editora is simply offered
-alongside. An extension nothing else claims *does* fall to Editora, which is the
-wanted outcome for the likes of `.tfvars`.
+open with something else keeps opening with it and Editora is offered
+alongside. An extension nothing else claims does open with Editora, which is the
+intended result for types such as `.tfvars`.
 
-The list is every extension Editora actually resolves to a language, minus
-`.html`, `.htm`, `.xhtml` and `.svg` — left to the browser and the image viewer.
-That's the same choice the Linux package already made, so the two installers
-can't drift apart in what they claim.
+The list is every extension Editora resolves to a language, minus `.html`,
+`.htm`, `.xhtml` and `.svg`, which are left to the browser and the image viewer.
+The Linux package makes the same choice, so the two installers claim the same
+types.
 
 ## Examples
 

@@ -3,7 +3,7 @@ title: "External tools"
 group: "Customization & extensibility"
 order: 6
 beta: false
-summary: "Define your own CLI commands and run them on the current file or buffer, with <code>$Name$</code> macros, stdin piping, and output to a console or back into the text. IntelliJ-style."
+summary: "Define your own CLI commands and run them on the current file or buffer, with <code>$Name$</code> macros, stdin piping, and output to a console or back into the text."
 ---
 
 Define your own command-line tools in **Settings → External Tools** and run them on the current file or buffer, IntelliJ-style.

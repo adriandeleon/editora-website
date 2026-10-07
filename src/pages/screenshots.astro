@@ -13,19 +13,19 @@ const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 // appear here automatically.
 const captions: Record<string, string> = {
   "editor.jpg":
-    "Editing a Java file — syntax highlighting, line-number gutter with bookmarks, minimap, and the status bar",
+    "Editing a Java file, with syntax highlighting, bookmarks in the line-number gutter, the minimap, and the status bar",
   "command-palette.jpg":
-    "The M-x command palette — fuzzy-search and run any command",
+    "The M-x command palette, where you fuzzy-search and run any command",
   "bookmarks-panel.jpg":
     "The Bookmarks tool window, listing bookmarks across every file",
   "file-information.jpg":
-    "The File Information panel — encoding, line endings, counts, and character details",
+    "The File Information tool window: encoding, line endings, counts, and character details",
   "markdown-split.jpg":
-    "Markdown split view — source on the left, live GitHub-style preview on the right",
+    "Markdown split view, with the source on the left and a live GitHub-style preview on the right",
   "markdown-preview-zen.jpg":
-    "Markdown preview in Zen mode — distraction-free reading with rendered task lists",
+    "Markdown preview in Zen mode, with rendered task lists",
   "doctor.jpg":
-    "The Doctor screen — every external tool Editora can use, with found, warning, and missing status",
+    "The Doctor screen, which lists every external tool Editora can use and whether it was found",
 };
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -76,8 +76,7 @@ try {
   <main class="page">
     <h1>Screenshots</h1>
     <p class="lead">
-      A look at Editora in action — the editor surface, command palette, tool
-      windows, themes, and Markdown preview.
+      The editor, the command palette, tool windows, and the Markdown preview.
     </p>
 
     {
@@ -107,7 +106,7 @@ try {
           <p>No screenshots yet.</p>
           <p class="empty-hint">
             Drop image files into <code>website/public/screenshots/</code> and
-            they'll appear here automatically — the filename becomes the
+            they'll appear here automatically. The filename becomes the
             caption (e.g. <code>command-palette.png</code> →
             "Command Palette"). Add custom captions in the
             <code>captions</code> map at the top of

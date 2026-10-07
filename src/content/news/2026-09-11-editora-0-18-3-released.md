@@ -1,13 +1,12 @@
 ---
 title: "Editora 0.18.3: steadier Project Map navigation"
-description: "Editora 0.18.3 adds independent Project Map zoom and column-focus options, improves C-x 1 for tool windows, and keeps navigation targets clear of sticky headers."
+description: "Independent Project Map zoom and column-focus options, a C-x 1 that also closes tool windows, and navigation targets that stay clear of sticky headers."
 date: 2026-09-11
 version: "0.18.3"
 ---
 
-**Editora 0.18.3** is out. This patch release makes spatial project navigation
-more predictable and removes two small sources of friction when moving around
-the editor. Download it from the
+**Editora 0.18.3** is out. This patch release adds two Project Map options
+and fixes two small annoyances in keyboard navigation. Download it from the
 [0.18.3 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.18.3).
 
 ## Keep your Project Map view

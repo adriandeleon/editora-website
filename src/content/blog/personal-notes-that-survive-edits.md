@@ -8,13 +8,13 @@ tags: [editor, design]
 
 Personal Notes let you attach an annotation to a word, line, or range, stored
 *outside* the file, which is what makes them useful for read-only, generated, or
-shared code you don't want to touch. But "stored outside the file" raises an
-obvious question: when the file changes, how does a note stay attached to the
-right place? That anchoring problem is the whole feature.
+shared code you don't want to touch. Storing them outside the file means a note
+has to stay attached to the right place when the file changes. Most of the
+feature is that anchoring problem.
 
 ## Two kinds of "the file moved"
 
-There are really two problems hiding here:
+There are two separate problems:
 
 1. **The file moved or was renamed**: the note has to find its file again.
 2. **The text inside the file changed**: the note has to find its *spot* again.
@@ -27,8 +27,7 @@ Each note records a `FileIdentity`: the path, the canonical path, size, last
 modified time, and a content hash (sha-256, capped for large files). Matching a
 note to a file tries these in priority order: **canonical path → content hash →
 similar path**. So if you rename `draft.md` to `final.md` but the contents are
-the same, the content hash still matches and the notes follow. Identity is more
-than a filename.
+the same, the content hash still matches and the notes follow.
 
 ## Finding the spot: anchors with context
 
@@ -52,14 +51,13 @@ watching.
 
 When a file opens, Editora relocates every note against the current text and, if
 anything moved, **persists the corrected positions**, so the next open hits the
-exact-match fast path. The notes file quietly heals itself instead of drifting
+exact-match fast path. The notes file corrects itself instead of drifting
 further each session.
 
-## Why this shape
+## Extending the model
 
 The model carries tags, a status (active/resolved/orphaned), and the full
 `FileIdentity`, so the obvious next steps (fuzzy matching beyond nearest-text,
-team sync) are additive rather than rewrites. But the core idea is simple and
-worth stealing for any "metadata about code that lives outside the code": don't
-anchor to a position, anchor to *content plus context*, and re-find it every time
-you open.
+team sync) are additive rather than rewrites. The same approach works for any metadata
+about code that lives outside the code: anchor to *content plus context*
+instead of a position, and re-find it every time you open.

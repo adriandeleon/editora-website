@@ -6,7 +6,7 @@ beta: false
 summary: "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus 26 more (Primer, Nord, Cupertino, Dracula and the community set). Five bundled monospace fonts, no install needed, and you can drop in a theme of your own."
 ---
 
-**Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for one thing — a keybinding. They are what a fresh install starts in.
+**Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for keybindings. They are what a fresh install starts in.
 
 Twenty-eight themes ship in total: the Editora pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
 
@@ -14,7 +14,7 @@ Each one themes the syntax tokens, the editor surface, the gutter and the projec
 
 ## One vocabulary for state
 
-Colour means the same thing everywhere. **Amber** is "not saved yet" — the tab, the Switcher, the file tree, the pickers — and it follows the theme rather than being one fixed value that only suited a light background. **Red** is broken, **green** is verified, **olive** and **violet** are git's untracked and renamed, and **periwinkle** is only ever a keybinding.
+Colour means the same thing everywhere. **Amber** means "not saved yet" on the tab, the Switcher, the file tree and the pickers, and it follows the theme rather than being one fixed value that only suited a light background. **Red** is broken, **green** is verified, **olive** and **violet** are git's untracked and renamed, and **periwinkle** is only ever a keybinding.
 
 ## Fonts
 

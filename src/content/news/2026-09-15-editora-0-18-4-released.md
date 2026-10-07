@@ -1,13 +1,13 @@
 ---
 title: "Editora 0.18.4: JavaFX 27 and one-step JUnit debugging"
-description: "Editora 0.18.4 moves to JavaFX 27, adds debugging for the JUnit test at the caret, strengthens Local History, and makes the supported build toolchain explicit."
+description: "Editora 0.18.4 moves to JavaFX 27, adds debugging for the JUnit test at the caret, fixes a Local History race, and enforces the supported build toolchain."
 date: 2026-09-15
 version: "0.18.4"
 ---
 
-**Editora 0.18.4** is out. This release updates the desktop runtime, shortens
-the path from a failing JUnit test to its debugger, and reinforces Local History
-and Java 27 compatibility. Download it from the
+**Editora 0.18.4** is out. This release moves to JavaFX 27, lets you debug
+the JUnit test at the caret, fixes a Local History race, and tests against
+Java 27. Download it from the
 [0.18.4 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.18.4).
 
 ## Debug the test under the caret
@@ -15,7 +15,7 @@ and Java 27 compatibility. Download it from the
 Java developers can now start a debugging session for the JUnit test method at
 the caret directly from the editor context menu or command palette. Editora
 launches the test through Maven or Gradle and automatically attaches to the
-suspended test JVM, removing the need to build a temporary run configuration.
+suspended test JVM, so you do not need a temporary run configuration.
 
 ## A current desktop runtime
 

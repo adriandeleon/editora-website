@@ -3,7 +3,7 @@ title: "Build tools"
 group: "Run & debug"
 order: 5
 beta: false
-summary: "Maven, npm, Cargo, Go, and Gradle each get an IntelliJ-style tasks tool window and a streaming console."
+summary: "Maven, npm, Cargo, Go, and Gradle each get a tasks tool window and a streaming console."
 ---
 
 Each detected build tool gets its own **tasks tool window** (its stripe appears when the tool's marker file is found): a browsable tree of the tool's goals, scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…). Double-click or Enter runs a task, and the output streams to a separate per-tool console window. A searchable actions popup is also available from the command palette (*Maven: Show Actions*, and so on).

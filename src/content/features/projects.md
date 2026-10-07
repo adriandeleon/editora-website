@@ -18,7 +18,7 @@ Pan and pointer-centered zoom make room for large projects, with Fit, Center, an
 
 Select a file to open a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. Double-click or choose Open to promote a file to a normal editor tab. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 
-The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away; the map is another way to understand the same project, not a replacement file manager.
+The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away. The map is another view of the same project and does not replace the tree.
 
 ## Start from a template
 
@@ -26,6 +26,6 @@ The whole map is keyboard-navigable: arrows follow the selected flow and move am
 
 ## Settings you can commit
 
-A project can carry `.editora/settings.json` saying **which language server to run and whether to run it**, overriding your global preferences for anyone who opens that project. The case it's for: one repository needs a JDK 17 server and another a JDK 25 one, and nobody should have to remember to flip a global preference between them. **Project: Edit Project Settings…** creates the file with an example.
+A project can carry `.editora/settings.json` saying **which language server to run and whether to run it**, overriding your global preferences for anyone who opens that project. This is for cases where one repository needs a JDK 17 server and another a JDK 25 one, so that nobody has to remember to flip a global preference between them. **Project: Edit Project Settings…** creates the file with an example.
 
 Only toolchain settings can be overridden. Appearance, keymap and fonts stay personal, because checking out a repository should not rearrange somebody's editor.

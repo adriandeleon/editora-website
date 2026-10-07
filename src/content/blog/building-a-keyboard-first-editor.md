@@ -15,8 +15,7 @@ command first.**
 
 In Editora, there's no such thing as an action that isn't a command. Saving,
 toggling a bookmark, starting the debugger, switching a theme: each is a
-registered `Command` with an id and a title. That single decision pays off
-everywhere:
+registered `Command` with an id and a title. Several things follow from that:
 
 - The **command palette** (`M-x`) lists all 200+ of them with fuzzy search, so
   you can do anything without remembering where it lives.
@@ -25,8 +24,8 @@ everywhere:
 - **Toolbar buttons** dispatch the same commands, so the UI and the keyboard can
   never drift apart.
 
-If you've ever hunted through nested menus for something you do ten times a day,
-this is the antidote: type a few letters, hit Enter, move on.
+Instead of hunting through nested menus for something you do ten times a day,
+you type a few letters and press Enter.
 
 ## Keyboard-first, not keyboard-only
 
@@ -40,10 +39,9 @@ for the mouse to get something done.
 A keyboard-driven editor has to keep up with you. Editora tokenizes,
 parses, and searches off the UI thread, re-highlights incrementally from the
 changed line, and only repaints what's visible, so typing stays smooth even on
-large files. Performance isn't an afterthought; it's a constraint the whole
-codebase is held to.
+large files. Performance is a constraint the whole codebase is held to.
 
 ---
 
-That's the philosophy. If it resonates, [give it a try](/#download), and let me
+If that sounds like how you work, [give it a try](/#download), and let me
 know what you think on [GitHub](https://github.com/adriandeleon/Editora).

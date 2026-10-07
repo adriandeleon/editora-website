@@ -6,7 +6,7 @@ version: "0.9.6"
 ---
 
 **Editora 0.9.6** is the largest correctness release so far: a per-feature audit
-that closed a long list of security holes and sharp edges across almost every
+that closed a long list of security holes and bugs across almost every
 part of the editor. Grab it from the
 [releases page](https://github.com/adriandeleon/Editora/releases/latest).
 
@@ -21,7 +21,7 @@ untrusted repo can no longer run commands through "Open Terminal Here" on
 Windows, and the HTML preview server no longer follows a symlink out of its
 folder.
 
-**The audit.** Behind those headlines are dozens of quieter fixes, each from
+**The audit.** Behind those headlines are dozens of smaller fixes, each from
 walking through a feature and asking what could go wrong: language servers that
 stayed cached after crashing, a Typst path with a space in it, a PlantUML
 diagram that reported a successful export while writing nothing, external-tool
@@ -34,8 +34,8 @@ Output window** instead of a console each (see [Build tools](/docs/build-tools))
 **Edit Breakpoint** is a real form now, so you can finally set a **log message**
 (a logpoint) or **disable** a breakpoint, not just a condition
 ([Debugging](/docs/run-debug#debugging)). **Format Document** works for JSON,
-CSS, and HTML. And **Reset to Defaults** actually resets your settings, all of
-them, rather than the 23-out-of-181 it used to.
+CSS, and HTML. And **Reset to Defaults** now resets all of your settings,
+rather than the 23 out of 181 it used to.
 
 There's a [0.9.6 blog post](/blog/editora-0-9-6) on what a per-feature audit
 turns up, and the full changelog is on [What's New](/whats-new).

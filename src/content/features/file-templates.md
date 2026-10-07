@@ -10,4 +10,4 @@ summary: "New File From Template: single- or multi-file scaffolds with interacti
 
 Templates use the same `${var}` / `$0` syntax as snippets; bundled ones cover a Java class, an HTML page/bundle, a Markdown doc, and a Python script. Add your own under `~/.editora/templates/`.
 
-A multi-file template can also scaffold a **whole project**: **New Project From Template** writes it to a folder of your choosing, registers that folder as a [project](/features/projects) and opens it in its own window. A **Python Project** template ships with it — package layout, a test, `pyproject.toml`, README and `.gitignore`.
+A multi-file template can also scaffold a **whole project**: **New Project From Template** writes it to a folder of your choosing, registers that folder as a [project](/features/projects) and opens it in its own window. A **Python Project** template ships with it, containing a package layout, a test, `pyproject.toml`, README and `.gitignore`.

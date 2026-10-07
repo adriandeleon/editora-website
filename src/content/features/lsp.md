@@ -6,7 +6,7 @@ beta: true
 summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 23 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
 ---
 
-Editora speaks the **Language Server Protocol**, both halves of it: the requests that read your code, and the ones that change it.
+Editora supports the **Language Server Protocol**, both the requests that read your code and the ones that change it.
 
 - **Go to definition**: `M-.`, or Ctrl/Cmd-click a symbol, and it works from inside an opened JDK or dependency source tab too
 - **Go to implementation / type definition / declaration**, offered only where the server supports them
@@ -15,8 +15,8 @@ Editora speaks the **Language Server Protocol**, both halves of it: the requests
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
 - **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings
 - **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, and override/implement methods, each with a checkbox picker
-- **Re-indent as you type** (`;`, `}`, Enter snap the line to the server's convention — indentation only, off by default) and a **whole-project Problems** view with a Build Project command
-- **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it — and showing you every affected file first, with its change count, so you can untick any of them before applying
+- **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
+- **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
 - **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)

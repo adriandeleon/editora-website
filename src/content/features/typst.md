@@ -6,7 +6,7 @@ beta: false
 summary: "A 3-mode preview for <code>.typ</code> files rendered by the Typst CLI, a tinymist language server, Markdown-style editing, and export to PDF / PNG / SVG."
 ---
 
-Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered off-thread by the external **`typst`** CLI as a **multi-page** stack. The last good render stays on screen while you edit (no flicker), and a compile error keeps the pages visible under a small banner.
+Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered off-thread by the external **`typst`** CLI as a **multi-page** stack. The last good render stays on screen while you edit, so the preview does not flicker, and a compile error keeps the pages visible under a small banner.
 
 - **Editing** has Markdown-style ergonomics: Enter continues a `-` / `+` / `N.` list, and selecting text pops a format bar (bold, emphasis, raw, link, bullet, heading) with matching right-click and palette actions. Bundled snippets cover figures, tables, and more.
 - **Structure and folding** follow the document's own sections: headings drive both the outline and folding, so a section collapses like one, and `#let` / `#show` bindings join the Structure window nested under the section they are written in. Long embedded listings collapse at their fence.

@@ -1,6 +1,6 @@
 ---
 title: "One-click install for every language server"
-description: "All 21 language servers now install from inside Editora: a button per server, an in-editor banner, or the Install picker. No more hand-running scripts."
+description: "All 21 language servers now install from inside Editora: a button per server, an in-editor banner, or the Install picker, with no scripts to run by hand."
 date: 2026-06-23
 ---
 

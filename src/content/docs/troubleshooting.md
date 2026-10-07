@@ -115,5 +115,5 @@ fraction of a second into startup, intermittently, on any CPU without AVX-512
 Zen 4). It is fixed in 0.13.1, and there is no workaround worth applying on the
 old build.
 
-Still stuck? [Open an issue](https://github.com/adriandeleon/Editora/issues) and
+If you are still stuck, [open an issue](https://github.com/adriandeleon/Editora/issues) and
 attach the Debug Log.

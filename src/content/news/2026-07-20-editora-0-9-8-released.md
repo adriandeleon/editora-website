@@ -16,7 +16,7 @@ extra setup. You can **review a pull request** in a *Files changed* tab (per-fil
 changes), **submit a review**, **check out** or **create** a pull request, and
 **open the current file on GitHub** at the caret line. There's a **pull request /
 issue / Actions-runs tool window** (`M-g p`) and a **status-bar CI checks**
-indicator, both of which stay invisible until the repo actually has something to
+indicator, both of which stay invisible until the repo has something to
 look at.
 
 **A red build takes you to the line.** A failed CI run's log opens in the Build
@@ -34,7 +34,7 @@ that updates live.
 (`n`, `s`, `f`, and friends) with a focus highlight, and stepping no longer
 yanks focus back to the editor and swallows your next key press.
 
-**Also worth knowing:** the per-type preview toggles are replaced by one pair of
+**Also in this release:** the per-type preview toggles are replaced by one pair of
 commands, `view.togglePreview` and `view.toggleSplitPreview`, that act on
 whatever the active file previews as. And development builds now carry a
 `-SNAPSHOT` suffix and a `snapshot` toolbar badge, so a build made from source is

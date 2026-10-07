@@ -24,8 +24,8 @@ Python, and Node frames) to jump to the file and line.
 
 A clicked **Java** frame in the Run, Test or Build console is resolved by the
 language server, so a frame inside a dependency or the JDK opens its source
-instead of reporting "not found". Frames in your own code behave as before, and
-filename matching still handles anything the server can't place, plus every
+instead of reporting "not found". Frames in your own code open as usual, and
+filename matching handles anything the server can't place, plus every
 non-Java trace.
 
 Pass per-file **program arguments** with `file.runWithArgs` (remembered across
@@ -64,7 +64,7 @@ There are two paths under that, picked automatically:
 
 ## Run configurations
 
-A run configuration is a saved answer to "how is this launched": a name, what to
+A run configuration saves how something is launched: a name, what to
 launch, **program arguments**, **VM arguments**, **environment variables**
 (`KEY=value`, quoting values that contain spaces), an optional **JDK override**,
 and a working directory.
@@ -90,14 +90,14 @@ error.
 The toolbar carries a configuration dropdown with **Run**, **Debug** and **Stop**
 beside it; your choice is remembered across restarts. The dropdown ends with
 **Edit Configurations…**, which opens the separate Run Configurations window
-with the configuration you had selected already picked out — also available as
-**Run: Edit Run Configurations…** (`run.editConfigs`).
+with the configuration you had selected already picked out. The same window is
+available as **Run: Edit Run Configurations…** (`run.editConfigs`).
 
 Starting a file or configuration always opens and focuses the **Run** tool
 window. If that process is already active, Run brings its existing console back
 instead of hiding the useful output behind a busy message.
 
-The group only appears where you could actually launch something: with a project
+The group only appears where you could launch something: with a project
 open and a Maven, Gradle, npm, Cargo or Go build file *inside* it, or a makefile
 at its root; with no project open, any detected build does. Anything you have
 already saved keeps the group visible regardless, because a configuration only
@@ -105,13 +105,14 @@ needs a `main` method and a plain Java folder can hold one. The palette commands
 work anywhere either way.
 
 Each configuration also **becomes a real command**, so it appears in the palette
-by name and can be given its own keyboard shortcut in Settings → Keymaps — the
+by name and can be given its own keyboard shortcut in Settings → Keymaps, the
 same way saved [macros](/docs/macros) and
-[external tools](/docs/external-tools) already work.
+[external tools](/docs/external-tools) work.
 
 ### A step before the launch
 
-A configuration can name a command to run first — a build, a codegen step. A
+A configuration can name a command to run first, such as a build or a codegen
+step. A
 **non-zero exit aborts the launch**, so a stale binary is never run by accident.
 
 ### Sharing them with your team
@@ -138,7 +139,7 @@ removes one.
 
 **Add** starts from the file you are looking at rather than a blank entry: it
 prefills the main class from the active Java file (or the one your Gradle build
-declares — `mainClass`, `mainClass.set(…)`, or the legacy `mainClassName`), names
+declares as `mainClass`, `mainClass.set(…)`, or the legacy `mainClassName`), names
 the configuration after that class, and puts the cursor in whichever field still
 needs you. Adding twice from the same file gets you "App" and "App (2)" rather
 than two entries sharing a name.
@@ -147,8 +148,8 @@ Running an **incomplete** configuration opens its form at the field you need to
 fill in, rather than naming the problem and leaving you to find it. VM arguments
 and environment variables apply to both Run and Debug.
 
-A saved configuration no longer depends on which tab is in front: any open Java
-file in the project serves, and it only complains when there genuinely isn't one.
+A saved configuration does not depend on which tab is in front: any open Java
+file in the project serves, and it reports an error only when there isn't one.
 
 ## Debugging
 
@@ -212,7 +213,7 @@ The field does one of two things, and its prompt says which:
 
 - While the program **runs**, Enter sends the line to the program (an empty
   line counts).
-- While it is **paused**, Enter evaluates an expression, as before.
+- While it is **paused**, Enter evaluates an expression.
 
 End the input with `Ctrl+D` in the field, the console's right-click menu, or
 *Debug: End Program Input (EOF)* (`debug.endProgramInput`).

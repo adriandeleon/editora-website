@@ -14,18 +14,18 @@ wanted.
 
 The newest installers cut the time to first frame by **~28%, roughly
 300–480 ms on macOS**, using JDK 25's new **AOT cache** (the first piece of
-Project Leyden to ship). Here's how it works, and the one non-obvious trick that
-made it actually pay off.
+Project Leyden to ship). This post covers how it works, and the one non-obvious step that
+made it pay off.
 
 ## What the AOT cache does
 
-JDK 25 can record the work the JVM normally repeats on every launch, loaded and
-linked classes, and some profile data, into a cache file, then memory-map it on
-the next start instead of redoing it. You point the launcher at a file with
+JDK 25 can record the work the JVM normally repeats on every launch into a cache
+file, then memory-map it on the next start instead of redoing it. That work is
+loading and linking classes, plus some profile data. You point the launcher at a file with
 `-XX:AOTCache=...` and the JVM does the rest.
 
-The catch: a cache only helps for classes that were *actually loaded* when it was
-recorded. And that's where it gets interesting for a GUI app.
+A cache only helps for classes that were *loaded* when it was recorded, and that
+matters for a GUI app.
 
 ## A headless trainer buys you almost nothing
 
@@ -33,7 +33,7 @@ My first instinct was to train the cache in CI the cheap way: run the app
 headless, let it initialize, capture the cache. That gave **basically zero
 speedup.**
 
-The reason is the whole point: the expensive part of JavaFX startup is loading
+The expensive part of JavaFX startup is loading
 the scene/control/CSS classes, and **those don't load until a window actually
 renders.** A headless run never paints a frame, so it never touches the classes
 that matter. To capture them, the training run has to be a *real GUI run.*
@@ -41,7 +41,7 @@ that matter. To capture them, the training run has to be a *real GUI run.*
 So that's what the build does now. Under a `-Deditora.aotTrainExit` flag,
 `WindowManager` builds and renders the first real window, lets it settle briefly
 (long enough to pull in the highlighting classes too), and then calls
-`System.exit`. The cache it records reflects an actual launch, which is exactly
+`System.exit`. The cache it records reflects an actual launch, which is
 what we want to replay.
 
 On Linux there's no display in CI, so the training run happens under `xvfb` (the
@@ -64,17 +64,17 @@ runtime image, not absolute paths), the cache stays valid after the installer
 drops the app wherever the user puts it. The launcher's `.cfg` just carries
 `-XX:AOTCache=$APPDIR/editora.aot`.
 
-## It can't make things worse (*famous last words*)
+## It can't make things worse
 
 A performance optimization that can break a launch isn't worth it, so this one
 is **fully failure-tolerant.** If training fails (no display on a runner, any
-error at all), the build simply ships without the cache. And at runtime, a
+error at all), the build ships without the cache. And at runtime, a
 missing or invalid `-XX:AOTCache` file degrades gracefully to a normal start
 under JDK 25's default `AOTMode=auto`. Worst case, you get today's startup; best
 case, you get a noticeably quicker one.
 
-The cost is disk: the cache is about **60 MB**. Installers compress it well: the
-macOS DMG stayed around 81 MB.
+The cost is disk space. The cache is about **60 MB**, though installers compress
+it well, and the macOS DMG stayed around 81 MB.
 
 ## While I was in there: footprint
 
@@ -92,7 +92,7 @@ same flags, so development matches production.
 
 ---
 
-Faster startup is one of those things you only notice when it's *gone*. If you
+If you
 grab a [fresh installer](/#download), the first window should be up noticeably
 quicker than before. As always, the gory details are in the
 [changelog](https://github.com/adriandeleon/Editora/blob/master/CHANGELOG.md).
@@ -102,7 +102,7 @@ I'm happy to talk about it in
 ---
 
 **Update (October 2026).** Several claims above did not hold up in later
-releases, and the "famous last words" in that heading turned out to be accurate.
+releases, including the heading's claim that the cache can't make things worse.
 
 - **Windows.** Stripping the runtime's `bin/` after training removed the JVM
   itself on Windows, where it lives in that folder, so Windows installs failed

@@ -3,18 +3,18 @@ title: "Search Everywhere"
 group: "Keyboard & commands"
 order: 3
 beta: false
-summary: "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in — <code>&gt;</code>, <code>#</code> or <code>@</code> narrows it when you already know."
+summary: "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in. A <code>&gt;</code>, <code>#</code> or <code>@</code> prefix narrows it when you already know."
 ---
 
-Editora had five pickers behind five chords, each asking you to decide *what kind* of thing you wanted before you could start typing its name. **Search Everywhere** asks for the name.
+Before Search Everywhere, Editora had five pickers on five chords, and each one made you decide *what kind* of thing you wanted before you could start typing its name. **Search Everywhere** takes the name and searches all of them.
 
 - No prefix: commands, project files and symbols together
-- `>` commands only, `#` files only, `@` symbols only — VS Code's sigils, because the muscle memory already exists
+- `>` commands only, `#` files only, `@` symbols only. These are VS Code's sigils, chosen because many people already know them.
 
-Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge hands the whole list to whichever is biggest and the other two disappear. Each source gets a guaranteed share, and the groups compete on their *best* result rather than their bulk. Restrict it to one source and nothing is capped — there is nothing left to drown out.
+Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge would fill the list from the biggest source and push the other two out. Each source gets a guaranteed share, and the groups are ordered by their *best* result rather than by how many results they have. When you restrict it to one source, nothing is capped.
 
 It **teaches the way the command palette does**: an empty query lists every command, a command whose feature is switched off is listed greyed with the setting that would enable it, the highlighted row's description sits under the list, and `C-h` opens its documentation.
 
-`M-S-x` in the Emacs keymap, `Ctrl`/`Cmd`+`Shift`+`E` in the others — and it can take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
+It is `M-S-x` in the Emacs keymap and `Ctrl`/`Cmd`+`Shift`+`E` in the others. It can also take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
 
 The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).

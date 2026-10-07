@@ -16,8 +16,8 @@ Editora is a fast, keyboard-driven programmer's text editor, cross-platform and
 open source under the MIT License. The organizing idea is that every action is a
 registered command: the same command powers the palette (`M-x`), a keybinding,
 and any toolbar button, so nothing is buried in a menu you can't reach from the
-keyboard. You pick the keymap that fits your hands, Emacs, CUA, Sublime Text, VS
-Code, or IntelliJ, and switch it live.
+keyboard. You pick the keymap that fits your hands (Emacs, CUA, Sublime Text, VS
+Code, or IntelliJ) and switch it live.
 
 ## What's in 0.9.1
 
@@ -38,7 +38,7 @@ the areas:
   merge resolver, and IntelliJ-style local file history.
 - **Docs and data**: a native Markdown preview with Mermaid diagrams and LaTeX
   math, export to PDF, HTML, Word, and ODF, a server log viewer, and
-  first-class CSV and TSV tooling.
+  CSV and TSV tooling.
 - **Workspace**: projects and multi-window, bookmarks, personal notes, remote
   editing over SFTP, and a TODO tool window.
 
@@ -48,8 +48,8 @@ its own page linked from the [home grid](/) and the [docs](/docs).
 ## New this release: AI, on your terms
 
 0.9.1 also introduces optional **AI assistance**, off by default. There are
-one-shot actions, explain a selection, rewrite it to an instruction, generate a
-commit message from the staged diff, and an inline ghost completion, plus a full
+one-shot actions (explain a selection, rewrite it to an instruction, generate a
+commit message from the staged diff, and an inline ghost completion), plus a full
 embedded coding **agent** over the Agent Client Protocol whose edits land as
 undoable buffer changes you review and save. You can point it at the Anthropic
 API or at a local OpenAI-compatible model like LM Studio or Ollama, so it works
@@ -58,7 +58,7 @@ without sending anything to a cloud if you'd rather it didn't. The
 
 ## Why 0.9.1 and not 0.9.0
 
-The honest version: `v0.9.0` was cut first, but a JReleaser misconfiguration
+`v0.9.0` was cut first, but a JReleaser misconfiguration
 published the GitHub release as *immutable* before the installer uploads
 finished. GitHub permanently reserves a tag once it has backed an immutable
 release, even after you delete the release and the tag, so `v0.9.0` can never be

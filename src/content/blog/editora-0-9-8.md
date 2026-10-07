@@ -6,46 +6,44 @@ author: Adrián De León
 tags: [release]
 ---
 
-The headline of 0.9.8 is GitHub support, and the most interesting thing about it
-is what it *doesn't* do: it never asks you for a token.
+The headline of 0.9.8 is GitHub support, and it never asks you for a token.
 
 ## Borrowing someone else's trust boundary
 
 The obvious way to build a GitHub integration is to add an API client, ask the
 user for a personal access token, and store it somewhere. That means Editora
 would be holding a credential that can read your private repositories and push
-to them. It means writing token storage, refresh, and revocation. It means
-picking a place to keep the secret and getting the file permissions right. And
-it means every GitHub Enterprise user has to tell the editor about their host.
+to them. It also means writing token storage, refresh, and revocation, picking a
+place to keep the secret and getting the file permissions right, and making
+every GitHub Enterprise user tell the editor about their host.
 
 Editora does none of that. It shells out to the
 [`gh` CLI](https://cli.github.com), the same pattern the Git support already uses
 for `git`, and the same one the Mermaid, diagram, and Typst features use for
-their own tools. `gh` already holds your credentials, already knows your hosts,
-and already handles enterprise. Editora just runs it and parses the JSON.
+their own tools. `gh` already holds your credentials, knows your hosts, and
+handles enterprise. Editora runs it and parses the JSON.
 
-The practical consequences are nice. GitHub Enterprise works with no
-configuration in Editora at all, because `gh` resolves the host from the
-repository's own remote. Authentication is `gh auth login`, deliberately outside
-the editor. And there is no credential in Editora's config to leak, because there
-is no credential.
+In practice, GitHub Enterprise works with no configuration in Editora at all,
+because `gh` resolves the host from the repository's own remote. Authentication
+is `gh auth login`, outside the editor. And there is no credential in Editora's
+config to leak.
 
-The cost is a real ceiling. Inline review comments and GitHub's "suggested
+The cost is a ceiling on what it can do. Inline review comments and GitHub's "suggested
 changes" have no `gh` subcommand, so they aren't supported. Pull request diffs
-come whole rather than per file. Those are honest limits of the approach, and
+come whole rather than per file. Those are limits of the approach, and
 they seem like a fair trade for not being in the token business.
 
 ## Staying out of the way
 
-A feature that's always visible is a feature that's often wrong. The GitHub
-surfaces are gated on five independent conditions: the integration is enabled,
-`gh` is installed, `gh auth status` succeeds, the remote is a GitHub host, and
-the repository actually has an open pull request, issue, or workflow run.
+The GitHub surfaces only appear when they apply. They are gated on five
+independent conditions: the integration is enabled, `gh` is installed,
+`gh auth status` succeeds, the remote is a GitHub host, and the repository has
+an open pull request, issue, or workflow run.
 
-That last one matters more than it sounds. A trunk-based repository with no open
+That last one matters. A trunk-based repository with no open
 pull requests and no issues shouldn't grow a GitHub tool window just because it
-happens to be hosted on GitHub. But if it has a red CI run, that's exactly when
-you want the tab. So workflow runs count toward the check, evaluated last so the
+happens to be hosted on GitHub. But if it has a red CI run, that's when you want
+the tab. So workflow runs count toward the check, evaluated last so the
 cheaper conditions short-circuit first.
 
 ## Reviewing without leaving
@@ -60,10 +58,10 @@ Getting the per-file counts right took a small correction. A diff hunk's line
 lists include context lines, so their sizes are *not* the additions and deletions
 GitHub shows. The counts come from the tagged `+` and `−` lines only.
 
-## The part that saves the most time
+## CI logs that link back to your checkout
 
-When CI fails, the log tells you where. On the runner. A GitHub Actions log
-prints paths like
+When CI fails, the log tells you where, but in the runner's paths. A GitHub
+Actions log prints paths like
 `/home/runner/work/your-repo/your-repo/src/main/java/Foo.java`, and a path
 beginning `/home/runner` doesn't exist on your machine, so a clickable stack
 trace would resolve to nothing.
@@ -75,9 +73,8 @@ package path is eight or more, which is why the cap is generous. Any suffix
 containing `..` is rejected outright, so a hostile log line can't walk out of the
 project root.
 
-The result: a failed run's log opens in the Build Output console on its own CI
-tab, and clicking a frame in the stack trace opens the actual file at the actual
-line. Logs are fetched once rather than streamed, because a finished run's log
+As a result, a failed run's log opens in the Build Output console on its own CI
+tab, and clicking a frame in the stack trace opens your local file at that line. Logs are fetched once rather than streamed, because a finished run's log
 doesn't grow.
 
 ## Showing the whole test run up front
@@ -119,8 +116,8 @@ lines. It reserves two digits minimum.
 Between releases the project version now carries a `-SNAPSHOT` suffix, and a
 `snapshot` badge sits in the toolbar next to the `dev mode` one. The suffix shows
 in `--version`, the About dialog, and the Welcome footer. A release build shows
-no badge. It's a small thing, but "is this the release or my build from
-yesterday?" is a question worth never having to ask.
+no badge. It's a small thing, but it answers "is this the release or my build
+from yesterday?" at a glance.
 
 ## Get it
 

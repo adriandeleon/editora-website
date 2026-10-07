@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.9.10: the half of LSP that writes to your files"
-description: "Reading from a language server is easy. Acting on what it says means editing your code, and that is where the interesting bugs live: an ordering rule in the spec, a capability nobody declared, a feature the server ships switched off, and an off-by-one that made a whole feature look like it had nothing to say."
+description: "Reading from a language server is easy. Acting on what it says means editing your code, and that is where the bugs were: an ordering rule in the spec, a capability nobody declared, a feature the server ships switched off, and an off-by-one that made a whole feature look like it had nothing to say."
 date: 2026-07-26
 author: Adrián De León
 tags: [release]
@@ -17,8 +17,8 @@ actions and quick fixes, rename across the workspace, organize imports, extract
 and inline refactorings. Along the way it also picked up signature help, inlay
 hints, occurrence highlighting, call and type hierarchy, and folding that comes
 from the server's parse rather than from counting braces. Four of the bugs found
-on the way are worth writing down, because each one failed in a way that looked
-like the feature simply had nothing to offer.
+on the way are described below, because each one failed in a way that looked
+like the feature had nothing to offer.
 
 ## Edits have an order, and it is not the obvious one
 
@@ -33,11 +33,11 @@ lands before any offset it depends on has moved.
 
 The failure mode is nasty because it is proportional. A format that only changes
 whitespace on one line works perfectly. A format that re-indents a whole file,
-which is exactly what you reach for Format Document to do, mangles it. The same
+which is what you reach for Format Document to do, mangles it. The same
 code path backs quick fixes and multi-file rename, so both were affected, and
 both are now covered by the fix.
 
-## A capability you do not declare is a feature that does not exist
+## The capability nobody declared
 
 Renaming a public Java class should also rename `Foo.java`. Editora asked jdtls
 to rename the symbol, jdtls renamed the symbol, and the file stayed put.
@@ -45,8 +45,8 @@ to rename the symbol, jdtls renamed the symbol, and the file stayed put.
 The reason is a single line in the `initialize` handshake. jdtls only emits the
 file-rename operation when the client declares that it supports create, rename
 *and* delete resource operations. Editora declared rename alone, which reads as
-the obviously sufficient subset, so the server quietly downgraded what it sent
-back. No error, no warning: just a rename that did less than you asked.
+the obviously sufficient subset, so the server downgraded what it sent back.
+There was no error and no warning, only a rename that did less than you asked.
 
 The same shape, from the other direction, hid signature help. jdtls advertises
 the capability and ships the feature disabled, so `(` in a Java call produced
@@ -62,8 +62,8 @@ declares at `initialize`, so a capability cannot go missing without a red test.
 
 ## The empty answer that meant "you asked wrong"
 
-Inlay hints never worked. Not "worked badly": the request came back with an
-empty list every single time, on every server, for every file.
+Inlay hints never worked. The request came back with an empty list every time,
+on every server, for every file.
 
 Covering line *n* of a document normally means an exclusive end position of
 `(n+1, 0)`. For the last line, that names a line the document does not have.
@@ -73,12 +73,12 @@ asking to `(27, 0)` returned zero hints and asking to `(26, 0)` returned six.
 The same off-by-one was in the semantic-token range request, where it had been
 hiding as "this server just does not send many tokens".
 
-The investigation is the part worth keeping. An audit pass ruled the range out
+An audit pass ruled the range out
 as a cause after testing nine live-server configurations, all of which read
 zero. Its in-range control was itself out of range, because
-`split("\n", -1).length` is the line *count* and the last index is one less. Nine
-careful measurements, all agreeing, all wrong, and the conclusion they supported
-was "the servers do not implement this".
+`split("\n", -1).length` is the line *count* and the last index is one less. All
+nine careful measurements agreed and all were wrong, and the conclusion they
+supported was "the servers do not implement this".
 
 ## Nothing was checking what went on the wire
 
@@ -94,9 +94,9 @@ tests: the wire format of every request, the capabilities declared at
 `initialize`, session lifetime (idle eviction, crash recovery, per-project
 workspaces), per-buffer gating, diagnostics routing, and the rename path that
 writes and moves files. Each of the four defects has a regression test. There is
-no behaviour change in any of it, which is the point.
+no behaviour change in any of it.
 
-One more found by the same sweep, and my favourite: the Maven-aware `pom.xml`
+The same sweep found one more, and it is my favourite. The Maven-aware `pom.xml`
 language server had been enabled by default, offered by the in-app installer,
 shown as configured in Settings and reported as found by Doctor, while every
 `pom.xml` silently fell back to the plain XML server. The map of server ids to
@@ -115,14 +115,14 @@ script, a shell script. Real work is a project, so **Run Main Class…** and
 Gradle project, and a green ▶ sits in the gutter beside every
 `public static void main`.
 
-There are deliberately two paths under that. The fast one asks the Java language
+There are two paths under that. The fast one asks the Java language
 server for the project's main classes and its resolved classpath, which is also
 the only way to debug, since a debugger needs the exact classpath and a JVM it
 controls. When the language server is not set up, plain Run falls back to the
 build tool: Maven resolves the classpath through
 `mvn compile dependency:build-classpath` and Gradle delegates to its `run` task,
-or `bootRun` for a Spring Boot project. The fallback learned one thing the hard
-way, which is that a multi-module build has to run from the reactor root with
+or `bootRun` for a Spring Boot project. The fallback needed one correction: a
+multi-module build has to run from the reactor root with
 `-pl <module> -am`, or a submodule that depends on an uninstalled sibling fails
 on a dependency that is sitting right there in the same repository.
 
@@ -152,8 +152,8 @@ never matches, accumulation silently never happens, and every unit test still
 passes because each kill individually is correct.
 
 **Narrowing is safe by inversion, not by auditing.** Narrowing the buffer to a
-region really does replace the editor's text with that region, which is the whole
-point: search, replace, macros and Select All must see only the region. That
+region really does replace the editor's text with that region, and it has to,
+because search, replace, macros and Select All must see only the region. That
 leaves about twenty-five callers that mean "the whole file", including save,
 autosave, the language server sync, diff and local history. Rather than find and
 fix each one, the accessor they all already call returns the whole document, and
@@ -235,7 +235,7 @@ Find bar's replace, where `$1` had been inserted literally while the same query
 in Find in Files substituted correctly; Replace All rewrites only the span from
 the first to the last match, keeping the untouched remainder out of the undo
 entry; a snippet's value is no longer stolen by a leading mirror, and snippet
-transforms are no longer discarded, which had been quietly breaking the bundled
+transforms are no longer discarded, which had been breaking the bundled
 PowerShell snippets; Java debugging no longer reports itself unavailable when
 your jdtls already bundles the java-debug plugin; the ▶ beside a JUnit class is
 confirmed against the project's real test source folders, so a class in

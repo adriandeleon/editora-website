@@ -19,7 +19,7 @@ The headline additions:
 - **[Smart file previews](/docs/previews)**: JSON / YAML / TOML / XML render as a
   data tree (OpenAPI specs as browsable API docs), and systemd, ssh config,
   Dockerfile, fstab, crontab, and GitHub Actions files decode into plain English.
-  Plus a PDF page viewer and an SVG image preview. Every preview exports to PDF.
+  There is also a PDF page viewer and an SVG image preview. Every preview exports to PDF.
 - **[Build tools](/docs/build-tools)**: Maven, npm, Cargo, Go, and Gradle each
   get a toolbar icon with an actions popup and a streaming console.
 

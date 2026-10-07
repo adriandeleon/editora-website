@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.9.9: asking before it builds"
-description: "Why opening a repository shouldn't be enough to run its code, what it takes for a dimmed command to be useful rather than annoying, and a class cache that quietly went missing on Apple silicon for eight releases."
+description: "Why opening a repository shouldn't be enough to run its code, what it takes for a dimmed command to be useful rather than annoying, and a class cache that went missing on Apple silicon for eight releases."
 date: 2026-07-21
 author: Adrián De León
 tags: [release]
@@ -19,8 +19,8 @@ mostly is, until you hit build.
 Maven and Gradle projects conventionally ship their own wrapper, `./mvnw` or
 `./gradlew`, checked into the repository. It's a convenience: contributors don't
 need the right Maven version installed. It's also a shell script that the
-repository controls, and Editora prefers it over the one on your `PATH`, exactly
-as the convention intends. So the first build in a freshly cloned repository
+repository controls, and Editora prefers it over the one on your `PATH`, as the
+convention intends. So the first build in a freshly cloned repository
 runs code that came with the repository, with your privileges.
 
 Editora now asks first, once per folder, with trust inherited by subfolders so a
@@ -42,15 +42,15 @@ disarm the prompt. npm, Cargo and Go launch your own toolchain and are never
 gated; Run and Debug always invoke a `PATH` interpreter, so they don't prompt
 either.
 
-The honest limit: this closes the `argv[0]` hole, not the broader one. Running
+The limit is that this closes the `argv[0]` hole, not the broader one. Running
 `mvn` on a hostile build file is still executing repository-controlled content.
 Gating *that* means trusting a folder before any build at all, which is a much
 bigger behavior change than this release wanted to make.
 
 ## A feature that was on, but barely
 
-Editora already dimmed palette commands whose feature was switched off. In
-principle. In practice only 17 features were wired into the gate, so on a fresh
+In principle, Editora already dimmed palette commands whose feature was switched
+off. In practice only 17 features were wired into the gate, so on a fresh
 install roughly 19 of about 550 commands were ever affected. Debugging, which is
 off by default, showed its entire command family as fully available. The feature
 existed and looked broken.
@@ -59,35 +59,37 @@ Two things fixed it. First, the missing features got wired up: debugging, AI, th
 agent, TODO highlighting, spell check, the CSV grid, structured previews,
 Markdown lint, EditorConfig. Second, and more useful day to day, commands are now
 dimmed when they have **nothing to act on**, not only when their feature is off.
-Markdown commands outside a Markdown file. CSV commands outside a CSV. Git
-commands outside a repository. Debugger steps with nothing suspended.
+That covers Markdown commands outside a Markdown file, CSV commands outside a
+CSV, Git commands outside a repository, and debugger steps with nothing
+suspended.
 
-That second half needed a deliberate bias. Dimming a command that would in fact
-have worked is a worse failure than leaving one lit, so the context rules are
-conservative: they only cover families where every member genuinely needs the
-same context, with explicit carve-outs (Clone works fine outside a repository).
+That second half needed a bias toward leaving commands lit. Dimming a command
+that would in fact have worked is a worse failure than leaving one lit, so the
+context rules are conservative: they only cover families where every member
+needs the same context, with explicit carve-outs (Clone works fine outside a
+repository).
 
-The part that turns this from annoying into useful is the tooltip. A dimmed row
+The tooltip is what makes this useful rather than annoying. A dimmed row
 now says *why*, and what to do: "Unavailable, this feature is turned off. Run
 'Toggle Debugging Support' to enable it." It names a command you can type into
 the same palette you're already looking at. And when Simple UI mode is what's
 forcing a feature off, the tooltip points at Simple mode rather than the
 feature's own toggle, which wouldn't have helped.
 
-Two invariants keep it from eating itself: the toggle that re-enables a feature
+Two invariants keep it consistent: the toggle that re-enables a feature
 is never dimmed, and the "why" is derived from the same logic that decides the
 dimming, so a command can't be dimmed for a reason the tooltip can't state.
 
 ## Consistent titles are a search feature
 
 Three quarters of command titles already read `Family: Action` (`Edit: Cut`,
-`Git: Push`). The `view.*` family was a coin flip: 46 prefixed, 48 bare. That
-sounds cosmetic. It isn't, because the palette is a search box. Scanning for
+`Git: Push`). The `view.*` family was split: 46 prefixed, 48 bare. That sounds
+cosmetic, but the palette is a search box. Scanning for
 view-related commands surfaced half of them and scattered the rest.
 
 All 48 are prefixed now, in all six languages, along with `tool.*` (now
 `Tool Window: <name>`, reusing each window's already-translated name), the
-`markdown.*` formatting commands, and `lsp.*`. One title was actively harmful:
+`markdown.*` formatting commands, and `lsp.*`. One title caused a real collision:
 `tool.go` was the bare word "Go", which collided with the 33-command `Go:`
 navigation family in palette search.
 
@@ -108,7 +110,7 @@ fallback chain can't catch. The x64 runner has a different virtual GPU and
 trained fine every time, so it never looked like a systemic failure.
 
 It never reproduced on real Apple silicon, which has a proper Metal device. That
-is precisely why device testing missed it for eight releases: the machines that
+is why device testing missed it for eight releases: the machines that
 could reproduce it were the CI runners, and the only symptom there was one
 absent file in a ten-thousand-line build log.
 
@@ -128,7 +130,7 @@ you visit it, and `--no-session` skips the saved tabs entirely. Measured on an
 CPU down to 8, 917 MB down to 696.
 
 Two related jumps are gone as well. A restored file no longer flashes to the top
-of the document, which turned out to be two separate causes: applying syntax
+of the document, which had two separate causes: applying syntax
 highlighting collapsed the viewport a few frames after the file had already
 painted at its saved caret, and the virtual flow re-anchored itself during a
 plain layout pass. Both are corrected in the same frame they happen. Correcting

@@ -39,8 +39,7 @@ See the [LSP guide](/docs/lsp).
   the file gets a subtle wash, with writes shaded warmer than reads. It is
   semantic, so a local `x` does not light up an unrelated field `x`.
 - **Go to Implementation, Type Definition and Declaration**, beside Go to
-  Definition, and only offered in the menu when the server actually supports
-  them.
+  Definition, and only offered in the menu when the server supports them.
 - **Definitions inside libraries.** `M-.` on `String` or any dependency symbol
   used to claim there was no definition. The class source is now fetched from the
   server and opened read-only at the right line, and you can keep chaining `M-.`
@@ -69,8 +68,8 @@ See the [LSP guide](/docs/lsp).
   project and fills it, so a compile error in a file you hadn't opened is no
   longer invisible. The default is unchanged, open files only.
 - **Re-indent as you type.** Typing `;`, `}` or Enter snaps the line to the
-  server's own indentation convention. Indentation only, never a reformat, with
-  the local auto-indent still acting first. Off by default.
+  server's own indentation convention. It changes indentation only and never
+  reformats, and the local auto-indent still acts first. Off by default.
 - **A crashed server restarts itself**, servers **shut down when their last file
   closes** (after a three-minute grace), and two windows on the same Java project
   no longer contend for one jdtls workspace.
@@ -83,7 +82,7 @@ burst costs map lookups instead of filesystem syscalls on the UI thread.
 
 ## Run and debug a real project
 
-Until now Run meant a single-file script. It now means your project.
+Until now Run could only run a single-file script. It can now run your project.
 
 **Run Main Class…** and **Debug Main Class…** pick any main class in the active
 file's Maven or Gradle project, and a green ▶ appears in the gutter beside every
@@ -109,10 +108,10 @@ is confirmed against the project's real test source folders, so a class in
 `src/main/java` that happens to carry a `@Test`-shaped annotation no longer gets
 a stray one.
 
-Two fixes here matter as much as the features. Java debugging stopped hiding from
-people whose jdtls already bundles the java-debug plugin (Homebrew's does), which
-had been reporting debugging as unavailable and pushing Run onto the slower
-fallback. And the Maven fallback now resolves sibling-module dependencies in a
+Two fixes here matter as much as the features. Java debugging now works for
+people whose jdtls already bundles the java-debug plugin (Homebrew's does). That
+setup had been reporting debugging as unavailable and pushing Run onto the
+slower fallback. And the Maven fallback now resolves sibling-module dependencies in a
 reactor build, running from the reactor root with `-pl <module> -am`, so a
 submodule that depends on an uninstalled sibling runs correctly.
 
@@ -129,8 +128,8 @@ them, as real features rather than shortcut aliases. See
 - **A mark ring.** `C-SPC` records the spot; **`C-x C-SPC`** pops back through
   older marks and around to where you started. Marks follow their text as you
   edit.
-- **Narrowing** (`C-x n n` / `d` / `f` / `w`). Real narrowing, not a display
-  filter: search, replace, macros and Select All see only the region. An amber
+- **Narrowing** (`C-x n n` / `d` / `f` / `w`). This is real narrowing rather than a
+  display filter, so search, replace, macros and Select All see only the region. An amber
   **Narrowed** badge in the status bar widens on click, and saving always writes
   the whole file.
 - **Rectangles** (`C-x r …`): kill, copy, yank, delete, clear, open,
@@ -143,8 +142,8 @@ them, as real features rather than shortcut aliases. See
 - **Abbreviations**, a text-replacement dictionary expanded on demand with
   `C-x a e` or automatically in Abbrev Mode, carrying your typed case onto the
   expansion.
-- **Auto Fill mode**, breaking prose at the fill column as you type. Prose only,
-  so it never wraps code.
+- **Auto Fill mode**, breaking prose at the fill column as you type. It applies
+  to prose only, so it never wraps code.
 - **Occur** (`M-s o`), **tabify / untabify**, and **align-regexp**.
 
 ## Everything else
@@ -204,7 +203,7 @@ them, as real features rather than shortcut aliases. See
 
 Language servers:
 
-- **The Maven-aware `pom.xml` server now actually starts.** It was enabled by
+- **The Maven-aware `pom.xml` server now starts.** It was enabled by
   default, offered by the installer, shown as configured and reported found by
   Doctor, while every `pom.xml` silently fell back to the plain XML server.
 - **Inlay hints appear.** The request asked for a range ending one line past the
@@ -219,7 +218,7 @@ Language servers:
   operations.
 - **Format Document no longer mangles the file**: a multi-edit format was applied
   top to bottom using offsets computed against the original text, which is
-  exactly what re-indenting breaks. It also **formats what is on screen** rather
+  what re-indenting breaks. It also **formats what is on screen** rather
   than a copy up to 300 ms stale.
 - **Go to Definition reaches JDK and dependency classes** instead of claiming
   there is no definition.
@@ -236,11 +235,11 @@ Editing and search:
   the error and leaves the buffer untouched.
 - **Replace All no longer rewrites the whole document**, only the span from the
   first to the last match, so the untouched remainder stays out of the undo entry.
-- **Snippet transforms are no longer discarded**, which had been quietly breaking
+- **Snippet transforms are no longer discarded**, which had been breaking
   the bundled PowerShell snippets, and **a snippet's value is no longer stolen by
   a leading mirror**.
 
-Under the hood, the two classes that build every request Editora sends to a
+Internally, the two classes that build every request Editora sends to a
 language server gained in-process test seams and **121 new tests**: the wire
 format, the capabilities declared at `initialize`, session lifetime, diagnostics
 routing, and the rename path that writes and moves files, with a regression test

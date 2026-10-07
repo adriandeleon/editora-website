@@ -19,21 +19,21 @@ with [commonmark-java](https://github.com/commonmark/commonmark-java) **off the
 UI thread**, then builds the JavaFX node tree **on** the FX thread under a
 stale-generation guard, the same idiom the syntax highlighter uses. The whole
 thing is debounced (~250 ms) off `multiPlainChanges`, and only runs while the
-preview is actually visible. Big files render once.
+preview is visible. Big files render once.
 
 The result tracks the app theme for free, because the preview's colors are
-plain AtlantaFX semantic CSS variables, no per-theme overrides, no WebView
-stylesheet to sync.
+plain AtlantaFX semantic CSS variables. There are no per-theme overrides and no
+WebView stylesheet to sync.
 
-## Matching GitHub is in the details
+## Matching GitHub's look
 
 Getting close to GitHub's look came down to a pile of small decisions:
 
 - **Task lists** render as real checkboxes. The trick is that the
   `TaskListItemMarker` has to be the list item's *first child*, not nested
   inside its paragraph.
-- **Inline `code`** is a `Label` styled as a rounded gray "pill": a raw `Text`
-  node can't carry a background, so a pill needs a real control behind it.
+- **Inline `code`** is a `Label` styled as a rounded gray "pill," because a raw `Text`
+  node can't carry a background and a pill needs a real control behind it.
 - **`#`/`##` headings** get an underline rule; **links** aren't permanently
   underlined (only on hover), like GitHub.
 - Content sits in a **centered, width-capped column** with GitHub-like margins
@@ -45,7 +45,7 @@ Images go through a dedicated off-thread loader (with caching and a
 failure-TTL so a dead host isn't retried on every re-render). The interesting
 case is **SVG**: JavaFX can't decode it, so badges, which shields.io serves as
 `image/svg+xml`, would be invisible. Editora rasterizes them with JSVG into an
-image, which is what makes GitHub/CI badges actually show up in a README
+image, which is why GitHub/CI badges show up in a README
 preview.
 
 Fenced ` ```mermaid ` blocks are special-cased too: they render to a PNG via the
@@ -53,8 +53,8 @@ Fenced ` ```mermaid ` blocks are special-cased too: they render to a PNG via the
 
 ## Why bother going native
 
-A WebView would have been less code up front. But the native path means: the
-preview inherits the editor's fonts and all six themes with zero extra work,
+A WebView would have been less code up front. But on the native path the
+preview inherits the editor's fonts and all six themes with no extra work,
 there's no second engine to ship or sandbox, and rendering happens on the same
 threading model as everything else in the app, so the same performance rules
 apply. For an editor that cares about startup time and footprint, not bundling a

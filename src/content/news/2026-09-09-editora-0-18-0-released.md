@@ -5,9 +5,9 @@ date: 2026-09-09
 version: "0.18.0"
 ---
 
-**Editora 0.18.0** is out. This release adds first-class Astro support, makes
-bookmarks and Personal Notes useful at the folder level, and turns Project Map
-notes into editable cards that stay visually connected to their source.
+**Editora 0.18.0** is out. This release adds Astro support, lets you attach
+bookmarks and Personal Notes to folders, and turns Project Map notes into
+editable cards that stay connected to their source.
 Download it from the
 [0.18.0 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.18.0).
 
@@ -20,19 +20,18 @@ symbols for the Structure window.
 The configurable `astro-ls` integration brings completion, diagnostics,
 navigation, and the rest of Editora's language-server workflow. Editora detects
 the server automatically, offers one-click npm installation when it is missing,
-and locates the TypeScript SDK that Astro's server needs—even when the SDK is
+and locates the TypeScript SDK that Astro's server needs, including when the SDK is
 hoisted in the workspace or installed alongside the server.
 
-## Put context on folders, not only files
+## Bookmarks and notes on folders
 
 Bookmarks and Personal Notes can now be attached directly to folders from the
 Project tree. Their indicators sit after the file or folder name, where they do
 not compete with the path itself.
 
-Folder notes appear as lightweight tooltips while browsing. In the Bookmarks
+Folder notes appear as tooltips while browsing. In the Bookmarks
 and Notes windows, folder entries use folder icons and activate the Project
-explorer with the owning folder selected, so project-level context leads back to
-the right place.
+explorer with the owning folder selected.
 
 ## Personal Notes become part of the Project Map
 
@@ -43,8 +42,8 @@ the card. A default-off **Hide all open Personal Notes** toggle clears the canva
 temporarily without closing anything.
 
 The map can also filter its working set to bookmarked paths or paths with
-Personal Notes, making annotations useful as a focused way through a large
-project.
+Personal Notes, which narrows a large project to the paths you have
+annotated.
 
 ## Reliability and interface polish
 

@@ -8,8 +8,8 @@ tags: [performance]
 
 Editora has one rule it's held to above all others: **never block the JavaFX
 Application Thread.** An editor lives or dies on whether typing, scrolling, and
-highlighting feel instant, and all of those happen on that one thread. Here's the
-doctrine that keeps them fast.
+highlighting feel instant, and all of those happen on that one thread. These are
+the rules that keep them fast.
 
 ## Do the heavy work somewhere else
 
@@ -26,7 +26,7 @@ Re-highlighting is debounced. The document overlays (whitespace markers, the
 redraw per pulse** with a simple `pending` flag plus `Platform.runLater`. The
 rule for new code is strict: don't add per-keystroke or per-scroll work that
 isn't coalesced. A handful of listeners each doing "just a little" work per pulse
-is how an editor dies by a thousand cuts.
+adds up to a slow editor.
 
 ## Only touch what changed, and what's visible
 
@@ -50,17 +50,15 @@ Some files are too big to treat normally, and pretending otherwise just makes th
 editor janky. So there are explicit modes: at **5 MB** Editora skips syntax
 highlighting and the minimap; at **50 MB** it opens read-only with a capped load
 (at most the first 50 MB is read, so a multi-GB log can't exhaust memory), and
-undo history is bounded. The status bar says what happened. Degrading on purpose
-beats degrading by accident.
+undo history is bounded. The status bar says what happened.
 
-## The cultural part
+## Stating the cost of every change
 
-The technical rules only stick because of a habit: **every change is assessed for
+The technical rules only hold because of a habit. **Every change is assessed for
 its cost on the hot paths** (allocation per keystroke, added FX-thread work,
 extra layout/CSS passes), and that cost gets stated, even when it's "negligible."
 When something risks a regression, I measure (temporary `System.nanoTime`
-instrumentation) rather than guess. Performance isn't a milestone you hit once;
-it's a constraint you keep paying attention to.
+instrumentation) rather than guess.
 
 **Update (October 2026).** These are the rules, and later releases found places
 that were breaking them. The posts on [0.9.7](/blog/editora-0-9-7) and

@@ -3,10 +3,10 @@ title: "Local file history"
 group: "Workspace & files"
 order: 9
 beta: false
-summary: "IntelliJ-style snapshots of your files over time, on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required."
+summary: "Snapshots of your files over time, taken on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required."
 ---
 
-Editora quietly snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.
+Editora snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.
 
 Open a file's timeline from the **File History** tool window (`M-g l`). Each revision shows its date, the reason it was taken, and its size, with the latest tagged *Current*. Double-click one for a diff against the current file, then **restore the whole revision** or use the **apply-chevrons to copy individual fragments** back in (undoable).
 

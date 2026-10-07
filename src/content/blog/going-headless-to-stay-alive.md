@@ -16,8 +16,8 @@ public static void main(String[] args) {
 }
 ```
 
-A JavaFX app declaring itself *headless*? That's the fix for one of the more
-maddening bugs I've chased: an intermittent macOS hang that got likelier the
+It is odd for a JavaFX app to declare itself *headless*, but that line is the
+fix for one of the more maddening bugs I've chased, an intermittent macOS hang that got likelier the
 more Markdown previews you had open.
 
 ## The setup: SVG badges in the Markdown preview
@@ -39,8 +39,8 @@ likelier the hang.
 
 `java.awt.headless=true` tells Java2D to use its **software** rasterizer
 instead of the native AppKit pipeline. The badge still renders to a
-`BufferedImage` exactly as before: it just never touches AppKit, so the
-contention disappears. JavaFX keeps the screen to itself.
+`BufferedImage` as before, but it never touches AppKit, so the
+contention disappears.
 
 Two details matter:
 
@@ -58,11 +58,11 @@ an SVG can't be coaxed into fetching a remote URL while it rasterizes. A
 malicious badge in some README can't turn the preview into an SSRF vector. The
 headless software path keeps the whole thing self-contained.
 
-## The lesson
+## Java2D inside a non-AWT app
 
-Mixing two UI toolkits in one process is asking for trouble, and "I'm only using
-AWT to make a `BufferedImage`, not a window" isn't the escape hatch it looks
-like: on macOS, *initializing* Java2D is enough to wake AppKit. If you ever need
+Mixing two UI toolkits in one process is asking for trouble. "I'm only using
+AWT to make a `BufferedImage`, not a window" doesn't avoid it, because on
+macOS *initializing* Java2D is enough to wake AppKit. If you ever need
 Java2D purely for offscreen rendering inside a JavaFX (or SWT, or any
-non-AWT) app, set `java.awt.headless=true` up front and save yourself the
-intermittent-hang bug report that's almost impossible to reproduce on demand.
+non-AWT) app, set `java.awt.headless=true` up front. It prevents an intermittent hang
+that's almost impossible to reproduce on demand.

@@ -86,7 +86,7 @@ acts on the whole selection at once. Dirty files receive one
 Save/Discard/Cancel decision before the batch begins, and Editora records
 recoverable Local History before removing anything it has opened or edited.
 
-With no project open, the Project tool window doesn't sit empty: it becomes a
+With no project open, the Project tool window becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
 follows the focused tab as you switch files.
 
@@ -104,8 +104,8 @@ appear in the same picker.
 
 A project can carry a `.editora/settings.json` file saying **which language
 server to run for a language, and whether to run it**. It overrides your global
-preferences for anyone who opens that project, which is what you want when one
-repository needs a JDK 17 server and another a JDK 25 one — nobody has to
+preferences for anyone who opens that project. This suits the case where one
+repository needs a JDK 17 server and another a JDK 25 one, because nobody has to
 remember to flip a global preference when switching between them.
 
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
@@ -113,8 +113,8 @@ with an example and opens it.
 
 Only **toolchain** settings can be overridden this way. Appearance, keymap and
 fonts stay personal, because checking out a repository should not rearrange
-somebody else's editor. Run configurations have their own shared file — see
-[Run & debug](/docs/run-debug).
+somebody else's editor. Run configurations have their own shared file,
+described in [Run & debug](/docs/run-debug).
 
 ## Multiple windows
 
@@ -131,8 +131,8 @@ switcher, and the Open Files picker all show the same unsaved-file marker. Close
 the last tab and the editor is left empty (it doesn't recreate an Untitled
 buffer).
 
-A file you're only *glancing* at — arrowing through a picker, following a
-definition — lands in a single reusable **preview tab**, shown in italic, so
+A file you're only *glancing* at, for example while arrowing through a picker
+or following a definition, lands in a single reusable **preview tab**, shown in italic, so
 browsing costs one tab rather than one per glance. Editing it, or opening it
 explicitly, makes it permanent. See
 [preview tabs](/docs/code-navigation#preview-tabs).
@@ -163,12 +163,12 @@ All five are bindable in Settings → Keymaps like any other command.
 - Closing the last file in a group **collapses** it, so you never end up looking
   at an empty pane.
 - The layout is **saved with the session** and restored on the next launch. A
-  file that has since disappeared no longer leaves a blank pane behind.
+  file that has since disappeared does not leave a blank pane behind.
 
 ### Two views of one file
 
 Separately from editor groups, you can split the *current file* into two views
-of the same buffer — useful for reading one part while editing another. The two
+of the same buffer, which is useful for reading one part while editing another. The two
 can be combined.
 
 Both views share **one undo history**: an edit made in one pane can be undone
@@ -181,12 +181,12 @@ in.
 | Stacked | `view.splitHorizontal` | `C-x 2` |
 | Unsplit | `view.unsplit` | `C-x 1` |
 
-These commands are disabled on tabs that aren't text buffers — the Welcome and
+These commands are disabled on tabs that aren't text buffers: the Welcome and
 Doctor pages and the image, hex, PDF and diff viewers.
 
 ## Tool window layout
 
-Tool windows live on three stripes — left, right, and bottom — and you can
+Tool windows live on three stripes (left, right, and bottom), and you can
 rearrange them without leaving the keyboard or reaching for a preference.
 
 | Action | Command | Default key |
@@ -202,21 +202,21 @@ window, or on the only open one; with two open and focus elsewhere, the command
 says so rather than guessing.
 
 - **Maximize** expands a tool window over its split and toggles back. It is
-  session-only and deliberately never saved, so a maximized window can't reopen
+  session-only and never saved, so a maximized window can't reopen
   next launch covering the editor.
 - **Re-dock by dragging its stripe button** onto another stripe. Dropping it on
   an existing button inserts it before or after; dropping it on empty stripe
   space appends it to that side. A window that was open stays open on its new
   side.
-- **Two windows can share a side** — Project over Structure, say. Use **Open in
+- **Two windows can share a side**, for example Project over Structure. Use **Open in
   Split** from the stripe button's right-click menu, or `view.splitToolWindow`,
-  which lists only the windows that could actually join a side right now. Left
-  and right split vertically; the bottom splits **horizontally**, which is the
-  only way two consoles side by side both stay readable. A third window evicts
+  which lists only the windows that could join a side right now. Left
+  and right split vertically; the bottom splits **horizontally**, so that two
+  consoles side by side both stay readable. A third window evicts
   the companion, not the primary. Opening a tool window normally still
   *replaces*, so the stripe buttons, keybindings, and palette behave as before.
-- **Floating** puts a tool window in its own window, owned by the editor — it
-  floats above it, minimizes with it, and closes with it. Bounds are remembered,
+- **Floating** puts a tool window in its own window, owned by the editor. It
+  floats above the editor, minimizes with it, and closes with it. Bounds are remembered,
   and reused only when they still overlap a screen, so a window saved on a
   since-detached monitor is re-centred rather than opened somewhere you can't
   reach. Closing a floating window closes the tool window; reopening it from the
@@ -250,13 +250,13 @@ recent files, and version and license info. Reopen it with `view.welcome`.
   (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
   restores everything.
 
-  It **keeps a menu bar** — simplified rather than hidden: File, Edit, Find,
-  View and Help. The menus that go are exactly the ones the mode switches off
-  (code intelligence, running and debugging, version control, tool windows),
-  which would otherwise sit there entirely greyed out. A menu is the browsable
-  map of what the editor can do, which the mode aimed at someone new to it needs
-  most. Toggling Simple UI mode stays in the reduced View menu, so the mode is
-  never a one-way door for anyone who entered it from there.
+  It **keeps a menu bar**, simplified to File, Edit, Find, View and Help. The
+  menus removed are the ones for features the mode switches off (code
+  intelligence, running and debugging, version control, tool windows), which
+  would otherwise be entirely greyed out. The menu bar stays because it shows
+  what the editor can do, and people new to the editor need that most. The
+  Simple UI mode toggle stays in the reduced View menu, so anyone who entered
+  the mode from there can leave it the same way.
 
 ## Window chrome
 
@@ -267,28 +267,27 @@ window's own visibility toggle.)
 
 **Merge the menu bar into the title bar** goes one further: the window is drawn
 without a system title bar, and the menus, the window title and the system
-buttons share that single row — a full bar of vertical space back for the
-editor. Minimise, maximise, close, drag-to-move, double-click-to-maximise, edge
-resize and snapping all stay the platform's own, so nothing about how the window
-behaves changes; only where the menus sit.
+buttons share that single row, which gives the editor a full bar of vertical
+space back. Minimise, maximise, close, drag-to-move, double-click-to-maximise,
+edge resize and snapping all stay the platform's own, so the window behaves as
+before and only the position of the menus changes.
 
-It is **experimental**, off by default, and **applies on restart** — a window's
-style is fixed once it has been shown. **Linux and Windows only.** macOS is
+It is **experimental**, off by default, and **applies on restart**, because a
+window's style is fixed once it has been shown. **Linux and Windows only.** macOS is
 excluded because the menu belongs to the system menu bar at the top of the
-screen there, so drawing it inside the window would be a worse window rather
-than a taller one; the checkbox is disabled rather than hidden, so its note
-still explains why. Also on the palette as
+screen there, so drawing it inside the window would not make the window any
+taller. The checkbox is disabled rather than hidden, so its note still explains
+why. Also on the palette as
 `view.toggleExtendedWindow`.
 
-The **breadcrumb** hangs under the editor area — as wide as the editor,
-directly under the text it names — rather than spanning the whole window above
-the status bar. It writes your home directory as a single `~` crumb, which still
+The **breadcrumb** sits directly under the editor area and is as wide as the
+editor, rather than spanning the whole window above the status bar. It writes your home directory as a single `~` crumb, which still
 navigates there.
 
 In the **status bar**, indent, line endings and encoding are one segment
-(`Tab 4 · LF · UTF-8`): three facts about how the same file is written to disk.
+(`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
 They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is actually open.
+three different commands, and they appear only when a file is open.
 
 ### The toolbar
 
@@ -298,24 +297,24 @@ one off to remove it). *Restore Default Layout* puts it back.
 
 The bar is two containers on one row. The **icon cluster** is what you
 customize, and it is what collapses into the overflow chevron when the window
-gets narrow. The **tail** — the run-configuration selector with its Run, Debug
-and Stop buttons, the project switcher, Open Folder, the build badges and
-Settings — is pinned to the right end and never overflows, the way an IDE pins
-its run widget. The trade is that those four run controls are not draggable
-items in Settings → Toolbar: the control that starts a run is the wrong thing to
-lose to a window width, and every icon in the cluster is also reachable from the
-menus and the palette.
+gets narrow. The **tail** is pinned to the right end and never overflows, the way an
+IDE pins its run widget. It holds the run-configuration selector with its Run,
+Debug and Stop buttons, the project switcher, Open Folder, the build badges and
+Settings. As a result, those four run controls are not draggable items in
+Settings → Toolbar. They are pinned so that a narrow window cannot hide the
+control that starts a run, whereas every icon in the cluster is also reachable
+from the menus and the palette.
 
 **Recent Files sits in the cluster**, between Save As and Undo. It is a file
-action — one of the ways to get a file on screen — and beside the project
-switcher it read as a project control. Being a catalog item, it can be dragged
+action, one of the ways to get a file on screen, and beside the project
+switcher it read as a project control. As a catalog item, it can be dragged
 elsewhere or removed like any other. A toolbar you had already customized keeps
-the button: a saved layout is used verbatim, so it is inserted after Save As
-rather than disappearing from both halves.
+the button. Because a saved layout is used verbatim, the button is inserted
+after Save As so that it does not disappear from both halves.
 
-Cut, copy and paste are not in the default layout — in a keyboard-driven editor
-they are the three actions nobody reaches for with the mouse — but they remain
-catalog items, one drag away. A bar you have already arranged is otherwise
+Cut, copy and paste are not in the default layout, because in a keyboard-driven
+editor they are rarely reached for with the mouse. They remain catalog items
+and can be dragged back onto the bar. A bar you have already arranged is otherwise
 untouched.
 
 ## Local file history
@@ -375,8 +374,8 @@ trust, it shows what would run and waits. Trust is remembered **per folder and
 inherited by subfolders**, so a multi-module repository asks once, and the
 default is always untrusted, including when the trust file can't be read.
 
-Declining means **no build**, not a quieter one. Falling back to the `mvn` or
-`gradle` on your `PATH` would not be safer: a hostile `pom.xml` or
+Declining means **no build** runs at all. Editora does not fall back to the
+`mvn` or `gradle` on your `PATH`, because that would not be safer: a hostile `pom.xml` or
 `build.gradle` executes code through those too, since build plugins and Gradle
 scripts run in-process.
 

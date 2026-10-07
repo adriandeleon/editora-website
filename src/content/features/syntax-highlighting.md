@@ -12,6 +12,6 @@ Tokenization is **stateful** (it carries grammar state across lines, so block co
 
 ## Bracket-pair colorization
 
-Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am I?" is readable without counting. It answers a different question from the matching-bracket highlight — which is "where does *this* one close?" — and the two combine on the same character.
+Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am I?" is readable without counting. The matching-bracket highlight answers a different question, "where does *this* one close?", and the two combine on the same character.
 
-Brackets inside strings and comments are skipped. That is not a nicety: a stray `{` in a string would otherwise shift the colour of every bracket below it, which reads as the feature being broken rather than as one bracket being wrong. The depth pass rides the tokenize that was happening anyway, so it costs no extra repaint. On by default; Settings → Editor turns it off.
+Brackets inside strings and comments are skipped, because a stray `{` in a string would otherwise shift the colour of every bracket below it. The depth pass runs as part of tokenizing, so it costs no extra repaint. On by default; Settings → Editor turns it off.

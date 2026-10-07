@@ -18,7 +18,7 @@ one, because a hostile `pom.xml` executes code through the `PATH` `mvn` too.
 Every other build tool launches your own toolchain and is never gated. See
 [Trusted folders](/docs/workspace).
 
-**The command palette got much more honest.** Commands that can't run were
+**The command palette now explains what it dims.** Commands that can't run were
 already dimmed, but only 17 features were wired up, so on a fresh install just
 19 of roughly 550 commands were ever affected and the feature looked broken.
 Missing features are now covered (debugging especially, which is off by
@@ -28,7 +28,7 @@ commands outside a repository, debugger steps with nothing suspended. Hover a
 dimmed row and it says which, and names the command that would fix it.
 
 **Command titles are consistent.** Three quarters of titles already read
-`Family: Action`, but the `view.*` family was a coin flip, 46 prefixed and 48
+`Family: Action`, but the `view.*` family was split, with 46 prefixed and 48
 bare, so related commands scattered when you scanned the list. All of them are
 prefixed now, in all six languages, along with `tool.*`, `markdown.*` and
 `lsp.*`. A test pins the convention so a family can't drift back.

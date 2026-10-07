@@ -68,9 +68,8 @@ const rows = [
   <main class="doc compare">
     <h1>How Editora compares</h1>
     <p class="lead">
-      Editora is not trying to replace every editor for every person. This page
-      is about where it genuinely differs, where it does not, and what we
-      measured rather than assumed.
+      Editora does not try to replace every editor for every person. This page
+      covers where it differs, where it does not, and what we measured.
     </p>
 
     <h2>Startup, measured</h2>
@@ -139,16 +138,16 @@ const rows = [
       so every editor is measured with a warm page cache.
     </p>
     <p>
-      Waiting for <em>any</em> window would be easier and wrong. IntelliJ puts up
-      a window literally called <code>splash</code> well before its editor is
+      Waiting for <em>any</em> window would be easier, but it would give the
+      wrong answer. IntelliJ puts up a window called <code>splash</code> well before its editor is
       ready, and timing that would have understated its 5.60s by several
       seconds. Matching
       on the window title is the only definition that means the same thing across
       an Electron app, a JetBrains IDE, and a JavaFX app.
     </p>
     <p>
-      What these numbers are not: a cold boot, a measure of when indexing
-      finishes, or a claim about how any editor performs on your hardware. They
+      These numbers are not a cold boot, a measure of when indexing finishes,
+      or a claim about how any editor performs on your hardware. They
       are relaunches on one machine, and all three editors continue working in
       the background after their window appears.
     </p>

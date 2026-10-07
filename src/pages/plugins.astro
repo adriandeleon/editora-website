@@ -8,14 +8,14 @@ const plugins = await loadPlugins();
 
 <Layout
   title="Plugins — Editora"
-  description="Browse Editora plugins — extend the editor with commands, tool windows, and integrations, installed from the built-in registry."
+  description="Browse Editora plugins, which extend the editor with commands, tool windows, and integrations and install from the built-in registry."
 >
   <main class="page">
     <h1>Plugins</h1>
     <p class="lead">
       Editora is extensible. Plugins add commands, keybindings, tool windows,
-      editor-menu items, and status-bar segments — written in Java or declared
-      in a manifest. The {plugins.length} plugins below ship in the official
+      editor-menu items, and status-bar segments. They are written in Java or
+      declared in a manifest. The {plugins.length} plugins below ship in the official
       registry; you can also install one from a <code>.zip</code> on disk.
     </p>
 
@@ -27,13 +27,13 @@ const plugins = await loadPlugins();
         </li>
         <li>
           Click <strong>Browse plugins…</strong> (or run the
-          <code>plugins.browse</code> command) to install from the registry — or
+          <code>plugins.browse</code> command) to install from the registry, or
           <strong>Install from file…</strong> for a local <code>.zip</code>.
         </li>
         <li>Restart Editora to load newly installed plugins.</li>
       </ol>
       <p class="trust">
-        Plugins run with full access and are not sandboxed — only install ones
+        Plugins run with full access and are not sandboxed, so only install ones
         you trust. See the
         <a href={`${docsBase}/plugins`}>plugins documentation</a> to write your own.
       </p>

@@ -12,10 +12,10 @@ files.
 
 Toggle a bookmark on a line with `C-c m`, or from the editor's right-click menu
 (**Add / Remove Bookmark**, acting on the line you clicked). It shows a gutter
-marker and can carry a short note. The marker itself is display-only: clicking
-the gutter used to toggle a bookmark, but the breakpoint strip and the Run ▶ are
-narrow targets inside that same gutter, so a slightly-off click added a stray
-bookmark instead of hitting what you aimed at.
+marker and can carry a short note. The marker itself is display-only. Clicking
+the gutter does not toggle a bookmark, because the breakpoint strip and the Run ▶
+are narrow targets inside that same gutter and a slightly-off click would add a
+stray bookmark instead of hitting what you aimed at.
 
 The Project Tree and Map menus can add a bookmark to a file's first line without
 opening it first, or attach a bookmark directly to a folder. Both surfaces show
@@ -34,21 +34,18 @@ A bookmark can carry a **single character**, and that character becomes a
 shortcut that jumps to it from anywhere in the project. Set one with
 `bookmarks.setMnemonic` on the bookmarked line; an empty answer clears it.
 
-A mnemonic is **unique within a project** — `3` means one place, not one place
-per file — because the chord is a *name* for a location, and a name that resolves
-to several locations is a menu, not a shortcut. Assigning one that's already
-taken simply moves it, which is also the only behaviour that needs no error
-message.
+A mnemonic is **unique within a project**, so `3` means one place in the
+project and not one place per file. That way its chord always jumps to a single
+location. Assigning one that's already taken moves it, with no error message.
 
 Each of the ten digits gets its own command, `bookmarks.gotoMnemonic0` through
 `bookmarks.gotoMnemonic9`, so you can bind each to a single chord in
-**Settings → Keymaps** — one keystroke, no prompt, which is the entire point.
+**Settings → Keymaps** and jump with one keystroke and no prompt.
 Letters work as a mnemonic too and are reachable from the bookmarks picker; only
 the digits have a bindable command of their own.
 
-The panel shows the mnemonic **first on the row**. It's the only part of a
-bookmark that is otherwise invisible, and a shortcut you can't see is one you
-won't remember assigning.
+The panel shows the mnemonic **first on the row**, because it's the only part
+of a bookmark that is otherwise invisible.
 
 ### The Bookmarks window
 
@@ -65,7 +62,7 @@ a file changes outside the editor, so they survive external edits. They live in
 
 Personal Notes attach an annotation to a **word, line, range, or project
 folder**, stored *outside* the file. They're built for read-only, generated, or
-shared code—and for project context that does not belong in a source file.
+shared code, and for project context that does not belong in a source file.
 Notes are **on by default**; toggle them in **Settings → Workspace → Features**
 (*Enable Personal Notes*).
 
@@ -94,7 +91,7 @@ that folder selected.
 
 Notes track their anchor through edits and re-locate themselves by surrounding
 text when a file changes externally, marking themselves orphaned only if the
-anchor truly disappears. The **Notes** tool window (`M-5`) groups them per file
+anchor disappears. The **Notes** tool window (`M-5`) groups them per file
 with a filter, and like Bookmarks it groups by project, General plus the current
 one, with a **Show all projects** toggle. File and folder rows use matching
 icons so their targets remain clear. They live in `notes.json`. A second

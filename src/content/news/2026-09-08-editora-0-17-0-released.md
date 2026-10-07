@@ -1,15 +1,15 @@
 ---
 title: "Editora 0.17.0: a serious diff workspace"
-description: "Multi-file Git reviews, recursive folder comparisons, editable result drafts, smart alignment, and true three-way merge resolution turn Editora's diff viewer into a complete review workspace."
+description: "The diff viewer gains multi-file Git reviews, recursive folder comparisons, editable result drafts, smart alignment, and three-way merge resolution."
 date: 2026-09-08
 version: "0.17.0"
 ---
 
-**Editora 0.17.0** is out. This release turns the diff viewer from a useful
-two-file comparison into a complete review workspace. Download it from the
+**Editora 0.17.0** is out. This release is about the diff viewer, which
+used to compare two files and can now review a whole change. Download it from the
 [0.17.0 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.17.0).
 
-## Review a change, not one file at a time
+## Review a whole change at once
 
 Open every staged file or every unstaged and untracked file as one navigable
 review, directly from the Commit tool window or command palette. Multi-file
@@ -44,12 +44,12 @@ Refreshes keep your selected change, scroll positions, focused side, and divider
 position. Highlighting happens off the UI thread, large and binary inputs
 degrade safely, and CRLF and final-newline state survive both display and apply.
 
-## Edit the result—and resolve real merges
+## Edit the result and resolve merges
 
 Local comparisons can open a syntax-highlighted **Result** draft below the
 diff. As you edit, the comparison updates after a short pause. Applying the
-draft is one guarded, undoable editor change; it is never saved behind your
-back.
+draft is one guarded, undoable editor change, and nothing is written to disk
+until you save.
 
 Merge resolution now reads Git's base, ours, and theirs index stages. Compatible
 edits combine automatically, while divergent regions offer Base, Ours, and

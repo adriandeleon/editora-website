@@ -5,11 +5,11 @@ category: Navigation
 order: 1
 ---
 
-Keyboard-first navigation: fuzzy pickers and search that get you anywhere
+This page covers the fuzzy pickers and search commands that take you anywhere
 without the mouse.
 
-For moving around *code* in particular — symbols, definitions, the scope you're
-in — see [Code navigation](/docs/code-navigation).
+For moving around *code* in particular (symbols, definitions, the scope you're
+in), see [Code navigation](/docs/code-navigation).
 
 ## Command palette
 
@@ -36,8 +36,8 @@ of what would enable it, rather than disappearing.
 
 **Search Everywhere** (`search.everywhere`) is one picker over **commands,
 project files and symbols**, so you can type the *name* of the thing instead of
-first deciding which finder it lives in. Editora had five pickers behind five
-chords; this one asks for the name.
+first deciding which of Editora's five pickers, each behind its own chord, it
+lives in.
 
 A leading sigil restricts it to a single source when you already know:
 
@@ -48,22 +48,22 @@ A leading sigil restricts it to a single source when you already know:
 | `#` | files only |
 | `@` | symbols only |
 
-Those are VS Code's sigils rather than invented ones, since the muscle memory
-already exists.
+These are VS Code's sigils, chosen because the muscle memory for them already
+exists.
 
 Results stay **grouped by source** rather than interleaved on raw score. The
-sources differ in size by orders of magnitude — tens of thousands of symbols,
-thousands of files, a few hundred commands — so a flat merge hands the whole
-list to whichever is biggest and the other two effectively disappear. Each
+sources differ in size by orders of magnitude (tens of thousands of symbols,
+thousands of files, a few hundred commands), so a flat merge would fill the
+list from the biggest source and push the other two out. Each
 source gets a guaranteed share (8 rows, 24 overall), the groups compete on their
 *best* result rather than their bulk, and the overall cap trims a group's tail
 instead of dropping a source outright.
 
 **A single-source query is not capped.** When a sigil restricts the picker to
-one source — or when the query is empty, which lists commands — there is nothing
-for a large source to drown out, so you get the whole list. Before 0.14.0 a `>`
-search returned at most eight commands, which made the scoped mode strictly
-worse than the picker it stands in for.
+one source, or when the query is empty (which lists commands), there is no
+smaller source for a large one to crowd out, so you get the whole list. Before
+0.14.0 a `>` search returned at most eight commands, fewer than the command
+palette it stands in for.
 
 An **empty query lists every command** and touches no other corpus, so opening
 it is a browsable list rather than a blank box. A bare sigil is a *scope* rather
@@ -79,15 +79,14 @@ works with no language server installed.
 ### Commands you can't run yet
 
 A command whose feature is switched off is **listed, greyed, with an explanation
-naming the setting that would enable it** — the same way the
-[command palette](/docs/navigation#command-palette) treats it. Omitting it is tidier in a short
-mixed list, which is how this shipped in 0.13.0, but it also means you never
-learn the command exists. Greyed rows sort after everything you can actually
-run, and both the cursor and the mouse step over them.
+naming the setting that would enable it**, the same way the
+[command palette](/docs/navigation#command-palette) treats it. In 0.13.0 such
+commands were omitted, which is tidier in a short mixed list but means you never
+learn the command exists. Greyed rows sort after everything you can run, and both the cursor and the mouse step over them.
 
 The highlighted row's **description** appears under the list, and the docs key
 (**`C-h`** in the Emacs keymap) opens that command's documentation in your
-browser — both matching the palette exactly. The hint line along the bottom names them, alongside `C-n`/`C-p`.
+browser. Both match the palette. The hint line along the bottom names them, alongside `C-n`/`C-p`.
 
 ### Opening it
 
@@ -96,39 +95,37 @@ browser — both matching the palette exactly. The hint line along the bottom na
 | Emacs | `M-S-x` |
 | CUA, Sublime, VS Code, IntelliJ | `Ctrl`/`Cmd`+`Shift`+`E` |
 
-`M-S-x` sits beside `M-x`, where the mnemonic explains itself. (Through 0.13.0
+`M-S-x` was chosen because it sits beside `M-x`. (Through 0.13.0
 the command had no chord in any bundled keymap, so the only way to reach it was
 the palette.)
 
 It can also **take over the command palette's shortcut**: switch on *Palette
 shortcut opens Search Everywhere* under **Settings → Interface → Pickers**, or
-run `view.togglePaletteSearchEverywhere`. It is off by default — which picker a
-chord opens is muscle memory, so this is something you turn on rather than
-something a release does to you. Nothing is lost by switching: an empty query
+run `view.togglePaletteSearchEverywhere`. It is off by default, because which picker a
+chord opens is muscle memory and a release should not change it for you. Nothing is lost by switching: an empty query
 lists every command exactly as the palette does, and typing also reaches project
 files and symbols. Search Everywhere keeps its own chord either way.
 
 ## How matching works
 
-Every picker now scores what you typed rather than just testing whether it
-matched, and emboldens the characters actually responsible for the match.
+Every picker scores what you typed rather than only testing whether it
+matched, and emboldens the characters responsible for the match.
 
 - **Contiguity, boundaries and case.** A character earns a bonus for landing on
   a word boundary (the start, after a separator, a camelCase hump, a
   letter→digit transition) or for continuing a run. Spread-out matches are
   penalized. So an exact prefix beats an acronym beats a scattered subsequence.
 - **The best alignment, not the first.** The match is computed by dynamic
-  programming rather than greedily left to right, which is the difference
-  between `mc` meaning the two humps of `MainController` and meaning whichever
-  `c` happens to come first.
+  programming rather than greedily left to right, so `mc` matches the two
+  humps of `MainController` rather than whichever `c` comes first.
 - **Several terms, any order.** Whitespace splits the query into terms that must
-  all match, in any order — `toggle git` finds *Git: Toggle Blame*.
+  all match, in any order, so `toggle git` finds *Git: Toggle Blame*.
 - **Paths know their basename.** The Project tree's filter scores the whole
   relative path, so a query can name a directory as well as a file.
 
-Grouped and structural lists — build actions, branches, the Structure tree —
-take the same matcher but keep their own order, because a tree that reorders
-under a filter is worse, not better.
+Grouped and structural lists (build actions, branches, the Structure tree)
+use the same matcher but keep their own order, because a tree that reorders
+under a filter is harder to read.
 
 ## Jump pickers
 
@@ -178,7 +175,7 @@ flattening everything to lowercase. `snake_case` and `kebab-case` are cased per
 segment. **Find in selection** is picked up automatically when you open the bar
 with a *multi-line* selection, scoping both search and Replace All to it and
 following the region as you edit; a single-line selection seeds the query
-instead, as before.
+instead.
 
 Replace understands **regex capture groups**: search `(\w+)_(\w+)` and replace
 with `$2-$1`. A replacement naming a group the pattern doesn't have reports the
@@ -246,8 +243,8 @@ Settings → Keymaps.
 
 ### Folds of your own
 
-**Fold the selection** creates a range with no syntactic basis at all — whatever
-lines you picked. Unlike a detected region, which is recomputed from the text as
+**Fold the selection** creates a fold range from whatever lines you picked, with
+no syntactic basis. Unlike a detected region, which is recomputed from the text as
 you type, a manual range is tracked through your edits, and it **persists across
 restarts** with the rest of your session. **Remove Manual Fold Ranges** clears
 them for the file.
@@ -255,7 +252,7 @@ them for the file.
 **Fold All Block Comments** and **Fold All `#region` Markers** fold exactly
 those. The marker families recognized are `//#region`, `//region`, `#region`,
 `# region`, `#pragma region`, `<!-- #region -->` and `--region`; Markdown and
-Markwhen are deliberately excluded, since `# region` there is a legal heading.
+Markwhen are excluded, since `# region` there is a legal heading.
 **Fold All Except Caret** collapses everything but the block you are in.
 
 All of these **merge** with the folds Editora detects, and with any a language
@@ -275,18 +272,17 @@ for the caret.
 ### Recent Locations
 
 **Go: Recent Locations…** (`nav.recentLocations`) lists the session's trail
-newest-first, each row showing **the line you were on** — which is the thing you
-actually lost when a jump took you elsewhere. `Foo.java:214` says nothing about
-why you were there; the line usually says it at a glance.
+newest-first, each row showing **the line you were on**. A location such as
+`Foo.java:214` says nothing about why you were there, and the line's text
+usually does.
 
 It reads the same trail Back walks rather than keeping a second log, so the
 picker and Back can never disagree about where you have been.
 
 The picker also **previews**: the highlighted row is shown in the editor as the
 selection moves, and dismissing the picker puts everything back where it was.
-The undo is half the feature — without it, arrowing through a list and pressing
-Escape leaves you wherever the cursor stopped, which is worse than not
-previewing at all. Preview navigates without taking focus and without recording
+Without that restore, arrowing through a list and pressing Escape would leave
+you wherever the cursor stopped. Preview navigates without taking focus and without recording
 history, so browsing a picker can't itself become something to navigate back
 through, and a location whose file isn't open lands in the
 [preview tab](/docs/code-navigation#preview-tabs), so a list of twenty locations
