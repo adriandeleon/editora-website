@@ -26,6 +26,33 @@ So an agent can observe live state, make **undoable edits**, and drive the edito
 through the same command registry the palette uses. It runs on the JDK's built-in
 HTTP server, so there's no new dependency.
 
+### Editing and saving
+
+`edit_buffer` replaces `old_text` with `new_text` in an open buffer, through the
+editor's undo history. Nothing is written to disk until `save_buffer`.
+
+- `old_text` must be the exact text to replace and must occur once in the
+  buffer, unless `replace_all` is `true`.
+- To replace the buffer's entire text, the agent passes
+  `replace_whole_buffer: true` and no `old_text`. An edit with a missing or empty
+  `old_text` is rejected, never widened to the whole buffer. A whole-buffer
+  replacement is also refused when the buffer changed since the agent last read
+  it with `read_buffer`; it reads the buffer again and retries.
+
+`save_buffer` waits for the write. Its result is `saved` only when the file is
+on disk, and an error when the save was refused, failed, or is still pending.
+`execute_command` reports only that a command ran, so an agent that needs to
+know a save reached the disk uses `save_buffer` rather than running `file.save`.
+
+### Argument checks
+
+Every tool validates its arguments before doing anything:
+
+- An argument the tool doesn't define is rejected, with the accepted names in the
+  error, so a misspelled argument can't be silently ignored.
+- A `path` must be absolute. An empty or relative path is rejected. Tools that
+  take an optional `path` use the active buffer when it is left out.
+
 ## Enabling and connecting
 
 1. Turn it on in **Settings → MCP Server** (or run **View: Toggle MCP Server**,

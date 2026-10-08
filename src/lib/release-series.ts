@@ -2,7 +2,8 @@
 // Newest series uses /whats-new/; older series use /whats-new/x.y/.
 
 export const releaseSeries = [
-  { version: "0.19", label: "0.19.x", href: "/whats-new/" },
+  { version: "0.20", label: "0.20.x", href: "/whats-new/" },
+  { version: "0.19", label: "0.19.x", href: "/whats-new/0.19/" },
   { version: "0.18", label: "0.18.x", href: "/whats-new/0.18/" },
   { version: "0.17", label: "0.17.x", href: "/whats-new/0.17/" },
   { version: "0.16", label: "0.16.x", href: "/whats-new/0.16/" },

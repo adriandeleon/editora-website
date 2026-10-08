@@ -87,6 +87,11 @@ in:
 Every one of these is also a command in the palette. Reopen the page any time
 with *View: Welcome Page*.
 
+Starting Editora again while it is running does not open a second editor: the
+launch goes to the one already running. And if the editor ever stops without
+closing normally, the next launch offers your unsaved edits back; see
+[crash recovery](/docs/undo-history#crash-recovery).
+
 ## Choose your keymap
 
 Editora ships five keymaps: **Emacs** (the default), **CUA**, **Sublime Text**,
@@ -165,6 +170,8 @@ network. Enable the ones you want in Settings:
 - **[Debugging](/docs/run-debug)**.
 - **[Plugins](/docs/plugins)**.
 - **[AI assistance](/docs/ai)** and the **[MCP server](/docs/mcp)**.
+- **[Settings sync](/docs/settings-sync)**, to share snippets, abbreviations,
+  templates, and your dictionary between computers.
 
 **On, but dormant until their tool is installed** is the larger group:
 **[Git](/docs/git)**, **[GitHub](/docs/github)**,

@@ -26,6 +26,9 @@ Installed plugins live in your config folder under `plugins/<id>/`, and the
 enabled set is tracked in `plugins.json`. (Plugins are loaded at startup, so
 enabling/disabling takes effect on the next launch.)
 
+Updating a plugin replaces its folder but keeps `plugins/<id>/data/`, where a
+plugin stores its own files. Removing the plugin deletes that folder too.
+
 ## Security
 
 Plugins are not sandboxed: an enabled plugin runs with the same access to your
@@ -56,7 +59,9 @@ A plugin can:
 - **Register commands** (they appear in the palette) and **bind keys** to them.
 - **Add a tool window** (left / right / bottom) with custom UI.
 - **Add editor right-click menu items** and **status-bar segments**.
-- **Ship snippets and file templates** that merge into the built-in sets.
+- **Ship snippets and file templates** that merge into the built-in sets. A
+  plugin's entry overrides a bundled one with the same name or id, and your own
+  overrides both.
 - **Run external tools** (formatters, task runners) via a subprocess.
 
 ## Writing a plugin

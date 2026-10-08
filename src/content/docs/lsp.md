@@ -1,6 +1,6 @@
 ---
 title: Language servers (LSP)
-description: Go to definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics, and completion from 23 language servers.
+description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 23 language servers.
 category: Code intelligence
 order: 2
 beta: true
@@ -20,7 +20,7 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Go to implementation | `lsp.gotoImplementation` | (palette) |
 | Go to type definition | `lsp.gotoTypeDefinition` | (palette) |
 | Go to declaration | `lsp.gotoDeclaration` | (palette) |
-| Find references | `lsp.findReferences` | `M-?` |
+| Find references | `lsp.findReferences` | `M-S-/` |
 | Go to Symbol in Workspace | `lsp.gotoSymbol` | (palette) |
 | Call hierarchy | `lsp.callHierarchy` | (palette) |
 | Type hierarchy | `lsp.typeHierarchy` | (palette) |
@@ -68,6 +68,7 @@ double-click jumps to any entry.
 | Hover docs | `lsp.hover` | `C-c h` |
 | Signature help | `lsp.signatureHelp` | (palette, automatic) |
 | Toggle inlay hints | `view.toggleInlayHints` | (palette) |
+| Toggle code lenses | `view.toggleCodeLens` | (palette) |
 
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
@@ -85,6 +86,13 @@ Hints`. By default a parameter-name hint appears only where the argument is a
 literal; **LSP: Set Inlay Hint Filter** (`lsp.setInlayHintMode`) switches
 between that and hints on all arguments. Type hints are never filtered. They
 cost nothing while off.
+
+**Code lenses** are the server's reference and implementation counts, drawn
+after a declaration (`3 references`, `2 implementations`). Click a count to open
+what it counts, the references or the implementations. They are **off by default**,
+because each count is a search on the server; turn them on in Settings → Code
+Completion ("Code lenses") or with `view.toggleCodeLens` (**View: Toggle Code
+Lenses**).
 
 **Occurrence highlighting** needs no command: rest the caret on a symbol and
 every occurrence in the file gets a subtle wash, with writes (assignments) shaded
@@ -118,8 +126,8 @@ default, so the window lists more only when you ask for it.
 
 | Feature | Command | Default key |
 | --- | --- | --- |
-| Code actions / quick fixes | `lsp.codeActions` | `Ctrl-.` / `Cmd-.` |
-| Rename symbol | `lsp.rename` | `F2` |
+| Code actions / quick fixes | `lsp.codeActions` | (palette) |
+| Rename symbol | `lsp.rename` | (palette) |
 | Format Document | `lsp.formatDocument` | (palette) |
 | Organize imports | `lsp.organizeImports` | (palette) |
 | Copy fully qualified name | `lsp.copyQualifiedName` | (palette) |
@@ -140,11 +148,56 @@ undo step per file, and a multi-file fix opens the untouched files in background
 tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
 
+A multi-file edit is applied **completely or not at all**. An action that would
+delete a folder or replace an existing file asks first and names the paths, and
+whatever an edit deletes or replaces is copied to
+[local file history](/docs/workspace#local-file-history) beforehand. If Editora
+is interrupted in the middle of an edit that moves or deletes files, the next
+time the project is opened an **Interrupted Refactoring** dialog offers to put
+the files back.
+
 **Java code generation** is in that same menu: **Generate toString()**, **Generate
-hashCode() and equals()**, **Generate Constructors** and **Override/Implement
-Methods**. Each opens a checkbox list so you choose which fields or methods to
-include, with Space to toggle and Enter to generate. The server offers these
+hashCode() and equals()**, **Generate Constructors**, **Generate Getters and
+Setters**, **Generate Delegate Methods** and **Override/Implement Methods**. Each
+opens a checkbox list so you choose which fields or methods to include, with
+Space to toggle and Enter to generate. Delegate Methods asks for the field to
+delegate to first, then lists that field's methods. The server offers these
 only when the editor declares that it can drive the picker, and Editora does.
+
+### Java refactorings that ask a question
+
+Three refactorings in the Code Actions menu need more than the caret position,
+so each one asks before it runs. They need the Java language server.
+
+**Move** depends on what the caret is on:
+
+| On | Moves it to |
+| --- | --- |
+| A class | another package, chosen from a list |
+| A nested class | its own new file, or another class |
+| A static member | another class |
+| An instance method | one of its parameters or fields |
+
+**Extract Interface** shows the class's methods as a checkbox list, then asks
+for the interface's name and its package.
+
+**Change Signature** presents the method's signature as one line of text to
+edit:
+
+```java
+public String greet(Helper helper, int n)
+```
+
+In that line you can rename the method, change its visibility or return type,
+and reorder, rename, retype or remove parameters. To **add** a parameter, write
+it as `type name = value`; the value is what existing callers pass for it:
+
+```java
+public String greet(Helper helper, int n, boolean loud = false)
+```
+
+A line that cannot be read as a method signature is rejected and nothing
+changes.
 
 Three Java commands sit outside the menu: **Organize Imports** sorts and prunes a
 file's imports directly, **Copy Fully Qualified Name** puts the full name of the
@@ -161,9 +214,10 @@ keymaps.
 
 A rename that reaches **beyond the file you're looking at** shows you what it
 will do first: every affected file, its change count, and where it moves to, with
-a tick beside each one so you can leave a file out. A rename confined to the
-current file applies straight away, because the result is on screen and one
-undo away.
+a tick beside each one so you can leave a file out. The preview also lists any
+file or folder the rename **would delete** and any existing file it **would
+replace**, each marked as such. A rename confined to the current file applies
+straight away, because the result is on screen and one undo away.
 
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and

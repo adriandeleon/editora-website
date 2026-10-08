@@ -36,6 +36,12 @@ stdin. It then chooses what to do with the output:
 That covers both "run a command and read the output" and text transforms with
 filters like `jq`, `sort`, or `sed`.
 
+**Replace the selection** replaces the text that was selected when the tool
+started, wherever the caret or selection has moved to by the time it finishes.
+In a [large file that has no undo](/docs/undo-history#files-without-undo), the
+file's text is saved to Local History before a tool's output replaces any of
+it.
+
 ## Running
 
 Every tool you define becomes its own palette command (bindable to a key in

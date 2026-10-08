@@ -81,6 +81,11 @@ Pick a **Type** in the project/session-scoped **Run Configurations** window:
 | Make target | a target in a makefile |
 | NPM script | a named `package.json` script via `npm run` |
 
+The form **enables only the fields the selected type uses**. A Java main class
+has no Script / target field; a Python, shell, Make or NPM configuration has no
+Main class, Module, VM arguments or JDK. A field that is disabled keeps its
+value, so switching the type and back loses nothing.
+
 Script and make configurations need **no project and no language server**.
 Debugging a run configuration remains Java-only, and says so rather than reporting a confusing Java
 error.
@@ -235,6 +240,10 @@ be debugged with breakpoints, stepping, and local variables. Editora maps
 breakpoints and stack frames to the original file and removes its temporary
 compiled files after the session. Java debugging needs the Java language server
 and debug adapter described below.
+
+JUnit tests are debugged from their gutter icon or with *Debug Test at Caret*,
+including tests inside `@Nested` classes; see the
+[test runner](/docs/build-tools#test-runner).
 
 When the Debug panel has the keyboard (it shows an active-focus highlight),
 **gdb-style single keys** drive the session: `n` to step over, `s` to step into,

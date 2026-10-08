@@ -19,6 +19,8 @@ and a right-edge overview of the whole document.
 | --- | --- | --- |
 | Against HEAD | `diff.vsHead` | `C-x v =` |
 | Against a commit | `diff.vsCommit` | (palette) |
+| Against a branch | `diff.vsBranch` | (palette) |
+| Against a tag | `diff.vsTag` | (palette) |
 | With another file | `diff.compareWith` | (palette) |
 | Clipboard or empty text with the active file | `diff.compareClipboard` / `diff.compareBlank` | (palette) |
 | Two folders recursively | `diff.compareDirectories` | (palette) |
@@ -28,8 +30,10 @@ and a right-edge overview of the whole document.
 
 When a file is open, its live (possibly unsaved) text is used as the working
 side. A unified `.patch`/`.diff` file opens as one navigable multi-file review
-with per-file status and statistics. Git reviews provide the same navigation
-across every staged or working-tree file. Open diffs **refresh live** when the
+with per-file status and statistics, and each hunk carries the line numbers its
+header states, so a hunk at line 500 is numbered from 500 and the gap between
+two hunks is visible. Git reviews provide the same navigation across every
+staged or working-tree file. Open diffs **refresh live** when the
 underlying files change on disk or after a Git mutation such as a commit, stage,
 or checkout, while preserving the selected change, scroll positions, focused
 side, and file-list divider.
@@ -38,13 +42,29 @@ Comparison controls can ignore whitespace or case, use smart line alignment,
 collapse unchanged context, wrap long lines, switch layout, swap sides, and
 export a patch. Binary and very large inputs degrade to safe metadata or bounded
 line comparisons instead of being decoded or rendered as ordinary text, and
-those degraded comparisons stay read-only. Patch output preserves a missing
-final newline on either changed side.
+those degraded comparisons stay read-only. In a block of rewritten lines the
+removed lines are listed first and their replacements after them, with or
+without smart alignment.
+
+**Export patch…** saves the current comparison as a unified `.patch` file. The
+patch keeps each side's own line endings, so one made from a file with Windows
+(CRLF) endings applies to that file, and it preserves a missing final newline on
+either changed side. A file in a single-byte encoding such as Latin-1 or
+Windows-1252 gets its patch in that encoding; otherwise the patch is UTF-8. The
+patch is computed in the background, and two texts that have almost nothing in
+common are written as one hunk. Export is unavailable when a side is binary or
+too large to load.
+
+To make a patch from staged changes, unstaged changes, or a commit, or to apply
+one to the working tree or the index, see [Git patches](/docs/git#patches).
 
 ## Folder comparisons
 
 Right-click a folder in the Project tree to compare it recursively with HEAD, a
-branch, tag, or chosen revision. You can also compare any two directories with
+branch, tag, or chosen revision. `git.compareBranch` reviews every file that
+differs between a branch and the current one, and the Git Log reviews a commit
+or the difference between two selected commits (see
+[Git Log](/docs/git#git-log)). You can also compare any two directories with
 `editora --diff-ui DIR DIR`. The scan runs in the background, respects Git
 ignore rules on both sides, excludes `.git`, and lists only changed, left-only,
 or right-only files in a lazy review.
@@ -84,3 +104,26 @@ edits combine automatically; divergent regions offer Base, Ours, and Theirs
 choices above an editable Result. Applying is undoable and protected against a
 buffer that changed while the resolver was open. Once you edit the Result by
 hand, choosing another resolution cannot silently erase those edits.
+
+The resolver groups changes the way Git does: edits on neighbouring lines are
+one conflict, so every region Git reported as a conflict is shown and none is
+combined unseen. Each conflict can take **Accept Ours**, **Accept Theirs**,
+**Accept Both**, or **Accept Base**, and the header counts how many are
+resolved. A conflict you leave unresolved is written back exactly as it was.
+
+If the file differs from Git's merge of the three versions, for example
+because you already resolved some conflicts by hand, the resolver works from
+the conflict markers the file still has, and what you resolved stays resolved.
+When it cannot tell which you want, most often because the file has no markers
+left and looks resolved already, it asks: **Start from Git's Versions** shows
+every conflict again, and applying that result replaces what the file holds;
+**Use the File's Markers** is offered when the file still has markers; Cancel
+leaves the file alone.
+
+When the file is one of the repository's conflicted files and the result has no
+conflict left, applying it also saves the file and stages it, which removes it
+from the Commit window's Conflicts group. A partial resolution is only written
+into the buffer. The Commit window is where conflicted files are listed, with
+keep-one-side and Mark Resolved actions and the Continue / Skip / Abort
+controls for the operation; see
+[Operations in progress and conflicts](/docs/git#operations-in-progress-and-conflicts).

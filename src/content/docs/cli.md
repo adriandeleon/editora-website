@@ -40,7 +40,7 @@ Where there is no `editora` command, substitute the launcher in the examples.
 | `--simple` | Start in Simple UI mode (session-only) |
 | `--single-window[=project]` | Open just one window, not the whole saved set (session-only) |
 | `--no-session` | Open only the files given here; don't restore the saved session |
-| `--new-instance` | Start a separate editor instead of handing the files to the running one |
+| `--new-instance` | Start a separate editor process instead of handing the launch to the one already running on the same config folder |
 | `--diff-ui LEFT RIGHT` | Open files or folders in an isolated comparison workspace |
 
 `--single-window` opens exactly one window instead of restoring every window
@@ -72,11 +72,18 @@ jump into a file in one command.
 
 ## One editor, not two
 
-If Editora is already running, a launch that only opens files **hands them to
-the running editor and exits**. The running process is reused, with its language
-servers and its memory, and no second editor is started.
+If Editora is already running on the same config folder, a second launch **goes
+to the running editor and exits**. The running process is reused, with its
+language servers and its memory, and no second editor is started. What the
+running editor does depends on what the launch asked for:
 
-The files open in a **new window**, brought to the front, with any focus mode
+| Launch | Result |
+| --- | --- |
+| Files (`editora notes.md`) | The files open in a new window |
+| `--project <dir>` | That project's window opens, or comes forward if it is already open; files named with it open as tabs in that window |
+| Nothing to open (`editora`, or the application icon) | The editor's current window is brought to the front |
+
+Files open in a **new window**, brought to the front, with any focus mode
 you asked for (`--expert`, say) applied to it, so a desktop entry like "Editora
 Expert Mode" still opens in Expert Mode. The window you were working in is left
 alone: the files do not arrive as tabs in it, and its chrome is not restyled.
@@ -94,17 +101,23 @@ clicking a file pays a full cold start and leaves a second editor resident.
 macOS does not have the problem, because Finder delivers an event to the running
 app, and the handoff routes into that same code path.
 
-The handoff is narrow. Only a launch that does nothing but open files is handed
-over; these always get their own editor:
+Three kinds of launch always start their own process:
 
-- `--project`, `--new-file`, `--config-dir`, `--dev` and `--diff-ui`, which shape how a
-  *process* starts and cannot apply to an editor that's already running
-- a launch with **no files at all**
 - anything passing **`--new-instance`**
+- `--new-file`
+- `--diff-ui`, a standalone comparison window
 
-An instance is scoped to its **config directory**, so a `--dev` launch can never
-hand off to your real editor, and two `--config-dir` sessions stay independent.
-If the handoff fails for any reason, the launch starts its own editor.
+An instance is scoped to its **config directory**. `--dev` and `--config-dir`
+do not opt out of the handoff; they choose which folder, and so which running
+editor, a launch belongs to. A `--dev` launch goes to the editor already running
+on `~/.editora-dev/`, never to your everyday one, and two `--config-dir`
+sessions stay independent. If the handoff fails for any reason, the launch
+starts its own editor.
+
+`--new-instance` gives two processes on one config folder. Neither overwrites
+the other's settings or data, but each sees the other's changes only after a
+restart; see
+[Configuration](/docs/configuration#two-editors-on-one-config-folder).
 
 ## Opening files from the file manager
 
@@ -151,6 +164,9 @@ editora --new-file=scratch.md --zen
 
 # Open a file in a second editor rather than the running one
 editora --new-instance notes.md
+
+# Bring the running editor to the front
+editora
 
 # What a desktop "Open With" entry passes: just these files, no saved session
 editora --expert --single-window --no-session README.md

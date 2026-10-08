@@ -166,6 +166,10 @@ text. Expand the word before the caret on demand with `C-x a e`, or turn on
 space or punctuation. Define a new one with `C-x a g`, and manage the whole
 dictionary in **Settings → Abbreviations** (`abbrev.manage`).
 
+An abbreviation can contain punctuation as well as letters and digits: `;sig`,
+`e.g`, `adl-fn`. When more than one abbreviation ends at the caret, the longest
+one wins, so `adl-fn` expands as itself even when `fn` is also defined.
+
 Your typed case is carried onto the expansion, so `btw` gives *by the way*, `Btw`
 gives *By the way*, and `BTW` gives *BY THE WAY*; a lowercase abbreviation keeps
 any capitals inside its expansion.

@@ -1,6 +1,6 @@
 ---
 title: Projects, windows & files
-description: Projects and multi-window, tabs and splits, Zen and Simple UI modes, local file history, and external-change detection.
+description: Projects and multi-window, the Project tree and Project Map, tabs and splits, Zen and Simple UI modes, local file history, and external-change detection.
 category: Workspace
 order: 1
 ---
@@ -32,59 +32,128 @@ state, and other per-file settings.
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
+**Delete** moves files to the system trash on Linux and macOS, and the
+confirmation says which will happen. Windows deletes permanently, as does any
+file the trash cannot take; a permanent delete asks with **Cancel** as the
+default button.
+
+Drag files and folders onto a folder to move them. Dragging a single file moves
+it at once; dragging a **folder** or **several items** asks first. **Undo Move**
+in the tree's right-click menu puts the last drag-move back.
+
 Files open in any editor tab carry an accent marker in the tree; the active file
 uses a stronger marker. A file or folder menu can also add a first-line bookmark
 or Personal Note directly, with compact indicators showing both annotations.
 
 ### Project Map
 
-Use the **Tree / Map** switch at the top of the Project tool window to replace
-the file tree with a spatial canvas. The map shows one focused branch as
+Use the **Tree / Map** switch at the top of the Project tool window, or
+*Project: Toggle Tree / Map View* (`project.toggleMapView`), to replace
+the file tree with a spatial canvas. The map shows the project as
 Miller-style columns: selecting a folder reveals its children in the next
 column, so the path to the current file stays visible without mixing unrelated
-expanded branches together.
+expanded branches together. The choice of Tree or Map is remembered per
+workspace.
 
-- Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow.
-  Connector direction and arrow-key navigation change together.
+- **Click a file** to open it in an editor tab. **Click a folder** to select it
+  and show its column; clicking a folder that is already open selects it and
+  brings its column into view. A folder's **chevron** expands or collapses it,
+  and a column's **×** closes that branch.
+- Choose left-to-right (the default), right-to-left, top-to-bottom, or
+  bottom-to-top flow. Connector direction and arrow-key navigation change
+  together, and the flow is remembered per workspace.
 - Drag empty canvas space to pan and use the mouse wheel to zoom around the
-  pointer. **Fit**, **Center selection**, and the overview recenter the layout.
+  pointer; `Shift` or `Alt` with the wheel pans instead. **Fit**, **Center
+  selection**, **Reset**, and the overview recenter the layout.
 - Drag a column header to reposition it and use its lock to prevent accidental
   movement. Columns size themselves to the longest loaded name.
 - Filter globally by open, modified, Git-changed, bookmarked, or Personal Notes
-  state and by file type.
-  Every non-root column also has a fuzzy name filter and a **Hidden** toggle.
-- **Keep current zoom** and **Focus new column** are on by default for the
-  session, so opening a folder preserves the current scale and centers its new
-  column. Turn either behavior off independently; disabling zoom preservation
-  restores fit-to-content when the map expands.
-- Select a file for a movable, resizable, syntax-highlighted preview. The
-  preview uses unsaved buffer text when available; double-click the file or use
-  **Open** to promote it to a normal editor tab.
+  state and by file type. Matches and the folders that contain them stay
+  prominent while everything else fades.
+  Every non-root column also has a fuzzy name filter and a **Show hidden**
+  checkbox.
+- Click a file's **eye** for a movable, resizable, syntax-highlighted read-only
+  preview card. The preview uses unsaved buffer text when available and follows
+  later edits; **Open** promotes it to a normal editor tab.
 - A Personal Notes badge opens an independent editable note card for a file or
-  folder. Note cards can coexist with code previews and can be temporarily
-  hidden with **Hide all open Personal Notes**.
+  folder. Note cards can coexist with code previews.
 - Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
   Local History, and Git actions available in the tree.
+- The **?** button lists the mouse and keyboard controls in a popover.
+
+The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
+**Hide all open Personal Notes**, **Print…** and **PDF…**. Keep current zoom and
+Focus new column are on by default and remembered per workspace, so opening a
+folder preserves the current scale and brings its new column into view. Turn
+either off independently; turning zoom preservation off restores fit-to-content
+when the map expands.
+
+Hidden (dot) files follow **Settings → Workspace → Show hidden files in the
+project tree**. A column's **Show hidden** checkbox overrides the setting for
+that folder only.
 
 Image previews support common bitmap formats. Text and image cards keep
-independent zoom levels, and Project Map searches reveal all ancestor columns
-needed to reach a match before restoring the previously open branches when the
-query is cleared. Preview and note cards keep a live connector to their source
-row while the map pans or zooms and while a card is moved or resized.
+independent zoom levels. At most **eight cards** are open at once, previews and
+notes together; opening a ninth replaces the one used least recently. Preview
+and note cards keep a live connector to their source row while the map pans or
+zooms and while a card is moved or resized.
 
-The canvas is fully keyboard-navigable. Arrows move with and across the chosen
-flow, `Ctrl-N` / `Ctrl-P` select siblings, `Page Down` / `Page Up` jump by ten,
-`Backspace` selects the parent, `Home` selects the root, `Alt-Left` /
-`Alt-Right` move through selection history, `/` focuses the current column's
-filter, and `Escape` fits all visible columns.
+The Project tool window's search field searches the map too. A search reveals
+all the ancestor columns needed to reach its matches and selects the first one,
+and clearing the query restores the folders you had open.
 
-It also works like a **mini file manager**: multi-select files and folders with
+#### Large folders
+
+A column shows up to **300 rows** of a folder and ends in a **+N more…** row
+that loads the next 300. Its header reads *shown/total* whenever a filter or a
+limit hides rows. The map as a whole shows at most **1,200 items**; when that
+limit is reached the status bar says so, and closing a column makes room. An
+empty or unreadable folder opens a column that says so.
+
+#### Keyboard
+
+The canvas is fully keyboard-navigable.
+
+| Key | Result |
+| --- | --- |
+| Arrow keys | Move along the flow (into a folder, back to the parent) and among siblings |
+| `Ctrl-N` / `Ctrl-P` | Select the next or previous sibling |
+| `Page Down` / `Page Up` | Move ten rows, stopping at the end of the column |
+| `Enter` or `Space` | Open the selected file, or expand or collapse the selected folder |
+| `Backspace` | Select the parent |
+| `Home` | Select the project root |
+| `Alt-Left` / `Alt-Right` | Go back or forward through earlier selections |
+| `/` | Focus the current column's filter; `Enter` there returns to the map on the first match |
+| `Ctrl-0` (`Cmd-0` on macOS) | Fit the whole map |
+| `F2` | Rename the selected file or folder |
+| `Delete` | Delete the selection, as in the tree |
+| Menu key or `Shift-F10` | Open the selected row's context menu |
+| `Escape` | Close open cards, then clear the search, then return to the editor |
+
+These keys reach the map in every keymap while it has focus, including the
+chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`.
+
+#### File management
+
+The map also works like a **mini file manager**: multi-select files and folders with
 Ctrl/Cmd- and Shift-click, then **drag them onto a folder** (or the root) to move
 them, with open tabs following to the new path; a name conflict is skipped rather
 than overwritten, and a folder can't be moved into its own subtree. **Delete**
 acts on the whole selection at once. Dirty files receive one
 Save/Discard/Cancel decision before the batch begins, and Editora records
 recoverable Local History before removing anything it has opened or edited.
+
+#### Printing the map
+
+**Print…** and **PDF…** in the options menu, or *Project Map: Print…*
+(`projectMap.print`) and *Project Map: Export to PDF…*
+(`projectMap.exportPdf`), output the **whole map**, not only the part on screen,
+with the current flow, filters, open branches and column positions. The output
+is light whatever the theme. A map that is wider than tall goes on a landscape
+page. A map too large to fit one page with readable labels is split across
+several pages, and the status bar says when the map was scaled down or split.
+Labels are drawn as an image, so the PDF's text is not searchable. See
+[Print & PDF export](/docs/print-pdf) for the preview and the Save dialog.
 
 With no project open, the Project tool window becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
@@ -94,9 +163,11 @@ follows the focused tab as you switch files.
 
 **New Project From Template** (`project.newFromTemplate`) scaffolds a whole
 project rather than pointing Editora at a folder you made yourself: pick a
-multi-file [template](/docs/snippets-templates), fill in its variables, choose
-where it goes, and the new folder is registered as a project and opened in its
-own window. A **Python Project** template ships with it (package layout, a test,
+multi-file [template](/docs/snippets-templates), enter a **project name** and a
+**location**, and fill in the template's variables. The dialog shows the folder
+it will create; a folder that already exists and is not empty is refused.
+Editora creates the folder, registers it as a project, and opens it in its own
+window on the template's main file. A **Python Project** template ships with it (package layout, a test,
 `pyproject.toml`, README and `.gitignore`), and your own multi-file templates
 appear in the same picker.
 
@@ -123,6 +194,10 @@ tabs, tool windows, and session. The window's project picker acts as a window
 switcher: choosing a project focuses or opens that window. The set of open
 windows is remembered and restored on the next launch. With projects disabled,
 Editora stays a single window.
+
+Launching Editora again while it is running hands the launch to the running
+editor instead of starting a second process. Start with `--new-instance` when
+you want a separate one; see the [command line](/docs/cli).
 
 ## Tabs
 
@@ -287,7 +362,10 @@ navigates there.
 In the **status bar**, indent, line endings and encoding are one segment
 (`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
 They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is open.
+three different commands, and they appear only when a file is open. A file whose
+lines do not all end the same way reads **Mixed** with its dominant ending, for
+example `Mixed (LF)`. Saving such a file unchanged leaves it as it is; saving an
+edit writes the dominant ending on every line and says so.
 
 ### The toolbar
 
@@ -321,7 +399,9 @@ untouched.
 
 Editora snapshots your local files over time, independent of any version
 control, so you have a safety net even outside Git. A snapshot is taken on save,
-on auto-save, and before a file is reloaded after an external change.
+on auto-save, and before a file is reloaded after an external change. The first
+save of a session also keeps the text the file held before it, so the version
+you started from is in the history too.
 
 The **File History** tool window (`M-g l`) lists each revision with its date,
 the reason it was taken, and its size (the latest tagged *Current*).
@@ -345,22 +425,33 @@ It mirrors more of IntelliJ's Local History:
   own). The copied revisions count towards the project's size limit.
 - **Deleting history for good**: *Local History: Delete History of Current
   File…* (`localHistory.purgeFile`) and *Local History: Delete History of
-  Project…* (`localHistory.purgeProject`) remove snapshots permanently.
+  Project…* (`localHistory.purgeProject`) remove snapshots permanently, after
+  a confirmation that states how many snapshots go.
 
 Restore validates the stored revision and verifies that the file has not
 changed while it was loading. If either check fails, the current file and editor
 contents are left untouched.
 
 Snapshots are deduped by content and stored gzip-compressed in your config
-folder, pruned by configurable limits. It's on by default, local-only, and off in
+folder, pruned by configurable limits: snapshots per file, age in days, and
+total size (**Settings → Workspace → Local History**, or `history.setMaxPerFile`,
+`history.setMaxAgeDays` and `history.setMaxTotalMb`). Lowering a limit asks
+first when it would delete existing history, stating how many snapshots from how
+many files would go. It's on by default, local-only, and off in
 Simple UI mode.
 
 ## External-change detection
 
 When a file changes on disk under you, Editora notices on window focus and tab
-switch and prompts to reload or keep your version. The Project tree also
+switch and prompts to reload or keep your version. When the buffer has unsaved
+edits, the prompt says so and **Keep Mine** is the default, so pressing Enter
+keeps your version. The Project tree also
 re-scans on focus so files added or removed outside the editor show up, keeping
 your expanded folders and selection.
+
+A file **deleted** outside Editora keeps its tab and its text: the tab is marked
+unsaved, the status bar says the file no longer exists on disk, and auto-save
+does not write it back. Save it yourself to recreate the file.
 
 ## Trusted folders
 

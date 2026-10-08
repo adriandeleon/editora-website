@@ -86,4 +86,11 @@ right-click menu.
   Markdown badges and every export path (PDF, print, Word, ODF) still rasterize.
 - Binary files open as a read-only [hex dump](/docs/editing#hex-viewer).
 
-Every preview can **export to PDF** from its right-click menu.
+Every preview can **export to PDF** from its right-click menu, and *File:
+Print Rendered Preview…* (`preview.print`) and *File: Export Rendered Preview to
+PDF…* (`preview.exportPdf`) act on whatever the active file previews as. Tree
+and summary previews break pages between rows, an OpenAPI file outputs its
+documentation view when that is the one showing, and a file that does not parse
+has nothing to export until the syntax error is fixed. A very long tree stops at
+4,000 rows and says so. Image tabs print and export with *File: Print…* and
+*File: Export to PDF…*. See [Print & PDF export](/docs/print-pdf).

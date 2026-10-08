@@ -32,7 +32,20 @@ Actions**:
 | Generate a commit message from the staged diff | `ai.generateCommitMessage` |
 | Explain the selection (into a new Markdown buffer) | `ai.explainSelection` |
 | Rewrite the selection per an instruction (undoable) | `ai.rewriteSelection` |
+| Stop the running generation | `ai.cancel` |
 | Test the provider connection | `ai.testConnection` |
+
+**Rewrite Selection** and **Generate Commit Message** put the model's text into
+your work, so they apply a reply only when it is **complete**. A reply that was
+cut off at the model's output limit, ended because the connection closed, came
+back empty, or was declined is discarded, and the status bar says which. A
+rewrite is also discarded if the selected text changed while the reply was
+being generated. Explain
+writes to a buffer of its own, so a partial explanation is kept and marked as
+incomplete.
+
+Rewrite refuses a selection longer than 120,000 characters instead of sending
+part of it, because the reply replaces the whole selection.
 
 There's also **inline completion**: after a typing pause, a muted one-line ghost
 suggestion appears at the caret, and **Tab** accepts it. It uses its own fast
@@ -50,9 +63,23 @@ bundled**.
 - Its file reads see your open buffers' **unsaved** text.
 - Its edits to open files apply as **undoable buffer edits** that you review and
   save.
-- Each action that needs permission pops a dialog.
-- Its file reads and writes are confined to the session folder, and can never
-  touch Editora's own configuration.
+- A write to a file that is **not open** goes to disk. The file's previous text
+  is saved to [local file history](/docs/workspace#local-file-history) first,
+  and the write is refused if that copy cannot be made. The file keeps its
+  encoding, byte-order mark and line endings.
+- It **cannot replace text it has not seen**. A write is refused when the file
+  or buffer changed since the agent last read it, including text you typed in
+  the meantime; the agent is told to read the file again.
+- Each action that needs permission pops a dialog. The dialog opens with the
+  focus on the **rejecting** choice, has no default button, and ignores key
+  presses for a moment after it appears, so a keystroke meant for the editor
+  cannot approve a request.
+- Its file reads and writes are confined to the session folder. It can never
+  touch Editora's own configuration, or version-control metadata such as
+  `.git/`.
+- In a [large file that has no undo](/docs/undo-history#files-without-undo), an
+  agent edit is preceded by a Local History copy, or refused when none can be
+  taken.
 - Replies appear as they stream. Remote images in a reply are not loaded; the
   alt text and URL are shown instead.
 
@@ -105,7 +132,9 @@ the endpoint you configured for a local or LM Studio provider, or the
 - **Generate commit message** sends the staged diff (`git diff --cached`).
 - **Explain** sends the selected text and the file's language name.
 - **Rewrite** sends the selected text, the language name, and your instruction.
-- A diff or selection longer than 120,000 characters is cut at that length.
+- A staged diff, or a selection sent to Explain, longer than 120,000 characters
+  is cut at that length. Rewrite does not send a selection over that length at
+  all.
 - **Inline completion** sends the language name and the text around the caret,
   up to 4,000 characters before it and 1,000 after, once per typing pause. It
   only asks when the caret is at the end of a line.

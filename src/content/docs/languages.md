@@ -65,16 +65,62 @@ for words (prose), snippets, and Mermaid keywords. Palette equivalents are
 ## Spell checking
 
 Misspelled words get a red wavy underline. Right-click for **suggestions** (pick
-one to replace), **Add to Dictionary**, or **Ignore**. In source files only
-comments and string literals are checked, so identifiers aren't flagged; plain
-text and Markdown are checked in full.
+one to replace), **Add to Dictionary**, or **Ignore**. **Ignore** stops flagging
+the word in every open file until Editora is closed; **Add to Dictionary** keeps
+it for good.
 
-It uses Apache Lucene's pure-Java **Hunspell** engine, with no native
-dependency. English (en_US, en_GB), Spanish, and French ship in the app. Pick a
-dictionary per file with **Spell Check: Set Language…**, set a default in
-Settings, or toggle checking with `view.toggleSpellCheck`. Words you add live in
-`dictionary.txt` in your config folder.
+What is checked depends on the file type:
+
+- **Plain text and Markdown** are checked in full, apart from inline code, links,
+  and Markdown fenced code blocks.
+- **HTML and Typst** have the document's text checked, plus comments. Tags,
+  attributes, `<script>`, `<style>` and `<pre>` blocks, Typst math and Typst
+  lines that open with a `#` instruction are left alone.
+- **Source code** has only comments and string literals checked, so identifiers
+  aren't flagged.
+- **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
+  CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
+  files, logs, and diffs.
+
+**Settings → Spell Check → File Types** has a tick box per file type, and **Spell
+Check: Toggle for This File Type** (`spell.toggleForLanguage`) flips the active
+file's type. `view.toggleSpellCheck` turns checking on or off everywhere.
+
+### Spell-check commands
+
+Everything on the right-click menu is also a command, so you can work through a
+file from the keyboard.
+
+| Action | Command | Emacs key |
+| --- | --- | --- |
+| Next misspelling | `spell.nextMisspelling` | (palette) |
+| Previous misspelling | `spell.previousMisspelling` | (palette) |
+| Correct the word at the caret | `spell.correctWord` | `M-S-4` (`M-$`) |
+| Add the word at the caret to the dictionary | `spell.addWord` | (palette) |
+| Ignore the word at the caret | `spell.ignoreWord` | (palette) |
+| Set the file's dictionary | `spell.setLanguage` | (palette) |
+| Reload the personal dictionary | `spell.reloadDictionary` | (palette) |
+
+**Correct Word at Caret** opens a list of suggestions to filter and pick from.
+The other keymaps bind the navigation keys: in **CUA**, `F7` and `Shift+F7` go to
+the next and previous misspelling; in **Sublime Text**, `F6` toggles spell check
+and `Ctrl+F6` / `Ctrl+Shift+F6` go to the next and previous misspelling.
+
+### Dictionaries
+
+Spell check uses Apache Lucene's pure-Java **Hunspell** engine, with no native
+dependency. English (US and UK), Spanish (Spain and Mexico), and French ship in
+the app. The default dictionary is set in **Settings → Spell Check**. The status
+bar shows the dictionary the active file is checked with; click it, or run
+**Spell Check: Set Language…**, to give the file another one. The picker lists
+the languages by name, marks the current one, and has an entry that returns the
+file to the default.
+
+Words you add live in `dictionary.txt` in your config folder. **Settings → Spell
+Check** has an editor for the list (`spell.manageDictionary`) and a switch that
+turns the personal dictionary off. After editing `dictionary.txt` outside
+Settings, run **Spell Check: Reload Personal Dictionary**.
 
 A bundled **technical-terms dictionary** (`config`, `async`, `middleware`,
-`kubernetes`, and the like) keeps code-adjacent words from being flagged; toggle
-it in Settings or with `view.toggleTechnicalDictionary`.
+`kubernetes`, and the like) keeps code-adjacent words from being flagged in any
+language; toggle it in Settings or with `view.toggleTechnicalDictionary`.

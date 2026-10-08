@@ -68,6 +68,16 @@ Export the document with `typst.export`: **PDF** (a native single file), **PNG**
 or **SVG** (also `typst.exportPng` / `typst.exportSvg`). Printing paginates the
 pages.
 
+PNG and SVG write one file per page. A **one-page** document is written under
+the name you chose (`report.png`); a longer one becomes numbered page files
+(`report-1.png`, `report-2.png`, …). When any of those page files already exist,
+the export lists them and asks before replacing them; cancelling replaces
+nothing.
+
+The PDF is laid out by Typst itself, so the page size, orientation and margins
+come from the document (`#set page(…)`) rather than from Editora's
+[Export & Print settings](/docs/print-pdf#settings).
+
 ## Enabling
 
 It's **on by default**, self-gating on detection, so it stays inert until the
