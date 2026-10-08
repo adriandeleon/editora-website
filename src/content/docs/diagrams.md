@@ -22,7 +22,10 @@ secret-looking environment variables.
 ## Export
 
 Export a diagram to **SVG**, **PNG**, or **PDF** with `diagram.export` (also on
-the preview's right-click menu).
+the preview's right-click menu). *File: Print Rendered Preview…*
+(`preview.print`) prints it with a [print preview](/docs/print-pdf#print-preview).
+The PDF is sized by Graphviz or PlantUML, so the PDF page settings do not apply
+to it, and printed diagrams are always light.
 
 ## Enabling
 

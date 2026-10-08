@@ -153,6 +153,12 @@ same from the keyboard, and `test.rerun`, `test.rerunFailed`, and `test.stop`
 control the run. Gutter icons are JVM-only and need a detected Maven or Gradle
 project.
 
+Tests in **nested classes** have their own icons: a method inside a JUnit
+`@Nested` class, or inside a static nested test class, gets a ▶, and so does
+the nested class itself. Run and Debug address the nested class as
+`Outer$Inner`, so only that class's tests run. A class whose tests are all in
+nested classes is marked the same way.
+
 **Debug Test at Caret** (`test.debugAtCaret`) and the test-results context menu
 launch the selected JUnit method or class through Maven or Gradle with its JVM
 suspended, then attach Editora's Java debugger automatically. This needs the

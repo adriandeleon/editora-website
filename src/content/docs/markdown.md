@@ -150,7 +150,10 @@ and remote (SFTP) files are excluded. Commands: `htmlPreview.open` and
 
 Export code to a syntax-highlighted PDF, or the Markdown / Mermaid preview to a
 richly formatted PDF with headings, lists, tables, code blocks, and images as
-native vector text. You can also export a Markdown file's preview to a
+native vector text. In the palette these are *File: Export to PDF…* for the
+source text and *File: Export Rendered Preview to PDF…* for the formatted
+document, with *File: Print…* and *File: Print Rendered Preview…* beside them.
+You can also export a Markdown file's preview to a
 **standalone, self-contained `.html` file** (embedded stylesheet, heading
 anchors, math as images) with *Preview: Export to HTML*, which opens the result
 in a new tab, or to **MS Word (`.docx`)** and **OpenDocument Text (`.odt`)** with
@@ -160,26 +163,38 @@ code, math, Mermaid diagrams, and images all carry over. Or print either, with a
 page-by-page preview first (what you preview is what prints). Output is always
 light-themed and generated off the UI thread.
 
+A Markdown PDF or printout contains:
+
+- **Tables** with bold, code and links kept inside cells, their column
+  alignment, columns sized to their content, and the header row repeated on
+  each page.
+- **Task lists** with their checkboxes, and `~~strikethrough~~` struck through.
+- **Fenced code** in a monospaced font, syntax-coloured by its language, with
+  every line printed however long the block is.
+- **Images**, including badges inside a line of text, plus math and Mermaid
+  diagrams at the size of the surrounding text rather than blown up to a page.
+  An image that cannot be loaded prints its alt text.
+- In the PDF, **clickable links** (web, mail, and `#heading` links within the
+  document), **bookmarks** built from the headings, and a title, creator and
+  date. On paper, a link shows its address.
+
 Commands: `editor.exportPdf`, `preview.exportPdf`, `preview.exportHtml`,
 `preview.exportDocx`, `preview.exportOdt`, `editor.print`, `preview.print`. Line
-numbers, syntax highlighting, and page size live in **Settings → Editor → Export
-& Print**.
+numbers, syntax highlighting, the page footer, and the PDF page size,
+orientation and margins live in **Settings → Editor → Export & Print**. The
+print preview, the Save dialog and what each setting applies to are described in
+[Print & PDF export](/docs/print-pdf).
 
 ### Long documents
 
-Pagination splits on whole blocks, so nothing breaks across a page edge. Giving a
-block **taller than a page** a page of its own, scaled uniformly to fit, is
-right for an oversized image but wrong for text, because a Markdown list is
-*one* top-level block however long it is.
+Printed Markdown fills each page. A long list, quote, code block, table or
+paragraph starts on the current page and continues onto the next rather than
+jumping to a fresh page, and a heading stays with the text that follows it.
+Long inline code wraps instead of running off the page. A table splits between
+rows and repeats its header.
 
-An over-tall container is therefore regrouped into copies of itself holding as many
-children as fit: a long list becomes several lists, a long paragraph several
-paragraphs, each carrying the original's styling so it renders identically. The
-text stays vector rather than being sliced as an image, so it is crisp on paper;
-the cost is a seam that does not hang-indent. Uniform scaling applies only to
-an **atomic** over-tall block. A plain
-paragraph has no emphasis to split at, so long runs are cut at whitespace and no
-word is broken.
+The text stays vector rather than being sliced as an image, so it is crisp on
+paper. Long runs are cut at whitespace and no word is broken.
 
 A document that is mostly one very long list therefore prints on as many pages
 as its text needs, at full size. Nothing is shrunk to fit except a single block,

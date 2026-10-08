@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Doctor, unsigned installers, finding external tools, the debug log, performance, and resetting config.
+description: Doctor, unsigned installers, finding external tools, the debug log, recovering after a crash, performance, and resetting config.
 category: Help
 order: 3
 ---
@@ -75,6 +75,48 @@ exceptions into a **Debug Log**:
 The **message log** (click the status-bar message, or `view.messageLog`) keeps a
 session history of the transient status-bar messages.
 
+## After a crash or an interrupted save
+
+- **Unsaved edits.** If Editora did not close normally (a crash, a kill, a
+  logout, a power cut), the next launch opens **Recover Unsaved Edits** with the
+  text of every tab that had unsaved changes. See
+  [crash recovery](/docs/undo-history#crash-recovery). Reopen the list any time
+  with `file.recoverUnsavedEdits`.
+- **A save that did not finish.** Some files are overwritten in place rather
+  than replaced. While that happens their previous contents are held in
+  `save-backups/` in the config folder. If Editora stops in the middle, the next
+  launch shows an **Unfinished Save** dialog that names the backup and offers
+  **Restore Previous Contents**, **Keep Current File**, or **Decide Later**.
+- **Save as Administrator.** The file is backed up beside itself
+  (`<name>.editora-backup`) before it is overwritten, and put back if the write
+  fails. If it cannot be put back either, the status bar names the backup, and
+  the next administrator save of that file is refused until you restore or
+  remove it.
+- **A refactoring that moves or deletes files.** If Editora is interrupted in
+  the middle of one, opening the project again shows an **Interrupted
+  Refactoring** dialog that lists the files that were moved aside and offers to
+  put them back.
+- **A damaged config file.** A config file that is empty or unreadable at
+  startup is copied to `<name>.corrupt.bak` and reported in the status bar
+  rather than reset silently. See
+  [Configuration](/docs/configuration#safety-copies).
+
+## Two editors show different settings
+
+Two Editora processes on the same config folder (the second started with
+`--new-instance`) do not overwrite each other's data, but each one reads the
+other's changes only when it starts. Restart the one that looks stale. See
+[Configuration](/docs/configuration#two-editors-on-one-config-folder).
+
+## Settings sync shows "Sync ⚠"
+
+The status-bar segment means the last automatic sync failed; click it to open
+**Settings → Sync**, where the Status row gives the reason. Automatic syncs
+never prompt for credentials, so a repository that needs a password or an SSH
+passphrase fails until a credential helper or an SSH agent can supply it. Run
+**Settings Sync: Sync Now** (`sync.now`) to try with your credential helper. See
+[Settings sync](/docs/settings-sync#credentials-and-failures).
+
 ## Performance
 
 Editora aims to stay responsive on large files. Highlighting and the minimap
@@ -101,6 +143,10 @@ match. If editing or scrolling feels heavy:
   including the keymap choice, which goes back to Emacs. Text zoom is kept, and
   your key rebinds stay stored with the keymap you made them in, so they apply
   again when you switch back to it.
+  The previous preferences are first saved as
+  `settings.json.before-reset-<date>.bak` in the config folder, and the status
+  bar names the file; copy it back over `settings.json` while Editora is closed
+  to undo the reset.
 - **Export Configuration…** zips the active config folder for a backup or bug
   report.
 - Run with `--dev` or `--config-dir <path>` to use a separate config without

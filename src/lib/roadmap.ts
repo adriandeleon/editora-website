@@ -145,4 +145,14 @@ export const roadmap: RoadmapSection[] = [
       { done: false, text: "Sign native installers" },
     ],
   },
+  {
+    title: "Settings sync follow-up",
+    items: [
+      { done: true, text: "Sync snippets, abbreviations, templates and the personal dictionary through a Git repository; see settings sync." },
+      { done: false, text: "Sync preferences, keymaps, macros and themes (needs a machine-local key list and API-key stripping)." },
+      { done: false, text: "A per-entry conflict picker, and restoring an entry from the repository history." },
+      { done: false, text: "Sync on quit, bounded so a slow remote cannot hold the exit." },
+      { done: false, text: "Import a configuration zip." },
+    ],
+  },
 ];

@@ -8,7 +8,9 @@ summary: "Record a sequence of edits and replay it: <kbd>F3</kbd> to start, <kbd
 
 Record a sequence of editor actions and replay it, Emacs-style. Recording captures the interleaved stream of invoked commands and literally typed text, and replay reproduces the exact sequence, so replayed typing runs through the same auto-close and auto-indent assists as live typing.
 
-- **F3** starts recording, **F4** stops, and **C-x e** replays the last macro.
+- **F3** starts recording, **F4** stops, and **C-x e** replays the last macro. **Esc** cancels a recording and keeps the previous macro.
+- Text and keys typed into the find bar, a prompt or a picker are recorded too, so a search replays as a search.
+- One replay is one undo step.
 - The palette adds **Replay Last N Times**, **Name and Save Last**, **Run Saved**, and **Delete Saved**.
 - Saved macros persist across sessions, and each becomes its own palette command, so you can bind it to a shortcut in Settings → Keymaps like any other command.
 

@@ -31,7 +31,8 @@ Editing and code:
 - **[Editing](/docs/editing)**: multiple cursors, auto-indent, brackets,
   comments, and the small text operations.
 - **[Keyboard macros](/docs/macros)**: record and replay edits.
-- **[Undo History](/docs/undo-history)**: jump back to any recent checkpoint.
+- **[Undo History](/docs/undo-history)**: jump back to any recent checkpoint,
+  and recover unsaved edits after a crash.
 - **[EditorConfig](/docs/editorconfig)**: honor a project's `.editorconfig`.
 - **[Snippets & templates](/docs/snippets-templates)**: expand boilerplate and
   scaffold new files.
@@ -72,6 +73,8 @@ Workspace and customization:
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[External tools](/docs/external-tools)**: run your own CLI commands.
+- **[Settings sync](/docs/settings-sync)**: the same snippets, abbreviations,
+  templates, and dictionary on every computer.
 - **[AI assistance](/docs/ai)**: AI actions and an embedded coding agent.
 - **[Plugins](/docs/plugins)**: install and write extensions.
 - **[MCP server](/docs/mcp)**: let an LLM agent observe and drive the editor.

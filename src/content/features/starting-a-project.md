@@ -6,7 +6,7 @@ beta: false
 summary: "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written."
 ---
 
-Editora can create a project as well as open one. Earlier versions could only *open* an existing folder.
+Editora can create a project as well as open one: from a Maven archetype, or from a multi-file [template](/features/file-templates) with **New Project From Template**.
 
 ## New Maven Project
 
@@ -30,4 +30,4 @@ Starts version control without dropping to a terminal. It prompts for a folder, 
 
 About fifty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
 
-A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. The name you type always wins over the type's extension, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.
+A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. A name that already ends in a known extension keeps it, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.

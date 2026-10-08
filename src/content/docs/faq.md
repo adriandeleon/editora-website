@@ -25,6 +25,10 @@ There are two exceptions:
   provider you supply a key for). That is how the feature works, and it is the
   one part of Editora that transmits your code, so it stays opt-in.
 
+[Settings sync](/docs/settings-sync), also off by default, sends your snippets,
+abbreviations, templates, and dictionary to a Git repository that you name and
+own, and nowhere else.
+
 Plugins you install run with full access and can do their own thing (see below).
 
 ## Which platforms are supported?
@@ -56,7 +60,7 @@ Fewer than you might expect. They fall into two groups.
 
 **Off until you ask for them** are the features that run code, reach the
 network, or change how the editor works: language servers, debugging, plugins,
-the AI features, and the MCP server. Turn on what you want in Settings; each has
+the AI features, the MCP server, and Settings sync. Turn on what you want in Settings; each has
 its own page in these docs.
 
 **On, but invisible until their tool exists** is the larger group. Git, GitHub,
@@ -67,6 +71,25 @@ switch anything on, and installing `git` or `mmdc` later makes the feature
 appear on its own. [Doctor](/features/doctor) shows you what was found.
 
 Projects are on from the start too; **Settings → Workspace** turns them off.
+
+## What happens to unsaved changes if Editora crashes?
+
+While a tab has unsaved changes, Editora keeps a recovery copy of its text in
+the config folder, untitled buffers included. If the editor does not close
+normally (a crash, a kill, a logout, a power cut), the next launch lists those
+copies and offers to restore them as unsaved tabs. Restoring never writes to
+your files. See [crash recovery](/docs/undo-history#crash-recovery).
+
+Saved versions are a separate matter: every save is recorded in
+[local file history](/docs/workspace#local-file-history).
+
+## Can I use the same snippets and templates on several computers?
+
+Yes, with [Settings sync](/docs/settings-sync) (Beta, off by default). It keeps
+snippets, abbreviations, templates, and your personal dictionary the same on
+every computer through a private Git repository you own. Preferences, keymaps,
+macros, and themes are not synced; to move those, copy the
+[config folder](/docs/configuration) or use **Export Configuration…**.
 
 ## How do I add a language, snippet, or dictionary word?
 
@@ -127,8 +150,9 @@ index), but you should still only install plugins you trust. See
 
 In a config folder (`~/.editora/` by default). Its live path is in **About
 Editora**. You can export it or reset to defaults from **Settings → Advanced**,
-and run a throwaway config with `--dev` or `--config-dir`. See
-[Configuration](/docs/configuration).
+and run a throwaway config with `--dev` or `--config-dir`. A reset first saves
+the previous preferences as `settings.json.before-reset-<date>.bak` in that
+folder. See [Configuration](/docs/configuration).
 
 ## Is it slow to start? It's a Java app.
 

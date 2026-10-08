@@ -97,7 +97,9 @@ Movement chords fan out too: `C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`, `M-f` and
         """
 Record a sequence of editor actions and replay it, Emacs-style. Recording captures the interleaved stream of invoked commands and literally typed text, and replay reproduces the exact sequence, so replayed typing runs through the same auto-close and auto-indent assists as live typing.
 
-- **F3** starts recording, **F4** stops, and **C-x e** replays the last macro.
+- **F3** starts recording, **F4** stops, and **C-x e** replays the last macro. **Esc** cancels a recording and keeps the previous macro.
+- Text and keys typed into the find bar, a prompt or a picker are recorded too, so a search replays as a search.
+- One replay is one undo step.
 - The palette adds **Replay Last N Times**, **Name and Save Last**, **Run Saved**, and **Delete Saved**.
 - Saved macros persist across sessions, and each becomes its own palette command, so you can bind it to a shortcut in Settings → Keymaps like any other command.
 
@@ -196,13 +198,15 @@ Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and i
 """),
     new Feature("snippets", ED, 1, false,
         "Snippets",
-        "Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for 23 languages.",
+        "Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for 30 languages.",
         """
 Expand boilerplate with interactive templates. Type a prefix and press **Tab**, or pick from the **Snippet: Insert…** list (`C-c i`).
 
 Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields, mirrors update live, choice fields show a dropdown, and `$0` is the final caret. Bodies use the standard VS Code / TextMate syntax, `$1`, `${1:default}`, mirrors, `${1|a,b|}` choices, and variables (`$TM_FILENAME`, `$CLIPBOARD`, date/time, the selection…).
 
-Snippets ship for 23 languages; add your own in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
+While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings.
+
+Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
 """),
     new Feature("smart-indentation", ED, 2, false,
         "Smart indentation",
@@ -230,9 +234,11 @@ It preserves indentation, uses whichever form exists in line-only or block-only 
 """),
     new Feature("spell-checking", ED, 5, false,
         "Spell checking",
-        "Red wavy underlines with right-click suggestions, Add-to-Dictionary, and Ignore: full text for prose, comments &amp; strings for code. Pure-Java Hunspell; English, Spanish, French.",
+        "Red wavy underlines with right-click suggestions, Add-to-Dictionary, and Ignore: full text for prose, comments &amp; strings for code, set per file type. Pure-Java Hunspell; English, Spanish, French.",
         """
-Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged); plaintext and Markdown are checked in full.
+Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged); plaintext and Markdown are checked in full, as is the text of HTML and Typst documents. Data and configuration formats such as JSON, YAML and TOML are off by default; Settings → Spell Check → File Types sets this per file type.
+
+Commands move to the next or previous misspelling and correct, add or ignore the word at the caret, and the status bar shows the dictionary in use.
 
 It's powered by Apache Lucene's pure-Java **Hunspell** engine, no native dependency. Ships **English (en_US, en_GB)**, **Spanish**, and **French**; pick a dictionary per file with *Spell Check: Set Language…*, or set a default in Settings → Spell Check. Your added words live in `dictionary.txt`.
 """),
@@ -288,7 +294,9 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
 - **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings
-- **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, and override/implement methods, each with a checkbox picker
+- **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, getters and setters, delegate methods, and override/implement methods, each with a checkbox picker
+- **Java refactorings that ask where to, or what**: Move, Extract Interface, and Change Signature, where the signature is edited as one line
+- **Code lenses**: reference and implementation counts after a declaration; click one to open them (off by default)
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
 - **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
@@ -381,6 +389,7 @@ A configuration can name a command to run first, such as a build or a codegen st
 - Each configuration **becomes a real command**, so it appears in the palette by name and can be given its own keyboard shortcut, the same way [saved macros](/features/macros) and [external tools](/features/external-tools) already work.
 - **Add** prefills from the file you are looking at: the main class from the active Java file (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you.
 - The toolbar group **only appears where you could launch something**, so a project of Markdown notes doesn't carry a dropdown that can never fill. Anything you have already saved keeps it visible regardless.
+- The form **enables only the fields the selected type uses**, and a disabled field keeps its value.
 - Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
 """),
     new Feature("debugging", RD, 3, true,
@@ -393,6 +402,7 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 - A threads + call-stack view and a lazy variables tree with **set-value**
 - **Watches** and an evaluate console
 - A debugged Java program can read **standard input** typed in the Debug console
+- Tests inside JUnit `@Nested` classes run and debug from the gutter
 
 For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening.
 
@@ -406,7 +416,7 @@ Open a `.http` or `.rest` file and click the green ▶ next to a request to send
 
 Define multiple requests separated by `###`. The feature aims to match IntelliJ's HTTP client: `{{var}}` / `@var` substitution, dynamic variables (`{{$random.*}}`, `{{$datetime}}` with date math, `{{$dotenv.X}}`), **request chaining** that references an earlier response, **multipart** and external-file bodies, **environment files** (`http-client.env.json` with a `$shared` section) and a picker, and Basic/Digest auth shorthand.
 
-The response is the `.http` file's own **preview**, in the same Editor / Split / Preview view every other rich file type uses, so it sits beside the request that produced it (and the view mode is remembered per file). It shows status, headers, timing, and a pretty-printed, content-type-highlighted body, with **Copy as cURL** / **Import cURL**, open-in-editor, and Save-response. Run one request or the whole file. On by default. Toggle it under Settings → Web → HTTP Client.
+The response is the `.http` file's own **preview**, in the same Editor / Split / Preview view every other rich file type uses, so it sits beside the request that produced it (and the view mode is remembered per file). It shows status, headers, timing, and a pretty-printed, content-type-highlighted body, with **Copy as cURL** / **Import cURL**, open-in-editor, and Save-response. Run one request or the whole file. On by default. Toggle it under Settings → Languages & Tools → Web.
 """),
     new Feature("build-tools", RD, 5, false,
         "Build tools",
@@ -424,18 +434,22 @@ Discovery parses the marker file directly (no shell-out, no new dependency), so 
 """),
     new Feature("git", GD, 1, false,
         "Git integration",
-        "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, fetch / pull / push + branches, plus a history/log view, inline blame, and stash.",
+        "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, merges and rebases with a conflict resolver, branches, remotes, tags, stashes and patches, a paged log with a commit graph, and blame.",
         """
 Native Git that shells out to your installed `git`, no bundled library.
 
 - The **status bar** shows the current branch with ahead/behind counts and a dropdown to switch/create branches, pull, fetch, and push.
-- **Gutter change bars** mark added/modified/deleted lines vs HEAD (hover for the hunk diff).
-- The **Commit** tool window groups staged / changed / untracked files with stage, unstage, discard, and a commit box.
+- **Gutter change bars** mark added/modified/deleted lines vs HEAD. Click one for a card with the old and new lines, where you can revert or stage that hunk.
+- The **Commit** tool window groups staged / changed / untracked files with stage, unstage, discard, and a commit box, plus Amend, Commit and Push, Sign off and Undo Last Commit.
+- **Merges, rebases, cherry-picks and reverts in progress** show in the status bar and as a banner in the Commit window with Continue, Skip and Abort. Conflicted files get their own group and open in the three-way resolver; finishing a resolution stages the file.
+- **Pull modes** (fast-forward only, rebase, merge), Force Push with lease, Push to another remote, and **branch management** from the dropdown: rename, merge, rebase onto, set upstream, compare and delete.
 - The **Project tree colors files by Git status** (added, modified, deleted, renamed, untracked), with changed folders tinted.
-- Plus a **history / log** view, **inline blame**, and **stash**.
-- **A transcript of what it ran.** The **Output** console has a **Git** tab holding every `git` command Editora ran on your behalf, with its output, exit code and duration. It logs the ones you asked for (commit, push, pull, checkout, stash, clone…) and leaves out the `status`/`diff` reads it re-runs on every tab switch, which would bury them. It never takes focus, so the transcript is there when you open the window.
+- The **Git Log** pages through the whole history, with a commit graph, an all-branches view, and a search by message, `author:`, `content:`, date and `path:`. Enter on a commit opens everything it changed as one review.
+- A **blame** gutter column that can ignore whitespace, follow moved lines, and walk a line back through earlier revisions.
+- Plus remotes, worktrees, tags, a stash list, and Apply / Create Patch.
+- **A transcript of what it ran.** The **Output** console has a **Git** tab holding every `git` command Editora ran on your behalf, with its output, exit code and duration. It logs the ones you asked for (commit, push, pull, checkout, stash, clone…) and leaves out the `status`/`diff` reads it re-runs on every tab switch, which would bury them. Clone, fetch, pull and push open the tab when they start and show Git's progress, with a Stop button.
 
-On by default, and inert until `git` is found. Toggle it under Settings → Git.
+On by default, and inert until `git` is found. Toggle it under Settings → Version Control → Git.
 """),
     new Feature("github", GD, 2, false,
         "GitHub integration",
@@ -445,11 +459,13 @@ GitHub, through the [`gh` CLI](https://cli.github.com) you already have signed i
 
 - **Review a pull request in the editor.** A *Files changed* tab lists every file with its status and per-file `+` / `−` counts; click one for a read-only diff. The description renders as Markdown above the list, and `n` / `p` step through changes.
 - **Submit a review**, approve, request changes, or comment, without leaving the editor.
-- **Check out a PR**, **create a PR**, and **open the current file on GitHub** at the caret line.
-- A **pull request / issue / Actions-runs tool window**, with one filter box across all three that matches anything a row shows (number, title, author, branch, state, labels), with a leading `#` optional, so `42` and `#42` both find PR 42. It opens with focus in the filter and the first row selected; `C-n` / `C-p` move without leaving the box, Down enters the list, Enter opens. Plus a **status-bar CI checks** indicator for the current branch.
+- **Check out a PR** and **open the current file on GitHub** at the caret line.
+- **Create a pull request** from the branch's commits and the repository's template, with a base-branch chooser and an offer to push an unpushed branch.
+- A **pull request / issue / Actions-runs tool window**, with one filter box across all three that matches anything a row shows (number, title, author, branch, state, labels), with a leading `#` optional, so `42` and `#42` both find PR 42. It opens with focus in the filter and the first row selected; `C-n` / `C-p` move without leaving the box, Down enters the list, Enter opens. Pull requests and issues filter by state (open, closed, merged, all) and "Mine", and load more on demand.
+- A **status-bar CI checks** indicator for the current branch's pull request. It updates while checks are pending and opens a list of the checks with links and failure logs.
 - **A failed CI run's log opens in the Output console with clickable stack frames.** Runner paths are mapped back onto your local checkout, so a red build takes you straight to the line. A **GitHub** tab beside it keeps a transcript of the `gh` commands Editora ran, with their exit codes and durations.
 
-On by default, and invisible until `gh` is signed in and the repo has an open PR, issue, or workflow run. See the [GitHub guide](/docs/github).
+On by default, and invisible until Git support is on, `gh` is signed in and the repo has an open PR, issue, or workflow run. See the [GitHub guide](/docs/github).
 """),
     new Feature("diff-merge", GD, 3, false,
         "Diff & merge",
@@ -457,9 +473,9 @@ On by default, and invisible until `gh` is signed in and the repo has an open PR
         """
 Compare files in a dedicated tab (**side-by-side** or **unified**) with per-line backgrounds, intra-line **word emphasis**, change ribbons, and a full-document overview.
 
-Diff a file against **HEAD** (`C-x v =`), a **commit**, the clipboard, empty text, or **another file**. Review a multi-file patch, every staged or working-tree change, or compare two folders recursively. Ignore whitespace or case, use smart alignment, collapse context, wrap long lines, swap sides, and export a patch.
+Diff a file against **HEAD** (`C-x v =`), a **commit**, a **branch** or **tag**, the clipboard, empty text, or **another file**. Review a multi-file patch, every staged or working-tree change, or compare two folders recursively. Ignore whitespace or case, use smart alignment, collapse context, wrap long lines, swap sides, and export a patch.
 
-Apply changes with guarded, undoable gutter actions or open an editable Result draft. Git reviews add Stage, Unstage, Revert, Copy Hunk, and Open Changed Line. The **merge resolver** reads Git's base, ours, and theirs stages, combines compatible edits automatically, and offers explicit choices for divergent regions.
+Apply changes with guarded, undoable gutter actions or open an editable Result draft. Git reviews add Stage, Unstage, Revert, Copy Hunk, and Open Changed Line. The **merge resolver** reads Git's base, ours, and theirs stages, combines compatible edits automatically, and offers explicit choices for divergent regions. Changes on neighbouring lines form one conflict, as in Git, and a complete resolution saves and stages the file.
 """),
     new Feature("markdown-preview", DD, 1, false,
         "Markdown preview",
@@ -525,15 +541,17 @@ All on by default, each toggled under Settings → Editor → File previews. See
 """),
     new Feature("export-pdf-print", DD, 3, false,
         "Export & print",
-        "Export code or the Markdown preview to a syntax-highlighted PDF, HTML, MS Word, or ODF, or print with a preview. Light-themed and generated off-thread.",
+        "Export code, a selection, or the Markdown preview to a syntax-highlighted PDF, HTML, MS Word, or ODF, or print with a preview. Light-themed and generated off-thread.",
         """
 Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly formatted PDF, with headings, lists, tables, code blocks, and images rendered as native vector text.
 
 The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
 
-Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. Page size and options live in Settings → Editor → Export & Print.
+Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** and **Export to PDF…** are in the File menu, the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
 
-Pagination splits on whole blocks so nothing breaks across a page edge. A block taller than a page is **regrouped into copies of itself** rather than shrunk to fit, so a long list becomes several lists with the text still vector and crisp. Uniform scaling is kept only for an atomic block, like an oversized image.
+Exported PDFs have clickable links, bookmarks from the headings, and a page footer. The Print Preview shows the sheet at paper size, with zoom, Page Setup and keyboard paging. PDF page size, orientation, margins, the code font size and the footer are set in Settings → Editor → Export & Print; printing uses the paper chosen in Page Setup.
+
+Long lists, quotes, code blocks, tables and paragraphs continue from the current page, a heading stays with what follows it, and a table split across pages repeats its header row.
 """),
     new Feature("html-live-preview", DD, 4, false,
         "HTML live preview",
@@ -557,15 +575,15 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 The Project tool window switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
-Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** session options preserve the scale and center each newly opened column; either behavior can be disabled independently. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and hidden-file toggle. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
+Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** options preserve the scale and center each newly opened column; either can be turned off, and the choice is remembered per workspace. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and "Show hidden" checkbox. A large folder loads 300 rows at a time, with a "+N more…" row for the next chunk. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
 
-Select a file to open a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. Double-click or choose Open to promote a file to a normal editor tab. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
+Click a file to open it in an editor tab, or use the row's eye icon for a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 
-The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away. The map is another view of the same project and does not replace the tree.
+The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away, or one command: **Project: Toggle Tree / Map View**. Print… and PDF… output the whole map, split across pages when it is large. The map is another view of the same project and does not replace the tree.
 
 ## Start from a template
 
-**New Project From Template** scaffolds a whole project and opens it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file [template](/features/file-templates), fill in its variables, choose where it goes, and the new folder is registered as a project and opened. A **Python Project** template ships with it (package layout, a test, `pyproject.toml`, README and `.gitignore`), and your own multi-file templates appear in the same picker.
+**New Project From Template** scaffolds a whole project and opens it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file [template](/features/file-templates), give the project a name and a location, and the new folder is created, registered as a project and opened on the template's main file. A **Python Project** template ships with it (package layout, a test, `pyproject.toml`, README and `.gitignore`), and your own multi-file templates appear in the same picker.
 
 ## Settings you can commit
 
@@ -577,7 +595,7 @@ Only toolchain settings can be overridden. Appearance, keymap and fonts stay per
         "Starting a project",
         "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written.",
         """
-Editora can create a project as well as open one. Earlier versions could only *open* an existing folder.
+Editora can create a project as well as open one: from a Maven archetype, or from a multi-file [template](/features/file-templates) with **New Project From Template**.
 
 ## New Maven Project
 
@@ -601,7 +619,7 @@ Starts version control without dropping to a terminal. It prompts for a folder, 
 
 About fifty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
 
-A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. The name you type always wins over the type's extension, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.
+A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. A name that already ends in a known extension keeps it, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.
 """),
     new Feature("editor-groups", WF, 3, false,
         "Editor groups",
@@ -651,13 +669,13 @@ In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count
 """),
     new Feature("file-templates", WF, 6, false,
         "File templates",
-        "New File From Template: single- or multi-file scaffolds with interactive placeholders (author, date, file name, …).",
+        "New File From Template: single- or multi-file scaffolds that ask for their variables (author, date, file name, …).",
         """
 **New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.
 
-Templates use the same `${var}` / `$0` syntax as snippets; bundled ones cover a Java class, an HTML page/bundle, a Markdown doc, and a Python script. Add your own under `~/.editora/templates/`.
+Template bodies use `${variable}`, `${variable:default}` and `${cursor}` for where the caret lands; anything else, such as `$1` or `$HOME`, is written as it is. Before a template writes anything it lists the files that already exist. Bundled ones cover a Java class, an HTML page/bundle, a Markdown doc, and a Python script. Add your own under `~/.editora/templates/`, or use **Edit User Templates** to copy a bundled one and change it.
 
-A multi-file template can also scaffold a **whole project**: **New Project From Template** writes it to a folder of your choosing, registers that folder as a [project](/features/projects) and opens it in its own window. A **Python Project** template ships with it, containing a package layout, a test, `pyproject.toml`, README and `.gitignore`.
+A multi-file template can also scaffold a **whole project**: **New Project From Template** asks for a project name and a location, creates that folder, registers it as a [project](/features/projects) and opens it on the template's main file. A **Python Project** template ships with it, containing a package layout, a test, `pyproject.toml`, README and `.gitignore`.
 """),
     new Feature("read-only-view-mode", WF, 7, false,
         "Read-only / View mode",
@@ -676,6 +694,21 @@ Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* moun
 Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled.
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site; local-only features (running, LSP, Git) are gated off for remote files.
+"""),
+    new Feature("crash-recovery", WF, 13, false,
+        "Crash recovery",
+        "Unsaved edits, including untitled buffers, are kept while you work and offered back on the next launch if Editora did not close normally. Restoring never writes to your files.",
+        """
+Editora keeps a recovery copy of every buffer with unsaved edits, untitled ones included, in every window. The copies live in the config folder and are written as you work.
+
+If Editora did not close normally (a crash, a kill, a logout, a power loss), the next launch offers the edits back.
+
+- Restoring opens the text as **unsaved tabs**. It never writes to your files, so you decide what to save.
+- A file that changed on disk in the meantime is flagged.
+- A copy is removed when you save, revert or close the buffer.
+- If a refactoring that moves or deletes files is interrupted, the next time the project is opened Editora offers to put the files back.
+
+Buffers over 16 million characters are not covered. On by default: **Keep a recovery copy of unsaved edits** in Settings → Workspace, or `View: Toggle Crash Recovery`. `File: Recover Unsaved Edits…` shows what is kept. See the [crash recovery guide](/docs/undo-history#crash-recovery).
 """),
     new Feature("local-file-history", WF, 9, false,
         "Local file history",
@@ -708,25 +741,25 @@ On by default. Highlighting runs off the UI thread and is debounced; the project
 """),
     new Feature("log-viewer", WF, 11, false,
         "Server log viewer",
-        "Open a <code>.log</code> file for severity highlighting, a <code>tail -f</code> Follow toggle, open-at-the-tail for huge logs, and live level + regex filtering.",
+        "Open a log file for severity highlighting, a <code>tail -f</code> Follow button that survives rotation, open-at-the-tail for huge logs, and live level + regex filtering.",
         """
-`.log` files open in a dedicated log mode built for reading server output.
+`.log` files open in a dedicated log mode built for reading server output. So do rotated logs (`app.log.1`), `access_log`, `syslog`, `catalina.out`, `nohup.out`, and files such as `server.out` whose content looks like a log.
 
-- **Severity highlighting**: ERROR / WARN / INFO / DEBUG / TRACE, both inline and as a left-edge bar that works even on huge logs. It recognizes Logback/Log4j, `java.util.logging`, syslog, nginx, structured/JSON, zerolog, and access logs.
-- **Follow** (`tail -f`): a floating toggle streams new lines as the file grows and auto-scrolls. Very large logs **open at the tail** (read-only at the end).
-- **Live filtering**: filter as you type by a level floor and a regex (or a literal substring when it isn't valid regex). A stack trace inherits its record's level so it stays visible.
+- **Severity highlighting**: FATAL / ERROR / WARN / INFO / DEBUG / TRACE, both inline and as a left-edge bar that works even on huge logs. It recognizes Logback/Log4j, `java.util.logging`, syslog, nginx, structured/JSON, zerolog, .NET, klog, pino/bunyan, and access logs.
+- **Follow** (`tail -f`): a Follow button in the bar above the log streams new lines as the file grows and auto-scrolls. It keeps going when the log is rotated. Very large logs **open at the tail** (read-only at the end).
+- **Live filtering**: filter as you type by a level floor and a regex (or a literal substring when it isn't valid regex). A filter keeps or hides whole records, so a matched line brings its stack trace, lines keep their real numbers, and the bar shows how many are showing ("65 of 185 lines").
 
-Logs open in **View mode** (read-only with an *Enable Editing* banner) by default, and follow keeps streaming while read-only. On by default (Settings → Editor → Logs). Commands: `log.toggleFollow`, `log.setLevelFilter`, `log.setRegexFilter`, `log.clearFilter`, `log.viewAsLog`, and `view.toggleLogViewer`. See the [log viewer guide](/docs/log-viewer).
+Logs open in **View mode** (read-only with an *Enable Editing* banner) by default, and follow keeps streaming while read-only. On by default (Settings → Editor → Logs). Commands: `log.toggleFollow`, `log.setLevelFilter`, `log.setRegexFilter`, `log.clearFilter`, `log.focusFilter`, `log.viewAsLog`, and `view.toggleLogViewer`. See the [log viewer guide](/docs/log-viewer).
 """),
     new Feature("csv", WF, 12, false,
         "CSV & TSV support",
-        "Rainbow per-column coloring, a field readout, and an editable CSV Grid with sort/filter and export to Excel/ODF, plus align/shrink and Markdown-table interop.",
+        "Rainbow per-column coloring, a field readout, and an editable CSV grid with sort/filter, print, and export to PDF/Excel/ODF, plus align/shrink and Markdown-table interop.",
         """
 `.csv` and `.tsv` files get spreadsheet-style tooling.
 
 - **Rainbow columns**: each column is colored distinctly in the editor (cycling every eight), so rows line up at a glance. On by default.
 - **Field readout**: the status bar shows *Field N of M* for the caret's column.
-- **CSV Grid** tool window: the file as a spreadsheet, with content-fit columns, a filter box, column sort, inconsistent-row highlighting, **editable cells and headers**, and a right-click export to **PDF / Print / Excel (`.xlsx`) / ODF (`.ods`)**.
+- **CSV grid**: the file as a spreadsheet in its preview, with content-fit columns, a filter box, column sort, inconsistent-row highlighting, **editable cells and headers**, and a right-click export to **PDF / Print / Excel (`.xlsx`) / ODF (`.ods`)**. These output what the grid shows: its visible rows, in the displayed order.
 - **Align / shrink**: *CSV: Align Columns* pads fields so delimiters line up in the editor; *CSV: Shrink Columns* reverses it. Both preserve quoted fields.
 - **Markdown interop**: *CSV: Copy as Markdown Table*, and from a Markdown table, export to CSV/Excel/ODF or convert to and from CSV.
 
@@ -871,6 +904,20 @@ Define your own command-line tools in **Settings → External Tools** and run th
 - Each tool chooses what to do with the output: show it in a read-only **console**, **replace the selection**, **replace the whole buffer** (undoable), or **insert at the caret**. That covers both "run and see the output" and text transforms with filters like `jq`, `sort`, or `sed`.
 
 Every tool you define becomes its own palette command (and is bindable to a key), plus there's **External Tools: Run…** (a picker) and **Rerun Last**. Tools run off the UI thread with a timeout. Available by default (the list starts empty) and off in Simple UI mode. See the [external tools guide](/docs/external-tools).
+"""),
+    new Feature("settings-sync", CE, 11, true,
+        "Settings sync",
+        "Keeps your snippets, abbreviations, templates and personal dictionary the same on every computer, through a private Git repository you own. Off by default.",
+        """
+Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, with your own Git credentials; Editora stores none and there is no Editora account or server.
+
+- Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
+- It syncs after startup, shortly after you change something, and every 15 minutes. `Settings Sync: Sync Now` does it on demand.
+- Changes **merge entry by entry**, so two computers that each added a snippet keep both. If the same entry changed on two computers, the one that syncs keeps its version and the other stays in the repository history.
+- Files a sync replaces are first copied to a backups folder in the config directory.
+- Automatic syncs never prompt. A failing sync shows as "Sync ⚠" in the status bar.
+
+Preferences (`settings.json`), keymaps, macros and themes are **not** synced. See the [Settings sync guide](/docs/settings-sync).
 """),
     new Feature("doctor", CE, 10, false,
         "Doctor",

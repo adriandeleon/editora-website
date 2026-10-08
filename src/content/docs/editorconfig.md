@@ -30,6 +30,28 @@ so a nested config overrides a parent.
 The on-save fixups (trim, final newline) and the encoding round-trip apply when
 the file is written, so what's on disk matches the config.
 
+When a `charset` rule makes a save write the file in a different encoding, or
+adds or removes its byte-order mark, the save message in the status bar says
+so: it names the old encoding, the new one, and the `charset` rule that caused
+the change. It also says when `insert_final_newline = false` left trailing line
+breaks out.
+
+## Files with mixed line endings
+
+A file that uses more than one kind of line ending (a CRLF file with a few bare
+LF lines, say) is shown in the status bar as **Mixed**, with its dominant
+ending in parentheses: "Mixed (LF)". This applies with or without an
+`.editorconfig`.
+
+- **Saving it without editing it writes the file back byte for byte.** Nothing
+  is normalised.
+- **Saving an edit** writes the dominant ending on every line. The status bar
+  says so, and the bytes the file had before are first copied to
+  `line-ending-originals/` in the [config folder](/docs/configuration), which
+  keeps the last 30.
+- If the file also contains **binary data**, rewriting its line breaks would
+  change that data, so the save asks first (**Rewrite and Save**).
+
 ## Without an .editorconfig
 
 The indent unit is normally inferred per file. You can force it with a global

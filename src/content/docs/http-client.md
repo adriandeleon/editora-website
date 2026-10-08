@@ -42,12 +42,58 @@ you to it); the choice is remembered per workspace.
 The client is close to IntelliJ's HTTP Client:
 
 - **Request chaining** references an earlier request's response, so a login can
-  feed a token into the next call.
+  feed a token into the next call. See [Naming a request](#naming-a-request).
 - **Multipart** and external-file bodies are supported, with automatic URL
   encoding. Body files and `>>` response targets stay inside the request's
   folder; a symlink that leads out of it is refused.
 - **Basic / Digest auth** shorthand, per-request directives, and
-  response-to-file redirects.
+  response-to-file redirects. See [Saving a response to a
+  file](#saving-a-response-to-a-file).
+
+### Naming a request
+
+A later request refers to an earlier one by name, as
+`{{name.response.body.$.path}}`, `{{name.response.headers.Header-Name}}` or
+`{{name.response.status}}`. A request gets its name in one of two ways:
+
+- A `# @name login` comment (or `// @name login`) anywhere in the request's
+  section before the request line, whether or not the `###` separator above it
+  has a title.
+- Its `### Title`, when the request has no `@name`. A `@name` takes precedence
+  over the title.
+
+```http
+### Sign in
+# @name login
+POST https://api.example.com/login
+Content-Type: application/json
+
+{ "user": "ada", "password": "{{password}}" }
+
+### Fetch the profile
+GET https://api.example.com/me
+Authorization: Bearer {{login.response.body.$.token}}
+```
+
+Responses are captured for the length of one run. Running the whole file
+(`http.runFile`) sends the requests in order, so each one can refer to those
+before it. A request run on its own starts with nothing captured, and a
+reference to a request that hasn't run resolves to an empty string.
+
+### Saving a response to a file
+
+A `>>` line after a request writes the response body to a file in the request's
+folder. The two forms differ in what they do when the file already exists:
+
+- `>> file` creates the file and never touches an existing one.
+- `>>! file` replaces an existing file, but only with a complete, successful
+  response. An error status, or a body that was cut short, leaves the file as it
+  is. Before replacing, Editora records the previous content in
+  [Local History](/docs/undo-history), and it leaves the file alone when the file
+  is open in the editor with unsaved changes.
+
+The response view reports what happened to every target: which files were
+written or replaced, and which were not and why.
 
 ## Running and the response
 

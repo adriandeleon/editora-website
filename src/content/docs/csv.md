@@ -35,6 +35,32 @@ control at the top right of the editor, or with `view.togglePreview` and
 It's on by default for CSV/TSV files (**Settings → Editor → CSV**, or *View:
 Toggle CSV Grid Preview*).
 
+## Print and export
+
+| Action | Command | Default key |
+| --- | --- | --- |
+| Print the table | `csv.print` | (palette) |
+| Export the table to PDF | `csv.exportPdf` | (palette) |
+| Export to Excel (`.xlsx`) | `csv.exportExcel` | (palette) |
+| Export to an ODF spreadsheet (`.ods`) | `csv.exportOds` | (palette) |
+
+The same four actions are on the grid's right-click menu, and *File: Print
+Rendered Preview…* / *File: Export Rendered Preview to PDF…* print or export the
+table on a CSV file.
+
+While the grid is showing, all four **output what the grid shows**: only the
+rows the filter leaves visible, in the displayed sort order, with the grid's
+*First row is a header* setting. When a filter is active the status bar gives
+the row count, so a partial export is not mistaken for the whole file. From
+source mode, with the grid hidden, they output the **whole file** with row 1 as
+the header.
+
+A printed or exported table that is taller than a page splits between rows and
+repeats its header on each page; a cell taller than a page continues on the
+next one, and a very wide table is condensed to fit. Pages are always light.
+Page size, orientation, margins and the footer are set in **Settings → Editor →
+Export & Print**; see [Print & PDF export](/docs/print-pdf).
+
 ## Markdown-table interop
 
 - *CSV: Copy as Markdown Table* (`csv.copyAsMarkdownTable`) copies the whole file
