@@ -273,7 +273,9 @@ adapter, together with its language server, into your config folder:
 | **Install: Python Language Support** (`install.pythonSupport`) | Pyright and `debugpy` | Node.js with `npm`, and Python with `pip` |
 | **Install: JavaScript / Node Language Support** (`install.jsSupport`) | `typescript-language-server` and vscode-js-debug | Node.js with `npm`, and `tar` |
 
-Editora does not install those runtimes for you.
+Editora does not install those runtimes for you. A downloaded server or adapter
+is unpacked beside the installed version and replaces it only once it is
+complete, so a failed install leaves the working one in place.
 
 To install an adapter by hand instead, the Editora repository has a helper
 script for each:

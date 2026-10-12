@@ -60,7 +60,7 @@ change the same setting or entry, the one saved last wins.
 | `abbreviations.json` | Your abbreviations |
 | `trusted-folders.json` | Folders you have trusted to run their build wrappers |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
-| `history/` | [Local file history](/docs/workspace#local-file-history) |
+| `history/` | [Local History](/docs/workspace#local-file-history) |
 
 Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
 Editora converts an existing `settings.toml` automatically. Once the JSON
@@ -124,7 +124,7 @@ isn't shown in the Settings window.
 
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.20.0
+Each structured config file carries a `schemaVersion`; in Editora 0.21.0
 `settings.json` is at version **117**. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
@@ -134,11 +134,12 @@ copy back, provided the file left in its place still holds only defaults.
 ## Export and reset
 
 - **Export Configuration…** (Settings → Advanced, or `config.export`) zips the
-  active config folder into a timestamped archive in your home directory. Local
-  history, `.bak` backups, and installed plugins are included. Runtime files are
-  not: downloaded language servers and debug adapters, `jdtls` workspaces, the
-  `sync/` folder, the lock files, the MCP endpoint file with its live token, and
-  the session log.
+  active config folder into a timestamped archive in your home directory.
+  `.bak` backups and installed plugins are included. Local History is left out,
+  because it holds the text of your files rather than configuration. Runtime
+  files are left out too: downloaded language servers and debug adapters,
+  `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
+  with its live token, and the session log.
 - **Reset to Defaults** (Settings → Advanced) resets every preference, including
   the keymap choice, which goes back to Emacs. Text zoom is kept, and your key
   rebinds stay stored with the keymap you made them in, so they apply again when

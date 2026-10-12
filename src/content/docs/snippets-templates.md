@@ -34,9 +34,17 @@ set also applies to JSX and TSX files.
 
 A trigger can be a word (`fori`), a token with punctuation (`#include`), or up to
 three words (`else if`). Tab does not expand a trigger inside a comment or a
-string, or in a CSV/TSV file; there it indents as usual. The bundled `date` and
-`time` snippets are offered in the completion popup and the **Snippet: Insert…**
-list only, so Tab after those words is an ordinary Tab.
+string, or in a CSV/TSV file; there it indents as usual.
+
+A trigger typed out in full goes ahead of other completions. In Markdown and
+plain text, no dictionary or AI inline suggestion is shown over it, so Tab
+expands the snippet. With a language server, the trigger's snippet is the first
+and highlighted row of the completion list, so Tab or Enter takes it.
+
+The bundled `date` and `time` snippets are ordinary words, so Tab alone leaves
+them be. They are offered in the completion popup and the **Snippet: Insert…**
+list, and in Markdown and plain text as an inline suggestion at the end of a
+line (`date → Current date (YYYY-MM-DD)`), which Tab accepts.
 
 **Settings → Snippets → Expand snippets with Tab** (on by default, also **View:
 Toggle Snippet Expansion on Tab**, `view.toggleSnippetTabExpansion`) turns Tab

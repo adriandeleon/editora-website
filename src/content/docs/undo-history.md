@@ -7,7 +7,7 @@ order: 6
 
 Editora keeps an in-session **timeline of checkpoints** as you edit, one per
 typing burst. It's finer-grained than save-based
-[local file history](/docs/workspace#local-file-history), and session-only
+[Local History](/docs/workspace#local-file-history), and session-only
 (it's not persisted, and it's off in large-file mode and for documents over a
 million characters).
 
@@ -19,7 +19,10 @@ is shared by **all open files together** (64 million characters), and the oldest
 checkpoints go first. Closing a tab releases its checkpoints straight away.
 
 Ordinary undo is bounded the same way: a document keeps up to 300 undo steps,
-and no more than 64 million characters of undo text.
+and the undo steps of all open documents together hold no more than 64 million
+characters of text. Over that, the document edited least recently gives up its
+oldest steps first, and every document keeps at least its latest step. Closing
+a tab releases its undo steps at once.
 
 ## The popup (recommended)
 
@@ -46,7 +49,7 @@ the MCP server or a plugin, a language-server edit, and applying a change from
 a diff.
 
 Before such an edit Editora saves the file's current text, unsaved changes
-included, to [local file history](/docs/workspace#local-file-history) as a
+included, to [Local History](/docs/workspace#local-file-history) as a
 revision labelled "Before ‹operation› (no undo)", and the status bar says where
 the copy is. If the copy cannot be taken (Local History is off, the file is
 untitled or remote, or the write fails), the edit is **not applied** and the
@@ -114,6 +117,6 @@ not finish, a refactoring cut short) are listed in
 
 This complements **word/line-level undo**, where one undo removes a word or line
 rather than a whole contiguous burst. For longer-term recovery across sessions,
-see [local file history](/docs/workspace#local-file-history), which records
+see [Local History](/docs/workspace#local-file-history), which records
 saves; [crash recovery](#crash-recovery) is the only one of the three that
 covers text you have not saved.

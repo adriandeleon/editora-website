@@ -1,6 +1,6 @@
 ---
 title: Projects, windows & files
-description: Projects and multi-window, the Project tree and Project Map, tabs and splits, Zen and Simple UI modes, local file history, and external-change detection.
+description: Projects and multi-window, the Project tree and Project Map, tabs and splits, Zen and Simple UI modes, Local History, and external-change detection.
 category: Workspace
 order: 1
 ---
@@ -22,7 +22,8 @@ since 0.10.0; Settings → Workspace turns them off.
 The **Project** tool window shows the folder tree with keyboard navigation, a
 filter that runs a bounded project-wide filename search, per-file-type icons, and
 right-click actions: new file, **new folder**, new from template, rename, reveal,
-open terminal, local history, and Git stage/revert. The **project root has its
+open terminal, Show Local History, and Git stage/revert. Typing in the filter
+highlights the first match, so Enter opens it and Down moves on from there. The **project root has its
 own menu** too (with rename omitted so you can't move the whole project).
 From the keyboard, **F2** renames and **Delete** deletes the selected file, and
 the **Menu key** or **Shift+F10** opens the selected row's context menu (also in
@@ -397,28 +398,64 @@ untouched.
 
 ## Local file history
 
-Editora snapshots your local files over time, independent of any version
-control, so you have a safety net even outside Git. A snapshot is taken on save,
-on auto-save, and before a file is reloaded after an external change. The first
-save of a session also keeps the text the file held before it, so the version
-you started from is in the history too.
+**Local History** snapshots your local files over time, independent of any
+version control, so you have a safety net even outside Git. A revision is
+recorded on save, on auto-save, and before a file is reloaded after an external
+change. The first save of a session also keeps the text the file held before
+it, listed as *Before first save*, so the version you started from is in the
+history too. A save that changes nothing adds no revision, and auto-saves less
+than five minutes apart collapse into one, so a run of them does not push
+earlier revisions out.
 
-The **File History** tool window (`M-g l`) lists each revision with its date,
-the reason it was taken, and its size (the latest tagged *Current*).
-Double-click a revision for a diff against the current file, then restore the
-whole revision or use the **apply-chevrons to copy individual fragments** back in
-(undoable).
+The **Local History** tool window lists the active file's revisions, newest
+first, under day captions. Each row shows its label if it has one, the time,
+and the reason it was recorded; the size and full date are in the tooltip. The
+newest row is tagged *Current* when it equals the editor's text and *Latest*
+when the editor has moved on (unsaved edits, an undo, or a restore of an older
+row).
+
+| Action | Command | Emacs | CUA, Sublime Text, VS Code, IntelliJ IDEA |
+| --- | --- | --- | --- |
+| Show or hide Local History | `tool.fileHistory` | `M-g l` | Alt+Shift+H (⌃⌘H on macOS) |
+| Put Label | `history.putLabel` | (palette) | (palette) |
+| Recent Changes | `history.recentChanges` | (palette) | (palette) |
+
+The same three are under **VCS ▸ Local History**, and *Show Local History* is in
+a tab's right-click menu and in the Project tree. Git's per-file log is a
+separate command, [Show Git History](/docs/git#git-log).
+
+Select a revision for a side-by-side diff against the current file; the diff
+follows edits you make in the editor. **Restore** replaces the file's text with
+that revision, or use the **apply-chevrons to copy individual fragments** back
+in. Either way the change goes into the open tab as an undoable edit and
+nothing is written to disk until you save. Restore asks first only when the
+tab has unsaved edits.
+
+| Key | Result |
+| --- | --- |
+| `Enter` | Move into the selected revision's diff |
+| `F2` | Set or edit the revision's label |
+| `F5` | Reload the list |
+| Menu key or `Shift-F10` | Open the row's menu (*Restore This Version*, *Set Label…*) |
+| `Tab` | Leave the diff for the filter and the list |
+| `Escape` | Clear a typed filter, then return to the editor |
 
 It mirrors more of IntelliJ's Local History:
 
 - **Named snapshots** with *Put Label* (`history.putLabel`), shown bold in the
   list even when the content is unchanged.
-- A **filter** over the revision list, plus a project-wide **Recent Changes**
-  picker (`history.recentChanges`).
-- A **folder view**: right-click a folder in the Project tree to list every file
-  under it that has history, with **deleted files badged**; restore a revision to
-  recreate the file. Deleting a file in Editora snapshots it first, so an
-  accidental delete is recoverable (for files Editora had opened or edited).
+- A **filter** over the revision list that matches the words the rows show
+  (label, reason, time, and day), plus a project-wide **Recent Changes** picker
+  (`history.recentChanges`) that opens the revision you pick, including one of a
+  deleted file.
+- A **folder view**: right-click a folder in the Project tree and choose *Show
+  Local History* to list every file under it that has history, with **deleted
+  files struck through and badged**. Selecting a revision shows its diff, and
+  Enter or **Restore** puts it back, recreating a deleted file; a file that
+  still exists asks before it is overwritten. The view stays up while you
+  restore several files, and a file row's menu has *Delete History…* for that
+  one file. Deleting a file in Editora snapshots it first, so an accidental
+  delete is recoverable (for files Editora had opened or edited).
 - History **follows the file**. Renaming or moving a file from the Project tree
   keeps its revisions, and a file created with **Save As** starts with a copy of
   the original's history once its first save is recorded (the original keeps its
@@ -430,24 +467,41 @@ It mirrors more of IntelliJ's Local History:
 
 Restore validates the stored revision and verifies that the file has not
 changed while it was loading. If either check fails, the current file and editor
-contents are left untouched.
+contents are left untouched, and the status bar says which check failed. A copy
+of what a restore replaces is stored first.
+
+A file's Local History is the same in every window, whichever project's window
+recorded it, and an open panel follows saves, labels, and deletions made in
+another window.
 
 Snapshots are deduped by content and stored gzip-compressed in your config
-folder, pruned by configurable limits: snapshots per file, age in days, and
-total size (**Settings → Workspace → Local History**, or `history.setMaxPerFile`,
-`history.setMaxAgeDays` and `history.setMaxTotalMb`). Lowering a limit asks
-first when it would delete existing history, stating how many snapshots from how
-many files would go. It's on by default, local-only, and off in
-Simple UI mode.
+folder, pruned by configurable limits (**Settings → Workspace → Local History**,
+or the three commands):
+
+| Limit | Command | Default |
+| --- | --- | --- |
+| Max revisions per file | `history.setMaxPerFile` | 50 |
+| Max age in days; 0 means no age limit | `history.setMaxAgeDays` | 30 |
+| Max size per project, in MB of uncompressed text | `history.setMaxTotalMb` | 50 |
+
+The size limit applies to each project and counts content shared by several
+revisions once. When a project is over it, a file above its fair share loses
+its own older revisions first, so one large file does not push the other files'
+history out. A file's newest revision, labelled revisions, and copies taken
+before a delete are never removed for size, and are kept six times as long as
+the age limit (at least 180 days). Lowering a limit asks first when it would
+delete existing history, stating how many snapshots from how many files would
+go. It's on by default, local-only, and off in Simple UI mode.
 
 ## External-change detection
 
 When a file changes on disk under you, Editora notices on window focus and tab
 switch and prompts to reload or keep your version. When the buffer has unsaved
 edits, the prompt says so and **Keep Mine** is the default, so pressing Enter
-keeps your version. The Project tree also
+keeps your version; without unsaved edits **Reload** is the default. The Project tree also
 re-scans on focus so files added or removed outside the editor show up, keeping
-your expanded folders and selection.
+your expanded folders and selection, and a folder is listed afresh each time you
+open it.
 
 A file **deleted** outside Editora keeps its tab and its text: the tab is marked
 unsaved, the status bar says the file no longer exists on disk, and auto-save

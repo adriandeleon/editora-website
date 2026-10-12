@@ -31,15 +31,18 @@ inert.
 - The **Commit** tool window (`M-4`) groups staged, changed, and untracked files
   with stage, unstage, discard, and a commit box (Ctrl/Cmd+Enter to commit).
   See [The Commit window](#the-commit-window).
-- A **Git Log** tool window (`C-x v S-l`), the active file's history
-  (`git.fileHistory`, `C-x v l`), **blame annotations** in a gutter column
-  (toggle with `git.toggleBlame`), and **stashes** (`git.stashes`).
+- A **Git Log** tool window (`C-x v S-l`), the active file's Git history
+  (**Show Git History**, `git.fileHistory`, `C-x v l`), **blame annotations** in
+  a gutter column (toggle with `git.toggleBlame`), and **stashes**
+  (`git.stashes`).
 
-In a file's history, double-click a revision or press Enter to compare it with
-the editable working file. The full diff viewer opens, including line, hunk,
-whole-file, Result, Undo, and Save controls. The repository-wide Git Log keeps
-its parent-to-commit view; use **Compare with Working Tree** on a changed file
-when you want the editable comparison instead.
+In a file's Git history, double-click a commit or press Enter to open what that
+commit changed in the file. **Compare with Working Tree** in the row's menu
+opens the editable comparison instead: the full diff viewer, including line,
+hunk, whole-file, Result, Undo, and Save controls. See
+[Git history of one file](#git-history-of-one-file). Revisions Editora records
+itself on every save are a separate feature,
+[Local History](/docs/workspace#local-file-history).
 
 | Action | Command | Default key |
 | --- | --- | --- |
@@ -51,7 +54,7 @@ when you want the editable comparison instead.
 | Fetch | `git.fetch` | (palette) |
 | Next / previous change in the file | `git.nextChange` / `git.previousChange` | `C-x v ]` / `C-x v [` |
 | Git Log | `tool.gitLog` | `C-x v S-l` |
-| File history | `git.fileHistory` | `C-x v l` |
+| Show Git History (the active file's commits) | `git.fileHistory` | `C-x v l` |
 | Toggle blame annotations | `git.toggleBlame` | `C-x v g` |
 | Clone a repository | `git.clone` | (palette) |
 | Create a repository in a folder | `git.init` | (palette) |
@@ -191,10 +194,17 @@ fetched, pulled, or pushed in during the session.
 
 ## Branches
 
-The branch dropdown lists local and remote branches, with remote branches
-grouped by remote when there are several. Clicking a row checks the branch out.
-A row's `⋯` button, a right-click, or the Menu key opens its actions; the same
-actions are in the palette and under **VCS ▸ Branches**.
+The branch dropdown has a search field over three sections: **Actions** (New
+Branch, Pull, Fetch, Push, and the like), then **Local** branches with the
+current one first, then **Remote** branches, grouped by remote when there are
+several. It opens with the current branch selected. Clicking a row checks the
+branch out. A row's `⋯` button, a right-click, or the Menu key opens its
+actions; the same actions are in the palette and under **VCS ▸ Branches**.
+
+Each section folds to its header: click the header, or select it and press
+Enter, ← or →. A folded header shows how many rows it hides, and the choice is
+remembered with the workspace. Typing in the search field looks through every
+section, folded or not.
 
 | Action | Command |
 | --- | --- |
@@ -285,6 +295,28 @@ loads more as you scroll, a page at a time, so it reaches the whole history
   Patch…. The matching `Git Log: …` palette commands act on the commit selected
   in the visible log; when the log is hidden they open it and ask for a commit.
 - **File history** follows the file across renames.
+
+### Git history of one file
+
+**Show Git History** (`git.fileHistory`; `C-x v l`, or Ctrl+Alt+Shift+H in the
+other keymaps) lists the commits that changed the active file, in the Git Log
+tool window under a **Git history: name** chip. It is also in a tab's menu, the
+Project tree, and **VCS ▸ History & Blame**.
+
+- **Enter** or a double-click on a commit opens what it changed in that file.
+  The row's menu starts with **Show Diff** and **Compare with Working Tree**,
+  and still has **Review Commit** for the whole commit.
+- The chip's **✕**, or Escape in the commit list, returns to the branch log.
+- **Load More** continues through the file's whole history, a page of 200
+  commits at a time.
+- A search finds commits from before a rename too. A `path:` term is ignored in
+  a file history, and the status bar says so.
+- A file that is untracked or not yet committed says it has no commits, and a
+  shallow clone says under its last row that older history is not available
+  locally.
+- In the list of files under the commit, Enter compares that revision with the
+  working file. When the file no longer exists in the working tree, it shows
+  the commit's change instead.
 
 Typing in the filter box narrows the commits already loaded. Pressing **Enter**
 there (or `git.log.search`) searches the whole history:

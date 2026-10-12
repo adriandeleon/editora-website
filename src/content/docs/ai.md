@@ -82,6 +82,10 @@ bundled**.
   taken.
 - Replies appear as they stream. Remote images in a reply are not loaded; the
   alt text and URL are shown instead.
+- The transcript is bounded: one entry holds up to 200,000 characters (a longer
+  tool result keeps its start and says how much was cut), and the whole
+  transcript up to 1,000,000 characters or 2,000 entries, the oldest going
+  first.
 
 Commands: `tool.agent` (the tool window), `agent.newSession`,
 `agent.resumeSession`, `agent.selectClient`, `agent.selectMode`,
