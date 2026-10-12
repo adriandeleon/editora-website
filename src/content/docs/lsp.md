@@ -38,7 +38,10 @@ as "Go to Definition" as coming from the language server.
 
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and
-preview; a single result jumps straight there. **Go to Symbol in Workspace**
+preview; a single result jumps straight there. When the file has an open tab,
+the preview is the reference's line with the editor's syntax highlighting, in
+the active editor color theme; a reference in a file with no open tab shows its
+position only. **Go to Symbol in Workspace**
 opens a live search over every symbol in the project. Where no server is
 running, Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project) answers the
@@ -88,8 +91,12 @@ between that and hints on all arguments. Type hints are never filtered. They
 cost nothing while off.
 
 **Code lenses** are the server's reference and implementation counts, drawn
-after a declaration (`3 references`, `2 implementations`). Click a count to open
-what it counts, the references or the implementations. They are **off by default**,
+after a declaration (`3 references`, `2 implementations`). A lens lights up
+under the pointer, and a click opens what it counts. A references lens always
+opens the **References** tool window with its first row selected, also for a
+single reference and for `0 references`, which shows the empty list. An
+implementations lens runs Go to Implementation. When a declaration has more
+than one lens, a short list asks which one. They are **off by default**,
 because each count is a search on the server; turn them on in Settings → Code
 Completion ("Code lenses") or with `view.toggleCodeLens` (**View: Toggle Code
 Lenses**).
@@ -337,6 +344,11 @@ off with `view.toggleInstallPrompts`), and the **Install: Language Server…**
 picker (`install.languageServer`). After installing, the server is auto-detected
 and activates without a restart. Editora never installs the underlying runtimes
 (Node, Python, Go, …); if one is missing it tells you which to install first.
+
+Installing over an existing version is safe to retry. A downloaded server is
+unpacked beside the installed one and replaces it only once it is complete and
+is the expected tool, so a failed or interrupted install leaves the working
+version in place.
 
 For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
 whether it is hoisted in the workspace or installed alongside the server by

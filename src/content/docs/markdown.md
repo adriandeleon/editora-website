@@ -17,6 +17,9 @@ top-right of the editor:
 - **Split**: source on the left, preview on the right.
 - **Preview**: the rendered page only.
 
+In Split the two sides scroll together. In Preview the page keeps its own
+scroll position.
+
 The preview is built from CommonMark + GFM and aims to match GitHub: real
 task-list checkboxes, inline-code pills, underlined headings, tables, and images
 (local and remote, including SVG badges). It updates live as you type, follows

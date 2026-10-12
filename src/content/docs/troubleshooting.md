@@ -87,6 +87,8 @@ session history of the transient status-bar messages.
   `save-backups/` in the config folder. If Editora stops in the middle, the next
   launch shows an **Unfinished Save** dialog that names the backup and offers
   **Restore Previous Contents**, **Keep Current File**, or **Decide Later**.
+  Keep Current File deletes the backup. When the file itself is gone, the
+  backup is the only copy left and that button reads **Delete Backup**.
 - **Save as Administrator.** The file is backed up beside itself
   (`<name>.editora-backup`) before it is overwritten, and put back if the write
   fails. If it cannot be put back either, the status bar names the backup, and

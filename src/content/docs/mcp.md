@@ -44,6 +44,27 @@ on disk, and an error when the save was refused, failed, or is still pending.
 `execute_command` reports only that a command ran, so an agent that needs to
 know a save reached the disk uses `save_buffer` rather than running `file.save`.
 
+### Which files an agent can reach
+
+The tools act on the window the MCP server belongs to, whichever window has
+the focus: `find_in_files` and `todo_scan` search that window's project,
+together with the unsaved text of its open buffers, and `todo_scan` gives each
+marker's file, line and column.
+
+`open_file` opens a file only when it is **inside that window's project
+folder**, or selects one that is already open there. A link inside the project
+that leads out of it counts as outside. In a window with no project, it opens
+nothing new. A refused request tells the agent that you have to open the file
+yourself.
+
+Files you open yourself, wherever they are, can be read and edited by the
+agent like any other open buffer, with one exception: `edit_buffer` and
+`save_buffer` refuse a buffer whose file is in Editora's
+[config folder](/docs/configuration) or in version-control metadata such as
+`.git/`. Settings, keymaps, plugins and Git hooks can make the editor or Git
+run commands, so they are not written on an agent's behalf. The
+[AI Agent](/docs/ai#ai-agent) has the same limit.
+
 ### Argument checks
 
 Every tool validates its arguments before doing anything:
@@ -66,7 +87,10 @@ Every tool validates its arguments before doing anything:
 ## Security
 
 The server binds to loopback only (never the network), requires the bearer
-token, stays off until you enable it, and shows a security notice first. Even so,
+token, stays off until you enable it, and shows a security notice first.
+`open_file` is confined to the window's project and the write tools refuse the
+config folder and version-control metadata (see
+[Which files an agent can reach](#which-files-an-agent-can-reach)). Even so,
 `execute_command` can run any command, so only connect agents you trust. Simple
 UI mode turns it off.
 

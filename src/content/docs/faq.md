@@ -80,8 +80,8 @@ normally (a crash, a kill, a logout, a power cut), the next launch lists those
 copies and offers to restore them as unsaved tabs. Restoring never writes to
 your files. See [crash recovery](/docs/undo-history#crash-recovery).
 
-Saved versions are a separate matter: every save is recorded in
-[local file history](/docs/workspace#local-file-history).
+Saved versions are a separate matter: every save that changes the file is
+recorded in [Local History](/docs/workspace#local-file-history).
 
 ## Can I use the same snippets and templates on several computers?
 

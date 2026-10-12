@@ -52,8 +52,8 @@ untouched and the next normal launch restores everything.
 `--no-session` skips the saved session's files entirely and opens only what you
 named on the command line. It's for launching from a file manager or a script,
 where restoring the last session only costs time: every restored file is a
-buffer to load and highlight and, once shown, a language server to run, for
-files you didn't ask to see. It is also session-only, so your saved tabs are
+buffer to load and, once shown, a file to highlight and a language server to
+run, for files you didn't ask to see. It is also session-only, so your saved tabs are
 left as they were and are not replaced by the files you opened.
 
 ## Opening files

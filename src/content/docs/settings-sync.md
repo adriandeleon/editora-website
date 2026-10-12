@@ -95,6 +95,19 @@ kept. **Open Sync Folder** on the Sync page opens the folder.
 Editora signs in to the repository with **your own Git credentials or SSH
 key**, the same ones `git` uses in a terminal, and stores none of its own.
 
+With more than one account in the [GitHub CLI](/docs/github) (a personal and a
+work account, switched with `gh auth switch`), sync does not depend on which
+one is active. It finds out which of your `gh` accounts can read the
+repository, remembers that account's name on this computer, and signs in as it
+from then on; the **Status** row on Settings → Sync names the account. This
+applies to an `https://` repository on a host `gh` is signed in to. An SSH URL
+or another credential helper signs in the way your `git` does. Either way Git
+asks `gh` for the token, and Editora never sees or stores it.
+
+A Git configuration that rewrites the repository URL (an insteadOf rule, for
+example one that turns GitHub HTTPS URLs into SSH ones) does not affect sync:
+the repository is recognised by the URL you entered.
+
 An automatic sync never asks for a password or a passphrase and never opens a
 dialog. If it fails, the reason appears once in the status bar and a
 **Sync ⚠** segment stays there until a sync succeeds; clicking it opens

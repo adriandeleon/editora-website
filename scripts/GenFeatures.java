@@ -204,7 +204,7 @@ Expand boilerplate with interactive templates. Type a prefix and press **Tab**, 
 
 Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields, mirrors update live, choice fields show a dropdown, and `$0` is the final caret. Bodies use the standard VS Code / TextMate syntax, `$1`, `${1:default}`, mirrors, `${1|a,b|}` choices, and variables (`$TM_FILENAME`, `$CLIPBOARD`, date/time, the selection…).
 
-While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings.
+While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running.
 
 Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
 """),
@@ -261,7 +261,7 @@ It's **on by default**; toggle it in Settings → Editor or with *View: Toggle E
         "Undo History",
         "An in-session timeline of document checkpoints (one per typing burst). Jump back to any recent state from a filterable popup (<kbd>M-g v</kbd>) or the tool window (<kbd>M-g u</kbd>).",
         """
-Editora keeps an in-session **timeline of checkpoints** as you edit, one per typing burst, finer-grained than save-based [local file history](/docs/workspace#local-file-history).
+Editora keeps an in-session **timeline of checkpoints** as you edit, one per typing burst, finer-grained than save-based [Local History](/docs/workspace#local-file-history).
 
 - The **popup** (`undoHistory.jump`, `M-g v`) lists the active buffer's checkpoints, each with a caret-line preview and capture time, and filters as you type. Pick one to jump back to that state (a single undoable restore). It's the fast, keyboard-driven path.
 - The **Undo History tool window** (`M-g u`) shows the same timeline; double-click or Enter to jump back.
@@ -290,13 +290,13 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 
 - **Go to definition**: `M-.`, or Ctrl/Cmd-click a symbol, and it works from inside an opened JDK or dependency source tab too
 - **Go to implementation / type definition / declaration**, offered only where the server supports them
-- **Find references**: `M-?`, listed in a browsable **References** tool window
+- **Find references**: `M-?`, listed in a browsable **References** tool window that shows each line with the editor's syntax highlighting
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
 - **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings
 - **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, getters and setters, delegate methods, and override/implement methods, each with a checkbox picker
 - **Java refactorings that ask where to, or what**: Move, Extract Interface, and Change Signature, where the signature is edited as one line
-- **Code lenses**: reference and implementation counts after a declaration; click one to open them (off by default)
+- **Code lenses**: reference and implementation counts after a declaration; click one to open what it counts, a references lens always in the **References** tool window (off by default)
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
 - **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
@@ -711,18 +711,18 @@ If Editora did not close normally (a crash, a kill, a logout, a power loss), the
 Buffers over 16 million characters are not covered. On by default: **Keep a recovery copy of unsaved edits** in Settings → Workspace, or `View: Toggle Crash Recovery`. `File: Recover Unsaved Edits…` shows what is kept. See the [crash recovery guide](/docs/undo-history#crash-recovery).
 """),
     new Feature("local-file-history", WF, 9, false,
-        "Local file history",
+        "Local History",
         "Snapshots of your files over time, taken on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required.",
         """
 Editora snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.
 
-Open a file's timeline from the **File History** tool window (`M-g l`). Each revision shows its date, the reason it was taken, and its size, with the latest tagged *Current*. Double-click one for a diff against the current file, then **restore the whole revision** or use the **apply-chevrons to copy individual fragments** back in (undoable).
+Open a file's timeline from the **Local History** tool window (`M-g l`, or Alt+Shift+H in the other keymaps). Each revision shows its label, time, and the reason it was recorded, with the newest tagged *Current* when it equals the editor's text and *Latest* otherwise. Select one for a diff against the current file, then **Restore** the whole revision or use the **apply-chevrons to copy individual fragments** back in (undoable).
 
 It's grown closer to IntelliJ:
 
 - **Named snapshots** with *Put Label* (`history.putLabel`), shown bold in the list.
 - A **filter** over the revisions plus a project-wide **Recent Changes** picker (`history.recentChanges`).
-- A **folder view**: right-click a folder in the Project tree to list every file under it with history, **deleted files badged**, and restore a revision to recreate a file. Deleting a file in Editora snapshots it first, so an accidental delete is recoverable.
+- A **folder view**: right-click a folder in the Project tree to list every file under it with history, **deleted files struck through and badged**, and restore a revision to recreate a file. Deleting a file in Editora snapshots it first, so an accidental delete is recoverable.
 
 Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
 """),
@@ -864,7 +864,7 @@ The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, t
 
 Some features work as soon as you open a folder, and some wait for you to switch them on:
 
-- **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [local file history](/features/local-file-history).
+- **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [Local History](/features/local-file-history).
 - **Switched on in Settings (both Beta):** [language servers](/features/lsp) and [debugging](/features/debugging).
 
 Every piece of the interface can be shown or hidden on its own from the View menu or Settings → Interface. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode) and [Expert mode](/features/expert-mode) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode) hides more and also switches the heavier features off.
@@ -887,9 +887,9 @@ It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposi
 
 - **Reads**: `list_open_files`, `list_tabs`, `read_buffer`, `get_selection`, `get_diagnostics`, `document_symbols`, `git_status`, `todo_scan`, `find_in_files`, `list_commands`.
 - **Writes**: `edit_buffer` (undoable str-replace edits) and `save_buffer`.
-- **Actions**: `open_file` and `execute_command`.
+- **Actions**: `open_file` (files inside the window's project, or already open there) and `execute_command`.
 
-So an agent can observe live state, make undoable edits, and drive the editor. The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
+So an agent can observe live state, make undoable edits, and drive the editor. `edit_buffer` and `save_buffer` refuse files in Editora's config folder and in version-control metadata such as `.git/`. The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
 
 It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
 """),
@@ -914,6 +914,7 @@ Settings sync keeps your **snippets**, **abbreviations**, **templates** and **pe
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
 - It syncs after startup, shortly after you change something, and every 15 minutes. `Settings Sync: Sync Now` does it on demand.
 - Changes **merge entry by entry**, so two computers that each added a snippet keep both. If the same entry changed on two computers, the one that syncs keeps its version and the other stays in the repository history.
+- With several accounts in the GitHub CLI, sync finds the one that can read the repository and keeps using it across `gh auth switch`; Editora never sees a token.
 - Files a sync replaces are first copied to a backups folder in the config directory.
 - Automatic syncs never prompt. A failing sync shows as "Sync ⚠" in the status bar.
 

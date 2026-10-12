@@ -32,7 +32,9 @@ a compact bookmark indicator after the file or folder name.
 
 A bookmark can carry a **single character**, and that character becomes a
 shortcut that jumps to it from anywhere in the project. Set one with
-`bookmarks.setMnemonic` on the bookmarked line; an empty answer clears it.
+`bookmarks.setMnemonic` on the bookmarked line; an empty answer clears it. In a
+[narrowed](/docs/editing#the-emacs-editing-model) buffer the command asks
+you to widen first.
 
 A mnemonic is **unique within a project**, so `3` means one place in the
 project and not one place per file. That way its chord always jumps to a single

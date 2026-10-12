@@ -133,7 +133,12 @@ The window shows a status header with pass / fail / skip counts, a progress bar,
 and elapsed time, over a tree of suites and tests. Selecting a test shows its
 failure message, stack trace, and captured output in the detail pane, with
 **clickable stack frames**. Double-click or `Enter` on a test jumps to its
-source.
+source. A right-click on a test row offers **Go to Test**, **Rerun This Test**
+and **Debug This Test**; on a class row, **Go to Test Class**, **Rerun This
+Class** and **Debug This Class**. The Debug entry appears where the Java
+debugger is available. A test's output, failure message and stack trace are
+kept up to 200,000 characters; past that the start and the end are shown, with
+a line between them saying how much was left out.
 
 Results are parsed per tool: Maven and Gradle read the JUnit XML reports as they
 are written, Go uses `go test -json`, npm reads TAP when the reporter emits it,
