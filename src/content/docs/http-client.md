@@ -97,8 +97,11 @@ connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
   request file.
 
 A variable that can't be resolved (a typo, no environment selected, a request
-that hasn't run yet) is sent as an empty value, and the response lists it under
-its warnings with the reason.
+the file doesn't have) is underlined as you type; hover it for the reason. If you
+send it anyway it goes out as an empty value, and the response lists it under
+its warnings. Typing `{{` offers the variables available at that point, the
+dynamic variables, the keys of the `.env` file, and `name.response.` for each
+request in the file.
 
 ### Secrets and trusted folders
 
@@ -119,7 +122,8 @@ asked about.
   `{{variables}}` first. Text bodies are encoded in the charset the
   `Content-Type` header names (UTF-8 if none).
 - **Multipart** form bodies take inline parts and `< ./file` parts, and fill in
-  variables in part headers. URLs are percent-encoded automatically, emoji and
+  variables in part headers and file paths. File parts are streamed from disk,
+  so a large upload isn't read into memory. URLs are percent-encoded automatically, emoji and
   non-ASCII host names included. Body files and `>>` targets stay inside the
   request's folder; a symlink that leads out of it is refused.
 - **Basic / Digest auth** shorthand: `Authorization: Basic user password` is
@@ -181,18 +185,25 @@ written or replaced, and which were not and why.
 | Action | Command | Default key |
 | --- | --- | --- |
 | Run the request at the caret | `http.runRequest` | `C-c C-c` (or the gutter ▶) |
-| Run every request in the file | `http.runFile` | (palette) |
+| Run every request in the file | `http.runFile` | `C-c C-r` |
 | Cancel the running request | `http.cancelRequest` | (Cancel button) |
 | Select environment | `http.selectEnvironment` | (palette) |
 | Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL button) |
 | Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
 | Open the response body in its own tab | `http.openResponseInTab` | (Open in tab button) |
 
-In the other keymaps, Run Request is `Ctrl+Alt+R` (`Option+Cmd+R` on macOS in
-the CUA, Sublime and VS Code keymaps), and the VS Code keymap cancels with
-`Ctrl+Alt+K` (`Option+Cmd+K` on macOS). The caret can be anywhere in a
-request's section, its `###` line included. **Run File** and the editor's
-right-click menu on a `.http` file run its requests too.
+In the other keymaps, Run Request is `Ctrl+Alt+R` and Run All is
+`Ctrl+Alt+Shift+R` (`Option+Cmd+R` and `Option+Cmd+Shift+R` on macOS in the CUA,
+Sublime and VS Code keymaps), and the VS Code keymap cancels with `Ctrl+Alt+K`
+(`Option+Cmd+K` on macOS). The caret can be anywhere in a request's section, its
+`###` line included. **Run File** and the editor's right-click menu on a `.http`
+file run its requests too. While a request runs, its ▶ turns into a ■; click it
+to cancel.
+
+A `.http` file doesn't have to be saved to send requests. An untitled one uses
+the project's environment files, and its responses are kept when you save it. A
+request that needs the file's folder (a body file, a `>>` target, `$dotenv`) is
+not sent until the file is saved.
 
 The response appears as the `.http` file's own **preview**, in the same
 Editor / Split / Preview view every other rich file type uses, so the response
@@ -204,8 +215,9 @@ editor.
 
 The response view shows:
 
-- a status line such as `200 OK · 32 ms · 44 B`, coloured by outcome, and the
-  elapsed time while a request runs. Run All shows its progress ("2 of 5") and
+- a status line such as `200 OK · 32 ms · 44 B`, coloured by outcome, and,
+  while a request runs, its request line with variables filled in and the
+  elapsed time. Run All shows its progress ("2 of 5") and
   ends on the first failed request.
 - a **Request** section with the request as it was sent, variables filled in,
   and the address a redirect ended at.
