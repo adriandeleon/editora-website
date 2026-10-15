@@ -75,14 +75,16 @@ connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
   below it; a later one with the same name takes over from there.
 - **Environments**, defined in `http-client.env.json`, with secrets in
   `http-client.private.env.json` (keep that one out of Git). Editora reads them
-  from the request file's folder, or the nearest folder above it, up to the
-  project root. Pick one from the environment dropdown in the response view
+  from the request file's folder, or the nearest folder above it, up to the open
+  project's root, else the file's Git (or Mercurial, Subversion) repository root;
+  outside a repository only the file's own folder counts. Pick one from the environment dropdown in the response view
   (`http.selectEnvironment` takes you to it); the choice is remembered per
   `.http` file, and the list includes environments defined only in the private
   file. A `$shared` section applies to every environment. The private file wins
   over the public one, and a named environment wins over `$shared`. Nested
   objects are reached with dots (`{{client.host.url}}`) or indexes
-  (`{{users[0].name}}`), and a value may refer to another variable.
+  (`{{users[0].name}}`), and a value may refer to another environment value
+  (not to the file's `@var` lines).
 - **Dynamic variables**: `{{$uuid}}`, `{{$timestamp}}`, `{{$isoTimestamp}}`,
   `{{$randomInt}}` (or `{{$randomInt 1 10}}`), `{{$random.integer(1, 100)}}`,
   `{{$random.float}}`, `{{$random.alphabetic(8)}}`,
@@ -105,10 +107,13 @@ request in the file.
 
 ### Secrets and trusted folders
 
-A request that reads `$processEnv`, `$env` or `$dotenv` (directly, or through an
-`@var` line, an environment value or a `<@` body file) only runs from a
-**trusted** folder. In a folder you haven't trusted, Editora asks first, naming
-the variables and the hosts they would go to; if you decline, nothing is sent.
+A request that reads `$processEnv`, `$env` or `$dotenv` (in any form: directly,
+through an `@var` line or an environment value, in a header, a `<@` body file or
+a multipart `<@` part) only runs from a **trusted** folder. In a folder you
+haven't trusted, Editora asks first, naming the variables as written (never their
+values) and the hosts the request goes to; a redirect may lead to another host.
+If you decline, nothing that reads a secret is sent; in a Run All, the requests
+that read none still go out.
 This is the same trust that lets a project's build scripts run, so a project
 you've trusted is not asked again. Requests that read no secrets are never
 asked about.
@@ -186,16 +191,16 @@ written or replaced, and which were not and why.
 | --- | --- | --- |
 | Run the request at the caret | `http.runRequest` | `C-c C-c` (or the gutter ▶) |
 | Run every request in the file | `http.runFile` | `C-c C-r` |
-| Cancel the running request | `http.cancelRequest` | (Cancel button) |
+| Cancel the running request | `http.cancelRequest` | `C-c C-k` |
 | Select environment | `http.selectEnvironment` | (palette) |
 | Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL button) |
 | Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
 | Open the response body in its own tab | `http.openResponseInTab` | (Open in tab button) |
 
-In the other keymaps, Run Request is `Ctrl+Alt+R` and Run All is
-`Ctrl+Alt+Shift+R` (`Option+Cmd+R` and `Option+Cmd+Shift+R` on macOS in the CUA,
-Sublime and VS Code keymaps), and the VS Code keymap cancels with `Ctrl+Alt+K`
-(`Option+Cmd+K` on macOS). The caret can be anywhere in a request's section, its
+In the other keymaps, Run Request is `Ctrl+Alt+R`, Run All is
+`Ctrl+Alt+Shift+Enter` and Cancel is `Ctrl+Alt+K` (`Option+Cmd+R`,
+`Option+Cmd+Shift+Enter` and `Option+Cmd+K` on macOS in the CUA, Sublime and VS
+Code keymaps). The caret can be anywhere in a request's section, its
 `###` line included. **Run File** and the editor's right-click menu on a `.http`
 file run its requests too. While a request runs, its ▶ turns into a ■; click it
 to cancel.
@@ -221,22 +226,24 @@ The response view shows:
   ends on the first failed request.
 - a **Request** section with the request as it was sent, variables filled in,
   and the address a redirect ended at.
-- warnings (unresolved variables, skipped scripts, headers that couldn't be
-  sent, a redirect to another host that carried custom headers) and the files
-  `>>` wrote.
+- warnings in their own block, with a count beside the status line (unresolved
+  variables, skipped scripts, headers that couldn't be sent, a redirect to
+  another host that carried custom headers) and the files `>>` wrote.
 - the protocol version, the headers, and the body: JSON pretty-printed,
   one-line XML indented, images shown as pictures, other binary bodies
   summarised. gzip and deflate responses are decoded, and **Wrap** wraps long
   lines.
 
-The **Run** button sends the selected request again; it turns into **Cancel**
-while a request runs. Errors read as sentences, such as "Connection refused — is
+The **Run** button sends the request the selected response came from again,
+found by its name (or its method and URL) even if the file changed since; it
+turns into **Cancel** while a request runs. Cancelling a Run All keeps the
+responses that had already arrived. Errors read as sentences, such as "Connection refused — is
 a server listening on …?" or "Host not found". Responses over 50 MB are cut, and
 the view says so.
 
-**Copy as cURL** produces a command that is safe to paste into a shell and
+**Copy as cURL** produces a command for bash or zsh that is safe to paste and
 reproduces what was sent, including file bodies, forms, Digest auth and
-redirects. **Import cURL** reads a curl command from the clipboard, including a
+redirects, also for a response restored from history. **Import cURL** reads a curl command from the clipboard, including a
 browser's "Copy as cURL", into the active `.http` file, or into a new tab when
 no `.http` file is active. **Save response** writes the body exactly as
 received (an image saves as the image); the status-and-headers text is the
@@ -250,7 +257,9 @@ come back when you reopen the file. Saved bodies are capped at 1 MB, and the
 values of credential headers (Authorization, cookies, and headers named like
 tokens, secrets, API keys and passwords) are masked. A request marked
 `# @no-log` is never saved. **Clear** empties the file's history, saved copy
-included.
+included. The history follows a renamed or moved file, is removed with a deleted
+one, and is shared by every window showing the file. **Export Configuration**
+includes it only when you tick "Include HTTP response history".
 
 Cookies last for one run: Run All shares them between its requests, and a
 request run on its own starts without any.
