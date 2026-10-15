@@ -11,10 +11,14 @@ install. The HTTP client is **on by default**; its switch is the HTTP Client
 section of **Settings → Languages & Tools → Web** (or
 `view.toggleHttpClient`).
 
+The file format is JetBrains' HTTP request format, plus some syntax from the VS
+Code REST Client extension (`$dotenv`, `$processEnv`, `$datetime`, `$shared`, and
+`{{name.response…}}` references).
+
 ## Writing requests
 
 Separate requests with a `###` line. A request is a method and URL followed by
-headers and an optional body:
+headers and an optional body, separated from the headers by a blank line:
 
 ```http
 ### Get a user
@@ -28,27 +32,100 @@ Content-Type: application/json
 { "name": "Ada" }
 ```
 
+- **The request line.** The method can be any case (`get` is sent as `GET`), and
+  custom methods such as `PROPFIND` or `QUERY` are sent as written. A line with
+  only a URL is a `GET`. A URL without a scheme gets `http://`, and
+  `GET /path` with a `Host:` header takes its host from that header. A query can
+  continue on indented lines starting with `?` or `&`. `HTTP/1.1` or `HTTP/2` at
+  the end of the line chooses the protocol; without it, `http://` requests use
+  HTTP/1.1 and `https://` requests negotiate HTTP/2.
+- **Headers.** An indented line under a header continues its value. A `Host`
+  header can be set to reach a virtual host by IP.
+- **Comments.** Lines starting with `#` or `//` are comments, inside a body too:
+  they are not sent. To send such lines, put the body in a file and use
+  `< ./file` (see [Chaining, bodies, and auth](#chaining-bodies-and-auth)).
+- **Not supported.** `GRAPHQL`, `WEBSOCKET` and `GRPC` requests are reported as
+  not supported and not sent. JetBrains response handlers (`> {% … %}`) and
+  pre-request scripts (`< {% … %}`) are skipped, with a warning in the
+  response.
+
+### Directives
+
+Comment lines above the request line set options for that request:
+
+| Directive | Effect |
+| --- | --- |
+| `# @name login` | Names the request, for [chaining](#naming-a-request) |
+| `# @no-redirect` | Don't follow redirects |
+| `# @no-cookie-jar` | Don't send or keep cookies |
+| `# @no-auto-encoding` | Send the URL exactly as written |
+| `# @no-log` | Keep the response out of the saved [history](#history) |
+| `# @timeout 5 s` | Give up when the server is silent this long |
+| `# @connection-timeout 2 s` | Give up connecting after this long |
+
+Timeouts take `ms`, `s` or `m`; a number on its own is seconds. Without them a
+connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
+
 ## Variables and environments
 
-Substitute `{{var}}` and file-local `@var = value` declarations, plus **dynamic
-variables**: `{{$random.*}}`, `{{$datetime}}` (with date math), `{{$dotenv.X}}`,
-and more. Define named **environments** in `http-client.env.json` alongside the
-file (with a `$shared` section for common values) and pick one from the
-environment dropdown in the response preview (`http.selectEnvironment` takes
-you to it); the choice is remembered per workspace.
+`{{name}}` is replaced by a variable's value, in the URL, headers, body, and
+`>>` paths. Variables come from:
+
+- **`@name = value` lines** in the file. A declaration applies to the requests
+  below it; a later one with the same name takes over from there.
+- **Environments**, defined in `http-client.env.json`, with secrets in
+  `http-client.private.env.json` (keep that one out of Git). Editora reads them
+  from the request file's folder, or the nearest folder above it, up to the
+  project root. Pick one from the environment dropdown in the response view
+  (`http.selectEnvironment` takes you to it); the choice is remembered per
+  `.http` file, and the list includes environments defined only in the private
+  file. A `$shared` section applies to every environment. The private file wins
+  over the public one, and a named environment wins over `$shared`. Nested
+  objects are reached with dots (`{{client.host.url}}`) or indexes
+  (`{{users[0].name}}`), and a value may refer to another variable.
+- **Dynamic variables**: `{{$uuid}}`, `{{$timestamp}}`, `{{$isoTimestamp}}`,
+  `{{$randomInt}}` (or `{{$randomInt 1 10}}`), `{{$random.integer(1, 100)}}`,
+  `{{$random.float}}`, `{{$random.alphabetic(8)}}`,
+  `{{$random.alphanumeric(8)}}`, `{{$random.hexadecimal(8)}}`,
+  `{{$random.email}}`, and `{{$datetime iso8601}}` / `{{$localDatetime
+  "DD-MM-YYYY" -1 d}}` with a format (`iso8601`, `rfc1123`, or a Day.js or Java
+  pattern) and an optional offset (`y`, `M`, `w`, `d`, `h`, `m`, `s`, `ms`).
+  `{{$timestamp}}`, `{{$isoTimestamp}}` and `{{$datetime}}` are in UTC wherever
+  you are; `{{$localDatetime}}` uses your time zone.
+- **Your system**: `{{$env.NAME}}` or `{{$processEnv.NAME}}` reads an
+  environment variable, and `{{$dotenv.NAME}}` reads a `.env` file beside the
+  request file.
+
+A variable that can't be resolved (a typo, no environment selected, a request
+that hasn't run yet) is sent as an empty value, and the response lists it under
+its warnings with the reason.
+
+### Secrets and trusted folders
+
+A request that reads `$processEnv`, `$env` or `$dotenv` (directly, or through an
+`@var` line, an environment value or a `<@` body file) only runs from a
+**trusted** folder. In a folder you haven't trusted, Editora asks first, naming
+the variables and the hosts they would go to; if you decline, nothing is sent.
+This is the same trust that lets a project's build scripts run, so a project
+you've trusted is not asked again. Requests that read no secrets are never
+asked about.
 
 ## Chaining, bodies, and auth
 
-The client is close to IntelliJ's HTTP Client:
-
 - **Request chaining** references an earlier request's response, so a login can
   feed a token into the next call. See [Naming a request](#naming-a-request).
-- **Multipart** and external-file bodies are supported, with automatic URL
-  encoding. Body files and `>>` response targets stay inside the request's
-  folder; a symlink that leads out of it is refused.
-- **Basic / Digest auth** shorthand, per-request directives, and
-  response-to-file redirects. See [Saving a response to a
-  file](#saving-a-response-to-a-file).
+- **Bodies** can be inline, or come from a file: `< ./body.json` sends the file
+  as is, and `<@ ./body.json` (or `<@latin1 ./body.json`) fills in its
+  `{{variables}}` first. Text bodies are encoded in the charset the
+  `Content-Type` header names (UTF-8 if none).
+- **Multipart** form bodies take inline parts and `< ./file` parts, and fill in
+  variables in part headers. URLs are percent-encoded automatically, emoji and
+  non-ASCII host names included. Body files and `>>` targets stay inside the
+  request's folder; a symlink that leads out of it is refused.
+- **Basic / Digest auth** shorthand: `Authorization: Basic user password` is
+  encoded for you, and `Authorization: Digest user password` answers the
+  server's challenge (MD5, SHA-256 or SHA-512-256). The password may contain
+  spaces.
 
 ### Naming a request
 
@@ -75,17 +152,21 @@ GET https://api.example.com/me
 Authorization: Bearer {{login.response.body.$.token}}
 ```
 
-Responses are captured for the length of one run. Running the whole file
-(`http.runFile`) sends the requests in order, so each one can refer to those
-before it. A request run on its own starts with nothing captured, and a
-reference to a request that hasn't run resolves to an empty string.
+Each `.http` file keeps the responses of its runs while it is open, so you can
+run `Sign in` once and then run `Fetch the profile` on its own. Running the
+whole file (`http.runFile`) sends the requests in order, so each one can refer
+to those before it. The captured responses are cleared when you pick another
+environment or close the file. A reference to a request that hasn't run, or that
+failed, is listed in the response's warnings.
 
 ### Saving a response to a file
 
 A `>>` line after a request writes the response body to a file in the request's
-folder. The two forms differ in what they do when the file already exists:
+folder; the path can use `{{variables}}`. The two forms differ in what they do
+when the file already exists:
 
-- `>> file` creates the file and never touches an existing one.
+- `>> file.json` never touches an existing file: it writes `file-1.json`, then
+  `file-2.json`, and so on.
 - `>>! file` replaces an existing file, but only with a complete, successful
   response. An error status, or a body that was cut short, leaves the file as it
   is. Before replacing, Editora records the previous content in
@@ -99,19 +180,65 @@ written or replaced, and which were not and why.
 
 | Action | Command | Default key |
 | --- | --- | --- |
-| Run the request at the caret | `http.runRequest` | (gutter ▶) |
+| Run the request at the caret | `http.runRequest` | `C-c C-c` (or the gutter ▶) |
 | Run every request in the file | `http.runFile` | (palette) |
 | Cancel the running request | `http.cancelRequest` | (Cancel button) |
 | Select environment | `http.selectEnvironment` | (palette) |
+| Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL button) |
+| Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
+| Open the response body in its own tab | `http.openResponseInTab` | (Open in tab button) |
+
+In the other keymaps, Run Request is `Ctrl+Alt+R` (`Option+Cmd+R` on macOS in
+the CUA, Sublime and VS Code keymaps), and the VS Code keymap cancels with
+`Ctrl+Alt+K` (`Option+Cmd+K` on macOS). The caret can be anywhere in a
+request's section, its `###` line included. **Run File** and the editor's
+right-click menu on a `.http` file run its requests too.
 
 The response appears as the `.http` file's own **preview**, in the same
 Editor / Split / Preview view every other rich file type uses, so the response
 sits beside the request that produced it. Running a request from the gutter ▶
 opens the split automatically, and the view mode is remembered per file. Switch
 views with `view.togglePreview` and `view.toggleSplitPreview`, or the floating
-3-mode toggle at the top right.
+3-mode toggle at the top right. Escape in the response view goes back to the
+editor.
 
-The response shows the status line, headers, timing, size, and a
-content-type-highlighted, pretty-printed body. You can **Copy as cURL**,
-**Import cURL** from the clipboard (`http.importCurl`), open a response in its
-own editor tab (`http.openResponseInTab`), and save the response to a file.
+The response view shows:
+
+- a status line such as `200 OK · 32 ms · 44 B`, coloured by outcome, and the
+  elapsed time while a request runs. Run All shows its progress ("2 of 5") and
+  ends on the first failed request.
+- a **Request** section with the request as it was sent, variables filled in,
+  and the address a redirect ended at.
+- warnings (unresolved variables, skipped scripts, headers that couldn't be
+  sent, a redirect to another host that carried custom headers) and the files
+  `>>` wrote.
+- the protocol version, the headers, and the body: JSON pretty-printed,
+  one-line XML indented, images shown as pictures, other binary bodies
+  summarised. gzip and deflate responses are decoded, and **Wrap** wraps long
+  lines.
+
+The **Run** button sends the selected request again; it turns into **Cancel**
+while a request runs. Errors read as sentences, such as "Connection refused — is
+a server listening on …?" or "Host not found". Responses over 50 MB are cut, and
+the view says so.
+
+**Copy as cURL** produces a command that is safe to paste into a shell and
+reproduces what was sent, including file bodies, forms, Digest auth and
+redirects. **Import cURL** reads a curl command from the clipboard, including a
+browser's "Copy as cURL", into the active `.http` file, or into a new tab when
+no `.http` file is active. **Save response** writes the body exactly as
+received (an image saves as the image); the status-and-headers text is the
+second choice in the dialog.
+
+### History
+
+The **History** dropdown holds the file's recent responses, each with its
+request's name and time. The last 10 are saved in Editora's config folder and
+come back when you reopen the file. Saved bodies are capped at 1 MB, and the
+values of credential headers (Authorization, cookies, and headers named like
+tokens, secrets, API keys and passwords) are masked. A request marked
+`# @no-log` is never saved. **Clear** empties the file's history, saved copy
+included.
+
+Cookies last for one run: Run All shares them between its requests, and a
+request run on its own starts without any.
