@@ -175,6 +175,11 @@ A run configuration saves how something is launched: a name, what to
 launch, **program arguments**, **VM arguments**, **environment variables**, an
 optional **JDK override**, and a working directory.
 
+Run configurations belong to a [project](/docs/workspace#projects): each
+project window keeps its own list. The No Project window has none; there, a
+script or a compact Java file runs from its gutter ▶ or **File: Run**
+(`file.run`), as described in [Running files](#running-files).
+
 **Environment** takes `KEY=value` pairs, quoted and escaped like
 [program arguments](#running-files). `$NAME` and `${NAME}` in a value expand
 to that variable: one set earlier in the same field, or else the environment
@@ -182,14 +187,13 @@ the program would get anyway, so `PATH=/opt/tools/bin:$PATH` adds a folder to
 the real `PATH`. Single quotes keep `$` as it is. In a remote project, a
 variable that is not set earlier in the field is passed to the host as written.
 
-A relative **Working directory** is relative to the project root. With no
-project open, it is relative to the folder of a script given by its full path.
+A relative **Working directory** is relative to the project root.
 Run names a working directory or script that does not exist, and opens the
 configuration at the field to fix.
 
 ### What a configuration can launch
 
-Pick a **Type** in the project/session-scoped **Run Configurations** window:
+Pick a **Type** in the project's **Run Configurations** window:
 
 | Type | Launches |
 | --- | --- |
@@ -211,7 +215,7 @@ Left blank, the script's shebang decides (see [Shell scripts](#shell-scripts));
 set, they replace it, for example `/opt/homebrew/bin/bash` with `-eu`. Options
 alone keep the shebang's interpreter and replace its options.
 
-Script and make configurations need **no project and no language server**.
+Script and make configurations need **no language server**.
 Only Java configurations can be debugged; Debug on any other type says so, and
 for a shell configuration it points to [Run with Trace](#run-with-trace).
 
@@ -227,12 +231,13 @@ Starting a file or configuration always opens and focuses the **Run** tool
 window. If that process is already active, Run brings its existing console back
 instead of hiding the useful output behind a busy message.
 
-The group only appears where you could launch something: with a project
-open and a Maven, Gradle, npm, Cargo or Go build file *inside* it, or a makefile
-at its root; with no project open, any detected build does. Anything you have
-already saved keeps the group visible regardless, because a configuration only
-needs a `main` method and a plain Java folder can hold one. The palette commands
-work anywhere either way.
+The group only appears in a project window where you could launch something: a
+Maven, Gradle, npm, Cargo or Go build file *inside* the project, or a makefile
+at its root. Anything you have already saved keeps the group visible
+regardless, because a configuration only needs a `main` method and a plain Java
+folder can hold one. The palette commands work in any project either way. The
+No Project window never shows the group, and its run configuration commands say
+to open a project.
 
 Each configuration also **becomes a real command**, so it appears in the palette
 by name and can be given its own keyboard shortcut in Settings → Keymaps, the
