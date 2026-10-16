@@ -48,9 +48,9 @@ Content-Type: application/json
   Import cURL writes every `{{` of a pasted command this way, so pasted text
   never reads your variables.
 - **Not supported.** `GRAPHQL`, `WEBSOCKET` and `GRPC` requests are reported as
-  not supported and not sent. JetBrains pre-request scripts (`< {% … %}`) are
-  skipped, with a warning in the response. Response handlers (`> {% … %}`) run:
-  see [Tests and response handlers](#tests-and-response-handlers).
+  not supported and not sent. JavaScript pre-request scripts (`< {% … %}`) and
+  response handlers (`> {% … %}`) run: see
+  [Tests and response handlers](#tests-and-response-handlers).
 
 ### Directives
 
@@ -279,8 +279,49 @@ Handlers use the JetBrains API:
 A test whose function returns a promise is waited for, so `fetch` can be used
 with `await`. An error stops the handler and shows in the Tests block with its
 line in the `.http` file (or the handler file), and `client.log` lines show
-there too. `xpath`, streamed responses, `client.global.headers` and the
-`crypto` helpers are not supported yet.
+there too. `xpath`, streamed responses and `crypto.subtle` are not supported
+yet.
+
+### Pre-request scripts
+
+A pre-request script runs before its request is resolved and sent. Write it
+above the request line, inline or in a file:
+
+```http
+### Signed upload
+< {%
+  const body = request.body.tryGetSubstituted();
+  const signature = crypto.hmac.sha256()
+    .withTextSecret(request.environment.get("signingKey"))
+    .updateWithText(body)
+    .digest().toHex();
+  request.variables.set("signature", signature);
+  request.variables.set("token", jwt.sign({ sub: "ada" }, request.environment.get("signingKey"), { expiresIn: 300 }));
+%}
+POST https://api.example.com/upload
+X-Signature: {{signature}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "report", "size": {{size}} }
+```
+
+A pre-request script has `client` (as in a handler), `request` (`url`, `headers`
+and `body` with `tryGetSubstituted()` for the request as far as it resolves
+before the script and `getRaw()` as written, `method`, `environment.get`,
+`variables.get`) and:
+
+| Helper | What it does |
+| --- | --- |
+| `request.variables.set(name, value)` | A variable for this request only, used as `{{name}}`. It wins over every other variable, including the file's `@name = value` lines |
+| `crypto.sha256()`, `crypto.md5()`, `crypto.sha1()`, `crypto.sha384()`, `crypto.sha512()`, `crypto.sha3("256")` | A hash: `.updateWithText(text)`, `.updateWithHex(hex)` or `.updateWithBase64(text)`, then `.digest().toHex()` or `.digest().toBase64(urlSafe)` |
+| `crypto.hmac.sha256()` (and the others) | An HMAC: `.withTextSecret(secret)`, `.withHexSecret(hex)` or `.withBase64Secret(text)` first, then as a hash |
+| `jwt.sign(payload, key, options)` / `jwt.verify(token, key, options)` / `jwt.decode(token)` | JSON Web Tokens with a secret (HS256/384/512) or a PEM key (RS, PS and ES algorithms); options include `algorithm`, `expiresIn`, `audience`, `issuer`, `subject` |
+
+`crypto` and `jwt` work in response handlers too. If a pre-request script can't
+run (an untrusted folder, no Node.js, an error, a timeout), its request is
+**not sent** and its response view says why; the other requests of a Run All
+still run. `client.exit()` ends the script and sends the request.
 
 ### Session variables
 
@@ -290,26 +331,42 @@ one, for as long as the file is open. It takes precedence over an environment
 variable of the same name, and an `@name = value` line in the file takes
 precedence over it. Its value is sent as it is: a `{{…}}` inside it is not
 filled in. Session variables are cleared when you pick another environment or
-close the file. A `{{name}}` the file sets this way is not underlined as
+close the file. A `{{name}}` the file sets this way (with `@capture`,
+`client.global.set` or `request.variables.set`) is not underlined as
 unresolved.
+
+`client.global.headers.set(name, value)` adds a header to the requests that
+follow, and to its own request when a pre-request script sets it. A request's
+own header of that name wins, a `Host` header is never set, and
+`client.global.headers.clear(name)` removes one. Global headers are cleared with
+the session variables.
 
 ### What a handler may do
 
-A handler is code that came with the folder, so it only runs from a
-**trusted** folder: Editora asks once per run, with **Cancel** as the default
-button, and the answer is the same trust that
+Handlers and pre-request scripts are code that came with the folder, so they
+only run from a **trusted** folder: Editora asks once per run, with **Cancel** as
+the default button, and the answer is the same trust that
 [secrets](#secrets-and-trusted-folders) and build scripts use. In a folder you
 don't trust, handlers are skipped with a warning while `@assert` and `@capture`
-still run. A handler file must be in a trusted folder too, and at most 1 MB.
+still run, and a request with a pre-request script is not sent. A script file
+must be in a trusted folder too, and at most 1 MB.
 
 Node.js is started without your environment variables, so a handler can't read a
 token from `process.env`. On Node.js 20 or later it runs under Node's permission
 model: it can't write files, start processes or use worker threads. A value the
 request read from `$processEnv`, `$env` or `$dotenv` reaches the handler masked.
-A handler **may** make network requests. It is stopped after 10 seconds.
-Handlers in a remote (SFTP) file don't run.
+A script **may** make network requests. It is stopped after 10 seconds. Scripts
+in a remote (SFTP) file don't run.
 
-**Settings → Languages & Tools → Web** turns handlers off, picks the Node.js to
+Scripts never see secrets: `request.environment.get` returns environment values
+as written, so `{{$dotenv KEY}}` stays that text. Keep a signing key in
+`http-client.private.env.json` as a plain value. A value a script sets is sent as
+it is, never filled in, so a script can't make a request read `$env` or
+`$dotenv`. When a request that reads a secret goes to a host built from a
+script's value (or an earlier response's), the secrets prompt says the host is
+chosen by an earlier response or a script.
+
+**Settings → Languages & Tools → Web** turns scripts off, picks the Node.js to
 use (empty means `node` on the `PATH`) and sets the timeout. The
 [Doctor](/docs/troubleshooting#doctor) shows which Node.js runs them and whether the permission
 model is on.
