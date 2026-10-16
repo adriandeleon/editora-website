@@ -9,5 +9,6 @@ export const whatsNew: NewsItem[] = [
   { title: "Choose a file's encoding", detail: "Reopen a file in the encoding it is really in, or save it in another: Shift_JIS, GBK, windows-1251 and every other encoding the JDK knows. The choice is remembered per file." },
   { title: "More from multiple cursors", detail: "Split a selection into lines, put a cursor at every line end, skip an occurrence or take back the last cursor; line commands and text tools run at every cursor." },
   { title: "Rulers and indent guides", detail: "Rulers at any columns, with their own set per language, and faint guides at every indentation level." },
+  { title: "Shell scripts, end to end", detail: "Scripts run as their shebang says, with no language server needed. Run with Trace links each traced line to its source, and ShellCheck and shfmt install in one click." },
   { title: "Markdown wiki links and backlinks", detail: "[[note]] links resolve, complete, follow renames and are checked by lint, and a Backlinks window lists what links to the open note." },
 ];

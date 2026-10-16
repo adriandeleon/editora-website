@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.22.0: remote development on the host, Markdown wiki links, and a round of editing commands"
-description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers. Markdown gains wiki links, backlinks and 29 lint rules, and the HTTP Client asks before sending your secrets."
+description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers. Markdown gains wiki links, backlinks and 29 lint rules, and the HTTP Client asks before sending your secrets. Shell scripts run as their shebang says, with Run with Trace and one-click ShellCheck and shfmt."
 date: 2026-10-31
 version: "0.22.0"
 ---
@@ -10,8 +10,9 @@ against CHANGELOG.md's 0.22.0 section (written from master on 2026-10-15). -->
 
 **Editora 0.22.0** is out. Remote folders now work like local ones: the tools
 Editora drives run on the host. Markdown gets wiki links, backlinks and a
-much larger lint, the HTTP Client asks before it sends a secret, and there is a
-round of everyday editing commands. Download it from the
+much larger lint, the HTTP Client asks before it sends a secret, shell scripts
+get a full pass from highlighting to Run, and there is a round of everyday
+editing commands. Download it from the
 [0.22.0 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.22.0).
 
 ## Remote development
@@ -122,6 +123,35 @@ Three passes over Markdown since 0.21.0:
   run the file and cancel, and unresolved variables are underlined as you type.
 
 [More about the HTTP Client](/docs/http-client).
+
+## Shell scripts
+
+A full pass over shell support, from highlighting to Run:
+
+- **Scripts run as their shebang says.** A shell script runs with the default
+  settings, with no language server needed, using the interpreter and flags its
+  `#!` line names (`#!/bin/sh`, `#!/usr/bin/env -S bash -e`), or `bash` when
+  there is none. A run configuration can set the interpreter instead.
+- **The Run console** shows a script's `read -p` prompts, has **End Input** for
+  scripts that read until the end of input, draws colours, keeps a progress bar
+  on one line, and links bash errors to their line.
+- **Run with Trace** runs a bash script with `-x`, and each traced line links to
+  the line that ran. Startup files such as `.bashrc` have no Run ▶.
+- **ShellCheck and shfmt in one click.** Settings and Doctor show whether they
+  are installed, and Editora can download the official releases, checked
+  against hashes built into it. The Bash card in Settings sets ShellCheck's
+  arguments and shfmt's style, and Problems shows each ShellCheck rule with a
+  link to its page.
+- **Highlighting** stays right after `$((x << 2))` and `<<\EOF` here-docs;
+  `.envrc`, `/etc/zshrc` and `.ksh` files open as shell, and vim and emacs
+  modelines set the language.
+- **Editing**: `case` statements and here-docs indent correctly, scripts fold,
+  Toggle Comment leaves the `#!` line alone, spell check skips command
+  arguments, and a script with Windows line endings gets a notice that converts
+  it.
+
+[More about running scripts](/docs/run-debug) and
+[ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
 
 ## Also
 
