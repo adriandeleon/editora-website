@@ -164,6 +164,8 @@ A full pass over shell support, from highlighting to Run:
 - `LSP: Clear Java Index Caches` frees the disk space jdtls's per-folder indexes
   take.
 - The Recent Files dropdown fits long names and asks before removing one.
+- Without a project, the **TODO window lists only the current tab**, and hides
+  while that tab has no TODOs.
 - The installed Linux app is 22 MB smaller.
 - Fixes: each project window acts on its own project, right-click menus close
   when you click outside them, the window drags by its title, and Java
