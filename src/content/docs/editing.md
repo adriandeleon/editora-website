@@ -448,9 +448,14 @@ all. *View: Toggle Rulers* (`view.toggleColumnRuler`) shows or hides them.
 
 **Indent guides** are faint vertical lines at each indentation level, carried
 through blank lines and skipped over folded lines, in a colour that follows the
-theme. They are on by default; turn them off in Settings → Editor or with *View:
-Toggle Indent Guides* (`view.toggleIndentGuides`). They are hidden in Zen mode,
-Simple UI and large-file mode.
+theme. Each guide stands on the column where its level's text starts, measured
+from the text as it is laid out: it follows the text when the line numbers get
+wider or are turned off and when the font changes, and it falls on the tab stops
+of a tab-indented file and on the spaces of a proportional font. When you scroll
+sideways, a guide whose column has passed under the line numbers is hidden. They
+are on by default; turn them off in Settings → Editor or with *View: Toggle
+Indent Guides* (`view.toggleIndentGuides`). They are hidden in Zen mode, Simple
+UI and large-file mode.
 
 ### Word wrap
 
