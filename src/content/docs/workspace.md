@@ -172,9 +172,11 @@ multi-file [template](/docs/snippets-templates), enter a **project name** and a
 **location**, and fill in the template's variables. The dialog shows the folder
 it will create; a folder that already exists and is not empty is refused.
 Editora creates the folder, registers it as a project, and opens it in its own
-window on the template's main file. A **Python Project** template ships with it (package layout, a test,
-`pyproject.toml`, README and `.gitignore`), and your own multi-file templates
-appear in the same picker.
+window on the template's main file. Two project templates ship with Editora:
+**Python Project** (package layout, a test, `pyproject.toml`, README and
+`.gitignore`) and **Node.js TypeScript Project** (a module, a `node:test` test,
+`tsconfig.json`, README and `.gitignore`). Every other multi-file template, yours
+included, appears in the same picker.
 
 ### Settings a project can commit
 

@@ -143,9 +143,27 @@ template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
 
-Bundled templates cover a Java class, a Java compact source file, an HTML page,
-an HTML bundle (multiple files), a Markdown doc, a Python script, a Python
-project (multiple files), a shell script, and a Zsh script.
+Editora ships 32 templates:
+
+- **Code:** a Java class, a Java compact source file, a JUnit 5 test, a Java
+  shebang script (an extensionless file the `java` launcher runs directly), a
+  Python script, a pytest test module, shell and Zsh scripts, an HTML page, and
+  an HTML page with a stylesheet.
+- **Files Editora previews or runs:** a Markdown document, a Typst document
+  (on its own, or with its page setup in a reusable `template.typ`), a Mermaid
+  diagram, a Markwhen timeline, and HTTP requests with `@assert` and `@capture`
+  checks plus dev and prod environment files.
+- **Writing:** a README, a changelog in the Keep a Changelog format, an
+  architecture decision record, a blog post with YAML front matter, and meeting
+  notes.
+- **Project files:** the MIT license (with this year and your author name) and
+  the Apache 2.0 license, `.gitignore` files for Java, Python and Node, an
+  `.editorconfig`, GitHub issue and pull request templates, and a multi-stage
+  Java Dockerfile, on its own or with a `compose.yaml` and `.dockerignore`.
+- **Projects:** a Python project and a Node.js TypeScript project.
+
+Every field the wizard shows starts filled in, so pressing **Create** without
+changing anything gives a working file.
 
 ### Template syntax
 

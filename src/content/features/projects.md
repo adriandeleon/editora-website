@@ -22,7 +22,7 @@ The whole map is keyboard-navigable: arrows follow the selected flow and move am
 
 ## Start from a template
 
-**New Project From Template** scaffolds a whole project and opens it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file [template](/features/file-templates), give the project a name and a location, and the new folder is created, registered as a project and opened on the template's main file. A **Python Project** template ships with it (package layout, a test, `pyproject.toml`, README and `.gitignore`), and your own multi-file templates appear in the same picker.
+**New Project From Template** scaffolds a whole project and opens it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file [template](/features/file-templates), give the project a name and a location, and the new folder is created, registered as a project and opened on the template's main file. **Python Project** and **Node.js TypeScript Project** templates ship with it, and every other multi-file template, yours included, appears in the same picker.
 
 ## Settings you can commit
 
