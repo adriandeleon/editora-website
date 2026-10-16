@@ -73,6 +73,10 @@ double-click jumps to any entry.
 | Toggle inlay hints | `view.toggleInlayHints` | (palette) |
 | Toggle code lenses | `view.toggleCodeLens` | (palette) |
 
+**Hover docs** open in a popup at the caret. Long documentation, such as the
+man page bash-language-server shows for a command like `ls`, scrolls inside a
+popup no taller than part of the window.
+
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
 overload counter, and the signature's documentation. It follows your typing as
@@ -107,10 +111,21 @@ warmer than reads. It is semantic rather than textual, so a local `x` does not
 light up an unrelated field `x`, and it clears the moment the caret moves.
 
 **Diagnostics** appear as inline squiggles, in the **Problems** tool window
-(`M-8`), and as marks on the minimap and scrollbar. **Completion** is merged into
+(`M-8`), and as marks on the minimap and scrollbar. A hint (ShellCheck's
+"style" level, for example) is drawn as a faint dotted line rather than a full
+squiggle, and code the server marks as unused, such as a variable nothing
+reads, is drawn faded. **Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
-kinds, per-kind icons and method signatures.
+kinds, per-kind icons and method signatures. A server that lists its symbols
+flat, as bash-language-server does, has them nested under the function that
+contains them, and a variable assigned several times in one scope is listed
+once.
+
+Each row in the Problems window ends with the rule's code when the server gives
+one, for example `[SC2086]`. Right-click a row for **Open Rule Documentation**,
+which opens the rule's page (ShellCheck links every code to its wiki), and
+**Copy Code**, which puts the code on the clipboard.
 
 Java completion reacts immediately after member access and begins identifier
 completion after a short pause. Enter and Tab accept the selected item without
@@ -228,7 +243,10 @@ straight away, because the result is on screen and one undo away.
 
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
-`.html`. In a language whose server supports range formatting, **Tab** also snaps
+`.html`. It tells the server the file's own indentation: the `indent_style` and
+`indent_size` from [EditorConfig](/docs/editorconfig) when there are any, else
+what the file already uses, not the global tab size. A two-space script stays
+two-space. In a language whose server supports range formatting, **Tab** also snaps
 the current line's indentation to the server's convention.
 
 ### Two Java-only assists
@@ -276,7 +294,8 @@ than without one.
 Servers that report long-running work through the LSP progress channel (jdtls
 importing and indexing a project, gopls loading packages, rust-analyzer's first
 check) drive the status-bar loading bar and show what they are doing, with a
-title and percentage, in the echo area.
+title and percentage, in the echo area. Each message starts with the name of the
+server it comes from, for example `bash-language-server: …`.
 
 External file changes are forwarded to the running servers, so a server's
 project model stays current after a `git checkout`, a branch switch, a CLI build
@@ -314,7 +333,8 @@ enabled server in one place.
 
 A project can commit a `.editora/settings.json` naming **which server to run for
 a language and whether to run it**, which overrides your global preference for
-anyone who opens that project. This covers one repository needing a
+anyone who opens that project. It can also set the
+[Bash server's options](#bash-server-options). This covers one repository needing a
 JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
 setting when switching between them. See
 [projects](/docs/workspace#settings-a-project-can-commit).
@@ -349,6 +369,10 @@ picker (`install.languageServer`). After installing, the server is auto-detected
 and activates without a restart. Editora never installs the underlying runtimes
 (Node, Python, Go, …); if one is missing it tells you which to install first.
 
+The Bash server lints with ShellCheck and formats with shfmt, which it does not
+install itself. Editora installs those two separately; see
+[ShellCheck and shfmt](#shellcheck-and-shfmt).
+
 Installing over an existing version is safe to retry. A downloaded server is
 unpacked beside the installed one and replaces it only once it is complete and
 is the expected tool, so a failed or interrupted install leaves the working
@@ -367,6 +391,12 @@ nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
 single server.
 
+A file directly in your home folder, the temporary-files folder or at the top of
+a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
+tells the Bash server not to scan such a folder for other scripts, so opening
+one loose file does not walk your whole home folder. The file itself still gets
+diagnostics, completion and navigation.
+
 Servers start **per tab, as you visit it**, rather than all at once while a
 session restores, and they **shut down when their last file closes**, after a
 three-minute grace period so reopening a file keeps the server warm. Each window
@@ -379,6 +409,96 @@ jdtls keeps an index for every Java folder you have opened, under
 index that no running server is using and reports the space it freed; the ones
 in use are kept and counted. jdtls rebuilds a project's index the next time the
 project opens. It works with LSP turned off too.
+
+## Shell scripts
+
+Shell scripts use **bash-language-server** (`bash-language-server start`).
+It serves `.sh`, `.bash`, `.zsh` and `.ksh` files, shell dotfiles such as
+`.bashrc` and `.profile`, and files whose shebang names a shell.
+
+zsh startup files (`.zshrc`, `.zshenv`, `.zprofile`, `.zlogin`, `.zlogout`)
+are not opened on the Bash server. ShellCheck has no zsh mode and would report
+errors in valid zsh, so these files get highlighting and folding but no
+language server. A `.zsh` script stays on the server, which does not run
+ShellCheck on it.
+
+### ShellCheck and shfmt
+
+The Bash server finds problems with **ShellCheck** and formats with **shfmt**.
+Without ShellCheck a script gets no diagnostics; without shfmt **Format
+Document** changes nothing. Editora shows whether each one is there:
+
+- The **Bash / Shell** card in **Settings → LSP** has a line for each, for
+  example *ShellCheck: found (/usr/bin/shellcheck)* or *shfmt: not found*.
+- [Doctor](/docs/troubleshooting#doctor) has a **ShellCheck** and an **shfmt**
+  row under the Shell server.
+- Opening a script without ShellCheck says so in the status bar, once per
+  window. Format Document without shfmt says that shfmt was not found.
+
+To install them, use the **Install…** button beside either line in Settings,
+the Install… button in Doctor, or **Install: ShellCheck and shfmt**
+(`install.shellTools`) in the palette, which installs whichever is missing.
+Editora downloads the official release for your system (ShellCheck 0.11.0 and
+shfmt 3.14.1, for Linux x64 and arm64, macOS Intel and Apple silicon, and
+Windows x64). It checks each download against a SHA-256 hash built into
+Editora and refuses one that does not match, so nothing is installed from a
+changed or damaged file. The programs go into `plugins/tools` in your config
+folder.
+
+The **ShellCheck command** and **shfmt command** fields on the Bash card choose
+which copy the server runs. Left empty, they use the copy Editora installed,
+else the program of that name on your `PATH`. A path you enter always wins.
+On a [remote host](#language-servers-on-a-remote-host), ShellCheck and shfmt
+are the ones the host's `PATH` finds.
+
+### Bash server options
+
+The Bash / Shell card also holds the server's own settings:
+
+| Setting | What it does |
+| --- | --- |
+| ShellCheck arguments | Added to every ShellCheck run, for example `-x` to follow sourced files or `--severity=warning` to hide notes and style hints |
+| shfmt dialect | The shell syntax Format Document reads: Automatic (from the shebang), Bash, POSIX sh, mksh or Bats |
+| Indent case branches, Put && and \|\| at the start of a line, Put a function's opening brace on its own line, Space after redirections, Simplify code when formatting, Keep column alignment | shfmt's style switches, all off by default |
+| Ignore .editorconfig shfmt options | Use only these options, even where an `.editorconfig` sets shfmt properties |
+| Scripts read in the background | How many workspace scripts the server reads for Go to Symbol and cross-file completion (500 by default; 0 turns it off) |
+| Symbols from every workspace script | Complete, find and rename functions and variables from all scripts, not only from sourced ones |
+| explainshell server | The address of an [explainshell](https://github.com/idank/explainshell) server, for hover help on a command's options. It is sent the command under the caret. Empty (the default) turns it off |
+
+A project can set the same options for everyone who opens it, with a `bashIde`
+object in its `.editora/settings.json` (see
+[Per-project overrides](#per-project-overrides)). It uses the server's own key
+names, the same ones VS Code's Bash IDE extension uses:
+
+```json
+{
+  "bashIde": {
+    "shellcheckArguments": "-x",
+    "backgroundAnalysisMaxFiles": 2000,
+    "shfmt": { "caseIndent": true, "languageDialect": "bash" }
+  }
+}
+```
+
+The keys are `shellcheckPath`, `shellcheckArguments`, `explainshellEndpoint`,
+`backgroundAnalysisMaxFiles`, `includeAllWorkspaceSymbols`, and a `shfmt`
+object with `path`, `languageDialect`, `simplifyCode`, `binaryNextLine`,
+`caseIndent`, `funcNextLine`, `spaceRedirects`, `keepPadding` and
+`ignoreEditorconfig`. A key the project leaves out keeps your own setting.
+The ShellCheck path, the shfmt path and the explainshell server name a program
+to run or a place to send your code, so they apply only in a trusted folder,
+like a project's server commands; the other keys always apply.
+
+### Where ShellCheck finds .shellcheckrc
+
+ShellCheck looks for a `.shellcheckrc` file in the server's workspace root (the
+project or repository folder, or for a loose script the folder it is in) and
+the folders above it. A `.shellcheckrc` in a subfolder of the project is not
+read, because the server hands ShellCheck the script's text rather than its
+path. Put shared settings in the root
+`.shellcheckrc`, and use `# shellcheck disable=SC2086` (or other
+`# shellcheck` directives) in the script itself for anything that applies to
+one folder or file.
 
 ## Language servers on a remote host
 

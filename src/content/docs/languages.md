@@ -32,6 +32,62 @@ the grammar. Many extension-less dotfiles and named config files (e.g.
 `.editorconfig`, `.gitignore` and other `.*ignore` files) are matched by name, so
 they get highlighting too (and the matching language server when enabled).
 
+### When the file name says nothing
+
+A file whose name gives no language (an extension-less script, or a `.txt`
+file) takes it from its own first lines:
+
+- **A shebang** on the first line: `#!/bin/sh`, `#!/usr/bin/env bash`,
+  `#!/usr/bin/env -S bash -e`, `#!/usr/bin/env -u NAME bash`, `#!/bin/busybox sh`,
+  and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python, Node,
+  Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters. A version suffix
+  is ignored (`python3.12` is Python).
+- **A modeline**, when there is no shebang Editora knows: a vim modeline in the
+  first or last five lines (`# vim: ft=sh`, `# vim: set filetype=bash :`), or an
+  emacs line on the first line, or the second after a shebang
+  (`# -*- mode: sh -*-`, `# -*- sh -*-`).
+
+A shebang typed into a new or extension-less file switches the language once you
+stop typing. An extension or name that gives a language always wins over both.
+
+To set the language yourself, click the language in the status bar, or run
+**Buffer: Set Language…** (`buffer.setLanguage`). The choice applies at once to
+everything that depends on the language: highlighting, comment syntax, the
+status bar, the tab's file-type icon, the [language server](/docs/lsp), and the
+Run ▶ for scripts. It lasts while the file stays open.
+
+### Shell scripts
+
+These open as shell scripts (bash, zsh, ksh and POSIX sh share one grammar):
+
+- **Extensions:** `.sh`, `.bash`, `.zsh`, `.ksh`, `.mksh`, `.command`, `.bats`,
+  `.ebuild`, `.eclass`, and names ending in `.bashrc`, `.zshrc` or `.profile`.
+- **Startup files**, such as `.bashrc`, `.bash_profile`, `.bash_login`,
+  `.bash_logout`, `.bash_aliases`, `.profile`, `.zshrc`, `.zshenv`, `.zprofile`,
+  `.zlogin`, `.zlogout`, `.kshrc`, `.mkshrc`, `.xinitrc`, `.xprofile`,
+  `.xsession`, `.bashrc.local` and `.zshrc.local`, plus direnv's `.envrc`.
+- **System copies:** `/etc/profile`, `/etc/bashrc`, `/etc/bash.bashrc`,
+  `/etc/zshrc` and the files in `/etc/zsh/`.
+- **Other names:** the `mvnw` and `gradlew` build wrappers, `PKGBUILD` and
+  `APKBUILD` package recipes, and bash-completion scripts (anything in a
+  `bash-completion/completions` or `bash_completion.d` folder).
+- Any file with a shell shebang or modeline, as above.
+
+The shell grammar is the one VS Code uses, with Editora's own fixes. Commands,
+keywords, variables, quoted strings, here-doc text and comments are coloured; a
+command's bare arguments and options are plain text. Here-docs end at their
+delimiter in every form (`<<EOF`, `<<-EOF`, `<<'EOF'`, `<<"EOF"`, `<<\EOF`),
+`$(( … ))` is coloured as arithmetic, the right side of `[[ … =~ … ]]` as a
+regular expression, and the `)` that ends a `case` pattern is not counted by
+bracket-pair colorization. zsh files use the same grammar, so zsh-only syntax
+such as `${(k)map}` stays plain.
+
+zsh startup files (`.zshrc`, `.zprofile`, `/etc/zsh/zshenv` and the like) are
+not opened on the Bash language server: nothing in them says they are zsh, so it
+would check them as bash and report valid zsh as errors. `.zsh` scripts stay on
+the server. See [Language servers](/docs/lsp) for the Bash server, and
+[Run & debug](/docs/run-debug) for running scripts.
+
 ## Autocomplete
 
 Completion appears as you type, debounced and kept off the hot path. Java member
@@ -79,7 +135,9 @@ What is checked depends on the file type:
   attributes, `<script>`, `<style>` and `<pre>` blocks, Typst math and Typst
   lines that open with a `#` instruction are left alone.
 - **Source code** has only comments and string literals checked, so identifiers
-  aren't flagged.
+  aren't flagged. In shell scripts a command's bare arguments and options
+  (`pipefail`, package names, `-xzf`) are not checked; quoted strings, here-doc
+  text and comments are.
 - **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.

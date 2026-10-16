@@ -60,6 +60,24 @@ them be. They are offered in the completion popup and the **Snippet: Insert…**
 list, and in Markdown and plain text as an inline suggestion at the end of a
 line (`date → Current date (YYYY-MM-DD)`), which Tab accepts.
 
+### Shell snippets
+
+The bundled shell snippets follow the script they expand in. In a script whose
+`#!` line names a POSIX shell without bash's `[[ ]]` (`sh`, `dash`, `ash` or
+`posh`), `if`, `elif`, `while` and `until` write their test as `[ condition ]`
+instead of `[[ condition ]]`. With no `#!` line a script is treated as bash.
+
+The triggers include `if`, `elif` (also `elseif`), `else`, `for_in`, `for_i`,
+`while`, `until`, `case`, `function`, `arith` (also `expr`, for `$(( … ))`),
+`echo`, `read` and `break`. The `case` snippet puts each `;;` at the level of
+its item's body, the way the editor indents one you type.
+
+Several of these triggers are also shell keywords. So in a shell script,
+**Enter** on a completion row that only repeats the word you just typed closes
+the popup and starts a new line: typing `else`, pausing, then pressing Enter
+gives a new line, not the `else` snippet. **Tab** still expands it, and Enter
+still takes a longer row such as `elseif`.
+
 **Settings → Snippets → Expand snippets with Tab** (on by default, also **View:
 Toggle Snippet Expansion on Tab**, `view.toggleSnippetTabExpansion`) turns Tab
 expansion off altogether. Snippets then come from the completion popup and
@@ -172,9 +190,18 @@ folder. They are kept as they are; pressing **Create** again creates only the
 missing ones. A template never overwrites a file. When it is done, the file that
 holds `${cursor}` opens with the caret there.
 
-Created files end with a line break and follow the project's `.editorconfig`
-line endings. A file that starts with `#!`, such as the shell and Zsh scripts,
-is created executable on Linux and macOS.
+Created files end with a line break and follow the project's
+[`.editorconfig`](/docs/editorconfig): its line endings, and its
+`indent_style` and `indent_size`. Template bodies are written with four-space
+levels, and each level becomes a tab or the configured number of spaces. A
+shell script is the exception for line endings: it is always written with LF,
+because bash cannot run a script with CRLF line endings.
+
+A file that starts with `#!`, such as the shell and Zsh scripts, is created
+executable on Linux and macOS. On a file system without that permission
+(Windows, FAT, some network drives) the status bar says so: run the script with
+its interpreter (`bash tool.sh`), and mark it executable in Git with
+`git update-index --chmod=+x tool.sh`.
 
 ### Java packages
 
@@ -251,6 +278,11 @@ YAML, and so on) in the current folder. It asks only for a name.
   `release-1.2` as a Markdown file becomes `release-1.2.md`.
 - A Java type gets the `package` line of its folder, as described under
   [Java packages](#java-packages).
+- A Shell file starts with `#!/usr/bin/env bash` and `set -euo pipefail`, and a
+  Zsh file with `#!/usr/bin/env zsh`, `emulate -L zsh` and
+  `setopt errexit nounset pipefail` (the same preamble as the Zsh Script
+  template). The caret waits after a blank line. Both are created executable,
+  and like templates they follow `.editorconfig`.
 - A name that cannot work is refused with the reason: a name Windows reserves
   (`CON`, `NUL`, `COM1`), one of the characters `< > : " | ? *`, a trailing dot
   or space, or a name that starts with `~`. For Java types, a keyword or a name

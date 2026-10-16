@@ -62,7 +62,9 @@ Beyond GFM it also renders:
   `align="center"`.
 
 Code blocks show their language and scroll sideways rather than wrapping, as do
-wide tables. A missing image shows its alt text, and a local image that changes
+wide tables. A ` ```console ` or ` ```shell-session ` block is shown as a terminal
+session: the prompt (`$ `, `# `, `user@host:~$ `, `(venv) $ `) is muted, the
+command after it is highlighted as shell, and the lines it printed stay plain. A missing image shows its alt text, and a local image that changes
 on disk is reloaded. An empty document says *Nothing to preview yet*. The
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
@@ -215,7 +217,8 @@ and promoting an H1 leaves it an H1.
 The source itself is styled: setext headings, ticked and open task boxes,
 strikethrough, quotes, list markers, table pipes, bare URLs, front matter and
 inline HTML each get their own colour, and fenced code is highlighted by its
-language.
+language. Shell fences can be marked `sh`, `bash`, `zsh`, `shell` or
+`shellscript`.
 
 ### Images and pasting
 
