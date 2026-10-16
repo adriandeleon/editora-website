@@ -33,6 +33,10 @@ state, and other per-file settings.
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
+A folder on another machine can be a project too: connecting to it over SFTP
+opens it as a project in its own window. See
+[Remote folders as projects](/docs/remote#remote-folders-as-projects).
+
 **Delete** moves files to the system trash on Linux and macOS, and the
 confirmation says which will happen. Windows deletes permanently, as does any
 file the trash cannot take; a permanent delete asks with **Cancel** as the
@@ -183,7 +187,9 @@ remember to flip a global preference when switching between them.
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
 with an example and opens it.
 
-Only **toolchain** settings can be overridden this way. Appearance, keymap and
+Only **toolchain** settings can be overridden this way: the language servers,
+and the Bash server's options such as ShellCheck's arguments and shfmt's style
+(see [Bash server options](/docs/lsp#bash-server-options)). Appearance, keymap and
 fonts stay personal, because checking out a repository should not rearrange
 somebody else's editor. Run configurations have their own shared file,
 described in [Run & debug](/docs/run-debug).
@@ -195,6 +201,13 @@ tabs, tool windows, and session. The window's project picker acts as a window
 switcher: choosing a project focuses or opens that window. The set of open
 windows is remembered and restored on the next launch. With projects disabled,
 Editora stays a single window.
+
+Everything in a window acts on that window's project, whichever window you used
+last: Git, *Project: Edit Project Settings…*, exporting and importing run
+configurations, where a new file is offered and where the file finder starts, a
+template's `${projectName}`, snippet variables such as `$WORKSPACE_FOLDER`, the
+AI agent's working folder, and finding the files of a stack trace. A recent
+file that belongs to another open project opens in that project's window.
 
 Launching Editora again while it is running hands the launch to the running
 editor instead of starting a second process. Start with `--new-instance` when
@@ -212,6 +225,92 @@ or following a definition, lands in a single reusable **preview tab**, shown in 
 browsing costs one tab rather than one per glance. Editing it, or opening it
 explicitly, makes it permanent. See
 [preview tabs](/docs/code-navigation#preview-tabs).
+
+Closed a tab by mistake? **Buffer: Reopen Closed Tab** (`buffer.reopenClosed`)
+brings back the file whose tab you closed last, with the caret where it was.
+Run it again for the one before, up to the last 20 tabs closed in the window
+during this session. A file deleted since is skipped, and a file that is open
+again is simply focused. It counts the tabs you close yourself (the close
+command, *Close Others* and the other tab-menu closes, or a tab's **×**), not the
+ones that go when a window closes or you switch projects, and it brings back
+files only, not diff or preview tabs. It is `Ctrl+Shift+T` (`⇧⌘T` on macOS) in
+the VS Code, Sublime Text and CUA keymaps, and it is in the **File** menu
+under Open Project. IntelliJ IDEA's `Ctrl+Shift+T` stays Go to Test, so there it is a
+palette command.
+
+## Saving and reverting
+
+| Action | Command | Default key |
+| --- | --- | --- |
+| Save every modified file in the window | `file.saveAll` | `C-x s` |
+| Throw away unsaved changes and read the file again | `file.revert` | (palette) |
+
+**File: Save All** saves every modified file open in the window, in all its
+editor groups, exactly as *File: Save* would for each one, so a file that needs
+administrator rights, the Markdown on-save fixes and the check for a file changed
+on disk all apply. Untitled buffers are skipped. When it is done, one line in the
+status bar gives the count: how many were saved, how many could not be, and how
+many untitled buffers were skipped. In VS Code's keymap it is `Ctrl+K S` (`⌥⌘S`
+on macOS), and it sits in the **File** menu under Save As.
+
+**File: Revert File** reads the file again from disk. It asks first only when
+that would discard unsaved changes, and [Local History](#local-file-history)
+keeps a copy of them. The caret, scroll position and folds stay where they were,
+and the file is read in the [encoding chosen for it](#file-encodings), if any. An
+untitled buffer or a file that no longer exists on disk has nothing to revert to,
+and the status bar says so. It is in the **File** menu under Save as
+Administrator.
+
+## File encodings
+
+Editora reads a file as UTF-8 unless a byte-order mark or a `charset` rule in an
+[`.editorconfig`](/docs/editorconfig) says otherwise. A file that is not valid in
+that encoding still opens without losing a byte: it is shown through a
+single-byte stand-in (Windows-1252 or ISO-8859-1), and the status bar draws its
+encoding in the **warning colour**, with a tooltip saying the real encoding is
+unknown.
+
+Click the encoding in the status bar (*Buffer: Change Encoding…*,
+`buffer.chooseEncoding`) to fix it, or use the two commands it offers from the
+palette:
+
+| Action | Command |
+| --- | --- |
+| Read the file again in another encoding | `buffer.reopenWithEncoding` |
+| Choose the encoding the file is written in | `buffer.saveWithEncoding` |
+
+The list puts about 45 common encodings first, grouped by script (Unicode,
+Western, Central European, Cyrillic, Greek, Turkish, Hebrew, Arabic, Baltic,
+Vietnamese, Thai, Japanese, Chinese, Korean and DOS), with Shift_JIS, EUC-JP,
+ISO-2022-JP, GB18030, GBK, Big5, EUC-KR, windows-1251 and KOI8-R among them,
+followed by every other encoding available. The list is the same on every
+operating system.
+
+- **Reopen with Encoding…** reads the file from disk again in the encoding you
+  pick. If the bytes are not valid in it, nothing changes, and the status bar
+  names the first line and column that could not be read. With unsaved changes
+  it asks first, and Local History keeps a copy of them.
+- **Save with Encoding…** sets the encoding the file is written in from its next
+  save, whatever the `.editorconfig` says. The tab shows as modified until you
+  save; picking the encoding the file already has on disk makes it clean again.
+  If the text holds a character the encoding cannot store, the command refuses
+  and names the character and its line, and a save that meets such a character
+  later refuses too, rather than quietly writing UTF-8. For a file whose
+  encoding Editora could not detect, reopen it in the right encoding first.
+
+The encoding you choose is **remembered for that file**: it is used the next time
+you open it, after a restart and when a session is restored, it follows the file
+when you rename it, and it works for [remote files](/docs/remote) too. If the
+file later stops being valid in that encoding, Editora forgets the choice and
+says so in the status bar. A crash-recovery copy keeps a choice that had not been
+saved yet.
+
+The **File Information** tool window (`tool.fileInformation`) shows the file's
+encoding.
+
+None of the three has a default key or a place in the **File** menu; reach them
+from the status bar or the palette, and bind them in Settings → Keymaps if you
+use them often.
 
 ## Editor groups: two files at once
 
@@ -314,9 +413,9 @@ recent files, and version and license info. Reopen it with `view.welcome`.
   or start with the `--zen` flag.
 - **Expert mode** is a lighter focus mode than Zen: it strips only the window
   chrome (toolbar, tab bar, breadcrumb, tool stripes, whitespace guides) but
-  **keeps the full editor view**, line numbers, status bar, minimap, column
-  ruler, and current-line highlight, so you stay oriented. Toggle it from the
-  palette (`view.toggleExpert`), `C-c C-e`, Settings → Interface → Modes, the
+  **keeps the full editor view**, line numbers, status bar, minimap, rulers,
+  indent guides, and current-line highlight, so you stay oriented. Toggle it
+  from the palette (`view.toggleExpert`), `C-c C-e`, Settings → Interface → Modes, the
   floating "E" button, or the `--expert` flag. Expert and Zen are mutually
   exclusive, and like Zen it's per-window and never changes your saved settings.
 - **Simple UI mode** strips the editor to the essentials: it hides the extra
@@ -346,7 +445,8 @@ without a system title bar, and the menus, the window title and the system
 buttons share that single row, which gives the editor a full bar of vertical
 space back. Minimise, maximise, close, drag-to-move, double-click-to-maximise,
 edge resize and snapping all stay the platform's own, so the window behaves as
-before and only the position of the menus changes.
+before and only the position of the menus changes. The window drags from the
+title in the middle of the bar as well as from its empty parts.
 
 It is **experimental**, off by default, and **applies on restart**, because a
 window's style is fixed once it has been shown. **Linux and Windows only.** macOS is
@@ -358,12 +458,15 @@ why. Also on the palette as
 
 The **breadcrumb** sits directly under the editor area and is as wide as the
 editor, rather than spanning the whole window above the status bar. It writes your home directory as a single `~` crumb, which still
-navigates there.
+navigates there. In a Markdown file it continues with the path of headings at
+the caret.
 
 In the **status bar**, indent, line endings and encoding are one segment
 (`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
 They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is open. A file whose
+three different commands, and they appear only when a file is open. The encoding
+is drawn in the warning colour when Editora had to guess it; see
+[File encodings](#file-encodings). A file whose
 lines do not all end the same way reads **Mixed** with its dominant ending, for
 example `Mixed (LF)`. Saving such a file unchanged leaves it as it is; saving an
 edit writes the dominant ending on every line and says so.
@@ -390,6 +493,12 @@ switcher it read as a project control. As a catalog item, it can be dragged
 elsewhere or removed like any other. A toolbar you had already customized keeps
 the button. Because a saved layout is used verbatim, the button is inserted
 after Save As so that it does not disappear from both halves.
+
+Its dropdown is as wide as the longest file name, up to a limit, with each
+file's project label lined up in one column. Hover a row for the file's full
+path. A row's trash icon asks before removing that file from the list, and the
+question shows the full path, so two files with the same name are easy to tell
+apart.
 
 Cut, copy and paste are not in the default layout, because in a keyboard-driven
 editor they are rarely reached for with the mouse. They remain catalog items
@@ -507,6 +616,17 @@ A file **deleted** outside Editora keeps its tab and its text: the tab is marked
 unsaved, the status bar says the file no longer exists on disk, and auto-save
 does not write it back. Save it yourself to recreate the file.
 
+A [remote project](/docs/remote)'s folder is watched on its host when that host
+[may run commands](/docs/remote#allowing-a-host-to-run-commands), so a
+`git pull` or a build there updates the Project tree, Git, language servers and
+an open file that changed, as for a local folder. A host with `inotifywait`
+reports changes at once; others are checked every few seconds.
+
+A project whose tools run in a container is watched here, since a bind-mounted
+folder is this machine's own. A project inside a WSL distribution is watched
+from inside the distribution while its tools [run there](/docs/remote#outside-changes-in-wsl),
+because Windows cannot watch the `\\wsl.localhost` share.
+
 ## Trusted folders
 
 A repository can ship its own build wrapper, `./mvnw` or `./gradlew`, and those
@@ -532,3 +652,6 @@ Review or revoke trust in **Settings → Workspace → Trusted Folders**, or fro
 the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
 folder that is still covered by a trusted parent tells you so, rather than
 claiming a revoke that the parent would override.
+
+A folder on a [remote host](/docs/remote) is trusted on its own: trusting
+`/srv/app` on a server does not trust a local `/srv/app`, or the other way round.

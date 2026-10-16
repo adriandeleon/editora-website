@@ -45,7 +45,7 @@ Toggle CSV Grid Preview*).
 | Export to an ODF spreadsheet (`.ods`) | `csv.exportOds` | (palette) |
 
 The same four actions are on the grid's right-click menu, and *File: Print
-Rendered Preview…* / *File: Export Rendered Preview to PDF…* print or export the
+Rendered Preview…* / *File: Export Preview to PDF…* print or export the
 table on a CSV file.
 
 While the grid is showing, all four **output what the grid shows**: only the

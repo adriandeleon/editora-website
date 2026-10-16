@@ -25,6 +25,11 @@ Editora ran on your behalf, each with its output, exit code and duration. Only
 the window's label changed; its stripe placement and any keybinding you gave
 `tool.buildOutput` are unaffected.
 
+While a build runs, a spinner turns beside its status and in its tab's title,
+so a build in a tab you are not looking at still shows it is running; a **Git**
+tab spins while a clone streams. In **Test Results** the spinner also covers
+the compile step before the first test reports.
+
 | Tool | Marker | Actions |
 | --- | --- | --- |
 | Maven | `pom.xml` | Lifecycle phases, declared profiles (checkable, composing via `-P`), each plugin's bound goals and its full goal list, and *Run custom…* |
@@ -52,6 +57,18 @@ locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 `JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
 resolution, Java Run and Debug, and before-launch commands. A saved run
 configuration can override it for one project or launch.
+
+In a [remote project](/docs/remote#allowing-a-host-to-run-commands), Maven,
+Gradle, npm, Cargo and Go builds and test runs start on the host, over the same
+SSH connection, with output, input and Stop as for a local build. The wrappers
+are looked for on the host, and Java is the host's own (or the **JDK home** set
+for that host in Settings → Remote), never the local Default JDK.
+
+A project whose tools [run in a container](/docs/remote#tools-in-a-container)
+or, on Windows, [in a WSL distribution](/docs/remote#tools-in-wsl-windows) runs
+its builds and test runs there the same way, with the wrappers, Java and
+environment found inside. The wrapper run there is the POSIX `./mvnw` or
+`./gradlew`, also when Editora itself runs on Windows.
 
 Discovery parses the marker file directly, with no shell-out and no new
 dependency, so it's instant and offline. Toggle each under **Settings →

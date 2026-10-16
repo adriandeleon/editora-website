@@ -12,7 +12,7 @@ Every integration gets a row, grouped by area:
 
 - **Version control**: `git`, and `gh` for pull requests, issues, and CI runs.
 - **Search**: `ripgrep`, which accelerates Find in Files (the built-in walker is used when it's absent).
-- **Language servers**: one row per enabled server, showing the resolved path.
+- **Language servers**: one row per enabled server, showing the resolved path, plus ShellCheck and shfmt rows under the Shell server, which the Bash server lints and formats with.
 - **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, `dot` and `plantuml`, and `typst`.
 - **Run & build**: the JDK used to run a file, plus `python3`, `bash`, `make`, and the build tools.

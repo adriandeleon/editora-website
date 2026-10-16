@@ -11,8 +11,13 @@ IntelliJ-style, and collects them in a **TODO** tool window. It's on by default.
 ## In the editor and the tool window
 
 - Matches are highlighted inline and listed in the **TODO** tool window
-  (`tool.todo`, `M-g o`), grouped by file. It scans the open project's tree when
-  a project is open, else the open files. Double-click a result to jump to it.
+  (`tool.todo`, `M-g o`), grouped by file. Double-click a result to jump to it.
+- In a project window, the tool window scans the project's tree, plus any open
+  files outside it.
+- In the **No Project** window, the tool window lists only the current tab and
+  keeps up as you edit it. It is hidden, stripe button included, while the tab
+  has no TODOs; an unsaved new file counts as having none. If it was open when
+  it was hidden, it comes back on the next tab or edit that has TODOs.
 - Matches also show as **overview stripes** over the scrollbar and on the
   minimap edge, each in its pattern's color. Click a stripe to jump, hover for
   the line.
@@ -57,5 +62,7 @@ text.
 | Set a part color | `todo.setPartColor` | (palette) |
 
 Highlighting runs off the UI thread and is debounced, and the project scan is
-lazy (only when the tool window is open or refreshed), so it stays cheap. Use
+lazy (only when the tool window is open or refreshed), so it stays cheap.
+Without a project, `tool.todo` and `todo.refresh` on a tab with no TODOs say so
+in the status bar instead of opening an empty window. Use
 *View: Toggle TODO Highlighting* to turn it off.

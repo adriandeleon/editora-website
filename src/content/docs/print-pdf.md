@@ -25,13 +25,14 @@ are always light, whatever theme the editor uses.
 
 The CUA keymap binds **Print…** to `Ctrl+P`.
 
-**Print…** and **Export to PDF…** for the current file are in the **File** menu
-(also in Simple UI mode), on a tab's right-click menu, and in the editor's
+**Print…** for the current file is in the **File** menu, and **Export to PDF…**
+under **File ▸ Export** with the preview's export formats (Simple UI mode keeps
+both directly in its File menu). Both are also on a tab's right-click menu and in the editor's
 right-click menu. The editor's right-click menu also has **Print Selection…**
 and **Export Selection to PDF…**.
 
 In the palette the preview commands are *File: Print Rendered Preview…* and
-*File: Export Rendered Preview to PDF…*. They are unavailable when the active
+*File: Export Preview to PDF…*. They are unavailable when the active
 file has no preview that can be exported, when a JSON, YAML, TOML or XML file
 does not parse, and for `.http` files. A preview's own right-click menu offers
 the export too.
@@ -94,8 +95,9 @@ OpenDocument, spreadsheet and CSV export dialogs.
 The status bar shows the page being written. A second export started while one
 is running is queued, and the status bar says how many are ahead of it. *File:
 Cancel PDF Export* stops the running export and any queued behind it. *File:
-Open Last Exported File* opens the file the window exported last (PDF, Word,
-OpenDocument or spreadsheet).
+Open Last Exported File* opens the file the window exported last: a PDF or an
+HTML page in a tab, a Word, OpenDocument or spreadsheet file in the application
+your system opens it with.
 
 An exported PDF carries:
 

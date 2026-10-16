@@ -25,11 +25,11 @@ static final String CE = "Customization & extensibility";
 static final List<Feature> FEATURES = List.of(
     new Feature("command-driven-core", KB, 1, false,
         "Command-driven core",
-        "Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. There are 700+ commands and no hidden actions.",
+        "Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. There are 900+ commands and no hidden actions.",
         """
 Editora has no hidden actions. Every capability (save, toggle a bookmark, start the debugger, switch a theme) is a registered `Command` with an id and a title. Four things are built on that registry:
 
-- The **command palette** (`M-x`) fuzzy-searches all 700+ commands, each with a one-line description.
+- The **command palette** (`M-x`) fuzzy-searches all 900+ commands, each with a one-line description. A command is also found by the first part of its id, so "markdown table" finds the `Table: …` commands.
 - **Keybindings** are a map from a chord to a command id, so anything can be bound, or rebound.
 - **Toolbar buttons** dispatch the same commands, so the UI and the keyboard never drift apart.
 - The **[menu bar](/features/menu-bar)** is a curated view of the same registry, so each item shows its live keybinding and can never name an action that doesn't exist.
@@ -61,7 +61,7 @@ It **teaches the way the command palette does**: an empty query lists every comm
 
 It is `M-S-x` in the Emacs keymap and `Ctrl`/`Cmd`+`Shift`+`E` in the others. It can also take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
 
-The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).
+The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. In a [remote project](/features/remote-sftp), the host lists the files in one command; there are no symbols for a remote project. See [Navigation & search](/docs/navigation#search-everywhere).
 """),
     new Feature("jump-to-popups", KB, 4, false,
         "Jump-to popups",
@@ -81,11 +81,20 @@ Every one of them **ranks** what you typed by contiguity, word and camelCase bou
 """),
     new Feature("multiple-cursors", KB, 5, false,
         "Multiple cursors",
-        "Add a caret at the next occurrence, above/below, or on every occurrence at once, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once, VS Code-style.",
+        "Add a caret at the next occurrence, above/below, on every occurrence or at every selected line's end, split a selection into lines, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once.",
         """
 Edit many places at once, VS Code-style. Add a caret at the **next occurrence** of the selection, or **above / below** the current line, or **Alt-drag** a column/box selection. Type, and the edit fans out to every caret; `Esc` collapses back to one.
 
-**Select all occurrences** (`Ctrl+Shift+L` in the VS Code and Sublime keymaps) puts a cursor on every occurrence of the selection, or of the word under the caret, in one step. From the Find bar, **Alt+Enter** does the same for every match of the current query, so the query's case, regex and whole-word toggles decide what gets a cursor.
+**Select all occurrences** (`Ctrl+Shift+L` in the VS Code keymap, `Alt+F3` in Sublime's) puts a cursor on every occurrence of the selection, or of the word under the caret, in one step. From the Find bar, **Alt+Enter** does the same for every match of the current query, so the query's case, regex and whole-word toggles decide what gets a cursor.
+
+Shaping the set of cursors:
+
+- **Split Selection into Lines** (`Ctrl+Shift+L` in the Sublime keymap) turns every selection into one selection per line it covers, each holding that line's selected part.
+- **Add Carets to Line Ends** (`Shift+Alt+I` in the VS Code and CUA keymaps, `Alt+Shift+G` in IntelliJ's) puts a cursor at the end of every selected line.
+- **Skip Occurrence** (`Ctrl+K Ctrl+D` in VS Code and Sublime) moves the newest selection on to the next match instead of adding one, wrapping round to the start.
+- **Remove Last Added Caret** (`Ctrl+U` in VS Code and Sublime, `Alt+Shift+J` in IntelliJ) takes back the cursor added last, one at a time; the main cursor stays.
+
+The [line commands](/features/line-and-text-tools) and Tab/Shift-Tab run at every cursor as one undo step.
 
 It's powered by Editora's RichTextFX fork, which adds multiple cursors and column selection as a layered input map that does nothing when there's a single caret.
 
@@ -107,7 +116,7 @@ The recording hooks are inert when you're not recording, so there's no idle cost
 """),
     new Feature("emacs-heritage", KB, 7, false,
         "Emacs heritage",
-        "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap.",
+        "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, registers, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap.",
         """
 Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto their own commands. Editora implements the model underneath: the concepts an Emacs user reaches for without thinking, built as real features rather than shortcut aliases. Emacs is the default keymap, and everything here works in the other four too, through the palette or a binding of your own.
 
@@ -127,6 +136,16 @@ The kill ring holds the last 120 kills (Emacs' own `kill-ring-max`), consecutive
 ## Rectangles
 
 The full **C-x r** family over the columns between point and mark: kill, copy, yank, delete, clear, open, string-rectangle, and number-lines. Each is a single undo step. Note these are character columns, so a tab counts as one, and rectangles are distinct from the Alt-drag multiple-cursor selection.
+
+## Registers
+
+Named slots, one character each, for text and for places:
+
+- **C-x r s** copies the region into a register (with **C-u**, it cuts it), and **C-x r i** inserts a register's text, leaving point before it.
+- **C-x r SPC** saves point (its file and position) in a register, and **C-x r j** jumps back there, opening the file if it is closed. A saved position moves with edits to its file while the file is open, as an Emacs marker does.
+- Each command asks for the register's name as the next key; **C-g** or Escape cancels. *Edit: List Registers* shows them all.
+
+Registers last for the session, one set per window. Number, rectangle and window-configuration registers are not supported.
 
 ## Narrowing
 
@@ -188,6 +207,7 @@ The command palette lists everything, but it is hard to browse. It helps when yo
 - Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
 - A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
 - Almost every item that can carry an **icon** does, and it is the same glyph you see for that action in a right-click menu, so Save looks the same wherever you reach it from. About a third are left blank rather than given an invented glyph. The icon column is reserved either way, so the titles still line up.
+- Menus that grew long keep their daily items at the top and the rest one level down: VCS groups its commands by what they act on, and File keeps its export formats under **Export**.
 - On **macOS** it sits in the system menu bar.
 
 It is a curated subset. Editora registers over seven hundred commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
@@ -204,7 +224,7 @@ Expand boilerplate with interactive templates. Type a prefix and press **Tab**, 
 
 Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields, mirrors update live, choice fields show a dropdown, and `$0` is the final caret. Bodies use the standard VS Code / TextMate syntax, `$1`, `${1:default}`, mirrors, `${1|a,b|}` choices, and variables (`$TM_FILENAME`, `$CLIPBOARD`, date/time, the selection…).
 
-While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running.
+While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running. In Markdown and plain text, a trigger that is an ordinary word expands only when it is alone on its line, and a block snippet (heading, table, alert…) only at the start of a line; mid-sentence, the completion popup still offers it. Shell snippets follow the script's `#!` line: under `sh` or `dash` they write `[ ]` tests instead of bash's `[[ ]]`. In a shell script, Enter on a completion that only repeats the word just typed (`else`, `case`…) starts a new line; Tab still expands the snippet.
 
 Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
 """),
@@ -212,7 +232,7 @@ Snippets ship for 30 languages, and a bundled snippet can be disabled; add your 
         "Smart indentation",
         "Per-language auto-indent on <kbd>Enter</kbd> (block openers, matching-pair stanzas, closer re-alignment), plus smart backspace that clears a whole indent level in one press.",
         """
-Enter follows each language's rules: it keeps the current line's indent, adds a level after a block opener (braces, `:` in Python/YAML, `do`/`then` in shell, an open tag in XML/HTML…), and splits a matching pair into an indented stanza with the closer dropped below. Typing a closer (`)]}` or a keyword like `end`/`fi`/`done`) re-aligns the line to its opener.
+Enter follows each language's rules: it keeps the current line's indent, adds a level after a block opener (braces, `:` in Python/YAML, `do`/`then` in shell, an open tag in XML/HTML…), and splits a matching pair into an indented stanza with the closer dropped below. Typing a closer (`)]}` or a keyword like `end`/`fi`/`done`) re-aligns the line to its opener. In shell scripts the indent follows the script's structure: a `case` pattern indents its body, `;;` stays at the body's level (as shfmt lays it out), `fi`, `done` and `esac` line up with the block they close, and a here-document's body is left as it is while its closing delimiter is unindented so bash recognises it.
 
 **Smart backspace** removes a whole indent level in one press, and on a blank, auto-indented line, a single Backspace jumps back to the end of the previous line. The indent unit (tabs vs spaces) is inferred from the file.
 """),
@@ -230,13 +250,13 @@ Quotes aren't auto-paired next to a word character, so the apostrophe in `don't`
         """
 `M-;` (Emacs comment-dwim) toggles comments using the language's own syntax. A single line toggles a line comment; a multi-line selection toggles a block/region comment: `//` and `/* */` for Java and C-likes, `#` for Python/shell/YAML, `<!-- -->` for XML/HTML/Markdown, `--` for SQL, and so on.
 
-It preserves indentation, uses whichever form exists in line-only or block-only languages, and is a no-op for languages without comments.
+It preserves indentation, uses whichever form exists in line-only or block-only languages, and is a no-op for languages without comments. A `#!` shebang line is never toggled, and in a shell script the lines of a here-document are left alone unless the selection includes the line that opens it.
 """),
     new Feature("spell-checking", ED, 5, false,
         "Spell checking",
         "Red wavy underlines with right-click suggestions, Add-to-Dictionary, and Ignore: full text for prose, comments &amp; strings for code, set per file type. Pure-Java Hunspell; English, Spanish, French.",
         """
-Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged); plaintext and Markdown are checked in full, as is the text of HTML and Typst documents. Data and configuration formats such as JSON, YAML and TOML are off by default; Settings → Spell Check → File Types sets this per file type.
+Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged, nor a shell command's bare arguments and options); plaintext is checked in full, and so is Markdown prose, including link text and image alt text, but not code, front matter, link targets or HTML tags, as is the text of HTML and Typst documents. Data and configuration formats such as JSON, YAML and TOML are off by default; Settings → Spell Check → File Types sets this per file type.
 
 Commands move to the next or previous misspelling and correct, add or ignore the word at the caret, and the status bar shows the dictionary in use.
 
@@ -250,12 +270,51 @@ Editora reads a project's `.editorconfig` so your files follow the project's con
 
 It honors the common keys:
 
-- **`indent_style`** / **`indent_size`** / **`tab_width`**: Tab and Enter follow them.
-- **`end_of_line`** and **`charset`** (utf-8, utf-8-bom, latin1, utf-16le/be), round-tripped on read and save.
-- **`max_line_length`**, which drives the column ruler.
+- **`indent_style`** / **`indent_size`** / **`tab_width`**: Tab and Enter follow them, and so do new files from templates.
+- **`end_of_line`** and **`charset`** (utf-8, utf-8-bom, latin1, utf-16le/be), round-tripped on read and save. An encoding you choose for a file yourself ([Reopen or Save with Encoding](/features/file-encodings)) takes precedence.
+- **`max_line_length`**, which sets the first [ruler](/features/rulers-indent-guides) (`off` hides them all).
 - On save, **`trim_trailing_whitespace`** and **`insert_final_newline`**.
 
+Shell scripts keep LF line endings and no byte-order mark: `end_of_line = crlf` and `charset = utf-8-bom` are not applied to them, because bash cannot run such a script.
+
 It's **on by default**; toggle it in Settings → Editor or with *View: Toggle EditorConfig*. Without an `.editorconfig`, a global **Indent style** preference (Detect / Spaces / Tabs) still applies.
+"""),
+    new Feature("line-and-text-tools", ED, 8, false,
+        "Line commands and text tools",
+        "Insert, delete, select and indent whole lines at every cursor; sort, filter and de-duplicate lines; encode, decode and escape the selection; increment the number at each cursor.",
+        """
+The small edits you make all day, as commands that work at **every cursor** and undo in one step.
+
+## Line commands
+
+- **Insert Line Below** (`Ctrl+Enter`) opens a new, indented line under the current one wherever the cursor is on it; **Insert Line Above** (`Ctrl+Shift+Enter`) opens one above.
+- **Delete Line** (`Ctrl+Shift+K`, `Ctrl+Y` in the IntelliJ keymap) deletes the line, or every line a selection touches, and keeps the cursor's column. It leaves the clipboard and the kill ring alone.
+- **Select Line** (`Ctrl+L`) selects the whole line; press it again to take the next one.
+- **Indent Lines** / **Outdent Lines** (`Ctrl+]` / `Ctrl+[`) shift the line by the file's indent unit, wherever the cursor sits.
+- **Duplicate Line** and **Move Line Up / Down** work on the line or the selected block.
+
+A collapsed fold is opened before a line command changes it, and an ordered Markdown list it changes is numbered in sequence again. The chords above are the VS Code keymap's (`Cmd` on macOS); the Sublime, CUA and IntelliJ keymaps bind their own equivalents, and every command is in the palette.
+
+## String manipulation
+
+**Edit: String Manipulation…** (`C-c x` in the Emacs keymap) is one filterable picker over all of these:
+
+- **Case**: camelCase, PascalCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case, dot.case, swap case, and a cycle through the styles.
+- **Lines**: sort ascending or descending in natural order (numbers by value, case-insensitive), case-sensitive sort, sort keeping one of each, sort by length, reverse, shuffle, remove duplicates or empty lines, trim trailing whitespace, and **keep** or **remove the lines matching** a regular expression. They act on the selected lines, or on the whole file with nothing selected.
+- **Encode and decode the selection**: Base64, URL encoding, JSON string escapes, HTML entities and `\\uXXXX` escapes. With several selections each one is converted, in one undo step; a decode that cannot read one of them changes none.
+- **Increment / Decrement Number** change the number at each cursor, or the next one on its line: negatives, zero padding (`007` → `008`) and hexadecimal (`0x0f` → `0x10`) keep their form. In the Emacs keymap they are `C-c =` and `C-c -`, and `C-u 10` steps by ten.
+"""),
+    new Feature("rulers-indent-guides", ED, 9, false,
+        "Rulers and indent guides",
+        "Rulers at any columns, with their own set per language, and faint guides at every indentation level, carried through blank lines.",
+        """
+**Rulers** mark line lengths: one at column 80 by default, or as many as you like. Set them in Settings → Editor (**Rulers**, such as `80, 120`), or with *Editor: Set Rulers…* from the palette.
+
+A language can have **its own rulers** instead (**Rulers by language**, such as `java: 100; python: 79, 88`), set from the palette for the current file's language with *Editor: Set Rulers for This Language…*. A language with nothing after its colon has none. A project's [`.editorconfig`](/features/editorconfig) `max_line_length` replaces the first ruler, and `off` hides them all. *View: Toggle Rulers* shows or hides them.
+
+**Indent guides** are faint vertical lines at each indentation level of the visible text, so you can see which block a line belongs to. They run through blank lines inside a block, follow the theme's colours, and skip folded lines. Each guide stands where its level's text starts, measured from the text as it is laid out, so the guides stay on their columns when the line numbers get wider, in a tab-indented file at any tab size, and in a proportional font; scrolled sideways, they are not drawn over the line numbers. They are on by default; turn them off with *View: Toggle Indent Guides* or in Settings → Editor.
+
+Both are hidden in [Zen mode](/features/zen-mode) and [Simple UI mode](/features/simple-ui-mode), and kept in [Expert mode](/features/expert-mode). The guides are also off in large-file mode. Typing inside a line costs them next to nothing: the rulers are placed from one measurement, and the guides check where the text starts and redraw only when something they show has changed. Their cost depends on how many lines are on screen, not on the length of the file.
 """),
     new Feature("undo-history", ED, 7, false,
         "Undo History",
@@ -274,13 +333,15 @@ It's session-only and disabled for very large files. The tool-window stripe is o
         """
 Highlighting uses **TextMate grammars** (via tm4e) for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL, plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers. Astro uses the official grammar for mixed frontmatter, HTML, and CSS.
 
+A file whose name gives no language takes it from a shebang (`#!/usr/bin/env bash`, or `java --source 25` for Java) or a vim or emacs modeline (`# vim: ft=sh`, `-*- mode: sh -*-`), and the status-bar language picker sets it by hand; the language server, Run and the tab's file-type icon follow either way. Shell scripts are also recognised by their startup-file names (`.bashrc`, `.zshrc`, direnv's `.envrc`, `/etc/profile`, …), and a command's bare arguments are plain text, so commands, variables and strings stand out. See [Languages & highlighting](/docs/languages).
+
 Tokenization is **stateful** (it carries grammar state across lines, so block comments and heredocs highlight correctly) and **incremental**: an edit re-tokenizes only from the changed line, off the UI thread. Token colors are themed per editor theme.
 
 ## Bracket-pair colorization
 
 Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am I?" is readable without counting. The matching-bracket highlight answers a different question, "where does *this* one close?", and the two combine on the same character.
 
-Brackets inside strings and comments are skipped, because a stray `{` in a string would otherwise shift the colour of every bracket below it. The depth pass runs as part of tokenizing, so it costs no extra repaint. On by default; Settings → Editor turns it off.
+Brackets inside strings and comments are skipped, as is the `)` that ends a shell `case` pattern, because a stray `{` in a string would otherwise shift the colour of every bracket below it. The depth pass runs as part of tokenizing, so it costs no extra repaint. On by default; Settings → Editor turns it off.
 """),
     new Feature("lsp", CI, 2, true,
         "Language servers (LSP)",
@@ -302,13 +363,15 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
 - **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)
-- **Format Document**: reformat the whole file via the server (palette or right-click)
+- **Format Document**: reformat the whole file via the server (palette or right-click), keeping the file's own indentation from `.editorconfig` or the file itself
 - Server-provided **folding regions** and **expand/shrink selection**
-- Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
+- Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks; a row shows the rule code, such as `[SC2086]`, and opens the rule's documentation) and **completions**
 
-Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
+Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). For a [remote folder](/features/remote-sftp), the server runs on the host, found on its PATH or set per host, and Java's jdtls keeps its index there. Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
 
-Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes.
+**Shell scripts** use bash-language-server, which finds problems with ShellCheck and formats with shfmt. Settings and Doctor show whether both are found, and **Install: ShellCheck and shfmt** downloads the official releases, checked against SHA-256 hashes built into Editora. The Bash card in Settings → LSP sets ShellCheck's arguments, shfmt's style, how many scripts the server reads in the background, and an explainshell server for option help; a project can set the same options in its `.editora/settings.json`.
+
+Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed. A Java script without a `.java` name (a `java --source 25` shebang file) gets completion, hover, the outline and syntax errors from jdtls too.
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
@@ -320,7 +383,7 @@ Off by default. Enable it under Settings → LSP.
         """
 Navigation needs two things: a symbol has to be **findable**, and you have to be able to jump to it **without losing your place**.
 
-**Go to Symbol in Project** handles the first with Editora's own declaration scanner across sixteen language ids, so it works on a first run and in every language that ships a grammar but has no server. The index is built lazily on first use, so opening a project does not walk every file for someone who may never search for a symbol. After that it is incremental and rescans only the file you saved. The scanner under-reports on purpose: a missing declaration costs you one fallback to search, while an invented one would make the results untrustworthy. A running [language server](/features/lsp) gives better results and takes precedence.
+**Go to Symbol in Project** handles the first with Editora's own declaration scanner across sixteen language ids, so it works on a first run and in every language that ships a grammar but has no server. The index is built lazily on first use, so opening a project does not walk every file for someone who may never search for a symbol. After that it is incremental and rescans only the file you saved. The scanner under-reports on purpose: a missing declaration costs you one fallback to search, while an invented one would make the results untrustworthy. A running [language server](/features/lsp) gives better results and takes precedence. Without a server, **Go to Definition** uses the same index: it looks up the name at the caret in the file's own declarations, then in the project's. In shell scripts the index knows `pkg::fn`-style names and script variables, skips here-documents, and reads scripts with no extension by their `#!` line.
 
 The rest help you keep your place:
 
@@ -350,31 +413,31 @@ Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets) liv
         "Run files & main classes",
         "Run a script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
         """
-A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, or a **shell** script. Compact Java and Python files can run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`.
+A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, or a **shell** script (run with the interpreter its shebang names, else `bash`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
 
 It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
 
 For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
 
-Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. Bind it to `C-c r` or run from the palette.
+Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python and Node frames, and shell errors) to jump to the file and line. The console draws the colours programs print, keeps a `\r` progress bar on one line, and has **End Input** for programs that read until the end of input. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last*. *Run with Trace* runs a shell script with `bash -x`, and each traced line links to its source line. A file in a [remote folder](/features/remote-sftp) runs on its host, with output, input and Stop as for a local one. A spinner turns in the Run window, and on the Run stripe button when the window is closed, while the program runs. Bind it to `C-c r` or run from the palette.
 """),
     new Feature("run-configurations", RD, 2, false,
         "Run configurations",
         "Save how a Java main class, Python or shell script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file.",
         """
-A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables, an optional JDK override, and a working directory. Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
+A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands), an optional JDK override, a shell script's interpreter, and a working directory (relative to the project root). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
 
 ## Five kinds
 
-Choose a **Type** in the project/session-scoped **Run Configurations** window:
+Choose a **Type** in the project's **Run Configurations** window:
 
 - a **Java main class** (resolved through the language server, or through your Maven/Gradle build)
 - a **Python script**
-- a **shell script**
+- a **shell script** (its shebang picks the interpreter unless you set **Interpreter** and **Interpreter options**)
 - a **make target**
 - a named **npm script** (`npm run`, with arguments passed after `--`)
 
-Script configurations need no project and no language server. Debugging a saved configuration remains Java-only, and says so rather than reporting a confusing Java error; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)).
+Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Only Java configurations can be debugged, and Debug says so for the others; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
 
 ## A step before the launch
 
@@ -387,9 +450,9 @@ A configuration can name a command to run first, such as a build or a codegen st
 ## Smaller conveniences
 
 - Each configuration **becomes a real command**, so it appears in the palette by name and can be given its own keyboard shortcut, the same way [saved macros](/features/macros) and [external tools](/features/external-tools) already work.
-- **Add** prefills from the file you are looking at: the main class from the active Java file (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you.
-- The toolbar group **only appears where you could launch something**, so a project of Markdown notes doesn't carry a dropdown that can never fill. Anything you have already saved keeps it visible regardless.
-- The form **enables only the fields the selected type uses**, and a disabled field keeps its value.
+- **Add** prefills from the file you are looking at: a Python or shell script becomes a configuration for that script; a Java file gives the main class (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you. *Save Run Configuration* works for Python and shell scripts too.
+- The toolbar group **only appears in a project where you could launch something**, so a project of Markdown notes doesn't carry a dropdown that can never fill. Anything you have already saved keeps it visible regardless.
+- The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python and shell scripts can be picked with **Browse…**.
 - Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
 """),
     new Feature("debugging", RD, 3, true,
@@ -406,17 +469,19 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 
 For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening.
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on.
+Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript, and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
+
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
 """),
     new Feature("http-client", RD, 4, false,
         "HTTP client",
-        "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶, with environments, variables, request chaining, and a formatted response view. Built on the JDK HTTP client.",
+        "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶ or a key, with environments, variables, request chaining, and a response view that shows exactly what was sent. Built on the JDK HTTP client.",
         """
-Open a `.http` or `.rest` file and click the green ▶ next to a request to send it. No external tool is needed: it uses the JDK's built-in HTTP client.
+Open a `.http` or `.rest` file and click the green ▶ next to a request to send it, or press `C-c C-c` (`Ctrl+Alt+R` in the other keymaps). No external tool is needed: it uses the JDK's built-in HTTP client.
 
-Define multiple requests separated by `###`. The feature aims to match IntelliJ's HTTP client: `{{var}}` / `@var` substitution, dynamic variables (`{{$random.*}}`, `{{$datetime}}` with date math, `{{$dotenv.X}}`), **request chaining** that references an earlier response, **multipart** and external-file bodies, **environment files** (`http-client.env.json` with a `$shared` section) and a picker, and Basic/Digest auth shorthand.
+Requests are written in JetBrains' HTTP request format, separated by `###`, with some VS Code REST Client syntax as well. That covers `{{var}}` and `@var` substitution, directives such as `# @no-redirect` and `# @timeout 5 s`, dynamic variables (`{{$uuid}}`, `{{$random.*}}`, `{{$datetime}}` with date math, `{{$dotenv.X}}`), **request chaining** from an earlier response, **multipart** and external-file bodies, **environment files** (`http-client.env.json` and a private one, with a `$shared` section) and a picker remembered per file, and Basic/Digest auth shorthand. Responses can be tested with `# @assert status == 200` lines or JetBrains-style JavaScript **response handlers** (`> {% client.test(…) %}`) that run on your own Node.js from trusted folders, **pre-request scripts** (`< {% … %}`) can sign a request with the `crypto` and `jwt` helpers and set its variables, and `client.global.set` or `# @capture` keeps a value for later requests as `{{name}}`. A variable that can't be resolved is underlined as you type and listed in the response's warnings, typing `{{` offers the variables available there, and a request that reads your environment variables or a `.env` file asks before it runs from a folder you haven't trusted.
 
-The response is the `.http` file's own **preview**, in the same Editor / Split / Preview view every other rich file type uses, so it sits beside the request that produced it (and the view mode is remembered per file). It shows status, headers, timing, and a pretty-printed, content-type-highlighted body, with **Copy as cURL** / **Import cURL**, open-in-editor, and Save-response. Run one request or the whole file. On by default. Toggle it under Settings → Languages & Tools → Web.
+The response is the `.http` file's own **preview**, in the same Editor / Split / Preview view every other rich file type uses, so it sits beside the request that produced it. It shows the status (`200 OK · 32 ms · 44 B`), the request as it was sent, the tests (`✓ 3 passed · ✗ 1 failed`), warnings, headers, and a pretty-printed, content-type-highlighted body; compressed responses are decoded and images shown. The last 10 responses of each file are kept, with credential headers masked. **Copy as cURL** gives a bash/zsh command that is safe to paste, **Import cURL** takes a browser's copy, and Save response keeps the bytes as received. Run one request or the whole file, from a saved or an untitled file. On by default. Toggle it under Settings → Languages & Tools → Web.
 """),
     new Feature("build-tools", RD, 5, false,
         "Build tools",
@@ -436,7 +501,7 @@ Discovery parses the marker file directly (no shell-out, no new dependency), so 
         "Git integration",
         "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, merges and rebases with a conflict resolver, branches, remotes, tags, stashes and patches, a paged log with a commit graph, and blame.",
         """
-Native Git that shells out to your installed `git`, no bundled library.
+Native Git that shells out to your installed `git`, no bundled library. In a [remote folder](/features/remote-sftp) it is the host's own `git`, over the same SSH connection with the host's credentials, and everything below works there too, clone and init included.
 
 - The **status bar** shows the current branch with ahead/behind counts and a dropdown to switch/create branches, pull, fetch, and push.
 - **Gutter change bars** mark added/modified/deleted lines vs HEAD. Click one for a card with the old and new lines, where you can revert or stage that hunk.
@@ -479,20 +544,23 @@ Apply changes with guarded, undoable gutter actions or open an editable Result d
 """),
     new Feature("markdown-preview", DD, 1, false,
         "Markdown preview",
-        "A 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and export to PDF, HTML, Word, and ODF. Live and theme-matched.",
+        "A 3-mode view rendered natively with CommonMark + GFM: task lists, alerts, images, LaTeX math, selectable text, wiki links and backlinks, linting, formatting, and export to PDF, HTML, Word, and ODF. Live and theme-matched.",
         """
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
 
-It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. Extra CommonMark extensions render too: YAML front matter, footnotes, heading anchors, and `++inserted++` text.
+It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. A ```` ```console ```` or ```` ```shell-session ```` block shows as a terminal session: a muted prompt, the command highlighted as shell, and plain output. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
 
 Markdown files get a full editing kit:
 
-- **Linting** with a broad markdownlint rule set, shown as inline squiggles, scrollbar/minimap stripes, and a Markdown Lint tool window, with **auto-fix**, per-rule config, inline disable comments, and `.markdownlint.json` discovery.
+- **Linting** with 43 markdownlint rules plus checks for broken links, shown as inline squiggles, scrollbar/minimap stripes, a status-bar count and a Markdown Lint tool window, with **auto-fix** (also on save), per-rule severity, project-wide lint, inline directives, and `.markdownlint` / `.markdownlint-cli2` config discovery.
 - **LaTeX math**: inline `$…$` and display `$$…$$` (on by default).
-- **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
-- **Table editing**: insert a table, add/delete rows and columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
+- **Image paste & drag-drop** into an assets folder you choose (unused pasted images go to the trash on save), **Paste as Markdown** for HTML and spreadsheet cells, and **smart link paste** to wrap a selection.
+- **Table editing**: insert a table, add/delete rows and columns, move and sort them, align columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
 - **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
-- **Export** the preview to PDF, **HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
+- **Links and wiki links**: follow `#heading`, other-file and reference links; `[[wiki links]]` with completion; a **Backlinks** tool window; and links updated when a file is renamed or moved.
+- **Format Document**, heading numbering, and completion of paths, heading anchors, emoji and fence languages.
+- A **word count** and reading time in the status bar, and **typewriter mode**.
+- **Export** the preview to PDF, **self-contained HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
 
 Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print. See the [Markdown guide](/docs/markdown).
 """),
@@ -502,7 +570,7 @@ Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print
         """
 Mermaid diagrams render inline. A fenced ` ```mermaid ` block in Markdown becomes a diagram in the preview, and standalone `.mmd` files get the same 3-mode preview.
 
-Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), with **live linting** via `maid` that underlines errors with precise line/column messages as you type. Export a diagram to **SVG / PNG / PDF**.
+Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), with **live linting** via `maid` that underlines errors with precise line/column messages as you type. Export a diagram to **SVG / PNG / PDF**. Inside a Mermaid fence, completion offers Mermaid keywords, and diagrams are drawn for the preview's own light or dark theme. Exported HTML includes the drawn diagrams when `mmdc` is available.
 
 On by default, and inert until `mmdc` is found. Configure it under Settings → Mermaid (point it at your `mmdc`/`maid`, or use `npx`).
 """),
@@ -545,9 +613,9 @@ All on by default, each toggled under Settings → Editor → File previews. See
         """
 Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly formatted PDF, with headings, lists, tables, code blocks, and images rendered as native vector text.
 
-The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
+The Markdown preview also exports to **self-contained HTML** (local images embedded, code highlighted, following the reader's light or dark preference), **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images. PDFs draw highlight, superscript, subscript and emoji, and GitHub alerts come out coloured and titled.
 
-Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** and **Export to PDF…** are in the File menu, the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
+Or **print** either, with a page-by-page preview first (what you preview is what prints). PDFs and printouts are always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** is in the File menu and **Export to PDF…** under File ▸ Export; both are in the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
 
 Exported PDFs have clickable links, bookmarks from the headings, and a page footer. The Print Preview shows the sheet at paper size, with zoom, Page Setup and keyboard paging. PDF page size, orientation, margins, the code font size and the footer are set in Settings → Editor → Export & Print; printing uses the paper chosen in Page Setup.
 
@@ -567,7 +635,7 @@ On by default. Toggle it under Settings → Web → HTML Preview. Read the [deep
         "Project Map navigation",
         "Explore a project as a file tree or a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards.",
         """
-Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window.
+Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window, and everything in a window acts on its own project. A folder on a remote host over SFTP is a project too, with its own window, tabs and trust (a server folder is trusted separately from a local one with the same path); reopening it asks to connect.
 
 Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global session. Bookmarks, notes and [run configurations](/features/run-configurations) are scoped per project. **On by default** since 0.10.0; Settings → Workspace turns it off.
 
@@ -663,7 +731,7 @@ Two ways to mark up code.
         "Find in files",
         "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label.",
         """
-Project-wide search with a results panel (`C-S-f`): matches grouped by file, with case / regex / whole-word options, and it searches open buffers' unsaved text too. **Replace-in-files** rewrites matches across the project (undoable in open buffers).
+Project-wide search with a results panel (`C-S-f`): matches grouped by file, with case / regex / whole-word options, and it searches open buffers' unsaved text too. **Replace-in-files** rewrites matches across the project (undoable in open buffers). It uses ripgrep when installed, and in a [remote folder](/features/remote-sftp) the host's own ripgrep searches it in one command instead of reading every file over the connection.
 
 In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count. And **AceJump** (`M-g j`) lets you leap the caret to any visible spot by typing the label that appears over it.
 """),
@@ -673,7 +741,7 @@ In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count
         """
 **New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.
 
-Template bodies use `${variable}`, `${variable:default}` and `${cursor}` for where the caret lands; anything else, such as `$1` or `$HOME`, is written as it is. Before a template writes anything it lists the files that already exist. Bundled ones cover a Java class, an HTML page/bundle, a Markdown doc, and a Python script. Add your own under `~/.editora/templates/`, or use **Edit User Templates** to copy a bundled one and change it.
+Template bodies use `${variable}`, `${variable:default}` and `${cursor}` for where the caret lands; anything else, such as `$1` or `$HOME`, is written as it is. Before a template writes anything it lists the files that already exist. Bundled ones cover a Java class, an HTML page/bundle, a Markdown doc, a Python script, and shell and Zsh scripts. Created files follow the project's `.editorconfig` line endings and indentation (a shell script is always written with LF), and a file that starts with `#!` is made executable; where the file system keeps no executable bit (Windows), the status bar says how to run it. Add your own under `~/.editora/templates/`, or use **Edit User Templates** to copy a bundled one and change it.
 
 A multi-file template can also scaffold a **whole project**: **New Project From Template** asks for a project name and a location, creates that folder, registers it as a [project](/features/projects) and opens it on the template's main file. A **Python Project** template ships with it, containing a package layout, a test, `pyproject.toml`, README and `.gitignore`.
 """),
@@ -687,13 +755,34 @@ A file that isn't writable on disk opens read-only automatically, and the per-fi
 """),
     new Feature("remote-sftp", WF, 8, true,
         "Remote files (SFTP)",
-        "Browse, edit, search, and save files on a remote host over SSH/SFTP. The project tree, search, bookmarks, and notes all work over the wire.",
+        "Edit files on a remote host over SSH/SFTP, each remote folder a project in its own window, and run Git, builds, tests, language servers and debuggers on the host, in a container, or in a WSL distribution.",
         """
-Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* mounts the remote folder as the Project tree, and from there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
+Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* opens the remote folder as a project in its own window, listed with your other projects; reopening it asks to connect, and the tabs you had open come back when it does. From there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
 
 Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled.
 
-Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site; local-only features (running, LSP, Git) are gated off for remote files.
+Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site.
+
+On a host you allow to run commands (Editora asks once per host; withdraw it in Settings → Remote), the tools Editora drives run on the host over the same SSH connection: Git and `gh`, ripgrep for Find in Files, Run, builds and tests, language servers, debuggers for Python, JavaScript and Java, and a watch for outside changes. Each host can name its own tool commands. It works with OpenSSH (Linux, macOS) and dropbear servers, and with ed25519 keys. See [Remote files](/docs/remote).
+
+A project on this machine can have its tools run elsewhere while you edit its files here: in the Docker or Podman container it is bind-mounted into (its dev container, found automatically, or one you pick with *Containers: Run This Project's Tools in a Container…*), or, on Windows, inside the WSL distribution it lives in (`\\\\wsl.localhost\\…`). Git and `gh`, Run, builds and tests, language servers and debuggers then run there, with its own PATH, environment and user. Editora asks once per container or distribution, and *Containers: Run This Project's Tools Here* goes back. See [Tools in a container](/docs/remote#tools-in-a-container).
+"""),
+    new Feature("file-encodings", WF, 14, false,
+        "File encodings",
+        "Reopen a file in the encoding it is really in, or save it in another one: Shift_JIS, GBK, windows-1251 and every other encoding the JDK knows. The choice is remembered per file.",
+        """
+Editora reads a file as UTF-8 unless a byte-order mark or the project's [`.editorconfig`](/features/editorconfig) says otherwise. A file that is not valid UTF-8 opens through a single-byte stand-in (Windows-1252 or ISO-8859-1) that keeps every byte, and its encoding in the status bar is drawn in the warning colour, because it is a guess.
+
+Click the encoding in the status bar, or use the palette:
+
+- **Reopen with Encoding…** reads the file again in the encoding you pick. If the bytes are not valid in it, nothing changes and the status line names the first line and column that could not be read. Unsaved changes are confirmed first, and Local History keeps a copy.
+- **Save with Encoding…** sets the encoding the file is written in from its next save, whatever `.editorconfig` says. The tab shows as modified until you save, and choosing the file's current encoding again makes it clean. Text the encoding cannot hold is refused, naming the character and its line, rather than written as question marks or quietly switched to UTF-8.
+
+The list starts with the common encodings grouped by script (Unicode, Western, Central European, Cyrillic, Greek, Turkish, Hebrew, Arabic, Baltic, Vietnamese, Thai, Japanese, Chinese, Korean, DOS) and goes on with every other encoding the runtime supports, the same on every operating system.
+
+The choice is **remembered for the file**: it is used when the file opens again, after a restart, and after a rename, and it works for files on a [remote host](/features/remote-sftp), where `.editorconfig` is not read. File Information shows the encoding in use.
+
+A shell script that opens with Windows (CRLF) line endings or a byte-order mark gets a notice above the editor with **Convert to LF** (or **Remove BOM**), since bash cannot run it as it is. Saving writes the fix.
 """),
     new Feature("crash-recovery", WF, 13, false,
         "Crash recovery",
@@ -732,7 +821,7 @@ Snapshots are deduped by content and stored gzip-compressed under your config fo
         """
 Editora highlights **TODO / FIXME-style patterns** everywhere they appear and collects them in a **TODO** tool window (`M-g o`).
 
-- Matches are highlighted inline and listed in the tool window, grouped by file. It scans the open project's tree when a project is open, else the open files; double-click a result to jump.
+- Matches are highlighted inline and listed in the tool window, grouped by file; double-click a result to jump. A project window scans the project's tree; the No Project window lists only the current tab and hides the tool window while that tab has no TODOs.
 - Matches also show as **overview stripes** over the scrollbar and on the minimap edge, each in its pattern's color. Click to jump, hover for the line.
 - Jump between matches in the active file with `M-g ]` / `M-g [` (`todo.next` / `todo.previous`), wrapping around.
 - Patterns are configurable in **Settings → TODO → TODO Highlighting**: name, regex, a color picker, case sensitivity, and enabled. TODO and FIXME ship by default.
@@ -778,7 +867,7 @@ Editora has optional AI, off by default and yours to configure.
 - **Rewrite the selection** per an instruction, as a single undoable edit.
 - **Inline completion**: after a typing pause, a muted one-line ghost suggestion at the caret, accepted with Tab (its own fast model).
 
-**AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. The agent is a user-installed external tool, never bundled.
+**AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. It works in the project of its own window, and its file reads and writes stay inside that folder. The agent is a user-installed external tool, never bundled.
 
 **Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
 """),
@@ -818,7 +907,7 @@ Off by default. Plugins aren't sandboxed, so only install ones you trust.
         "Zen mode",
         "Hides every bar, the line numbers, and the minimap, leaving only the text. Everything you have switched on keeps running.",
         """
-Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, and the column ruler. Fold markers stay in the margin.
+Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, the rulers, and the indent guides. Fold markers stay in the margin.
 
 Nothing is switched off. Language servers, Git, and every command and keybinding keep working, so the palette (`M-x`) and your chords still reach everything while the interface is hidden.
 
@@ -833,7 +922,7 @@ The other three ways to run the editor are [Expert mode](/features/expert-mode),
         "Expert mode",
         "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay.",
         """
-Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the column ruler, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
+Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
 
 It suits people who drive the editor from the keyboard and want the room back without losing their bearings in the file. Nothing is switched off, so language servers, Git, and every command keep working.
 
@@ -912,7 +1001,7 @@ Every tool you define becomes its own palette command (and is bindable to a key)
 Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, with your own Git credentials; Editora stores none and there is no Editora account or server.
 
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
-- It syncs after startup, shortly after you change something, and every 15 minutes. `Settings Sync: Sync Now` does it on demand.
+- It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand.
 - Changes **merge entry by entry**, so two computers that each added a snippet keep both. If the same entry changed on two computers, the one that syncs keeps its version and the other stays in the repository history.
 - With several accounts in the GitHub CLI, sync finds the one that can read the repository and keeps using it across `gh auth switch`; Editora never sees a token.
 - Files a sync replaces are first copied to a backups folder in the config directory.
@@ -930,7 +1019,7 @@ Every integration gets a row, grouped by area:
 
 - **Version control**: `git`, and `gh` for pull requests, issues, and CI runs.
 - **Search**: `ripgrep`, which accelerates Find in Files (the built-in walker is used when it's absent).
-- **Language servers**: one row per enabled server, showing the resolved path.
+- **Language servers**: one row per enabled server, showing the resolved path, plus ShellCheck and shfmt rows under the Shell server, which the Bash server lints and formats with.
 - **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, `dot` and `plantuml`, and `typst`.
 - **Run & build**: the JDK used to run a file, plus `python3`, `bash`, `make`, and the build tools.

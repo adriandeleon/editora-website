@@ -45,6 +45,10 @@ data, a dialog states how many entries would arrive on this computer, how many
 this computer would send, and how many differ on both. Nothing is removed on
 either side by connecting.
 
+If Connect cannot go ahead (the repository or branch is missing, the repository
+cannot be reached, or GitHub reports an error), the **Status** row says why. The
+reason stays there until you edit the repository, try again, or disconnect.
+
 Repeat the same steps on each other computer, with the same URL.
 **Disconnect** stops syncing on this computer and leaves the repository and
 your local files as they are.

@@ -18,7 +18,8 @@ For pickers, find, and project-wide search, see
 **Go to Symbol in Project** (`index.gotoSymbol`) finds a class, method or
 function anywhere in the project **with no language server installed**. Editora
 carries its own declaration scanner, so the command works on a first run and in
-every language that ships a grammar but has no server.
+every language that ships a grammar but has no server. A project in a
+[remote folder](/docs/remote) has no symbols.
 
 Sixteen language ids are covered: Java, Kotlin, C#, Python, JavaScript,
 JSX, TypeScript, TSX, Go, Rust, C, C++, Ruby, PHP, shell and Lua. It records
@@ -26,9 +27,19 @@ the kinds of symbol a pattern can identify reliably: type, interface, enum,
 method, function, field, variable and module. LSP has twenty-six kinds, and most
 of them need real type resolution to tell apart.
 
+In shell scripts it records functions in every common form (`name()`,
+`function name`, `name ()` with the brace on the next line), including names
+such as `mylib::helper`, `lib.fn` and `my-fn`. It also records script-level
+variables declared at the start of a line with `readonly`, `declare`, `typeset`
+or `export NAME=`. A function's `local` variables and plain `x=1` assignments
+are left out. Text inside a here-document or a quoted string that spans lines is
+skipped, so a generated script or a usage message adds nothing. A script with
+no extension, such as `bin/release`, is indexed by its `#!` line.
+
 The same index backs the file and symbol halves of
-[Search Everywhere](/docs/navigation#search-everywhere) and
-[Go to Related File](#go-to-related-file).
+[Search Everywhere](/docs/navigation#search-everywhere),
+[Go to Related File](#go-to-related-file), and
+[Go to Definition without a language server](#go-to-definition-without-a-language-server).
 
 ### It is built lazily
 
@@ -60,6 +71,19 @@ so use **LSP: Go to Symbol in Workspace** (`lsp.gotoSymbol`) there.
 
 Turn it off in **Settings → Editor → Display** ("Project symbol index"), or with
 `view.toggleSymbolIndex`. Disabling it releases the project's symbols.
+
+## Go to Definition without a language server
+
+**LSP: Go to Definition** (`lsp.gotoDefinition`) asks the
+[language server](/docs/lsp) first. When LSP is off (the default), when no
+server handles the file, or when the server finds nothing, Editora looks up the
+name at the caret itself: first in the file's own declarations, then in the
+project's symbol index. One match jumps there; several open the symbol picker.
+The status bar says when the index answered, or that no declaration was found.
+
+This works for the languages the index reads (see the list above). In other
+languages the command still needs a server. Ctrl+click on a name needs a
+running server too.
 
 ## Sticky scroll
 

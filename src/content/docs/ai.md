@@ -74,7 +74,9 @@ bundled**.
   focus on the **rejecting** choice, has no default button, and ignores key
   presses for a moment after it appears, so a keystroke meant for the editor
   cannot approve a request.
-- Its file reads and writes are confined to the session folder. It can never
+- It works in the project open in its own window: that folder is where it
+  runs, and its file reads and writes are confined to it. Without a project,
+  the folder is that of the active file, or else your home folder. It can never
   touch Editora's own configuration, or version-control metadata such as
   `.git/`.
 - In a [large file that has no undo](/docs/undo-history#files-without-undo), an

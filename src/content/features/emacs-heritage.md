@@ -3,7 +3,7 @@ title: "Emacs heritage"
 group: "Keyboard & commands"
 order: 7
 beta: false
-summary: "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap."
+summary: "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, registers, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap."
 ---
 
 Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto their own commands. Editora implements the model underneath: the concepts an Emacs user reaches for without thinking, built as real features rather than shortcut aliases. Emacs is the default keymap, and everything here works in the other four too, through the palette or a binding of your own.
@@ -24,6 +24,16 @@ The kill ring holds the last 120 kills (Emacs' own `kill-ring-max`), consecutive
 ## Rectangles
 
 The full **C-x r** family over the columns between point and mark: kill, copy, yank, delete, clear, open, string-rectangle, and number-lines. Each is a single undo step. Note these are character columns, so a tab counts as one, and rectangles are distinct from the Alt-drag multiple-cursor selection.
+
+## Registers
+
+Named slots, one character each, for text and for places:
+
+- **C-x r s** copies the region into a register (with **C-u**, it cuts it), and **C-x r i** inserts a register's text, leaving point before it.
+- **C-x r SPC** saves point (its file and position) in a register, and **C-x r j** jumps back there, opening the file if it is closed. A saved position moves with edits to its file while the file is open, as an Emacs marker does.
+- Each command asks for the register's name as the next key; **C-g** or Escape cancels. *Edit: List Registers* shows them all.
+
+Registers last for the session, one set per window. Number, rectangle and window-configuration registers are not supported.
 
 ## Narrowing
 

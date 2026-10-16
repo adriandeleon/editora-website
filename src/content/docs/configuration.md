@@ -53,7 +53,7 @@ change the same setting or entry, the one saved last wins.
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
 | `breakpoints.json` | Debugger breakpoints (per project) |
-| `connections.json` | Saved SFTP connections (no secrets) |
+| `connections.json` | Saved SFTP connections (no secrets), with whether each host may [run commands](/docs/remote) and its tool commands, and which containers and WSL distributions may run a project's tools |
 | `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
 | `macros.json` | Saved keyboard macros (format version 2; an older file is converted when it is read, and its key bindings are kept) |
@@ -61,6 +61,7 @@ change the same setting or entry, the one saved last wins.
 | `trusted-folders.json` | Folders you have trusted to run their build wrappers |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
 | `history/` | [Local History](/docs/workspace#local-file-history) |
+| `http-history/` | The [HTTP client](/docs/http-client)'s last responses and chosen environment for each `.http` file |
 
 Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
 Editora converts an existing `settings.toml` automatically. Once the JSON
@@ -94,7 +95,7 @@ they can be committed and shared:
 
 | File | Holds |
 | --- | --- |
-| `.editora/settings.json` | Toolchain overrides for this project: which language server to run for a language, and whether to run it |
+| `.editora/settings.json` | Toolchain overrides for this project: which language server to run for a language, whether to run it, and the [Bash server's options](/docs/lsp#bash-server-options) |
 | `.editora/run-configurations.json` | [Run configurations](/docs/run-debug) exported for the team |
 
 Only toolchain settings can be overridden this way; appearance, keymap and fonts
@@ -122,10 +123,69 @@ Edit in the Settings window, or directly:
 separately as `fontZoom` (adjusted with `C-=` / `C--` / `C-0` or Ctrl+wheel) and
 isn't shown in the Settings window.
 
+### Containers
+
+`containerEngine` is the command Editora runs for a project whose
+[tools run in a container](/docs/remote#tools-in-a-container): blank (the
+default) means `docker`; `podman` works too, and so does a command line such as
+`flatpak-spawn --host docker`. It is the **Container engine**
+field in Settings → Remote. `containerBindings` remembers the container you
+picked for each project folder with *Containers: Run This Project's Tools in a
+Container…*, from folder path to container name; *Containers: Run This
+Project's Tools Here* removes the folder's entry. Whether a container or WSL
+distribution may run a project's tools is kept in `connections.json`, with the
+hosts' answers.
+
+### Rulers and indent guides
+
+These are the rows under **Settings → Editor → Display**:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `showColumnRuler` | Show rulers | `true` |
+| `rulers` | Rulers, such as `80, 120` (blank for none) | `[80]` |
+| `languageRulers` | Rulers by language, such as `java: 100; python: 79, 88` | none |
+| `showIndentGuides` | Show indent guides | `true` |
+
+`languageRulers` maps a language to its own columns, used instead of `rulers`
+for files in that language; an empty list means that language has no rulers.
+Columns run from 1 to 1000. An `.editorconfig` `max_line_length` replaces the
+first ruler (see [EditorConfig](/docs/editorconfig#rulers-and-max_line_length)).
+
+The palette sets the same values: *Editor: Set Rulers…* (`editor.setRulers`),
+*Editor: Set Rulers for This Language…* (`editor.setLanguageRulers`, for the
+current file's language; leave it blank to go back to the global rulers),
+*View: Toggle Rulers* (`view.toggleColumnRuler`) and *View: Toggle Indent
+Guides* (`view.toggleIndentGuides`). Indent guides are faint vertical lines at
+each indentation level, carried through blank lines and coloured by the theme;
+they are hidden in Zen and Simple UI modes and in
+[large-file mode](/docs/troubleshooting#performance).
+
+```json
+{
+  "rulers": [80, 120],
+  "languageRulers": { "java": [100], "python": [79, 88], "markdown": [] },
+  "showIndentGuides": true
+}
+```
+
+### Word wrap
+
+Two rows under **Settings → Editor → Display**, one for code and one for prose
+(see [Word wrap](/docs/editing#word-wrap)):
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `wordWrap` | Wrap long lines in code | `false` |
+| `wordWrapProse` | Wrap long lines in Markdown and plain text | `true` |
+
+*View: Toggle Word Wrap* (`view.toggleWordWrap`) flips whichever of the two
+governs the file in front.
+
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.21.0
-`settings.json` is at version **117**. Editora migrates older files forward
+Each structured config file carries a `schemaVersion`; in Editora 0.22.0
+`settings.json` is at version **126**. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that
@@ -136,9 +196,12 @@ copy back, provided the file left in its place still holds only defaults.
 - **Export Configuration…** (Settings → Advanced, or `config.export`) zips the
   active config folder into a timestamped archive in your home directory.
   `.bak` backups and installed plugins are included. Local History is left out,
-  because it holds the text of your files rather than configuration. Runtime
-  files are left out too: downloaded language servers and debug adapters,
-  `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
+  because it holds the text of your files rather than configuration. The HTTP
+  client's response history is left out too, unless you tick **Include HTTP
+  response history** in the dialog that asks before exporting: saved responses
+  hold response bodies and full request URLs, which can contain tokens or keys.
+  Runtime files are never included: downloaded language servers and debug adapters,
+  the installed ShellCheck and shfmt, the Typst CLI, `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
   with its live token, and the session log.
 - **Reset to Defaults** (Settings → Advanced) resets every preference, including
   the keymap choice, which goes back to Emacs. Text zoom is kept, and your key

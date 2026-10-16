@@ -20,10 +20,10 @@ so a nested config overrides a parent.
 
 | Key | Effect |
 | --- | --- |
-| `indent_style`, `indent_size`, `tab_width` | Tab and Enter indentation |
+| `indent_style`, `indent_size`, `tab_width` | Tab and Enter indentation, and the indentation of [new files from templates](/docs/snippets-templates#file-templates) |
 | `end_of_line` | LF / CRLF / CR, round-tripped on save |
 | `charset` | utf-8, utf-8-bom, latin1, utf-16le/be, round-tripped on read and save |
-| `max_line_length` | Drives the column ruler |
+| `max_line_length` | Sets the first ruler; `off` hides them all |
 | `trim_trailing_whitespace` | Trim on save |
 | `insert_final_newline` | Ensure a trailing newline on save |
 
@@ -35,6 +35,19 @@ adds or removes its byte-order mark, the save message in the status bar says
 so: it names the old encoding, the new one, and the `charset` rule that caused
 the change. It also says when `insert_final_newline = false` left trailing line
 breaks out.
+
+An encoding you pick yourself with *Buffer: Reopen with Encoding…* or *Buffer:
+Save with Encoding…* wins over `charset`: Editora reads and writes that file in
+your choice, and remembers it for the file. See
+[File encodings](/docs/workspace#file-encodings).
+
+### Rulers and max_line_length
+
+Editora can draw several rulers (80 by default; set your own in **Settings →
+Editor**, per language if you like). A `max_line_length` replaces only the
+**first** ruler, so the others stay where you put them (with no rulers set, it
+adds one), and `max_line_length = off` hides them all for files the rule
+covers.
 
 ## Files with mixed line endings
 
@@ -51,6 +64,28 @@ ending in parentheses: "Mixed (LF)". This applies with or without an
   keeps the last 30.
 - If the file also contains **binary data**, rewriting its line breaks would
   change that data, so the save asks first (**Rewrite and Save**).
+
+## Shell scripts
+
+Bash cannot run a script with Windows (CRLF) line endings, and a UTF-8
+byte-order mark (BOM) at the start of a script hides its `#!` line and becomes
+part of the first command. So shell scripts get two special rules:
+
+- **A shell script keeps LF and no BOM.** In a shell buffer, an
+  `end_of_line = crlf` (or `cr`) rule and a `charset = utf-8-bom` rule are not
+  applied, on open or on save. Every other rule still applies. New shell files
+  from [templates and File: New File of Type…](/docs/snippets-templates) are
+  written with LF too.
+- **A notice offers to fix a script that has them.** When a shell script opens
+  with CRLF line endings or a BOM, a bar above the editor says so, with
+  **Convert to LF** (or **Remove BOM**) and **Keep as is**. The action converts
+  the buffer to LF without a BOM, and the next save writes it. The notice is
+  decided again each time the file loads, so it disappears once the file is
+  fixed.
+
+Other files with CRLF line endings are not affected. To convert any file by
+hand, use **Buffer: Convert Line Endings (LF/CRLF)…**
+(`buffer.convertLineEndings`).
 
 ## Without an .editorconfig
 

@@ -190,7 +190,9 @@ with Lease**, or Cancel.
 incoming commits show without asking. It is off by default; the interval is 10
 minutes unless you change it (`git.setAutoFetchInterval`). The background fetch
 never prompts, and runs only in a trusted folder or in a repository you have
-fetched, pulled, or pushed in during the session.
+fetched, pulled, or pushed in during the session. A repository on a
+[remote host](#repositories-on-a-remote-host) is fetched on that host, by its
+`git`, under the same rule.
 
 ## Branches
 
@@ -350,7 +352,12 @@ changed the caret line.
   commits that only changed whitespace (`git blame -w`).
 - **Detect Moved and Copied Lines** (`git.blame.detectMoves`) follows lines
   moved or copied within and between files (`git blame -M -C`).
-- A `.git-blame-ignore-revs` file at the repository root is used automatically.
+- A `.git-blame-ignore-revs` file at the repository root is used automatically
+  when Git's `blame.ignoreRevsFile` setting names no file. A `blame.ignoreRevsFile`
+  in your global Git configuration that names a file this repository lacks is
+  passed over, so it does not stop blame here. The same holds on a
+  [remote host](#repositories-on-a-remote-host), where the host's Git
+  configuration is the one read.
 
 The two toggles apply to the window they are set in.
 
@@ -385,6 +392,38 @@ others.
 
 To read a patch before applying it, see
 [Diff & merge](/docs/diff-merge#diff-viewer).
+
+## Repositories on a remote host
+
+A repository in a [remote folder](/docs/remote) works as a local one does, once
+its host [may run commands](/docs/remote#allowing-a-host-to-run-commands):
+branch and ahead/behind counts, changed files, change bars, log and blame,
+staging whole files or single hunks, committing, branches, stashes, and fetch,
+pull and push. Every command is the host's own `git`, run over the same SSH
+connection with the host's credentials (its SSH keys and credential helpers);
+nothing prompts, so an HTTPS remote that needs a password fails rather than
+asking for it. To use a `git` other than the one on the host's `PATH`, set
+**Git** for that host in Settings → Remote; *Git: Set Git Command* is for this
+machine only.
+
+A remote project can hold other repositories: a nested repository, a submodule
+or another worktree. The Project tree's and the tab menu's Git actions on their
+files act on the repository the file belongs to, as they do locally. Editora asks
+the host where the project's repositories are when the project opens, after a
+Clone or Init, and when the Project tree is refreshed. Until the host has
+answered, a file inside the current repository's folder counts as part of it.
+
+In a remote project's window, **Clone** clones on that host into a folder you
+type as the host names it (`~` is the account's home there); the form proposes
+the project's parent folder, and the Browse button, which picks a local folder,
+is hidden. **Create a repository** (`git.init`) creates it
+on the host too. The [GitHub](/docs/github) tool window and commands use the
+host's own `gh`, signed in there.
+
+A repository in a project whose tools [run in a container](/docs/remote#tools-in-a-container)
+or [in a WSL distribution](/docs/remote#tools-in-wsl-windows) works the same way,
+with the `git` found there and its configuration and credentials. Blame's
+ignore-revs settings work there as on a host.
 
 ## What runs automatically
 
