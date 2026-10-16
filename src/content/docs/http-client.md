@@ -323,6 +323,27 @@ run (an untrusted folder, no Node.js, an error, a timeout), its request is
 **not sent** and its response view says why; the other requests of a Run All
 still run. `client.exit()` ends the script and sends the request.
 
+### Debugging scripts
+
+**HTTP: Debug Request at Caret** sends the request at the
+caret with its pre-request scripts and response handlers under the
+[JavaScript debugger](/docs/run-debug#debugging). It is also **Debug Request** in
+a `.http` file's right-click menu, and what Debug does in a `.http` file. A
+script stops at its breakpoints with the call stack, variables, watches and
+stepping of any JavaScript session. When you continue, the request goes on.
+
+- Set breakpoints on the lines of a `{% %}` block in the `.http` file itself,
+  or in a `./check.js` script file. Elsewhere in a `.http` file there is
+  nothing to stop at, so no breakpoint is set there.
+- It needs JavaScript debugging, as for a `.js` file: turn it on in
+  **Settings → Debugging** and [install vscode-js-debug](/docs/run-debug#installing-adapters).
+- A paused script is not stopped by the script timeout. If the debugger hasn't
+  attached after 30 seconds, the script is stopped.
+- **Restart** doesn't send the request again; run Debug Request again.
+- The script runs as usual: only from a trusted folder, without your
+  environment variables, under Node's permission model. Node's inspector is
+  allowed only for Debug Request, on a random port on this machine.
+
 ### Session variables
 
 What `client.global.set` or `@capture` keeps is used by later requests as
