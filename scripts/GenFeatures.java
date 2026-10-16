@@ -333,7 +333,7 @@ It's session-only and disabled for very large files. The tool-window stripe is o
         """
 Highlighting uses **TextMate grammars** (via tm4e) for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL, plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers. Astro uses the official grammar for mixed frontmatter, HTML, and CSS.
 
-A file whose name gives no language takes it from a shebang (`#!/usr/bin/env bash`) or a vim or emacs modeline (`# vim: ft=sh`, `-*- mode: sh -*-`), and the status-bar language picker sets it by hand; the language server, Run and the tab's file-type icon follow either way. Shell scripts are also recognised by their startup-file names (`.bashrc`, `.zshrc`, direnv's `.envrc`, `/etc/profile`, …), and a command's bare arguments are plain text, so commands, variables and strings stand out. See [Languages & highlighting](/docs/languages).
+A file whose name gives no language takes it from a shebang (`#!/usr/bin/env bash`, or `java --source 25` for Java) or a vim or emacs modeline (`# vim: ft=sh`, `-*- mode: sh -*-`), and the status-bar language picker sets it by hand; the language server, Run and the tab's file-type icon follow either way. Shell scripts are also recognised by their startup-file names (`.bashrc`, `.zshrc`, direnv's `.envrc`, `/etc/profile`, …), and a command's bare arguments are plain text, so commands, variables and strings stand out. See [Languages & highlighting](/docs/languages).
 
 Tokenization is **stateful** (it carries grammar state across lines, so block comments and heredocs highlight correctly) and **incremental**: an edit re-tokenizes only from the changed line, off the UI thread. Token colors are themed per editor theme.
 
@@ -371,7 +371,7 @@ Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScr
 
 **Shell scripts** use bash-language-server, which finds problems with ShellCheck and formats with shfmt. Settings and Doctor show whether both are found, and **Install: ShellCheck and shfmt** downloads the official releases, checked against SHA-256 hashes built into Editora. The Bash card in Settings → LSP sets ShellCheck's arguments, shfmt's style, how many scripts the server reads in the background, and an explainshell server for option help; a project can set the same options in its `.editora/settings.json`.
 
-Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed.
+Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed. A Java script without a `.java` name (a `java --source 25` shebang file) gets completion, hover, the outline and syntax errors from jdtls too.
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
@@ -755,7 +755,7 @@ A file that isn't writable on disk opens read-only automatically, and the per-fi
 """),
     new Feature("remote-sftp", WF, 8, true,
         "Remote files (SFTP)",
-        "Edit files on a remote host over SSH/SFTP, each remote folder a project in its own window, and run Git, builds, tests, language servers and debuggers on the host.",
+        "Edit files on a remote host over SSH/SFTP, each remote folder a project in its own window, and run Git, builds, tests, language servers and debuggers on the host, in a container, or in a WSL distribution.",
         """
 Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* opens the remote folder as a project in its own window, listed with your other projects; reopening it asks to connect, and the tabs you had open come back when it does. From there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
 
@@ -764,6 +764,8 @@ Saved sites have three surfaces beyond the palette: a **Remote Sites** tool wind
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site.
 
 On a host you allow to run commands (Editora asks once per host; withdraw it in Settings → Remote), the tools Editora drives run on the host over the same SSH connection: Git and `gh`, ripgrep for Find in Files, Run, builds and tests, language servers, debuggers for Python, JavaScript and Java, and a watch for outside changes. Each host can name its own tool commands. It works with OpenSSH (Linux, macOS) and dropbear servers, and with ed25519 keys. See [Remote files](/docs/remote).
+
+A project on this machine can have its tools run elsewhere while you edit its files here: in the Docker or Podman container it is bind-mounted into (its dev container, found automatically, or one you pick with *Containers: Run This Project's Tools in a Container…*), or, on Windows, inside the WSL distribution it lives in (`\\\\wsl.localhost\\…`). Git and `gh`, Run, builds and tests, language servers and debuggers then run there, with its own PATH, environment and user. Editora asks once per container or distribution, and *Containers: Run This Project's Tools Here* goes back. See [Tools in a container](/docs/remote#tools-in-a-container).
 """),
     new Feature("file-encodings", WF, 14, false,
         "File encodings",

@@ -97,8 +97,11 @@ anchor disappears. The **Notes** tool window (`M-5`) groups them per file
 with a filter, and like Bookmarks it groups by project, General plus the current
 one, with a **Show all projects** toggle. File and folder rows use matching
 icons so their targets remain clear. They live in `notes.json`. A second
-toggle, *Show note indicators* (**Settings → Editor → Display**), hides just the
-gutter glyph and highlight while keeping notes on.
+toggle, *Show note indicators* (**Settings → Editor → Display**, or
+`view.toggleNoteIndicators`), hides just the highlight and its start marker
+while keeping notes on. The highlight covers only the note's own text on each
+row of a wrapped line, and a note on a folded line shows once the fold is
+opened.
 
 Source references in the Notes window use the same compact, subdued line-number
 style as Structure and Bookmarks, keeping the note text visually primary.

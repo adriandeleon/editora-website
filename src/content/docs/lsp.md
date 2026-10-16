@@ -410,6 +410,13 @@ index that no running server is using and reports the space it freed; the ones
 in use are kept and counted. jdtls rebuilds a project's index the next time the
 project opens. It works with LSP turned off too.
 
+A Java file without a `.java` name (an extension-less `java --source 25`
+shebang script, or a file set to Java in the status bar) is shown to jdtls as a
+temporary `.java` copy, since jdtls works only on files named `.java`. It gets
+completion, hover, the outline and syntax errors, and an import a completion
+adds goes below the `#!` line. The copy sits outside any project, so type
+errors are not reported. A script in a remote folder is not given a copy.
+
 ## Shell scripts
 
 Shell scripts use **bash-language-server** (`bash-language-server start`).
@@ -522,6 +529,22 @@ than a path on this machine.
 - Losing the connection stops the host's servers without reporting a crash, and
   reconnecting starts them again.
 - The Astro server does not run on a host yet.
+
+## Language servers in a container or WSL
+
+A project whose tools [run in a container](/docs/remote#tools-in-a-container)
+or, on Windows, [in a WSL distribution](/docs/remote#tools-in-wsl-windows) has
+its language servers run there, each the one the container's or distribution's
+`PATH` finds, and told about the files by the names they have inside. A command
+set in Settings → LSP is used there only when it is a bare program name.
+
+- When the project's tools move into a container or back out, a server started
+  on the other side is stopped and its files reopen on the right one.
+- **Java**: jdtls runs inside with the JDKs found there, and keeps its index in
+  `~/.cache/editora` inside, so it is kept across restarts of Editora for as long
+  as the container lasts. *LSP: Clear Java Index Caches* clears only the indexes
+  on this machine.
+- The Astro server does not run in a container or distribution yet.
 
 ## Finding the server's binary
 

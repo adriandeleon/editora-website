@@ -41,7 +41,8 @@ file) takes it from its own first lines:
   `#!/usr/bin/env -S bash -e`, `#!/usr/bin/env -u NAME bash`, `#!/bin/busybox sh`,
   and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python, Node,
   Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters. A version suffix
-  is ignored (`python3.12` is Python).
+  is ignored (`python3.12` is Python). A `java` shebang counts when a
+  `--source N` follows it (`#!/usr/bin/env -S java --source 25`).
 - **A modeline**, when there is no shebang Editora knows: a vim modeline in the
   first or last five lines (`# vim: ft=sh`, `# vim: set filetype=bash :`), or an
   emacs line on the first line, or the second after a shebang
@@ -55,6 +56,19 @@ To set the language yourself, click the language in the status bar, or run
 everything that depends on the language: highlighting, comment syntax, the
 status bar, the tab's file-type icon, the [language server](/docs/lsp), and the
 Run ▶ for scripts. It lasts while the file stays open.
+
+### Java scripts
+
+A Java file without a `.java` name, such as an extension-less
+`java --source 25` shebang script or a file set to Java in the status bar, is
+served by the [Java language server](/docs/lsp) when it is set up, like a `.java`
+file: completion, hover, the outline and syntax errors.
+A completion that adds an import puts it below the `#!` line, so the script
+still runs. The server sees the script on its own, outside any project, so it
+reports syntax errors but not type errors, as for any `.java` file outside a
+project. This works for scripts on this machine, not for one in a
+[remote folder](/docs/remote). See [Run & debug](/docs/run-debug) for running
+and debugging one.
 
 ### Shell scripts
 

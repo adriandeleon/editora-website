@@ -53,7 +53,7 @@ change the same setting or entry, the one saved last wins.
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
 | `breakpoints.json` | Debugger breakpoints (per project) |
-| `connections.json` | Saved SFTP connections (no secrets), with whether each host may [run commands](/docs/remote) and its tool commands |
+| `connections.json` | Saved SFTP connections (no secrets), with whether each host may [run commands](/docs/remote) and its tool commands, and which containers and WSL distributions may run a project's tools |
 | `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
 | `macros.json` | Saved keyboard macros (format version 2; an older file is converted when it is read, and its key bindings are kept) |
@@ -123,6 +123,19 @@ Edit in the Settings window, or directly:
 separately as `fontZoom` (adjusted with `C-=` / `C--` / `C-0` or Ctrl+wheel) and
 isn't shown in the Settings window.
 
+### Containers
+
+`containerEngine` is the command Editora runs for a project whose
+[tools run in a container](/docs/remote#tools-in-a-container): blank (the
+default) means `docker`; `podman` works too, and so does a command line such as
+`flatpak-spawn --host docker`. It is the **Container engine**
+field in Settings → Remote. `containerBindings` remembers the container you
+picked for each project folder with *Containers: Run This Project's Tools in a
+Container…*, from folder path to container name; *Containers: Run This
+Project's Tools Here* removes the folder's entry. Whether a container or WSL
+distribution may run a project's tools is kept in `connections.json`, with the
+hosts' answers.
+
 ### Rulers and indent guides
 
 These are the rows under **Settings → Editor → Display**:
@@ -172,7 +185,7 @@ governs the file in front.
 ## Schema versioning
 
 Each structured config file carries a `schemaVersion`; in Editora 0.22.0
-`settings.json` is at version **123**. Editora migrates older files forward
+`settings.json` is at version **126**. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that
@@ -188,7 +201,7 @@ copy back, provided the file left in its place still holds only defaults.
   response history** in the dialog that asks before exporting: saved responses
   hold response bodies and full request URLs, which can contain tokens or keys.
   Runtime files are never included: downloaded language servers and debug adapters,
-  `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
+  the installed ShellCheck and shfmt, the Typst CLI, `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
   with its live token, and the session log.
 - **Reset to Defaults** (Settings → Advanced) resets every preference, including
   the keymap choice, which goes back to Emacs. Text zoom is kept, and your key

@@ -148,6 +148,17 @@ The host's own `java` is used, or the **JDK home** set for that host in
 Settings → Remote. Your local Default JDK and a configuration's JDK override
 are paths on this machine, so they are not sent to the host.
 
+### Running in a container or WSL
+
+A project whose tools [run in a container](/docs/remote#tools-in-a-container)
+or, on Windows, [in a WSL distribution](/docs/remote#tools-in-wsl-windows) runs
+its programs there: Run on a file, a main class, and every kind of run
+configuration, with the `java`, interpreters and environment the container or
+distribution has. Output, input and Stop work as for a local run, and Stop ends
+what the program started inside. The files are handed over by the names they
+have inside, and a configuration's absolute working directory is read as a
+folder there.
+
 ## Running a project's main class
 
 Beyond single files, **Run: Run Main Class…** (`run.mainClass`) and
@@ -424,6 +435,18 @@ Breakpoints of a remote file are kept across reconnects.
 The adapters' locations can be set per host in Settings → Remote (**Python for
 debugging**, **js-debug server**, **Node.js**, **java-debug plugin jar**). Other
 languages cannot be debugged on a host yet.
+
+### Debugging in a container or WSL
+
+A project whose tools [run in a container](/docs/remote#tools-in-a-container)
+or [in a WSL distribution](/docs/remote#tools-in-wsl-windows) is debugged there,
+as on a remote host: Python with the debugpy installed there, JavaScript with
+vscode-js-debug and `node` there, and Java through the jdtls running there, with
+Editora's java-debug plugin copied into `~/.cache/editora`. A Java file outside
+a project is compiled there for the debugger. The debugger's port inside is
+reached from here whatever the container's network, through a relay that needs
+`nc`, `bash` or `python3` inside (see
+[Ports and debuggers](/docs/remote#ports-and-debuggers)).
 
 ### Installing adapters
 

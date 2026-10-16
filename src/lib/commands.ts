@@ -552,7 +552,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Run: Import Configurations from Project", id: "run.importConfigs", desc: "Merge the project's shared run configurations into this window, matching by name." },
       { title: "Run: Run Main Class…", id: "run.mainClass", desc: "Pick and run a main class in the active file's Maven or Gradle project." },
       { title: "Run: Rerun Last", id: "run.rerun", bindings: { "vscode": "C-f5", "intellij": "S-f10" }, desc: "Re-run the last file with the same arguments." },
-      { title: "Run: Save Run Configuration…", id: "run.saveConfig", desc: "Save the active file's main class as a run configuration." },
+      { title: "Run: Save Run Configuration…", id: "run.saveConfig", desc: "Save the active file as a run configuration: its main class, or the Python or shell script." },
       { title: "Run: Stop Program", id: "run.stop", desc: "Stop the running program." },
       { title: "Run: Run with Trace", id: "run.trace", desc: "Run the current shell script with tracing (bash -x): each command is printed before it runs, with a link to its source line." },
       { title: "Debug Test at Caret", id: "test.debugAtCaret", desc: "Debug the JUnit test method at the caret via the project's build tool." },
@@ -728,6 +728,7 @@ export const commandGroups: CmdGroup[] = [
     commands: [
       { title: "HTTP: Cancel Running Request", id: "http.cancelRequest", keys: "C-c C-k", bindings: { "emacs": "C-c C-k", "cua": "C-M-k", "sublime": "C-M-k", "vscode": "C-M-k", "intellij": "C-M-k" }, desc: "Stop the request that is still running in the active .http file." },
       { title: "HTTP: Copy Request as cURL", id: "http.copyAsCurl", desc: "Copy the selected response's request as a curl command for bash or zsh (POSIX shells)." },
+      { title: "HTTP: Debug Request at Caret", id: "http.debugRequest", desc: "Send the .http request at the caret with its pre-request scripts and response handlers under the JavaScript debugger." },
       { title: "HTTP: Import cURL from Clipboard", id: "http.importCurl", desc: "Convert a curl command on the clipboard into a .http request." },
       { title: "HTTP: Open Response in Editor Tab", id: "http.openResponseInTab", desc: "Open the selected response body in a new editor tab." },
       { title: "HTTP: Run All Requests in File", id: "http.runFile", keys: "C-c C-r", bindings: { "emacs": "C-c C-r", "cua": "C-M-S-enter", "sublime": "C-M-S-enter", "vscode": "C-M-S-enter", "intellij": "C-M-S-enter" }, desc: "Send every request in the .http file in order." },
