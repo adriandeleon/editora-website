@@ -36,6 +36,20 @@ A trigger can be a word (`fori`), a token with punctuation (`#include`), or up t
 three words (`else if`). Tab does not expand a trigger inside a comment or a
 string, or in a CSV/TSV file; there it indents as usual.
 
+In Markdown and plain text, where triggers like `code`, `link`, `bold` or
+`note` are also ordinary words, Tab is careful not to expand one in the middle
+of a sentence:
+
+- A snippet that makes a block of its own (a heading, a quote or alert, a list,
+  a table, a fenced block, or anything of several lines) expands only when its
+  trigger starts the line, after any indentation or `>` quote marks.
+- A trigger made only of letters expands only when it is alone on its line.
+  One with digits or punctuation (`h2`, `;sig`), or one attached to the
+  character before it (`(code`), expands anywhere.
+
+The completion popup still offers the snippet mid-sentence, so you can choose
+it there.
+
 A trigger typed out in full goes ahead of other completions. In Markdown and
 plain text, no dictionary or AI inline suggestion is shown over it, so Tab
 expands the snippet. With a language server, the trigger's snippet is the first
@@ -61,7 +75,7 @@ typed.
 | --- | --- |
 | `TM_FILENAME`, `TM_FILENAME_BASE`, `TM_DIRECTORY`, `TM_FILEPATH` | The file's name, name without extension, folder, and full path |
 | `RELATIVE_FILEPATH` | The file's path relative to the project |
-| `WORKSPACE_NAME`, `WORKSPACE_FOLDER` | The project's name and folder |
+| `WORKSPACE_NAME`, `WORKSPACE_FOLDER` | The name and folder of the project open in the snippet's window (empty without one, and in an untitled buffer) |
 | `TM_SELECTED_TEXT`, `SELECTION` | The selection when the snippet was inserted |
 | `TM_CURRENT_LINE`, `TM_CURRENT_WORD` | The line and the word at the caret |
 | `TM_LINE_INDEX`, `TM_LINE_NUMBER` | The caret's line, counted from 0 and from 1 |

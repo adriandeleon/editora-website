@@ -18,7 +18,7 @@ Choose a **Type** in the project/session-scoped **Run Configurations** window:
 - a **make target**
 - a named **npm script** (`npm run`, with arguments passed after `--`)
 
-Script configurations need no project and no language server. Debugging a saved configuration remains Java-only, and says so rather than reporting a confusing Java error; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)).
+Script configurations need no project and no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Debugging a saved configuration remains Java-only, and says so rather than reporting a confusing Java error; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)).
 
 ## A step before the launch
 

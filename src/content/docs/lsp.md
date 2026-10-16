@@ -267,8 +267,8 @@ nest correctly. [Expand and shrink
 selection](/docs/editing#expand-and-shrink-selection) uses the same source, so it
 respects strings and comments rather than guessing at brackets.
 
-Both fall back to the built-in behaviour whenever LSP is off, the file is remote,
-or the server offers neither, so a file is never less foldable with a server
+Both fall back to the built-in behaviour whenever LSP is off, the file is on a
+[remote host](/docs/remote) that may not run commands, or the server offers neither, so a file is never less foldable with a server
 than without one.
 
 ## While the server works
@@ -324,6 +324,10 @@ to a **trusted folder**. In an untrusted folder the project's server commands
 (and any attempt to re-enable a server you switched off) are ignored until you
 run *LSP: Trust This Project's Server Settings* (`lsp.trustProjectSettings`).
 
+A remote project's `.editora/settings.json` is not read; set a server's command
+for a host in Settings → Remote instead (see
+[Language servers on a remote host](#language-servers-on-a-remote-host)).
+
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
@@ -368,6 +372,36 @@ session restores, and they **shut down when their last file closes**, after a
 three-minute grace period so reopening a file keeps the server warm. Each window
 gets its own jdtls workspace directory, so two windows on the same Java project
 can't contend for one Eclipse workspace lock.
+
+jdtls keeps an index for every Java folder you have opened, under
+`jdtls-workspaces` in your config folder: about 40 MB each, and often far more.
+**LSP: Clear Java Index Caches** (`lsp.clearJavaIndexCaches`) deletes every
+index that no running server is using and reports the space it freed; the ones
+in use are kept and counted. jdtls rebuilds a project's index the next time the
+project opens. It works with LSP turned off too.
+
+## Language servers on a remote host
+
+A file in a [remote folder](/docs/remote) is served by a language server running
+on its host, once that host
+[may run commands](/docs/remote#allowing-a-host-to-run-commands): completion,
+hover, diagnostics, go to definition, rename and the rest work as for a local
+file. The server is the one the host's `PATH` finds. To use another, add a
+`server = command` line for that host under **Language servers** in Settings →
+Remote, for example `python = basedpyright-langserver --stdio`. A command set in
+Settings → LSP is used on the host only when it is a bare program name rather
+than a path on this machine.
+
+- All files on the project's host share the project's server, including a file
+  outside the project folder, such as a library source reached by Go to
+  Definition.
+- Renames and other cross-file edits create, move and delete files on the host.
+- **Java** works too: jdtls runs on the host with the host's JDKs and keeps its
+  index in `~/.cache/editora` there.
+  *LSP: Clear Java Index Caches* clears only the indexes on this machine.
+- Losing the connection stops the host's servers without reporting a crash, and
+  reconnecting starts them again.
+- The Astro server does not run on a host yet.
 
 ## Finding the server's binary
 

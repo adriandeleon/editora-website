@@ -48,4 +48,8 @@ Every tool you define becomes its own palette command (bindable to a key in
 [Settings → Keymaps](/docs/keymaps)). There's also **External Tools: Run…**
 (`externalTool.run`, a picker) and **Rerun Last** (`externalTool.rerunLast`).
 Tools run off the UI thread with a timeout, and console output appears in the
-External Tools tool window (`tool.externalTools`).
+External Tools tool window (`tool.externalTools`). A tool that writes to the
+console opens it at launch, with a spinner that turns until the tool exits; a
+tool that writes into the editor spins the External Tools header instead.
+External tools run locally only: on a file in a remote (SFTP) folder they
+refuse and say so in the status line.

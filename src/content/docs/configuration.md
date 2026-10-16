@@ -53,7 +53,7 @@ change the same setting or entry, the one saved last wins.
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
 | `breakpoints.json` | Debugger breakpoints (per project) |
-| `connections.json` | Saved SFTP connections (no secrets) |
+| `connections.json` | Saved SFTP connections (no secrets), with whether each host may [run commands](/docs/remote) and its tool commands |
 | `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
 | `macros.json` | Saved keyboard macros (format version 2; an older file is converted when it is read, and its key bindings are kept) |
@@ -61,6 +61,7 @@ change the same setting or entry, the one saved last wins.
 | `trusted-folders.json` | Folders you have trusted to run their build wrappers |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
 | `history/` | [Local History](/docs/workspace#local-file-history) |
+| `http-history/` | The [HTTP client](/docs/http-client)'s last responses and chosen environment for each `.http` file |
 
 Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
 Editora converts an existing `settings.toml` automatically. Once the JSON
@@ -155,6 +156,19 @@ they are hidden in Zen and Simple UI modes and in
 }
 ```
 
+### Word wrap
+
+Two rows under **Settings → Editor → Display**, one for code and one for prose
+(see [Word wrap](/docs/editing#word-wrap)):
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `wordWrap` | Wrap long lines in code | `false` |
+| `wordWrapProse` | Wrap long lines in Markdown and plain text | `true` |
+
+*View: Toggle Word Wrap* (`view.toggleWordWrap`) flips whichever of the two
+governs the file in front.
+
 ## Schema versioning
 
 Each structured config file carries a `schemaVersion`; in Editora 0.22.0
@@ -169,8 +183,11 @@ copy back, provided the file left in its place still holds only defaults.
 - **Export Configuration…** (Settings → Advanced, or `config.export`) zips the
   active config folder into a timestamped archive in your home directory.
   `.bak` backups and installed plugins are included. Local History is left out,
-  because it holds the text of your files rather than configuration. Runtime
-  files are left out too: downloaded language servers and debug adapters,
+  because it holds the text of your files rather than configuration. The HTTP
+  client's response history is left out too, unless you tick **Include HTTP
+  response history** in the dialog that asks before exporting: saved responses
+  hold response bodies and full request URLs, which can contain tokens or keys.
+  Runtime files are never included: downloaded language servers and debug adapters,
   `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
   with its live token, and the session log.
 - **Reset to Defaults** (Settings → Advanced) resets every preference, including

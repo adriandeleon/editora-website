@@ -6,7 +6,7 @@ beta: false
 summary: "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, merges and rebases with a conflict resolver, branches, remotes, tags, stashes and patches, a paged log with a commit graph, and blame."
 ---
 
-Native Git that shells out to your installed `git`, no bundled library.
+Native Git that shells out to your installed `git`, no bundled library. In a [remote folder](/features/remote-sftp) it is the host's own `git`, over the same SSH connection with the host's credentials, and everything below works there too, clone and init included.
 
 - The **status bar** shows the current branch with ahead/behind counts and a dropdown to switch/create branches, pull, fetch, and push.
 - **Gutter change bars** mark added/modified/deleted lines vs HEAD. Click one for a card with the old and new lines, where you can revert or stage that hunk.

@@ -22,6 +22,13 @@ streams to the **Run** tool window (`M-9`), which accepts **stdin** so
 console-style programs work, and **stack-trace lines are clickable** (Java,
 Python, and Node frames) to jump to the file and line.
 
+While a program runs, a small **spinner** turns beside the Run window's status,
+from the launch (including a configuration's before-launch command) until the
+program exits, is stopped, or fails to start, so a script that prints little
+does not look stalled. The Run button on the tool-window stripe badges the same
+spinner on its icon, which shows a run is alive with the Run window closed or
+another window open in its place.
+
 A clicked **Java** frame in the Run, Test or Build console is resolved by the
 language server, so a frame inside a dependency or the JDK opens its source
 instead of reporting "not found". Frames in your own code open as usual, and
@@ -40,6 +47,22 @@ Maven tasks, and before-launch steps. Installed JDKs are discovered from the
 usual platform locations and common version managers. A run configuration's
 **JDK** field can inherit that choice or override it for one configuration. The
 Default JDK also applies to standalone Java Run and Debug.
+
+### Running on a remote host
+
+A file in a [remote folder](/docs/remote) runs on its host, when that host
+[may run commands](/docs/remote#allowing-a-host-to-run-commands); otherwise
+Run says so when you launch it. That covers Run on a file, a Java project's main
+class (the gutter ▶, *Run Main Class*, or a saved configuration, with the class
+path the host's `jdtls` or Maven gives), and script, make and npm
+configurations of a remote project. Output, input and Stop work as for a local
+run, over the same SSH connection, and a makefile at a remote project's root
+shows the run-configuration toolbar as it does locally. A configuration's
+working directory is a folder on the host.
+
+The host's own `java` is used, or the **JDK home** set for that host in
+Settings → Remote. Your local Default JDK and a configuration's JDK override
+are paths on this machine, so they are not sent to the host.
 
 ## Running a project's main class
 
@@ -211,6 +234,10 @@ Console**. **Restart** is disabled for a debugger attached to a test or build
 run (its tooltip says why); a session started with *Debug → Attach* can still be
 restarted.
 
+A spinner beside the Debug window's status turns while the before-launch build,
+the session start, or the program is running, and stops while the program is
+paused (at a breakpoint, a step, or Pause).
+
 ### Program input in the Debug console
 
 A debugged **Java** program can read its standard input from the Debug console.
@@ -262,6 +289,26 @@ app is listening. It complements *Debug Main Class*, which uses the language
 server; a plain Maven `main` has no uniform build-tool debug mechanism, so use
 *Debug Main Class* there.
 
+### Debugging on a remote host
+
+A file in a [remote folder](/docs/remote) is debugged on its host, when that
+host [may run commands](/docs/remote#allowing-a-host-to-run-commands), with
+breakpoints, stepping, variables and the call stack as for a local file.
+Breakpoints of a remote file are kept across reconnects.
+
+- **Python** runs debugpy on the host, which needs its own
+  (`pip install debugpy`).
+- **JavaScript** runs vscode-js-debug and `node` on the host.
+- **Java** in a Maven or Gradle project goes through the host's `jdtls`: Debug,
+  Debug Main Class, Attach (where `localhost` is the host), Debug Test, and a
+  saved configuration. Editora copies its java-debug plugin to
+  `~/.cache/editora` on the host. A Java file outside a project is compiled on
+  the host for the debugger.
+
+The adapters' locations can be set per host in Settings → Remote (**Python for
+debugging**, **js-debug server**, **Node.js**, **java-debug plugin jar**). Other
+languages cannot be debugged on a host yet.
+
 ### Installing adapters
 
 Adapters are not bundled. Three palette commands download each language's
@@ -269,8 +316,8 @@ adapter, together with its language server, into your config folder:
 
 | Command | Installs | Needs |
 | --- | --- | --- |
-| **Install: Java Language Support** (`install.javaSupport`) | `jdtls` and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
-| **Install: Python Language Support** (`install.pythonSupport`) | Pyright and `debugpy` | Node.js with `npm`, and Python with `pip` |
+| **Install: Java Language Support** (`install.javaSupport`) | jdtls and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
+| **Install: Python Language Support** (`install.pythonSupport`) | Pyright and debugpy | Node.js with `npm`, and Python with `pip` |
 | **Install: JavaScript / Node Language Support** (`install.jsSupport`) | `typescript-language-server` and vscode-js-debug | Node.js with `npm`, and `tar` |
 
 Editora does not install those runtimes for you. A downloaded server or adapter

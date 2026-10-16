@@ -87,7 +87,7 @@ right-click menu.
 - Binary files open as a read-only [hex dump](/docs/editing#hex-viewer).
 
 Every preview can **export to PDF** from its right-click menu, and *File:
-Print Rendered Preview…* (`preview.print`) and *File: Export Rendered Preview to
+Print Rendered Preview…* (`preview.print`) and *File: Export Preview to
 PDF…* (`preview.exportPdf`) act on whatever the active file previews as. Tree
 and summary previews break pages between rows, an OpenAPI file outputs its
 documentation view when that is the one showing, and a file that does not parse

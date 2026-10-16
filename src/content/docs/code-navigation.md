@@ -18,7 +18,8 @@ For pickers, find, and project-wide search, see
 **Go to Symbol in Project** (`index.gotoSymbol`) finds a class, method or
 function anywhere in the project **with no language server installed**. Editora
 carries its own declaration scanner, so the command works on a first run and in
-every language that ships a grammar but has no server.
+every language that ships a grammar but has no server. A project in a
+[remote folder](/docs/remote) has no symbols.
 
 Sixteen language ids are covered: Java, Kotlin, C#, Python, JavaScript,
 JSX, TypeScript, TSX, Go, Rust, C, C++, Ruby, PHP, shell and Lua. It records

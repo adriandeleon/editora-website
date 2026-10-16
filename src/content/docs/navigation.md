@@ -29,6 +29,10 @@ documentation in your browser: `C-h` in the Emacs keymap, and `F1` or
 `Shift+F1` in the keymaps that already use `Ctrl+H` or `F1` for something else.
 The hint line along the bottom names the key that applies.
 
+A command is also found by the first word of its id when its title does not
+carry it, so "markdown table" finds the *Table: …* commands of Markdown. Those
+matches rank below every match on a title.
+
 A command that can't run right now stays listed and dimmed, with an explanation
 of what would enable it, rather than disappearing.
 
@@ -75,6 +79,12 @@ Files do.
 The symbol half is backed by Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project), so it
 works with no language server installed.
+
+In a [remote project](/docs/remote) whose host
+[may run commands](/docs/remote#allowing-a-host-to-run-commands), the host lists
+the project's files in one command, so files are offered without walking the
+folder over the network. There are no symbols for a remote project: finding them
+would mean reading every source file over the connection.
 
 ### Commands you can't run yet
 
@@ -140,6 +150,7 @@ filter; Enter opens.
 | Tool windows | `tool.jump` | `M-g t` |
 | Bookmarks (cross-file) | `bookmarks.jump` | `M-g b` |
 | Notes (cross-file) | `notes.jump` | `M-g n` |
+| Markdown headings, project-wide ([more](/docs/markdown#completion-and-navigation)) | `project.gotoMarkdownHeading` | (palette) |
 
 The pickers share styling and dirty-file markers, so an unsaved buffer shows the
 same dot you see on its tab.
@@ -212,6 +223,13 @@ panel.
 
 There's also a lightweight **Find in Files popup** (`search.inFilesPopup`) if you
 prefer a quick, keyboard-first search without opening the tool window.
+
+When ripgrep is installed, Find in Files uses it to search faster (**Use ripgrep
+when available** under Settings → Search, on by default). In a
+[remote folder](/docs/remote), the host's own ripgrep does the search in one
+command when the host [may run commands](/docs/remote#allowing-a-host-to-run-commands)
+and has `rg`; otherwise each file is read over the connection. Whether this
+machine has ripgrep does not matter there.
 
 ## Folding
 

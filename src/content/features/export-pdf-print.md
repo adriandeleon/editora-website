@@ -8,9 +8,9 @@ summary: "Export code, a selection, or the Markdown preview to a syntax-highligh
 
 Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly formatted PDF, with headings, lists, tables, code blocks, and images rendered as native vector text.
 
-The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
+The Markdown preview also exports to **self-contained HTML** (local images embedded, code highlighted, following the reader's light or dark preference), **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images. PDFs draw highlight, superscript, subscript and emoji, and GitHub alerts come out coloured and titled.
 
-Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** and **Export to PDF…** are in the File menu, the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
+Or **print** either, with a page-by-page preview first (what you preview is what prints). PDFs and printouts are always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** is in the File menu and **Export to PDF…** under File ▸ Export; both are in the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
 
 Exported PDFs have clickable links, bookmarks from the headings, and a page footer. The Print Preview shows the sheet at paper size, with zoom, Page Setup and keyboard paging. PDF page size, orientation, margins, the code font size and the footer are set in Settings → Editor → Export & Print; printing uses the paper chosen in Page Setup.
 

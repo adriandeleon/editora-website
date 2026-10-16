@@ -25,11 +25,11 @@ static final String CE = "Customization & extensibility";
 static final List<Feature> FEATURES = List.of(
     new Feature("command-driven-core", KB, 1, false,
         "Command-driven core",
-        "Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. There are 700+ commands and no hidden actions.",
+        "Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. There are 900+ commands and no hidden actions.",
         """
 Editora has no hidden actions. Every capability (save, toggle a bookmark, start the debugger, switch a theme) is a registered `Command` with an id and a title. Four things are built on that registry:
 
-- The **command palette** (`M-x`) fuzzy-searches all 700+ commands, each with a one-line description.
+- The **command palette** (`M-x`) fuzzy-searches all 900+ commands, each with a one-line description. A command is also found by the first part of its id, so "markdown table" finds the `Table: …` commands.
 - **Keybindings** are a map from a chord to a command id, so anything can be bound, or rebound.
 - **Toolbar buttons** dispatch the same commands, so the UI and the keyboard never drift apart.
 - The **[menu bar](/features/menu-bar)** is a curated view of the same registry, so each item shows its live keybinding and can never name an action that doesn't exist.
@@ -61,7 +61,7 @@ It **teaches the way the command palette does**: an empty query lists every comm
 
 It is `M-S-x` in the Emacs keymap and `Ctrl`/`Cmd`+`Shift`+`E` in the others. It can also take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
 
-The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).
+The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. In a [remote project](/features/remote-sftp), the host lists the files in one command; there are no symbols for a remote project. See [Navigation & search](/docs/navigation#search-everywhere).
 """),
     new Feature("jump-to-popups", KB, 4, false,
         "Jump-to popups",
@@ -224,7 +224,7 @@ Expand boilerplate with interactive templates. Type a prefix and press **Tab**, 
 
 Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields, mirrors update live, choice fields show a dropdown, and `$0` is the final caret. Bodies use the standard VS Code / TextMate syntax, `$1`, `${1:default}`, mirrors, `${1|a,b|}` choices, and variables (`$TM_FILENAME`, `$CLIPBOARD`, date/time, the selection…).
 
-While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running.
+While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running. In Markdown and plain text, a trigger that is an ordinary word expands only when it is alone on its line, and a block snippet (heading, table, alert…) only at the start of a line; mid-sentence, the completion popup still offers it.
 
 Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
 """),
@@ -256,7 +256,7 @@ It preserves indentation, uses whichever form exists in line-only or block-only 
         "Spell checking",
         "Red wavy underlines with right-click suggestions, Add-to-Dictionary, and Ignore: full text for prose, comments &amp; strings for code, set per file type. Pure-Java Hunspell; English, Spanish, French.",
         """
-Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged); plaintext and Markdown are checked in full, as is the text of HTML and Typst documents. Data and configuration formats such as JSON, YAML and TOML are off by default; Settings → Spell Check → File Types sets this per file type.
+Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged); plaintext is checked in full, and so is Markdown prose, including link text and image alt text, but not code, front matter, link targets or HTML tags, as is the text of HTML and Typst documents. Data and configuration formats such as JSON, YAML and TOML are off by default; Settings → Spell Check → File Types sets this per file type.
 
 Commands move to the next or previous misspelling and correct, add or ignore the word at the caret, and the status bar shows the dictionary in use.
 
@@ -363,9 +363,9 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - Server-provided **folding regions** and **expand/shrink selection**
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks) and **completions**
 
-Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
+Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). For a [remote folder](/features/remote-sftp), the server runs on the host, found on its PATH or set per host, and Java's jdtls keeps its index there. Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
 
-Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes.
+Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed.
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
@@ -413,7 +413,7 @@ It also runs a **project's main class**. *Run Main Class…* picks any `main` in
 
 For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
 
-Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. Bind it to `C-c r` or run from the palette.
+Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. A file in a [remote folder](/features/remote-sftp) runs on its host, with output, input and Stop as for a local one. A spinner turns in the Run window, and on the Run stripe button when the window is closed, while the program runs. Bind it to `C-c r` or run from the palette.
 """),
     new Feature("run-configurations", RD, 2, false,
         "Run configurations",
@@ -431,7 +431,7 @@ Choose a **Type** in the project/session-scoped **Run Configurations** window:
 - a **make target**
 - a named **npm script** (`npm run`, with arguments passed after `--`)
 
-Script configurations need no project and no language server. Debugging a saved configuration remains Java-only, and says so rather than reporting a confusing Java error; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)).
+Script configurations need no project and no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Debugging a saved configuration remains Java-only, and says so rather than reporting a confusing Java error; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)).
 
 ## A step before the launch
 
@@ -463,6 +463,8 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 
 For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening.
 
+Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript, and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
+
 While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on.
 """),
     new Feature("http-client", RD, 4, false,
@@ -493,7 +495,7 @@ Discovery parses the marker file directly (no shell-out, no new dependency), so 
         "Git integration",
         "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, merges and rebases with a conflict resolver, branches, remotes, tags, stashes and patches, a paged log with a commit graph, and blame.",
         """
-Native Git that shells out to your installed `git`, no bundled library.
+Native Git that shells out to your installed `git`, no bundled library. In a [remote folder](/features/remote-sftp) it is the host's own `git`, over the same SSH connection with the host's credentials, and everything below works there too, clone and init included.
 
 - The **status bar** shows the current branch with ahead/behind counts and a dropdown to switch/create branches, pull, fetch, and push.
 - **Gutter change bars** mark added/modified/deleted lines vs HEAD. Click one for a card with the old and new lines, where you can revert or stage that hunk.
@@ -536,20 +538,23 @@ Apply changes with guarded, undoable gutter actions or open an editable Result d
 """),
     new Feature("markdown-preview", DD, 1, false,
         "Markdown preview",
-        "A 3-mode view rendered natively with CommonMark + GFM: task lists, code pills, images, LaTeX math, a heading outline, linting, and export to PDF, HTML, Word, and ODF. Live and theme-matched.",
+        "A 3-mode view rendered natively with CommonMark + GFM: task lists, alerts, images, LaTeX math, selectable text, wiki links and backlinks, linting, formatting, and export to PDF, HTML, Word, and ODF. Live and theme-matched.",
         """
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
 
-It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. Extra CommonMark extensions render too: YAML front matter, footnotes, heading anchors, and `++inserted++` text.
+It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
 
 Markdown files get a full editing kit:
 
-- **Linting** with a broad markdownlint rule set, shown as inline squiggles, scrollbar/minimap stripes, and a Markdown Lint tool window, with **auto-fix**, per-rule config, inline disable comments, and `.markdownlint.json` discovery.
+- **Linting** with 43 markdownlint rules plus checks for broken links, shown as inline squiggles, scrollbar/minimap stripes, a status-bar count and a Markdown Lint tool window, with **auto-fix** (also on save), per-rule severity, project-wide lint, inline directives, and `.markdownlint` / `.markdownlint-cli2` config discovery.
 - **LaTeX math**: inline `$…$` and display `$$…$$` (on by default).
-- **Image paste & drag-drop** into a sibling `assets/` folder, and **smart link paste** to wrap a selection.
-- **Table editing**: insert a table, add/delete rows and columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
+- **Image paste & drag-drop** into an assets folder you choose (unused pasted images go to the trash on save), **Paste as Markdown** for HTML and spreadsheet cells, and **smart link paste** to wrap a selection.
+- **Table editing**: insert a table, add/delete rows and columns, move and sort them, align columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
 - **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
-- **Export** the preview to PDF, **HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
+- **Links and wiki links**: follow `#heading`, other-file and reference links; `[[wiki links]]` with completion; a **Backlinks** tool window; and links updated when a file is renamed or moved.
+- **Format Document**, heading numbering, and completion of paths, heading anchors, emoji and fence languages.
+- A **word count** and reading time in the status bar, and **typewriter mode**.
+- **Export** the preview to PDF, **self-contained HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
 
 Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print. See the [Markdown guide](/docs/markdown).
 """),
@@ -559,7 +564,7 @@ Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print
         """
 Mermaid diagrams render inline. A fenced ` ```mermaid ` block in Markdown becomes a diagram in the preview, and standalone `.mmd` files get the same 3-mode preview.
 
-Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), with **live linting** via `maid` that underlines errors with precise line/column messages as you type. Export a diagram to **SVG / PNG / PDF**.
+Rendering uses the `mmdc` CLI (rasterized faithfully and cached per diagram), with **live linting** via `maid` that underlines errors with precise line/column messages as you type. Export a diagram to **SVG / PNG / PDF**. Inside a Mermaid fence, completion offers Mermaid keywords, and diagrams are drawn for the preview's own light or dark theme. Exported HTML includes the drawn diagrams when `mmdc` is available.
 
 On by default, and inert until `mmdc` is found. Configure it under Settings → Mermaid (point it at your `mmdc`/`maid`, or use `npx`).
 """),
@@ -602,9 +607,9 @@ All on by default, each toggled under Settings → Editor → File previews. See
         """
 Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly formatted PDF, with headings, lists, tables, code blocks, and images rendered as native vector text.
 
-The Markdown preview also exports to **standalone HTML**, **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images.
+The Markdown preview also exports to **self-contained HTML** (local images embedded, code highlighted, following the reader's light or dark preference), **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images. PDFs draw highlight, superscript, subscript and emoji, and GitHub alerts come out coloured and titled.
 
-Or **print** either, with a page-by-page preview first (what you preview is what prints). Output is always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** and **Export to PDF…** are in the File menu, the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
+Or **print** either, with a page-by-page preview first (what you preview is what prints). PDFs and printouts are always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** is in the File menu and **Export to PDF…** under File ▸ Export; both are in the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
 
 Exported PDFs have clickable links, bookmarks from the headings, and a page footer. The Print Preview shows the sheet at paper size, with zoom, Page Setup and keyboard paging. PDF page size, orientation, margins, the code font size and the footer are set in Settings → Editor → Export & Print; printing uses the paper chosen in Page Setup.
 
@@ -624,7 +629,7 @@ On by default. Toggle it under Settings → Web → HTML Preview. Read the [deep
         "Project Map navigation",
         "Explore a project as a file tree or a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards.",
         """
-Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window.
+Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window, and everything in a window acts on its own project. A folder on a remote host over SFTP is a project too, with its own window, tabs and trust (a server folder is trusted separately from a local one with the same path); reopening it asks to connect.
 
 Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global session. Bookmarks, notes and [run configurations](/features/run-configurations) are scoped per project. **On by default** since 0.10.0; Settings → Workspace turns it off.
 
@@ -720,7 +725,7 @@ Two ways to mark up code.
         "Find in files",
         "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label.",
         """
-Project-wide search with a results panel (`C-S-f`): matches grouped by file, with case / regex / whole-word options, and it searches open buffers' unsaved text too. **Replace-in-files** rewrites matches across the project (undoable in open buffers).
+Project-wide search with a results panel (`C-S-f`): matches grouped by file, with case / regex / whole-word options, and it searches open buffers' unsaved text too. **Replace-in-files** rewrites matches across the project (undoable in open buffers). It uses ripgrep when installed, and in a [remote folder](/features/remote-sftp) the host's own ripgrep searches it in one command instead of reading every file over the connection.
 
 In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count. And **AceJump** (`M-g j`) lets you leap the caret to any visible spot by typing the label that appears over it.
 """),
@@ -744,13 +749,15 @@ A file that isn't writable on disk opens read-only automatically, and the per-fi
 """),
     new Feature("remote-sftp", WF, 8, true,
         "Remote files (SFTP)",
-        "Browse, edit, search, and save files on a remote host over SSH/SFTP. The project tree, search, bookmarks, and notes all work over the wire.",
+        "Edit files on a remote host over SSH/SFTP, each remote folder a project in its own window, and run Git, builds, tests, language servers and debuggers on the host.",
         """
-Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* mounts the remote folder as the Project tree, and from there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
+Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* opens the remote folder as a project in its own window, listed with your other projects; reopening it asks to connect, and the tabs you had open come back when it does. From there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
 
 Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled.
 
-Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site; local-only features (running, LSP, Git) are gated off for remote files.
+Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site.
+
+On a host you allow to run commands (Editora asks once per host; withdraw it in Settings → Remote), the tools Editora drives run on the host over the same SSH connection: Git and `gh`, ripgrep for Find in Files, Run, builds and tests, language servers, debuggers for Python, JavaScript and Java, and a watch for outside changes. Each host can name its own tool commands. It works with OpenSSH (Linux, macOS) and dropbear servers, and with ed25519 keys. See [Remote files](/docs/remote).
 """),
     new Feature("file-encodings", WF, 14, false,
         "File encodings",
@@ -850,7 +857,7 @@ Editora has optional AI, off by default and yours to configure.
 - **Rewrite the selection** per an instruction, as a single undoable edit.
 - **Inline completion**: after a typing pause, a muted one-line ghost suggestion at the caret, accepted with Tab (its own fast model).
 
-**AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. The agent is a user-installed external tool, never bundled.
+**AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. It works in the project of its own window, and its file reads and writes stay inside that folder. The agent is a user-installed external tool, never bundled.
 
 **Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
 """),
@@ -984,7 +991,7 @@ Every tool you define becomes its own palette command (and is bindable to a key)
 Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, with your own Git credentials; Editora stores none and there is no Editora account or server.
 
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
-- It syncs after startup, shortly after you change something, and every 15 minutes. `Settings Sync: Sync Now` does it on demand.
+- It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand.
 - Changes **merge entry by entry**, so two computers that each added a snippet keep both. If the same entry changed on two computers, the one that syncs keeps its version and the other stays in the repository history.
 - With several accounts in the GitHub CLI, sync finds the one that can read the repository and keeps using it across `gh auth switch`; Editora never sees a token.
 - Files a sync replaces are first copied to a backups folder in the config directory.

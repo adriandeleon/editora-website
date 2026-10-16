@@ -17,4 +17,4 @@ It **teaches the way the command palette does**: an empty query lists every comm
 
 It is `M-S-x` in the Emacs keymap and `Ctrl`/`Cmd`+`Shift`+`E` in the others. It can also take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
 
-The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. See [Navigation & search](/docs/navigation#search-everywhere).
+The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. In a [remote project](/features/remote-sftp), the host lists the files in one command; there are no symbols for a remote project. See [Navigation & search](/docs/navigation#search-everywhere).

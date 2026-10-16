@@ -38,6 +38,9 @@ each command reports the reason.
 - **GitHub Enterprise**: a host is treated as GitHub when `gh` has an account on
   it, so an Enterprise host you ran `gh auth login --hostname` for works like
   github.com.
+- **Remote folders**: a repository in a [remote folder](/docs/remote) uses the
+  host's own `gh`, signed in there (a per-host **GitHub CLI** command can be set
+  in Settings → Remote). Links still open in your local browser.
 
 ### When Git support is off, or GitHub can't be reached
 

@@ -190,7 +190,9 @@ with Lease**, or Cancel.
 incoming commits show without asking. It is off by default; the interval is 10
 minutes unless you change it (`git.setAutoFetchInterval`). The background fetch
 never prompts, and runs only in a trusted folder or in a repository you have
-fetched, pulled, or pushed in during the session.
+fetched, pulled, or pushed in during the session. A repository on a
+[remote host](#repositories-on-a-remote-host) is fetched on that host, by its
+`git`, under the same rule.
 
 ## Branches
 
@@ -385,6 +387,26 @@ others.
 
 To read a patch before applying it, see
 [Diff & merge](/docs/diff-merge#diff-viewer).
+
+## Repositories on a remote host
+
+A repository in a [remote folder](/docs/remote) works as a local one does, once
+its host [may run commands](/docs/remote#allowing-a-host-to-run-commands):
+branch and ahead/behind counts, changed files, change bars, log and blame,
+staging whole files or single hunks, committing, branches, stashes, and fetch,
+pull and push. Every command is the host's own `git`, run over the same SSH
+connection with the host's credentials (its SSH keys and credential helpers);
+nothing prompts, so an HTTPS remote that needs a password fails rather than
+asking for it. To use a `git` other than the one on the host's `PATH`, set
+**Git** for that host in Settings → Remote; *Git: Set Git Command* is for this
+machine only.
+
+In a remote project's window, **Clone** clones on that host into a folder you
+type as the host names it (`~` is the account's home there); the form proposes
+the project's parent folder, and the Browse button, which picks a local folder,
+is hidden. **Create a repository** (`git.init`) creates it
+on the host too. The [GitHub](/docs/github) tool window and commands use the
+host's own `gh`, signed in there.
 
 ## What runs automatically
 

@@ -12,4 +12,4 @@ It also runs a **project's main class**. *Run Main Class…* picks any `main` in
 
 For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
 
-Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. Bind it to `C-c r` or run from the palette.
+Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python, and Node frames) to jump to the file and line. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last Run*. A file in a [remote folder](/features/remote-sftp) runs on its host, with output, input and Stop as for a local one. A spinner turns in the Run window, and on the Run stripe button when the window is closed, while the program runs. Bind it to `C-c r` or run from the palette.

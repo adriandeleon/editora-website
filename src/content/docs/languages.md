@@ -71,8 +71,10 @@ it for good.
 
 What is checked depends on the file type:
 
-- **Plain text and Markdown** are checked in full, apart from inline code, links,
-  and Markdown fenced code blocks.
+- **Plain text and Markdown** are checked in full, apart from inline code and
+  link addresses; in Markdown, fenced code blocks, front matter, link
+  definitions, HTML tags and lint directives are skipped too, while link text
+  and image alt text are checked.
 - **HTML and Typst** have the document's text checked, plus comments. Tags,
   attributes, `<script>`, `<style>` and `<pre>` blocks, Typst math and Typst
   lines that open with a `#` instruction are left alone.

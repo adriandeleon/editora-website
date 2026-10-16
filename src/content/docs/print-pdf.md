@@ -32,7 +32,7 @@ right-click menu. The editor's right-click menu also has **Print Selection…**
 and **Export Selection to PDF…**.
 
 In the palette the preview commands are *File: Print Rendered Preview…* and
-*File: Export Rendered Preview to PDF…*. They are unavailable when the active
+*File: Export Preview to PDF…*. They are unavailable when the active
 file has no preview that can be exported, when a JSON, YAML, TOML or XML file
 does not parse, and for `.http` files. A preview's own right-click menu offers
 the export too.
@@ -95,8 +95,9 @@ OpenDocument, spreadsheet and CSV export dialogs.
 The status bar shows the page being written. A second export started while one
 is running is queued, and the status bar says how many are ahead of it. *File:
 Cancel PDF Export* stops the running export and any queued behind it. *File:
-Open Last Exported File* opens the file the window exported last (PDF, Word,
-OpenDocument or spreadsheet).
+Open Last Exported File* opens the file the window exported last: a PDF or an
+HTML page in a tab, a Word, OpenDocument or spreadsheet file in the application
+your system opens it with.
 
 An exported PDF carries:
 

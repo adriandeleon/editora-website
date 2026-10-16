@@ -136,7 +136,10 @@ with a capped load. A file of 5 MB or more that would not fit in the memory that
 is left (typically a second or third very large file) opens the same way, as a
 read-only slice of its first part; close other large tabs and reopen it to edit
 it. Lines longer than 20,000 characters are not syntax-highlighted, though the
-rest of the file is. Find in a very large file searches in the background and
+rest of the file is. A file with a line of 10,000 characters or a long run
+without spaces (minified code, an embedded image) opens unwrapped even where
+[word wrap](/docs/editing#word-wrap) is on; *View: Toggle Word Wrap* wraps it
+anyway. Find in a very large file searches in the background and
 holds at most 100,000 matches around the current one, so the count can read
 "N of 100,000+"; Next, Previous, Replace, and Replace All still reach every
 match. If editing or scrolling feels heavy:

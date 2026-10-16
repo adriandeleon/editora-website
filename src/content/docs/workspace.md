@@ -33,6 +33,10 @@ state, and other per-file settings.
 Bookmarks and notes are scoped per project. Closing a project returns you to the
 global, no-project session.
 
+A folder on another machine can be a project too: connecting to it over SFTP
+opens it as a project in its own window. See
+[Remote folders as projects](/docs/remote#remote-folders-as-projects).
+
 **Delete** moves files to the system trash on Linux and macOS, and the
 confirmation says which will happen. Windows deletes permanently, as does any
 file the trash cannot take; a permanent delete asks with **Cancel** as the
@@ -195,6 +199,13 @@ tabs, tool windows, and session. The window's project picker acts as a window
 switcher: choosing a project focuses or opens that window. The set of open
 windows is remembered and restored on the next launch. With projects disabled,
 Editora stays a single window.
+
+Everything in a window acts on that window's project, whichever window you used
+last: Git, *Project: Edit Project Settings…*, exporting and importing run
+configurations, where a new file is offered and where the file finder starts, a
+template's `${projectName}`, snippet variables such as `$WORKSPACE_FOLDER`, the
+AI agent's working folder, and finding the files of a stack trace. A recent
+file that belongs to another open project opens in that project's window.
 
 Launching Editora again while it is running hands the launch to the running
 editor instead of starting a second process. Start with `--new-instance` when
@@ -432,7 +443,8 @@ without a system title bar, and the menus, the window title and the system
 buttons share that single row, which gives the editor a full bar of vertical
 space back. Minimise, maximise, close, drag-to-move, double-click-to-maximise,
 edge resize and snapping all stay the platform's own, so the window behaves as
-before and only the position of the menus changes.
+before and only the position of the menus changes. The window drags from the
+title in the middle of the bar as well as from its empty parts.
 
 It is **experimental**, off by default, and **applies on restart**, because a
 window's style is fixed once it has been shown. **Linux and Windows only.** macOS is
@@ -444,7 +456,8 @@ why. Also on the palette as
 
 The **breadcrumb** sits directly under the editor area and is as wide as the
 editor, rather than spanning the whole window above the status bar. It writes your home directory as a single `~` crumb, which still
-navigates there.
+navigates there. In a Markdown file it continues with the path of headings at
+the caret.
 
 In the **status bar**, indent, line endings and encoding are one segment
 (`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
@@ -478,6 +491,12 @@ switcher it read as a project control. As a catalog item, it can be dragged
 elsewhere or removed like any other. A toolbar you had already customized keeps
 the button. Because a saved layout is used verbatim, the button is inserted
 after Save As so that it does not disappear from both halves.
+
+Its dropdown is as wide as the longest file name, up to a limit, with each
+file's project label lined up in one column. Hover a row for the file's full
+path. A row's trash icon asks before removing that file from the list, and the
+question shows the full path, so two files with the same name are easy to tell
+apart.
 
 Cut, copy and paste are not in the default layout, because in a keyboard-driven
 editor they are rarely reached for with the mouse. They remain catalog items
@@ -595,6 +614,12 @@ A file **deleted** outside Editora keeps its tab and its text: the tab is marked
 unsaved, the status bar says the file no longer exists on disk, and auto-save
 does not write it back. Save it yourself to recreate the file.
 
+A [remote project](/docs/remote)'s folder is watched on its host when that host
+[may run commands](/docs/remote#allowing-a-host-to-run-commands), so a
+`git pull` or a build there updates the Project tree, Git, language servers and
+an open file that changed, as for a local folder. A host with `inotifywait`
+reports changes at once; others are checked every few seconds.
+
 ## Trusted folders
 
 A repository can ship its own build wrapper, `./mvnw` or `./gradlew`, and those
@@ -620,3 +645,6 @@ Review or revoke trust in **Settings → Workspace → Trusted Folders**, or fro
 the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
 folder that is still covered by a trusted parent tells you so, rather than
 claiming a revoke that the parent would override.
+
+A folder on a [remote host](/docs/remote) is trusted on its own: trusting
+`/srv/app` on a server does not trust a local `/srv/app`, or the other way round.

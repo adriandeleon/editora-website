@@ -70,7 +70,8 @@ Workspace and customization:
 - **[TODO highlighting](/docs/todo)**: highlight and list TODO/FIXME patterns.
 - **[Server log viewer](/docs/log-viewer)**: severity highlighting, follow, and filtering for `.log` files.
 - **[CSV & TSV](/docs/csv)**: rainbow columns and an editable grid for data files.
-- **[Remote files (SFTP)](/docs/remote)**: edit over SSH.
+- **[Remote files (SFTP)](/docs/remote)**: edit over SSH, and run Git, builds,
+  language servers and debuggers on the host.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[External tools](/docs/external-tools)**: run your own CLI commands.
 - **[Settings sync](/docs/settings-sync)**: the same snippets, abbreviations,

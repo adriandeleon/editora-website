@@ -1,22 +1,48 @@
 ---
-title: "Editora 0.22.0: remote development on the host, and a round of editing commands"
-description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers."
+title: "Editora 0.22.0: remote development on the host, Markdown wiki links, and a round of editing commands"
+description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers. Markdown gains wiki links, backlinks and 29 lint rules, and the HTTP Client asks before sending your secrets."
 date: 2026-10-31
 version: "0.22.0"
 ---
 
-<!-- DRAFT (website-next): set the date, file name and version on release day, and fill the sections marked
-TODO from CHANGELOG.md's 0.22.0 section. The editing sections below are complete. -->
+<!-- DRAFT (website-next): set the date, file name and version on release day, and check the sections
+against CHANGELOG.md's 0.22.0 section (written from master on 2026-10-15). -->
 
 **Editora 0.22.0** is out. Remote folders now work like local ones: the tools
-Editora drives run on the host. The rest of the release is a round of everyday
-editing commands. Download it from the
+Editora drives run on the host. Markdown gets wiki links, backlinks and a
+much larger lint, the HTTP Client asks before it sends a secret, and there is a
+round of everyday editing commands. Download it from the
 [0.22.0 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.22.0).
 
 ## Remote development
 
-<!-- TODO from CHANGELOG: remote execution per host, remote debugging, language servers, outside changes,
-run/build/test, Find in Files and Go to File, Git, a window per remote project. -->
+Until now a remote (SFTP) folder was a place to open and save files. The
+first time you open a folder on a host, Editora asks once whether it may run
+commands there. Once you allow it, the tools Editora drives run on that host,
+over the same SSH connection:
+
+- **Git and GitHub**: branch, change bars, log and blame, staging hunks,
+  commits, stashes, fetch, pull and push, using the host's own `git`,
+  credentials and `gh`. Clone and Init work on the host too.
+- **Language servers**: pyright, gopls, rust-analyzer, the TypeScript server,
+  jdtls and the rest run on the host, with completion, diagnostics, go to
+  definition and renames that create and move files there.
+- **Run, builds and tests**: Run, script, make and npm configurations, and
+  Maven, Gradle, npm, Cargo and Go builds and tests. Output, input and Stop work
+  as they do locally.
+- **Debugging**: debugpy, vscode-js-debug and java-debug, with breakpoints,
+  stepping and the call stack.
+- **Search**: Find in Files uses the host's ripgrep, and Go to File lists the
+  project's files there.
+- **Outside changes**: a `git pull` or a build on the host updates the Project
+  tree, Git, the language servers and open files.
+
+Each remote folder is a project with its own window, its own tabs and its own
+trust. Reopening it asks to connect, and your tabs come back once it does.
+Settings → Remote lists which hosts may run commands, and lets you set the
+command for each tool on a host whose PATH does not find the right one. It
+works with OpenSSH servers on Linux and macOS, and with dropbear.
+[More about remote folders](/docs/remote).
 
 ## File encodings
 
@@ -56,15 +82,62 @@ See [line commands and text tools](/features/line-and-text-tools),
 
 ## Markdown
 
-<!-- TODO from CHANGELOG: wiki links and backlinks, more syntax in preview and exports, preview selection,
-link updates on rename, 29 more lint rules, format document, completion, navigation, settings. -->
+Three passes over Markdown since 0.21.0:
+
+- **Wiki links**: `[[note]]`, `[[note|label]]`, `[[note#heading]]` and
+  `![[image.png]]` resolve, complete after `[[`, are followed from the source
+  and the preview, and are checked by lint. A **Backlinks** window lists what
+  links to the current note.
+- **Links follow a renamed or moved file**, kept up to date through an index of
+  the project's links, including files open in other windows.
+- **More syntax**, in the preview and in every export: GitHub alerts, emoji
+  shortcodes, highlight, superscript and subscript, definition lists and math.
+- **The preview** can be selected and copied, opened to the side or in its own
+  tab, searched with Find, and its task boxes ticked with a click.
+- **Lint** has 29 more rules, including checks for broken relative links and
+  heading anchors. You can act on an issue from the editor, fix issues on save
+  and lint the whole project.
+- **Editing**: Format Document, numbered headings, table and link tools, Paste
+  as Markdown, completion of paths, anchors and emoji, and a search over every
+  heading in the project.
+- **Exports**: self-contained HTML, Word documents with real heading styles and
+  lists, and emoji in PDFs.
+
+[More about Markdown](/docs/markdown).
 
 ## HTTP Client
 
-<!-- TODO from CHANGELOG: closer to the JetBrains format, response view, per-file history and environments,
-secrets not sent without asking, Copy as cURL safe to paste, the fixes. -->
+- **Your secrets stay put unless you say so.** A request that reads
+  `$processEnv`, `$env` or `$dotenv` in a folder you have not trusted asks
+  first. The prompt names the variables and the hosts, never the values.
+- **Copy as cURL is safe to paste** into a shell, and reproduces uploads, forms
+  and Digest logins.
+- **The response view shows what happened**: status, time and size on one line,
+  the request as it was sent, and the warnings.
+- **History and environments are remembered per file**, with credential
+  headers masked.
+- **Closer to the JetBrains format**: comment lines in a body, directives,
+  timeouts with units, and HTTP/1.1 by default.
+- **Keys** to run a request (`C-c C-c`, or `Ctrl+Alt+R` in the GUI keymaps),
+  run the file and cancel, and unresolved variables are underlined as you type.
+
+[More about the HTTP Client](/docs/http-client).
 
 ## Also
 
-<!-- TODO from CHANGELOG: run/test spinners, Recent Files dropdown, abbreviation previews, Clear Java Index
-Caches, smaller Linux app, word wrap per kind of file, the remaining fixes. -->
+- The Run, Output, Test Results, Debug and External Tools windows show a
+  **spinner** while something runs, so a quiet build no longer looks stalled.
+- **Word wrap is set per kind of file**: on for Markdown and plain text, off
+  for code.
+- **Abbreviations show what they expand to** as muted text after the caret, and
+  Tab expands them.
+- `LSP: Clear Java Index Caches` frees the disk space jdtls's per-folder indexes
+  take.
+- The Recent Files dropdown fits long names and asks before removing one.
+- The installed Linux app is 22 MB smaller.
+- Fixes: each project window acts on its own project, right-click menus close
+  when you click outside them, the window drags by its title, and Java
+  completions show the whole signature.
+
+The full list is in the
+[changelog](https://github.com/adriandeleon/Editora/blob/v0.22.0/CHANGELOG.md).

@@ -228,6 +228,13 @@ Your typed case is carried onto the expansion, so `btw` gives *by the way*, `Btw
 gives *By the way*, and `BTW` gives *BY THE WAY*; a lowercase abbreviation keeps
 any capitals inside its expansion.
 
+With Abbrev Mode on, an abbreviation typed out in full at the end of a line
+shows what it will become as muted text after the caret (`btw → by the way`),
+the way a snippet trigger does. **Tab** expands it at once, **Esc** hides the
+hint, and typing a space or punctuation expands it as usual. The hint is part of
+autocomplete, so it doesn't appear while autocomplete is turned off, and a
+snippet trigger typed at the same spot keeps Tab for itself.
+
 ## The Emacs editing model
 
 Beyond the keymap, Editora implements the concepts an Emacs user reaches for.
@@ -396,3 +403,23 @@ through blank lines and skipped over folded lines, in a colour that follows the
 theme. They are on by default; turn them off in Settings → Editor or with *View:
 Toggle Indent Guides* (`view.toggleIndentGuides`). They are hidden in Zen mode,
 Simple UI and large-file mode.
+
+### Word wrap
+
+Word wrap is set per kind of file. Markdown and plain text wrap long lines to
+the editor width by default, because their lines are paragraphs; code does not,
+and scrolls sideways instead. Each has its own row under **Settings → Editor →
+Display**:
+
+| Settings row | Applies to | Default |
+| --- | --- | --- |
+| Wrap long lines in code | Every language except Markdown and plain text | Off |
+| Wrap long lines in Markdown and plain text | Markdown and plain text | On |
+
+*View: Toggle Word Wrap* (`view.toggleWordWrap`, no default key) flips the row
+that governs the file in front, and the status bar says which one it changed.
+
+A buffer that receives a line of 10,000 characters or more, or a run of 2,000
+characters with no space in it (a minified file, a pasted `data:` URI), stays
+unwrapped, because wrapping such text is very slow. *View: Toggle Word Wrap*
+wraps that buffer anyway.
