@@ -64,6 +64,12 @@ SSH connection, with output, input and Stop as for a local build. The wrappers
 are looked for on the host, and Java is the host's own (or the **JDK home** set
 for that host in Settings → Remote), never the local Default JDK.
 
+A project whose tools [run in a container](/docs/remote#tools-in-a-container)
+or, on Windows, [in a WSL distribution](/docs/remote#tools-in-wsl-windows) runs
+its builds and test runs there the same way, with the wrappers, Java and
+environment found inside. The wrapper run there is the POSIX `./mvnw` or
+`./gradlew`, also when Editora itself runs on Windows.
+
 Discovery parses the marker file directly, with no shell-out and no new
 dependency, so it's instant and offline. Toggle each under **Settings →
 Languages & Tools → Build Tools**.

@@ -622,6 +622,11 @@ A [remote project](/docs/remote)'s folder is watched on its host when that host
 an open file that changed, as for a local folder. A host with `inotifywait`
 reports changes at once; others are checked every few seconds.
 
+A project whose tools run in a container is watched here, since a bind-mounted
+folder is this machine's own. A project inside a WSL distribution is watched
+from inside the distribution while its tools [run there](/docs/remote#outside-changes-in-wsl),
+because Windows cannot watch the `\\wsl.localhost` share.
+
 ## Trusted folders
 
 A repository can ship its own build wrapper, `./mvnw` or `./gradlew`, and those

@@ -1,16 +1,15 @@
 ---
-title: "Editora 0.22.0: remote development on the host, Markdown wiki links, and a round of editing commands"
-description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers. Markdown gains wiki links, backlinks and 29 lint rules, and the HTTP Client asks before sending your secrets. Shell scripts run as their shebang says, with Run with Trace and one-click ShellCheck and shfmt."
-date: 2026-10-31
+title: "Editora 0.22.0: tools on the host, in a container or in WSL, Markdown wiki links, and HTTP scripts"
+description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, or in the container or WSL distribution a project lives in, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers. Markdown gains wiki links, backlinks and 29 lint rules, and the HTTP Client runs JetBrains-style scripts and asks before sending your secrets. Shell scripts run as their shebang says, with Run with Trace and one-click ShellCheck and shfmt."
+date: 2026-10-16
 version: "0.22.0"
 ---
 
-<!-- DRAFT (website-next): set the date, file name and version on release day, and check the sections
-against CHANGELOG.md's 0.22.0 section (written from master on 2026-10-15). -->
-
 **Editora 0.22.0** is out. Remote folders now work like local ones: the tools
-Editora drives run on the host. Markdown gets wiki links, backlinks and a
-much larger lint, the HTTP Client asks before it sends a secret, shell scripts
+Editora drives run on the host, and a project's tools can also run in its
+container or WSL distribution. Markdown gets wiki links, backlinks and a much
+larger lint, the HTTP Client runs scripts and asks before it sends a secret,
+shell scripts
 get a full pass from highlighting to Run, and there is a round of everyday
 editing commands. Download it from the
 [0.22.0 release page](https://github.com/adriandeleon/Editora/releases/tag/v0.22.0).
@@ -42,8 +41,32 @@ Each remote folder is a project with its own window, its own tabs and its own
 trust. Reopening it asks to connect, and your tabs come back once it does.
 Settings → Remote lists which hosts may run commands, and lets you set the
 command for each tool on a host whose PATH does not find the right one. It
-works with OpenSSH servers on Linux and macOS, and with dropbear.
+works with OpenSSH servers on Linux and macOS, and with dropbear. ed25519 keys
+work, remote commands get what the account's login profile exports, and a
+connection that goes silent is dropped after about a minute and a half.
 [More about remote folders](/docs/remote).
+
+## Tools in a container or WSL
+
+The same works for a project on this machine whose tools live somewhere else:
+
+- **In a container.** If the project folder is mounted into a running Docker
+  or Podman container, Editora can run its Git, builds, tests, Run, language
+  servers and debuggers inside it, with the container's PATH, environment and
+  user, while you edit the files here. Editora finds the dev container that VS
+  Code or the Dev Containers CLI started for the folder, or you pick one with
+  **Containers: Run This Project's Tools in a Container…**. A debugger
+  listening on a port inside is reached whatever the container's network, and
+  the Java index survives a restart.
+- **In WSL (Windows).** A project opened as `\\wsl.localhost\Ubuntu\…` can run
+  the same tools inside the distribution, with its Linux toolchain, instead of
+  Windows tools reading across the share. A `git pull` or a build there is
+  picked up at once with `inotify-tools`.
+
+Editora asks once per container or distribution, and **Containers: Run This
+Project's Tools Here** goes back. If Editora crashes, the next launch stops
+what it left running there.
+[More about containers and WSL](/docs/remote#tools-in-a-container).
 
 ## File encodings
 
@@ -104,10 +127,23 @@ Three passes over Markdown since 0.21.0:
 - **Exports**: self-contained HTML, Word documents with real heading styles and
   lists, and emoji in PDFs.
 
+- **Writing**: a status-bar word count with reading time, and typewriter mode.
+- **Remote images can be set to Ask**, which offers to load them per document,
+  and an image you pasted that the document no longer mentions goes to the
+  trash on save.
+
 [More about Markdown](/docs/markdown).
 
 ## HTTP Client
 
+- **Scripts, as in the JetBrains client.** Response handlers (`> {% … %}` or
+  `> ./check.js`) run on your Node.js with the `client` and `response` API, and
+  a Tests block lists each test's result. `# @assert` and `# @capture` checks
+  need no JavaScript.
+- **Pre-request scripts** (`< {% … %}` or `< ./sign.js`) run before a request
+  is sent, with `request.variables.set`, `crypto` and `jwt` for signing.
+- **Debug Request** runs a request's scripts under the JavaScript debugger,
+  with breakpoints in the `{% %}` blocks.
 - **Your secrets stay put unless you say so.** A request that reads
   `$processEnv`, `$env` or `$dotenv` in a folder you have not trusted asks
   first. The prompt names the variables and the hosts, never the values.
@@ -164,9 +200,17 @@ A full pass over shell support, from highlighting to Run:
 - `LSP: Clear Java Index Caches` frees the disk space jdtls's per-folder indexes
   take.
 - The Recent Files dropdown fits long names and asks before removing one.
+- **Run configurations belong to projects**: the No Project window has no
+  run-configuration selector, and the gutter ▶ still runs a file.
 - Without a project, the **TODO window lists only the current tab**, and hides
   while that tab has no TODOs.
 - The installed Linux app is 22 MB smaller.
+- **Java scripts**: an extension-less `java --source 25` script gets
+  completion, hover, the outline and syntax errors from jdtls.
+- **Go to Definition without a language server** falls back to the file and
+  the project's symbol index.
+- Export Configuration leaves out the installed ShellCheck, shfmt and Typst
+  CLI.
 - Fixes: each project window acts on its own project, right-click menus close
   when you click outside them, the window drags by its title, and Java
   completions show the whole signature.

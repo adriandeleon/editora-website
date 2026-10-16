@@ -329,7 +329,7 @@ status line. `client.exit()` ends the script and sends the request.
 
 ### Debugging scripts
 
-**HTTP: Debug Request at Caret** sends the request at the
+**HTTP: Debug Request at Caret** (`http.debugRequest`) sends the request at the
 caret with its pre-request scripts and response handlers under the
 [JavaScript debugger](/docs/run-debug#debugging). It is also **Debug Request** in
 a `.http` file's right-click menu, and what Debug does in a `.http` file. A

@@ -64,6 +64,40 @@ Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls`
 previous run can hold its workspace lock; the loading bar clearing is the sign
 the handshake completed.
 
+## A project's tools don't run in its container
+
+A project's tools [run in a container](/docs/remote#tools-in-a-container) only
+when all of these hold:
+
+- **Run commands on the remote host** is on in Settings → Remote.
+- The container is running, and one of its bind mounts covers the project
+  folder. A dev container is found only when the project folder itself has a
+  `.devcontainer` folder or a `.devcontainer.json` file.
+- You allowed that container. **Not Now** holds until you restart Editora, and
+  so does going back with *Containers: Run This Project's Tools Here*. Picking
+  the container with *Containers: Run This Project's Tools in a Container…*
+  allows it at once.
+
+Editora looks for a dev container when the project opens and when its window
+comes back to the front, at most every 30 seconds, so one started meanwhile is
+picked up once you switch back to the window. If the picker says no containers
+are running, check that the **Container engine** in Settings → Remote names the
+engine you use (`docker` or `podman`) and that it lists your container in a
+terminal.
+
+A debug session that cannot reach its port in the container or WSL distribution
+needs `nc`, `bash` or `python3` in it; see
+[Ports and debuggers](/docs/remote#ports-and-debuggers).
+
+## A WSL project misses outside changes
+
+Windows cannot watch a folder on the `\\wsl.localhost` share. Editora watches a
+WSL project from inside the distribution, but only while the project's
+[tools run there](/docs/remote#tools-in-wsl-windows). Allow the distribution
+when asked, and install `inotify-tools` in it for changes to show at once
+rather than within a few seconds. See
+[Outside changes in WSL](/docs/remote#outside-changes-in-wsl).
+
 ## Shell scripts show no problems or don't format
 
 The Bash language server needs two helper programs: **ShellCheck** for
