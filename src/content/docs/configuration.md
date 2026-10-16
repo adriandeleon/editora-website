@@ -95,7 +95,7 @@ they can be committed and shared:
 
 | File | Holds |
 | --- | --- |
-| `.editora/settings.json` | Toolchain overrides for this project: which language server to run for a language, and whether to run it |
+| `.editora/settings.json` | Toolchain overrides for this project: which language server to run for a language, whether to run it, and the [Bash server's options](/docs/lsp#bash-server-options) |
 | `.editora/run-configurations.json` | [Run configurations](/docs/run-debug) exported for the team |
 
 Only toolchain settings can be overridden this way; appearance, keymap and fonts

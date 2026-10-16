@@ -187,7 +187,9 @@ remember to flip a global preference when switching between them.
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
 with an example and opens it.
 
-Only **toolchain** settings can be overridden this way. Appearance, keymap and
+Only **toolchain** settings can be overridden this way: the language servers,
+and the Bash server's options such as ShellCheck's arguments and shfmt's style
+(see [Bash server options](/docs/lsp#bash-server-options)). Appearance, keymap and
 fonts stay personal, because checking out a repository should not rearrange
 somebody else's editor. Run configurations have their own shared file,
 described in [Run & debug](/docs/run-debug).

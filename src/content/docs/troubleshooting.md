@@ -11,7 +11,8 @@ order: 3
 opens a full-tab health report of every external command Editora's features rely
 on, in the spirit of `flutter doctor`. It covers Git and the GitHub CLI
 (including whether `gh` is signed in), ripgrep, the preview and diagram tools
-(`mmdc`, `maid`, Graphviz, PlantUML, Typst), every enabled language server, the
+(`mmdc`, `maid`, Graphviz, PlantUML, Typst), every enabled language server (with
+ShellCheck and shfmt under the Shell server), the
 debug adapters (java-debug, debugpy, js-debug), the Run interpreters (with a
 JDK 25 check for Java), the build tools, the selected AI agent CLI, elevated
 save, browsers, and the in-app installer's prerequisites.
@@ -62,6 +63,23 @@ server initializes. If it never settles, restart servers with *LSP: Restart
 Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls` process from a
 previous run can hold its workspace lock; the loading bar clearing is the sign
 the handshake completed.
+
+## Shell scripts show no problems or don't format
+
+The Bash language server needs two helper programs: **ShellCheck** for
+diagnostics and **shfmt** for Format Document. Without them a script looks
+clean and Format Document changes nothing. The status bar says so when you open
+a script or format one, and the **Bash / Shell** card in **Settings → LSP**
+and the Doctor show whether each is found. Install them with the Install…
+buttons there, or with **Install: ShellCheck and shfmt** (`install.shellTools`)
+in the palette. See [ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
+
+If ShellCheck runs but ignores a `.shellcheckrc`, the file is probably in a
+subfolder of the project; ShellCheck reads it only from the project folder or
+above. See [Where ShellCheck finds .shellcheckrc](/docs/lsp#where-shellcheck-finds-shellcheckrc).
+
+The server's own warnings, such as a helper it could not find, are in the
+Debug Log (below).
 
 ## Seeing errors in a packaged build
 

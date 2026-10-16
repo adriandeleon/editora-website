@@ -67,6 +67,42 @@ width: a 2-space file gets 2-space Tab, Enter, and Shift-Tab whatever the tab
 size setting says. A tab character is drawn at the configured tab size (the
 setting or `.editorconfig`), 4 columns by default.
 
+### Shell scripts
+
+In a shell script (which files count as one is on
+[Languages](/docs/languages#shell-scripts)) the indent comes from the script's
+structure, not from the shape of one line. Editora reads quotes and `$( … )` that span lines, comments,
+here-documents, and the keyword blocks (`if … fi`, `for` / `while` / `until` /
+`select … done`, `case … esac`, `{ … }` and `( … )`). A keyword counts only where
+the shell treats it as one, at the start of a command, so `echo what to do`
+opens nothing.
+
+- A body indents one level past the line its statement starts on: after
+  `then`, `do`, `else`, `case … in`, a `{` or `(`, and a case pattern such as
+  `start|run)`.
+- In a `case` item, `;;` (or `;&`, `;;&`) stays at the level of the item's body,
+  the layout shfmt and the Google shell style guide use. The next line goes back
+  to the pattern's level.
+- `fi`, `else`, `elif`, `done` and `esac` line up with the line that opened
+  their block. The opener is found by matching, so a wrapped condition or a
+  `$( … )` in between does not throw it off. `done=false` is an assignment, not
+  a closer.
+- Inside a here-document nothing is re-indented, because the body is data. When
+  **Enter** finishes the delimiter line (`EOF`), its indent is removed, since
+  bash only ends `<<EOF` at an unindented delimiter (`<<-EOF` keeps tabs). The
+  next line goes back to the level of the `cat <<EOF` line.
+- **Tab** in a line's leading whitespace follows the same rules.
+
+Shell blocks also [fold](/docs/navigation#folding): functions (from the line
+with their name), `{ }` groups, `if … fi`, loops, `case … esac` and each case
+item, multi-line `( )` and `$( )`, and here-documents. Sticky scroll pins the
+same blocks. A double-click takes a hyphenated shell word whole, such as
+`--long-flag`, `my-func` or `a-b` in `a-b.sh`.
+
+A script with Windows (CRLF) line endings or a byte-order mark gets a notice
+above the editor that converts it. See
+[EditorConfig](/docs/editorconfig#shell-scripts).
+
 ## Brackets and quotes
 
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps
@@ -119,6 +155,18 @@ syntax. A single line toggles a line comment; a multi-line selection toggles a
 block or region comment. It covers `//` and `/* */`, `#`, `<!-- -->`, `--`, and
 the rest, preserving indentation, and toggles back off when the text is already
 commented.
+
+**Edit: Toggle Comment** (`edit.toggleComment`, also in the Edit menu and as
+**Comment / Uncomment** in the editor's right-click menu) is the same action.
+Two kinds of line in a script are left alone, and the status bar says why:
+
+- A `#!` line at the top of a file in a `#`-comment language (shell, Python,
+  Ruby…) is not a comment, so it is never toggled. A selection that includes it
+  toggles only the lines after it.
+- The body and delimiter of a here-document are data. A selection that reaches
+  into one without its `cat <<EOF` line toggles nothing, because a `#` there
+  would end up in the script's output. Selecting the whole statement comments it
+  as one block, and uncommenting restores it.
 
 ## Small operations
 
