@@ -48,9 +48,9 @@ Content-Type: application/json
   Import cURL writes every `{{` of a pasted command this way, so pasted text
   never reads your variables.
 - **Not supported.** `GRAPHQL`, `WEBSOCKET` and `GRPC` requests are reported as
-  not supported and not sent. JetBrains response handlers (`> {% … %}`) and
-  pre-request scripts (`< {% … %}`) are skipped, with a warning in the
-  response.
+  not supported and not sent. JetBrains pre-request scripts (`< {% … %}`) are
+  skipped, with a warning in the response. Response handlers (`> {% … %}`) run:
+  see [Tests and response handlers](#tests-and-response-handlers).
 
 ### Directives
 
@@ -65,6 +65,8 @@ Comment lines above the request line set options for that request:
 | `# @no-log` | Keep the response out of the saved [history](#history) |
 | `# @timeout 5 s` | Give up when the server is silent this long |
 | `# @connection-timeout 2 s` | Give up connecting after this long |
+| `# @assert status == 200` | Test the response (see [Checks without JavaScript](#checks-without-javascript)) |
+| `# @capture token = $.token` | Keep a value of the response as `{{token}}` |
 
 Timeouts take `ms`, `s` or `m`; a number on its own is seconds. Without them a
 connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
@@ -193,6 +195,125 @@ when the file already exists:
 The response view reports what happened to every target: which files were
 written or replaced, and which were not and why.
 
+## Tests and response handlers
+
+A request can test its response and keep values from it for later requests,
+with `# @assert` and `# @capture` lines or with a JavaScript response handler.
+Each test shows in the response view's **Tests** block, with ✓ or ✗ and why it
+failed, and a count such as `✓ 3 passed · ✗ 1 failed` sits beside the status
+line.
+
+### Checks without JavaScript
+
+`# @assert` and `# @capture` lines go above the request line, with the other
+[directives](#directives). They need neither Node.js nor a trusted folder:
+
+```http
+### Sign in
+# @assert status == 200
+# @assert header Content-Type contains json
+# @assert $.user.id == 7
+# @assert $.token exists
+# @capture token = $.token
+POST https://api.example.com/login
+Content-Type: application/json
+
+{ "user": "ada", "password": "{{password}}" }
+
+### Fetch the profile
+GET https://api.example.com/me
+Authorization: Bearer {{token}}
+```
+
+An `@assert` reads one of these from the response:
+
+- `status`, or `time` (milliseconds);
+- `header Name` (the first value; names are case-insensitive);
+- `body` (the text);
+- a JSONPath into a JSON body: `$.user.id`, `$.items[0].name`, `$["a b"]`.
+
+It compares it with `==`, `!=`, `<`, `<=`, `>` or `>=` (as numbers when both
+sides are numbers, otherwise as text), `contains` (text, or an element of an
+array), `matches` (a regular expression found anywhere; anchor it with `^…$`),
+or checks `exists` / `!exists`. The value is written as it is: `200`, `true`,
+`null`, `"quoted text"` or bare text, never a `{{variable}}`.
+
+`# @capture name = subject` keeps `status`, `header Name`, `body` or a JSONPath
+value as `{{name}}`. A capture that finds nothing clears the name and says so in
+the warnings.
+
+### Response handlers
+
+A JavaScript response handler runs after the response arrives, on your own
+[Node.js](https://nodejs.org). Write it after the request, inline or in a file
+next to the `.http` file:
+
+```http
+### Sign in
+POST https://api.example.com/login
+Content-Type: application/json
+
+{ "user": "ada", "password": "{{password}}" }
+
+> {%
+  client.test("signed in", () => {
+    client.assert(response.status === 200, "status " + response.status);
+    client.assert(response.body.token, "no token");
+  });
+  client.global.set("token", response.body.token);
+  client.log("token for", response.body.user.name);
+%}
+
+> ./checks/login.js
+```
+
+Handlers use the JetBrains API:
+
+| Object | What it has |
+| --- | --- |
+| `client` | `test(name, fn)`, `assert(condition, message)`, `log(…)` (also `console.log`), `exit()`, `global.get/set/clear/clearAll/isEmpty` |
+| `response` | `body` (parsed when the response is JSON, otherwise text), `status`, `headers.valueOf(name)` / `valuesOf(name)`, `contentType.mimeType` / `.charset`, `cookies()`, `cookiesByName(name)` |
+| `request` | `method`, `url`, `body` and `headers` as sent (`tryGetSubstituted()`, and `getRaw()` as written), `environment.get(name)`, `variables.get(name)` |
+| `jsonPath(value, path)` | A value from an object or JSON text: `jsonPath(response.body, "$.items[0].id")` |
+
+A test whose function returns a promise is waited for, so `fetch` can be used
+with `await`. An error stops the handler and shows in the Tests block with its
+line in the `.http` file (or the handler file), and `client.log` lines show
+there too. `xpath`, streamed responses, `client.global.headers` and the
+`crypto` helpers are not supported yet.
+
+### Session variables
+
+What `client.global.set` or `@capture` keeps is used by later requests as
+`{{name}}`: by the next requests of a **Run All**, or when you run them one by
+one, for as long as the file is open. It takes precedence over an environment
+variable of the same name, and an `@name = value` line in the file takes
+precedence over it. Its value is sent as it is: a `{{…}}` inside it is not
+filled in. Session variables are cleared when you pick another environment or
+close the file. A `{{name}}` the file sets this way is not underlined as
+unresolved.
+
+### What a handler may do
+
+A handler is code that came with the folder, so it only runs from a
+**trusted** folder: Editora asks once per run, with **Cancel** as the default
+button, and the answer is the same trust that
+[secrets](#secrets-and-trusted-folders) and build scripts use. In a folder you
+don't trust, handlers are skipped with a warning while `@assert` and `@capture`
+still run. A handler file must be in a trusted folder too, and at most 1 MB.
+
+Node.js is started without your environment variables, so a handler can't read a
+token from `process.env`. On Node.js 20 or later it runs under Node's permission
+model: it can't write files, start processes or use worker threads. A value the
+request read from `$processEnv`, `$env` or `$dotenv` reaches the handler masked.
+A handler **may** make network requests. It is stopped after 10 seconds.
+Handlers in a remote (SFTP) file don't run.
+
+**Settings → Languages & Tools → Web** turns handlers off, picks the Node.js to
+use (empty means `node` on the `PATH`) and sets the timeout. The
+[Doctor](/docs/troubleshooting#doctor) shows which Node.js runs them and whether the permission
+model is on.
+
 ## Running and the response
 
 | Action | Command | Default key |
@@ -232,10 +353,13 @@ The response view shows:
 
 - a status line such as `200 OK · 32 ms · 44 B`, coloured by outcome, and,
   while a request runs, its request line with variables filled in and the
-  elapsed time. Run All shows its progress ("2 of 5") and
-  ends on the first failed request.
+  elapsed time. Run All shows its progress ("2 of 5"), says how many requests'
+  tests failed, and ends on the first failed request, or else on the first
+  whose tests failed.
 - a **Request** section with the request as it was sent, variables filled in,
   and the address a redirect ended at.
+- a **Tests** block with the request's [tests](#tests-and-response-handlers), the
+  handlers' log and any error.
 - warnings in their own block, with a count beside the status line (unresolved
   variables, skipped scripts, headers that couldn't be sent, a redirect to
   another host that carried custom headers) and the files `>>` wrote.
@@ -257,7 +381,9 @@ reproduces what was sent, including file bodies, forms, Digest auth and
 redirects, multipart part types and the HTTP version, also for a response
 restored from history. **Import cURL** reads a curl command from the clipboard
 (a browser's "Copy as cURL", `curl.exe` or a `$ curl` line from a README) into the active `.http` file, or into a new tab when
-no `.http` file is active. **Save response** writes the body exactly as
+no `.http` file is active; body lines the format would not send (from a `>`,
+`<>` or `###` line on) become comments, so a pasted command never adds a
+handler. **Save response** writes the body exactly as
 received (an image saves as the image); the status-and-headers text is the
 second choice in the dialog.
 
