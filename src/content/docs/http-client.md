@@ -278,9 +278,11 @@ Handlers use the JetBrains API:
 
 A test whose function returns a promise is waited for, so `fetch` can be used
 with `await`. An error stops the handler and shows in the Tests block with its
-line in the `.http` file (or the handler file), and `client.log` lines show
-there too. `xpath`, streamed responses and `crypto.subtle` are not supported
-yet.
+line in the `.http` file (or the handler file); with no test to count, the
+block is titled **Response handler error**, and `✗ handler error` sits beside
+the status line. `client.log` lines show there too, in a block titled
+**Script output** when they are all there is. `xpath`, streamed responses and
+`crypto.subtle` are not supported yet.
 
 ### Pre-request scripts
 
@@ -321,7 +323,9 @@ before the script and `getRaw()` as written, `method`, `environment.get`,
 `crypto` and `jwt` work in response handlers too. If a pre-request script can't
 run (an untrusted folder, no Node.js, an error, a timeout), its request is
 **not sent** and its response view says why; the other requests of a Run All
-still run. `client.exit()` ends the script and sends the request.
+still run. A script that stopped with an error shows it in the Tests block,
+titled **Pre-request script error**, with `✗ pre-request error` beside the
+status line. `client.exit()` ends the script and sends the request.
 
 ### Debugging scripts
 
@@ -355,9 +359,11 @@ one, for as long as the file is open. It takes precedence over an environment
 variable of the same name, and an `@name = value` line in the file takes
 precedence over it. Its value is sent as it is: a `{{…}}` inside it is not
 filled in. Session variables are cleared when you pick another environment or
-close the file. A `{{name}}` the file sets this way (with `@capture`,
-`client.global.set` or `request.variables.set`) is not underlined as
-unresolved.
+close the file. A `{{name}}` the file sets this way (with `@capture`, or with
+`client.global.set` or `request.variables.set` in an inline script or a script
+file the file runs) is not underlined as unresolved. After you edit a script
+file, the underlines catch up the next time the `.http` file is checked: when
+you edit it or pick another environment.
 
 `client.global.headers.set(name, value)` adds a header to the requests that
 follow, and to its own request when a pre-request script sets it. A request's
