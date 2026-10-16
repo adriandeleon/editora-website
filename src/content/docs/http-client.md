@@ -342,7 +342,10 @@ stepping of any JavaScript session. When you continue, the request goes on.
 - **Restart** doesn't send the request again; run Debug Request again.
 - The script runs as usual: only from a trusted folder, without your
   environment variables, under Node's permission model. Node's inspector is
-  allowed only for Debug Request, on a random port on this machine.
+  allowed only for Debug Request, on a random port on this machine. Node can
+  let a debugger in under its permission model from Node.js 24.12 on; on an
+  older Node, a script being debugged runs without the permission model, and
+  the Debug console, the status bar and the response's warnings say so.
 
 ### Session variables
 
