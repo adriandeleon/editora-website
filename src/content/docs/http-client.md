@@ -44,6 +44,9 @@ Content-Type: application/json
 - **Comments.** Lines starting with `#` or `//` are comments, inside a body too:
   they are not sent. To send such lines, put the body in a file and use
   `< ./file` (see [Chaining, bodies, and auth](#chaining-bodies-and-auth)).
+- **A literal `{{`.** Write `\{{` to send `{{` as text (a template body, say);
+  Import cURL writes every `{{` of a pasted command this way, so pasted text
+  never reads your variables.
 - **Not supported.** `GRAPHQL`, `WEBSOCKET` and `GRPC` requests are reported as
   not supported and not sent. JetBrains response handlers (`> {% … %}`) and
   pre-request scripts (`< {% … %}`) are skipped, with a warning in the
@@ -84,19 +87,23 @@ connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
   over the public one, and a named environment wins over `$shared`. Nested
   objects are reached with dots (`{{client.host.url}}`) or indexes
   (`{{users[0].name}}`), and a value may refer to another environment value
-  (not to the file's `@var` lines).
+  (not to the file's `@var` lines). The files may hold `//` comments and trailing
+  commas; one that can't be read is named in the response's warnings and in the
+  editor marks.
 - **Dynamic variables**: `{{$uuid}}`, `{{$timestamp}}`, `{{$isoTimestamp}}`,
   `{{$randomInt}}` (or `{{$randomInt 1 10}}`), `{{$random.integer(1, 100)}}`,
   `{{$random.float}}`, `{{$random.alphabetic(8)}}`,
   `{{$random.alphanumeric(8)}}`, `{{$random.hexadecimal(8)}}`,
   `{{$random.email}}`, and `{{$datetime iso8601}}` / `{{$localDatetime
   "DD-MM-YYYY" -1 d}}` with a format (`iso8601`, `rfc1123`, or a Day.js or Java
-  pattern) and an optional offset (`y`, `M`, `w`, `d`, `h`, `m`, `s`, `ms`).
+  pattern; in Day.js, put literal text in `[brackets]`, as an unknown letter is
+  reported) and an optional offset (`y`, `M`, `w`, `d`, `h`, `m`, `s`, `ms`).
   `{{$timestamp}}`, `{{$isoTimestamp}}` and `{{$datetime}}` are in UTC wherever
   you are; `{{$localDatetime}}` uses your time zone.
 - **Your system**: `{{$env.NAME}}` or `{{$processEnv.NAME}}` reads an
   environment variable, and `{{$dotenv.NAME}}` reads a `.env` file beside the
-  request file.
+  request file (a regular file of at most 1 MB inside that folder; a link that
+  leads elsewhere is not read).
 
 A variable that can't be resolved (a typo, no environment selected, a request
 the file doesn't have) is underlined as you type; hover it for the reason. If you
@@ -111,7 +118,8 @@ A request that reads `$processEnv`, `$env` or `$dotenv` (in any form: directly,
 through an `@var` line or an environment value, in a header, a `<@` body file or
 a multipart `<@` part) only runs from a **trusted** folder. In a folder you
 haven't trusted, Editora asks first, naming the variables as written (never their
-values) and the hosts the request goes to; a redirect may lead to another host.
+values) and the hosts the request goes to, or that a host is chosen by an earlier
+response; a redirect may lead to another host. **Cancel** is the default button.
 If you decline, nothing that reads a secret is sent; in a Run All, the requests
 that read none still go out.
 This is the same trust that lets a project's build scripts run, so a project
@@ -124,7 +132,7 @@ asked about.
   feed a token into the next call. See [Naming a request](#naming-a-request).
 - **Bodies** can be inline, or come from a file: `< ./body.json` sends the file
   as is, and `<@ ./body.json` (or `<@latin1 ./body.json`) fills in its
-  `{{variables}}` first. Text bodies are encoded in the charset the
+  `{{variables}}` first. The path may use variables too (`< ./fixtures/{{env}}.json`). Text bodies are encoded in the charset the
   `Content-Type` header names (UTF-8 if none).
 - **Multipart** form bodies take inline parts and `< ./file` parts, and fill in
   variables in part headers and file paths. File parts are streamed from disk,
@@ -208,7 +216,8 @@ to cancel.
 A `.http` file doesn't have to be saved to send requests. An untitled one uses
 the project's environment files, and its responses are kept when you save it. A
 request that needs the file's folder (a body file, a `>>` target, `$dotenv`) is
-not sent until the file is saved.
+not sent until the file is saved. Requests from a remote (SFTP) file can't run
+from this machine yet; Editora says so instead of sending them.
 
 The response appears as the `.http` file's own **preview**, in the same
 Editor / Split / Preview view every other rich file type uses, so the response
@@ -216,7 +225,8 @@ sits beside the request that produced it. Running a request from the gutter ▶
 opens the split automatically, and the view mode is remembered per file. Switch
 views with `view.togglePreview` and `view.toggleSplitPreview`, or the floating
 3-mode toggle at the top right. Escape in the response view goes back to the
-editor.
+editor, and the response, headers and Request text answer your keymap's
+movement and copy keys (`M-w`, `C-n`, `M->` in Emacs).
 
 The response view shows:
 
@@ -237,14 +247,16 @@ The response view shows:
 The **Run** button sends the request the selected response came from again,
 found by its name (or its method and URL) even if the file changed since; it
 turns into **Cancel** while a request runs. Cancelling a Run All keeps the
-responses that had already arrived. Errors read as sentences, such as "Connection refused — is
+responses that had already arrived. A request that was refused or couldn't be
+sent shows **Not sent**, and Copy as cURL is off for it. Errors read as sentences, such as "Connection refused — is
 a server listening on …?" or "Host not found". Responses over 50 MB are cut, and
 the view says so.
 
 **Copy as cURL** produces a command for bash or zsh that is safe to paste and
 reproduces what was sent, including file bodies, forms, Digest auth and
-redirects, also for a response restored from history. **Import cURL** reads a curl command from the clipboard, including a
-browser's "Copy as cURL", into the active `.http` file, or into a new tab when
+redirects, multipart part types and the HTTP version, also for a response
+restored from history. **Import cURL** reads a curl command from the clipboard
+(a browser's "Copy as cURL", `curl.exe` or a `$ curl` line from a README) into the active `.http` file, or into a new tab when
 no `.http` file is active. **Save response** writes the body exactly as
 received (an image saves as the image); the status-and-headers text is the
 second choice in the dialog.
@@ -255,7 +267,8 @@ The **History** dropdown holds the file's recent responses, each with its
 request's name and time. The last 10 are saved in Editora's config folder and
 come back when you reopen the file. Saved bodies are capped at 1 MB, and the
 values of credential headers (Authorization, cookies, and headers named like
-tokens, secrets, API keys and passwords) are masked. A request marked
+tokens, secrets, API keys and passwords) are masked, and so is any value a run
+read from `$processEnv`, `$env` or `$dotenv`. A request marked
 `# @no-log` is never saved. **Clear** empties the file's history, saved copy
 included. The history follows a renamed or moved file, is removed with a deleted
 one, and is shared by every window showing the file. **Export Configuration**
