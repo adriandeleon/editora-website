@@ -5,9 +5,9 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "A faster editor", detail: "Typing, switching tabs, opening files and restoring a session all do less work, and a large file takes less memory. A restored session draws its first frame before building the tabs you are not looking at." },
-  { title: "Local History, reworked", detail: "A compact panel with keyboard actions and a diff that follows your edits. Restoring goes into the open tab as an edit you can undo, and one large file cannot push other files' history out." },
-  { title: "Clickable code lenses", detail: "A click on a lens opens what it counts. A references lens opens the References tool window, whose previews are colored like the editor." },
-  { title: "Git history and branches", detail: "Enter on a commit in a file's Git history opens what it changed in that file, and the branch dropdown's sections fold." },
-  { title: "MCP open_file stays in the project", detail: "An MCP client can open only files inside the window's project, and cannot edit the editor's configuration or version-control metadata." },
+  { title: "Remote development, on the host", detail: "Git, ripgrep, builds, tests, language servers and debuggers run on the host of a remote folder, once you allow that host. Each remote folder is a project with its own window." },
+  { title: "Choose a file's encoding", detail: "Reopen a file in the encoding it is really in, or save it in another: Shift_JIS, GBK, windows-1251 and every other encoding the JDK knows. The choice is remembered per file." },
+  { title: "More from multiple cursors", detail: "Split a selection into lines, put a cursor at every line end, skip an occurrence or take back the last cursor; line commands and text tools run at every cursor." },
+  { title: "Rulers and indent guides", detail: "Rulers at any columns, with their own set per language, and faint guides at every indentation level." },
+  { title: "Markdown wiki links and backlinks", detail: "[[note]] links resolve, complete, follow renames and are checked by lint, and a Backlinks window lists what links to the open note." },
 ];

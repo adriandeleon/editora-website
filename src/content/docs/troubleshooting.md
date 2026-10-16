@@ -119,6 +119,15 @@ passphrase fails until a credential helper or an SSH agent can supply it. Run
 **Settings Sync: Sync Now** (`sync.now`) to try with your credential helper. See
 [Settings sync](/docs/settings-sync#credentials-and-failures).
 
+## A file shows the wrong characters
+
+Editora reads a file as UTF-8 unless a byte-order mark or an `.editorconfig`
+`charset` rule says otherwise. A file in some other encoding still opens without
+losing any bytes, but its accented or non-Latin text can look garbled, and the
+encoding in the status bar is drawn in the warning colour. Click it and choose **Reopen with Encoding…** with the file's
+real encoding (Shift_JIS, windows-1251, GBK and so on). Editora remembers the
+choice for that file. See [File encodings](/docs/workspace#file-encodings).
+
 ## Performance
 
 Editora aims to stay responsive on large files. Highlighting and the minimap

@@ -4,4 +4,4 @@
 // Committed so the build needs no access to the Editora repo (it isn't
 // checked out in CI).
 
-export const version = "0.21.0";
+export const version = "0.22.0"; // DRAFT: set by hand on website-next; regenerate from the release tag

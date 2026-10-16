@@ -6,7 +6,7 @@ beta: false
 summary: "Hides every bar, the line numbers, and the minimap, leaving only the text. Everything you have switched on keeps running."
 ---
 
-Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, and the column ruler. Fold markers stay in the margin.
+Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, the rulers, and the indent guides. Fold markers stay in the margin.
 
 Nothing is switched off. Language servers, Git, and every command and keybinding keep working, so the palette (`M-x`) and your chords still reach everything while the interface is hidden.
 

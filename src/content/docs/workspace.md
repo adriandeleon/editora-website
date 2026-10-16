@@ -213,6 +213,92 @@ browsing costs one tab rather than one per glance. Editing it, or opening it
 explicitly, makes it permanent. See
 [preview tabs](/docs/code-navigation#preview-tabs).
 
+Closed a tab by mistake? **Buffer: Reopen Closed Tab** (`buffer.reopenClosed`)
+brings back the file whose tab you closed last, with the caret where it was.
+Run it again for the one before, up to the last 20 tabs closed in the window
+during this session. A file deleted since is skipped, and a file that is open
+again is simply focused. It counts the tabs you close yourself (the close
+command, *Close Others* and the other tab-menu closes, or a tab's **×**), not the
+ones that go when a window closes or you switch projects, and it brings back
+files only, not diff or preview tabs. It is `Ctrl+Shift+T` (`⇧⌘T` on macOS) in
+the VS Code, Sublime Text and CUA keymaps, and it is in the **File** menu
+under Open Project. IntelliJ IDEA's `Ctrl+Shift+T` stays Go to Test, so there it is a
+palette command.
+
+## Saving and reverting
+
+| Action | Command | Default key |
+| --- | --- | --- |
+| Save every modified file in the window | `file.saveAll` | `C-x s` |
+| Throw away unsaved changes and read the file again | `file.revert` | (palette) |
+
+**File: Save All** saves every modified file open in the window, in all its
+editor groups, exactly as *File: Save* would for each one, so a file that needs
+administrator rights, the Markdown on-save fixes and the check for a file changed
+on disk all apply. Untitled buffers are skipped. When it is done, one line in the
+status bar gives the count: how many were saved, how many could not be, and how
+many untitled buffers were skipped. In VS Code's keymap it is `Ctrl+K S` (`⌥⌘S`
+on macOS), and it sits in the **File** menu under Save As.
+
+**File: Revert File** reads the file again from disk. It asks first only when
+that would discard unsaved changes, and [Local History](#local-file-history)
+keeps a copy of them. The caret, scroll position and folds stay where they were,
+and the file is read in the [encoding chosen for it](#file-encodings), if any. An
+untitled buffer or a file that no longer exists on disk has nothing to revert to,
+and the status bar says so. It is in the **File** menu under Save as
+Administrator.
+
+## File encodings
+
+Editora reads a file as UTF-8 unless a byte-order mark or a `charset` rule in an
+[`.editorconfig`](/docs/editorconfig) says otherwise. A file that is not valid in
+that encoding still opens without losing a byte: it is shown through a
+single-byte stand-in (Windows-1252 or ISO-8859-1), and the status bar draws its
+encoding in the **warning colour**, with a tooltip saying the real encoding is
+unknown.
+
+Click the encoding in the status bar (*Buffer: Change Encoding…*,
+`buffer.chooseEncoding`) to fix it, or use the two commands it offers from the
+palette:
+
+| Action | Command |
+| --- | --- |
+| Read the file again in another encoding | `buffer.reopenWithEncoding` |
+| Choose the encoding the file is written in | `buffer.saveWithEncoding` |
+
+The list puts about 45 common encodings first, grouped by script (Unicode,
+Western, Central European, Cyrillic, Greek, Turkish, Hebrew, Arabic, Baltic,
+Vietnamese, Thai, Japanese, Chinese, Korean and DOS), with Shift_JIS, EUC-JP,
+ISO-2022-JP, GB18030, GBK, Big5, EUC-KR, windows-1251 and KOI8-R among them,
+followed by every other encoding available. The list is the same on every
+operating system.
+
+- **Reopen with Encoding…** reads the file from disk again in the encoding you
+  pick. If the bytes are not valid in it, nothing changes, and the status bar
+  names the first line and column that could not be read. With unsaved changes
+  it asks first, and Local History keeps a copy of them.
+- **Save with Encoding…** sets the encoding the file is written in from its next
+  save, whatever the `.editorconfig` says. The tab shows as modified until you
+  save; picking the encoding the file already has on disk makes it clean again.
+  If the text holds a character the encoding cannot store, the command refuses
+  and names the character and its line, and a save that meets such a character
+  later refuses too, rather than quietly writing UTF-8. For a file whose
+  encoding Editora could not detect, reopen it in the right encoding first.
+
+The encoding you choose is **remembered for that file**: it is used the next time
+you open it, after a restart and when a session is restored, it follows the file
+when you rename it, and it works for [remote files](/docs/remote) too. If the
+file later stops being valid in that encoding, Editora forgets the choice and
+says so in the status bar. A crash-recovery copy keeps a choice that had not been
+saved yet.
+
+The **File Information** tool window (`tool.fileInformation`) shows the file's
+encoding.
+
+None of the three has a default key or a place in the **File** menu; reach them
+from the status bar or the palette, and bind them in Settings → Keymaps if you
+use them often.
+
 ## Editor groups: two files at once
 
 The editor area splits into independent **editor groups**, each with its own
@@ -314,9 +400,9 @@ recent files, and version and license info. Reopen it with `view.welcome`.
   or start with the `--zen` flag.
 - **Expert mode** is a lighter focus mode than Zen: it strips only the window
   chrome (toolbar, tab bar, breadcrumb, tool stripes, whitespace guides) but
-  **keeps the full editor view**, line numbers, status bar, minimap, column
-  ruler, and current-line highlight, so you stay oriented. Toggle it from the
-  palette (`view.toggleExpert`), `C-c C-e`, Settings → Interface → Modes, the
+  **keeps the full editor view**, line numbers, status bar, minimap, rulers,
+  indent guides, and current-line highlight, so you stay oriented. Toggle it
+  from the palette (`view.toggleExpert`), `C-c C-e`, Settings → Interface → Modes, the
   floating "E" button, or the `--expert` flag. Expert and Zen are mutually
   exclusive, and like Zen it's per-window and never changes your saved settings.
 - **Simple UI mode** strips the editor to the essentials: it hides the extra
@@ -363,7 +449,9 @@ navigates there.
 In the **status bar**, indent, line endings and encoding are one segment
 (`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
 They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is open. A file whose
+three different commands, and they appear only when a file is open. The encoding
+is drawn in the warning colour when Editora had to guess it; see
+[File encodings](#file-encodings). A file whose
 lines do not all end the same way reads **Mixed** with its dominant ending, for
 example `Mixed (LF)`. Saving such a file unchanged leaves it as it is; saving an
 edit writes the dominant ending on every line and says so.

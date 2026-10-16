@@ -23,7 +23,7 @@ so a nested config overrides a parent.
 | `indent_style`, `indent_size`, `tab_width` | Tab and Enter indentation |
 | `end_of_line` | LF / CRLF / CR, round-tripped on save |
 | `charset` | utf-8, utf-8-bom, latin1, utf-16le/be, round-tripped on read and save |
-| `max_line_length` | Drives the column ruler |
+| `max_line_length` | Sets the first ruler; `off` hides them all |
 | `trim_trailing_whitespace` | Trim on save |
 | `insert_final_newline` | Ensure a trailing newline on save |
 
@@ -35,6 +35,19 @@ adds or removes its byte-order mark, the save message in the status bar says
 so: it names the old encoding, the new one, and the `charset` rule that caused
 the change. It also says when `insert_final_newline = false` left trailing line
 breaks out.
+
+An encoding you pick yourself with *Buffer: Reopen with Encoding…* or *Buffer:
+Save with Encoding…* wins over `charset`: Editora reads and writes that file in
+your choice, and remembers it for the file. See
+[File encodings](/docs/workspace#file-encodings).
+
+### Rulers and max_line_length
+
+Editora can draw several rulers (80 by default; set your own in **Settings →
+Editor**, per language if you like). A `max_line_length` replaces only the
+**first** ruler, so the others stay where you put them (with no rulers set, it
+adds one), and `max_line_length = off` hides them all for files the rule
+covers.
 
 ## Files with mixed line endings
 

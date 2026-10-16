@@ -99,9 +99,9 @@ written or replaced, and which were not and why.
 
 | Action | Command | Default key |
 | --- | --- | --- |
-| Run the request at the caret | `http.runRequest` | (gutter ▶) |
-| Run every request in the file | `http.runFile` | (palette) |
-| Cancel the running request | `http.cancelRequest` | (Cancel button) |
+| Run the request at the caret | `http.runRequest` | `C-c C-c` (or the gutter ▶) |
+| Run every request in the file | `http.runFile` | `C-c C-r` |
+| Cancel the running request | `http.cancelRequest` | `C-c C-k` (or the Cancel button) |
 | Select environment | `http.selectEnvironment` | (palette) |
 
 The response appears as the `.http` file's own **preview**, in the same

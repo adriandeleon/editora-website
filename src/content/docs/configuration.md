@@ -122,10 +122,43 @@ Edit in the Settings window, or directly:
 separately as `fontZoom` (adjusted with `C-=` / `C--` / `C-0` or Ctrl+wheel) and
 isn't shown in the Settings window.
 
+### Rulers and indent guides
+
+These are the rows under **Settings → Editor → Display**:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `showColumnRuler` | Show rulers | `true` |
+| `rulers` | Rulers, such as `80, 120` (blank for none) | `[80]` |
+| `languageRulers` | Rulers by language, such as `java: 100; python: 79, 88` | none |
+| `showIndentGuides` | Show indent guides | `true` |
+
+`languageRulers` maps a language to its own columns, used instead of `rulers`
+for files in that language; an empty list means that language has no rulers.
+Columns run from 1 to 1000. An `.editorconfig` `max_line_length` replaces the
+first ruler (see [EditorConfig](/docs/editorconfig#rulers-and-max_line_length)).
+
+The palette sets the same values: *Editor: Set Rulers…* (`editor.setRulers`),
+*Editor: Set Rulers for This Language…* (`editor.setLanguageRulers`, for the
+current file's language; leave it blank to go back to the global rulers),
+*View: Toggle Rulers* (`view.toggleColumnRuler`) and *View: Toggle Indent
+Guides* (`view.toggleIndentGuides`). Indent guides are faint vertical lines at
+each indentation level, carried through blank lines and coloured by the theme;
+they are hidden in Zen and Simple UI modes and in
+[large-file mode](/docs/troubleshooting#performance).
+
+```json
+{
+  "rulers": [80, 120],
+  "languageRulers": { "java": [100], "python": [79, 88], "markdown": [] },
+  "showIndentGuides": true
+}
+```
+
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.21.0
-`settings.json` is at version **117**. Editora migrates older files forward
+Each structured config file carries a `schemaVersion`; in Editora 0.22.0
+`settings.json` is at version **123**. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that

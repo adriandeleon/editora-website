@@ -18,15 +18,33 @@ Edit many places at once, VS Code style.
   `Alt+J` in IntelliJ), or **above** / **below** the current line
   (`edit.addCaretAbove` / `Below`: `Ctrl+Alt+Up` / `Down` in the VS Code and
   Sublime keymaps). The Emacs and CUA keymaps leave these to the palette.
-- **Select all occurrences** (`edit.selectAllOccurrences`, `Ctrl+Shift+L` in the
-  VS Code and Sublime keymaps) turns every occurrence of the selection, or of the
-  word under the caret, into a cursor at once. Matching is literal and
-  case-sensitive.
+- **Select all occurrences** (`edit.selectAllOccurrences`: `Ctrl+Shift+L` in the
+  VS Code keymap, `Alt+F3` in Sublime, `Ctrl+Cmd+G` on macOS Sublime) turns every
+  occurrence of the selection, or of the word under the caret, into a cursor at
+  once. Matching is literal and case-sensitive.
+- **Skip an occurrence** (`edit.skipOccurrence`: `Ctrl+K Ctrl+D` in the VS Code
+  and Sublime keymaps) moves the newest selection on to the next occurrence
+  instead of adding one, so you can step past a match you don't want. It wraps
+  round to the start and passes over occurrences other cursors already hold.
+- **Remove the last added caret** (`edit.undoLastCaret`: `Ctrl+U` in the VS Code
+  and Sublime keymaps, `Alt+Shift+J` in IntelliJ) takes back the cursor you added
+  most recently, then the one before it. The main cursor is never removed.
+- **Split a selection into lines** (`edit.splitSelectionIntoLines`:
+  `Ctrl+Shift+L` in the Sublime keymap, and in the Edit menu) turns a selection
+  into one selection per line it covers, each holding that line's selected part.
+  A selection that ends at the very start of a line leaves that line out.
+- **Add carets to line ends** (`edit.addCaretsToLineEnds`: `Shift+Alt+I` in the
+  VS Code and CUA keymaps, `Alt+Shift+G` in IntelliJ) puts a bare cursor at the
+  end of every selected line, ready to append to all of them.
 - From the Find bar, **Alt+Enter** (`find.selectAllMatches`) does the same for
   every match of the current query and closes the bar, so the query's case,
   regex and whole-word toggles decide what gets a cursor.
 - **Alt-drag** to make a column or box selection.
 - Type, and the edit fans out to every caret. **Esc** collapses back to one.
+
+On macOS the VS Code and Sublime keymaps use `Cmd` where these list `Ctrl`
+(`Cmd+D`, `Cmd+K Cmd+D`, `Cmd+U`, `Cmd+Shift+L`). The Emacs keymap leaves all of
+these to the palette.
 
 Movement chords fan out too: `C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`, `M-f` and
 `M-b` move every caret, like the arrow keys. Document, paragraph, sentence and
@@ -111,6 +129,10 @@ commented.
 | Transpose lines | `edit.transposeLines` | `C-x C-t` |
 | Duplicate line | `edit.duplicateLine` | (keymap-specific) |
 | Move line up / down | `edit.moveLineUp` / `Down` | (keymap-specific) |
+| Insert line below / above | `edit.insertLineBelow` / `Above` | (keymap-specific) |
+| Delete line | `edit.deleteLine` | (keymap-specific) |
+| Select line | `edit.selectLine` | (keymap-specific) |
+| Indent / outdent lines | `edit.indentLines` / `edit.outdentLines` | (keymap-specific) |
 | Select all | `edit.selectAll` | `C-x h` |
 | Fill paragraph | `edit.fillParagraph` | `M-q` |
 | Set fill column | `edit.setFillColumn` | (palette) |
@@ -131,6 +153,38 @@ comments that start a line); they never join code statements.
 
 Move Line Up/Down and Duplicate Line act on **every line of a selection**, not
 only the caret's line.
+
+The **line commands** work wherever the caret is on the line, and run at every
+cursor as one undo step. They open a collapsed fold before changing it, renumber
+an ordered Markdown list they change, and work with multiple cursors turned off
+too.
+
+- **Insert Line Below** opens a new line under the current one, indented as
+  Enter at the end of the line would be (a level deeper after `{`). It doesn't
+  continue a Markdown or Typst list. **Insert Line Above** opens one above, with
+  the current line's indentation.
+- **Delete Line** deletes the line, or every line a selection touches, and the
+  caret keeps its column on the line that moves up. It doesn't touch the
+  clipboard or the kill ring; Emacs' *Kill Whole Line* (`C-S-backspace`) still
+  kills. Delete Line is also in the Edit menu.
+- **Select Line** selects the whole line with its line break; run it again to
+  add the next line.
+- **Indent Lines** / **Outdent Lines** shift the line, or every line of a
+  selection, by the file's own indent unit, and the caret stays with its text.
+
+| Line command | VS Code, Sublime | CUA | IntelliJ |
+| --- | --- | --- | --- |
+| Insert Line Below | `Ctrl+Enter` | `Ctrl+Enter` | `Shift+Enter` |
+| Insert Line Above | `Ctrl+Shift+Enter` | `Ctrl+Shift+Enter` | `Ctrl+Alt+Enter` |
+| Delete Line | `Ctrl+Shift+K` | `Ctrl+Shift+K` | `Ctrl+Y` |
+| Select Line | `Ctrl+L` | (palette) | (palette) |
+| Indent / Outdent Lines | `Ctrl+]` / `Ctrl+[` | (palette) | (palette) |
+
+On macOS, `Cmd` takes the place of `Ctrl` in the VS Code, Sublime and CUA
+keymaps, except Sublime's Delete Line, which stays `Ctrl+Shift+K`. The macOS
+IntelliJ keymap uses `Shift+Enter`, `Option+Cmd+Enter` and `Cmd+Backspace`. CUA
+leaves Select Line unbound because `Cmd+L` is Go to Line on macOS. The Emacs
+keymap leaves the line commands to the palette.
 
 A **right-click outside the selection** moves the caret to the click and drops
 extra carets, so Paste, Run/Debug, the language-server items, spelling
@@ -185,6 +239,7 @@ See [Emacs heritage](/features/emacs-heritage) for the full tour.
 | Mark ring, pop mark | `C-SPC`, `C-x C-SPC` |
 | Narrowing / widen | `C-x n n` / `d` / `f`, `C-x n w` |
 | Rectangles | `C-x r k` / `M-w` / `y` / `d` / `c` / `o` / `t` / `N` |
+| Registers | `C-x r s` / `i` / `SPC` / `j` |
 | Query-replace, regexp | `M-%`, `C-M-%` |
 | Occur | `M-s o` |
 | Universal argument | `C-u` |
@@ -210,6 +265,26 @@ the narrowing boundary (edits made while narrowed undo normally).
 undo step. They are character columns, so a tab counts as one, and the rectangle
 is remembered separately from the kill ring, as in Emacs.
 
+**Registers** hold a piece of text or a place to come back to, each under a
+one-key name:
+
+| Register command | Command | Emacs key |
+| --- | --- | --- |
+| Copy the selection into a register (`C-u` cuts it) | `edit.copyToRegister` | `C-x r s` |
+| Insert a register's text, caret before it | `edit.insertRegister` | `C-x r i` |
+| Save the caret's file and position | `edit.pointToRegister` | `C-x r space` |
+| Jump to a saved position | `edit.jumpToRegister` | `C-x r j` |
+| List registers | `edit.viewRegisters` | (palette) |
+
+Each command reads the register's name from the next key you type, with a prompt
+in the status line; Escape, moving the caret or leaving the editor cancels.
+Jumping opens the position's file if it is closed, and a saved position follows
+edits to its file while that file is open. An unsaved buffer has no position to
+save. *Edit: List Registers* shows them all in a picker, and choosing one inserts
+its text or jumps to its position. Registers last for the session, one set per
+window. Only the Emacs keymap binds them, but every register command is in the
+palette.
+
 **Query-replace** stops on each match and waits: `y` or Space replaces, `n` or
 Backspace skips, `!` replaces all the rest, `.` replaces this one and stops, and
 `q`, Enter or Escape quits. Regexp mode expands `$1` group references. In the
@@ -233,6 +308,36 @@ transforms work on the selection or the whole file: sort ascending/descending
 duplicate or empty lines, and trim trailing whitespace. Each is a palette
 command, or reach them all from one filterable picker, *Edit: String
 Manipulation…* (`C-c x`).
+
+Two other sorts sit beside those: *Sort Lines (Case-Sensitive)*
+(`edit.sortLinesCaseSensitive`) uses plain character order, so uppercase comes
+before lowercase and digits compare one by one, and *Sort Lines, Unique*
+(`edit.sortLinesUnique`) sorts in natural order and keeps one of each line.
+
+*Keep Lines Matching…* (`edit.keepLines`) and *Remove Lines Matching…*
+(`edit.removeLines`) ask for a regular expression and keep, or remove, the lines
+that match it, in the selection's lines or the whole file, like Emacs'
+keep-lines and flush-lines.
+
+*Increment Number* (`edit.incrementNumber`, `C-c =`) and *Decrement Number*
+(`edit.decrementNumber`, `C-c -`) change the number at each cursor, or the next
+one on its line; with a selection, the first number in it. They understand
+negatives (`x = -1`, while `a-1` is a subtraction), keep zero padding (`007`
+becomes `008`), keep a hexadecimal number's case and width (`0x0f` becomes
+`0x10`), and handle numbers of any size. `C-u 10 C-c =` steps by ten. The GUI
+keymaps leave them to the palette.
+
+The **encode and decode** commands rewrite the selected text, at every selection
+at once, as one undo step. They need a selection. If a decode cannot read any
+one of the selections, nothing changes anywhere and the status line says so.
+
+| Encode / decode | Commands | What it does |
+| --- | --- | --- |
+| Base64 | `edit.encode.base64` / `edit.decode.base64` | The text's UTF-8 bytes as Base64; decoding accepts the standard and URL-safe alphabets and ignores whitespace |
+| URL | `edit.encode.url` / `edit.decode.url` | Percent-encoding, with spaces as `%20`; decoding also reads `+` as a space |
+| JSON string | `edit.escape.json` / `edit.unescape.json` | Escapes for use inside a JSON string, without adding the quotes |
+| HTML | `edit.escape.html` / `edit.unescape.html` | Escapes `&`, `<`, `>`, `"` and `'`; unescaping knows the common named entities and every numeric one, and leaves unknown ones alone |
+| Unicode | `edit.escape.unicode` / `edit.unescape.unicode` | Every non-ASCII character as a `\uXXXX` escape, and back |
 
 ## Hex viewer
 
@@ -259,13 +364,35 @@ safe staging file, Save fails without touching the existing bytes. A
 hard-linked file, or one owned by another user, is written in place instead, so
 every name of the file gets the new content and its ownership is kept.
 
-A file opened through a stand-in encoding (an unknown legacy encoding such as
-Shift-JIS or GBK) refuses a save that would re-encode it. If you type a
-character outside the stand-in charset, the status bar names the character and
-its line, and the file can be saved again once it is removed.
+A file whose encoding Editora cannot detect (one that isn't valid UTF-8 and has
+no byte-order mark or `.editorconfig` `charset` rule, such as a Shift_JIS or GBK
+file) opens through a stand-in encoding, Windows-1252 or ISO-8859-1, that keeps
+every byte. The status bar shows that encoding in the warning colour, and
+clicking it lets you reopen the file in its real encoding
+(`buffer.reopenWithEncoding`), which Editora then remembers for that file (see
+[File encodings](/docs/workspace#file-encodings)). Until
+then, the file refuses a save that would re-encode it. If you type a character
+outside the stand-in charset, the status bar names the character and its line,
+and the file can be saved again once it is removed.
 
 ## Whitespace and the column ruler
 
-View options in Settings toggle whitespace markers, a configurable column ruler,
+View options in Settings toggle whitespace markers, the rulers, indent guides,
 the minimap, and line numbers. These render as lightweight overlays drawn only
 for the visible lines, so they stay cheap on large files.
+
+**Rulers** are vertical lines at chosen columns, 80 by default. Settings →
+Editor takes a list (`80, 120`; blank for none) and, under **Rulers by
+language**, lists that replace it for a language (`java: 100; python: 79, 88`; a
+language with nothing after its colon has no rulers). From the palette,
+*Editor: Set Rulers…* (`editor.setRulers`) sets the global list and *Editor: Set
+Rulers for This Language…* (`editor.setLanguageRulers`) sets the current file's
+language, where a blank answer goes back to the global rulers. An
+`.editorconfig` `max_line_length` replaces the first ruler, and `off` hides them
+all. *View: Toggle Rulers* (`view.toggleColumnRuler`) shows or hides them.
+
+**Indent guides** are faint vertical lines at each indentation level, carried
+through blank lines and skipped over folded lines, in a colour that follows the
+theme. They are on by default; turn them off in Settings → Editor or with *View:
+Toggle Indent Guides* (`view.toggleIndentGuides`). They are hidden in Zen mode,
+Simple UI and large-file mode.

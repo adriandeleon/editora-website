@@ -81,11 +81,20 @@ Every one of them **ranks** what you typed by contiguity, word and camelCase bou
 """),
     new Feature("multiple-cursors", KB, 5, false,
         "Multiple cursors",
-        "Add a caret at the next occurrence, above/below, or on every occurrence at once, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once, VS Code-style.",
+        "Add a caret at the next occurrence, above/below, on every occurrence or at every selected line's end, split a selection into lines, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once.",
         """
 Edit many places at once, VS Code-style. Add a caret at the **next occurrence** of the selection, or **above / below** the current line, or **Alt-drag** a column/box selection. Type, and the edit fans out to every caret; `Esc` collapses back to one.
 
-**Select all occurrences** (`Ctrl+Shift+L` in the VS Code and Sublime keymaps) puts a cursor on every occurrence of the selection, or of the word under the caret, in one step. From the Find bar, **Alt+Enter** does the same for every match of the current query, so the query's case, regex and whole-word toggles decide what gets a cursor.
+**Select all occurrences** (`Ctrl+Shift+L` in the VS Code keymap, `Alt+F3` in Sublime's) puts a cursor on every occurrence of the selection, or of the word under the caret, in one step. From the Find bar, **Alt+Enter** does the same for every match of the current query, so the query's case, regex and whole-word toggles decide what gets a cursor.
+
+Shaping the set of cursors:
+
+- **Split Selection into Lines** (`Ctrl+Shift+L` in the Sublime keymap) turns every selection into one selection per line it covers, each holding that line's selected part.
+- **Add Carets to Line Ends** (`Shift+Alt+I` in the VS Code and CUA keymaps, `Alt+Shift+G` in IntelliJ's) puts a cursor at the end of every selected line.
+- **Skip Occurrence** (`Ctrl+K Ctrl+D` in VS Code and Sublime) moves the newest selection on to the next match instead of adding one, wrapping round to the start.
+- **Remove Last Added Caret** (`Ctrl+U` in VS Code and Sublime, `Alt+Shift+J` in IntelliJ) takes back the cursor added last, one at a time; the main cursor stays.
+
+The [line commands](/features/line-and-text-tools) and Tab/Shift-Tab run at every cursor as one undo step.
 
 It's powered by Editora's RichTextFX fork, which adds multiple cursors and column selection as a layered input map that does nothing when there's a single caret.
 
@@ -107,7 +116,7 @@ The recording hooks are inert when you're not recording, so there's no idle cost
 """),
     new Feature("emacs-heritage", KB, 7, false,
         "Emacs heritage",
-        "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap.",
+        "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, registers, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap.",
         """
 Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto their own commands. Editora implements the model underneath: the concepts an Emacs user reaches for without thinking, built as real features rather than shortcut aliases. Emacs is the default keymap, and everything here works in the other four too, through the palette or a binding of your own.
 
@@ -127,6 +136,16 @@ The kill ring holds the last 120 kills (Emacs' own `kill-ring-max`), consecutive
 ## Rectangles
 
 The full **C-x r** family over the columns between point and mark: kill, copy, yank, delete, clear, open, string-rectangle, and number-lines. Each is a single undo step. Note these are character columns, so a tab counts as one, and rectangles are distinct from the Alt-drag multiple-cursor selection.
+
+## Registers
+
+Named slots, one character each, for text and for places:
+
+- **C-x r s** copies the region into a register (with **C-u**, it cuts it), and **C-x r i** inserts a register's text, leaving point before it.
+- **C-x r SPC** saves point (its file and position) in a register, and **C-x r j** jumps back there, opening the file if it is closed. A saved position moves with edits to its file while the file is open, as an Emacs marker does.
+- Each command asks for the register's name as the next key; **C-g** or Escape cancels. *Edit: List Registers* shows them all.
+
+Registers last for the session, one set per window. Number, rectangle and window-configuration registers are not supported.
 
 ## Narrowing
 
@@ -188,6 +207,7 @@ The command palette lists everything, but it is hard to browse. It helps when yo
 - Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
 - A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
 - Almost every item that can carry an **icon** does, and it is the same glyph you see for that action in a right-click menu, so Save looks the same wherever you reach it from. About a third are left blank rather than given an invented glyph. The icon column is reserved either way, so the titles still line up.
+- Menus that grew long keep their daily items at the top and the rest one level down: VCS groups its commands by what they act on, and File keeps its export formats under **Export**.
 - On **macOS** it sits in the system menu bar.
 
 It is a curated subset. Editora registers over seven hundred commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
@@ -251,11 +271,48 @@ Editora reads a project's `.editorconfig` so your files follow the project's con
 It honors the common keys:
 
 - **`indent_style`** / **`indent_size`** / **`tab_width`**: Tab and Enter follow them.
-- **`end_of_line`** and **`charset`** (utf-8, utf-8-bom, latin1, utf-16le/be), round-tripped on read and save.
-- **`max_line_length`**, which drives the column ruler.
+- **`end_of_line`** and **`charset`** (utf-8, utf-8-bom, latin1, utf-16le/be), round-tripped on read and save. An encoding you choose for a file yourself ([Reopen or Save with Encoding](/features/file-encodings)) takes precedence.
+- **`max_line_length`**, which sets the first [ruler](/features/rulers-indent-guides) (`off` hides them all).
 - On save, **`trim_trailing_whitespace`** and **`insert_final_newline`**.
 
 It's **on by default**; toggle it in Settings → Editor or with *View: Toggle EditorConfig*. Without an `.editorconfig`, a global **Indent style** preference (Detect / Spaces / Tabs) still applies.
+"""),
+    new Feature("line-and-text-tools", ED, 8, false,
+        "Line commands and text tools",
+        "Insert, delete, select and indent whole lines at every cursor; sort, filter and de-duplicate lines; encode, decode and escape the selection; increment the number at each cursor.",
+        """
+The small edits you make all day, as commands that work at **every cursor** and undo in one step.
+
+## Line commands
+
+- **Insert Line Below** (`Ctrl+Enter`) opens a new, indented line under the current one wherever the cursor is on it; **Insert Line Above** (`Ctrl+Shift+Enter`) opens one above.
+- **Delete Line** (`Ctrl+Shift+K`, `Ctrl+Y` in the IntelliJ keymap) deletes the line, or every line a selection touches, and keeps the cursor's column. It leaves the clipboard and the kill ring alone.
+- **Select Line** (`Ctrl+L`) selects the whole line; press it again to take the next one.
+- **Indent Lines** / **Outdent Lines** (`Ctrl+]` / `Ctrl+[`) shift the line by the file's indent unit, wherever the cursor sits.
+- **Duplicate Line** and **Move Line Up / Down** work on the line or the selected block.
+
+A collapsed fold is opened before a line command changes it, and an ordered Markdown list it changes is numbered in sequence again. The chords above are the VS Code keymap's (`Cmd` on macOS); the Sublime, CUA and IntelliJ keymaps bind their own equivalents, and every command is in the palette.
+
+## String manipulation
+
+**Edit: String Manipulation…** (`C-c x` in the Emacs keymap) is one filterable picker over all of these:
+
+- **Case**: camelCase, PascalCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case, dot.case, swap case, and a cycle through the styles.
+- **Lines**: sort ascending or descending in natural order (numbers by value, case-insensitive), case-sensitive sort, sort keeping one of each, sort by length, reverse, shuffle, remove duplicates or empty lines, trim trailing whitespace, and **keep** or **remove the lines matching** a regular expression. They act on the selected lines, or on the whole file with nothing selected.
+- **Encode and decode the selection**: Base64, URL encoding, JSON string escapes, HTML entities and `\\uXXXX` escapes. With several selections each one is converted, in one undo step; a decode that cannot read one of them changes none.
+- **Increment / Decrement Number** change the number at each cursor, or the next one on its line: negatives, zero padding (`007` → `008`) and hexadecimal (`0x0f` → `0x10`) keep their form. In the Emacs keymap they are `C-c =` and `C-c -`, and `C-u 10` steps by ten.
+"""),
+    new Feature("rulers-indent-guides", ED, 9, false,
+        "Rulers and indent guides",
+        "Rulers at any columns, with their own set per language, and faint guides at every indentation level, carried through blank lines.",
+        """
+**Rulers** mark line lengths: one at column 80 by default, or as many as you like. Set them in Settings → Editor (**Rulers**, such as `80, 120`), or with *Editor: Set Rulers…* from the palette.
+
+A language can have **its own rulers** instead (**Rulers by language**, such as `java: 100; python: 79, 88`), set from the palette for the current file's language with *Editor: Set Rulers for This Language…*. A language with nothing after its colon has none. A project's [`.editorconfig`](/features/editorconfig) `max_line_length` replaces the first ruler, and `off` hides them all. *View: Toggle Rulers* shows or hides them.
+
+**Indent guides** are faint vertical lines at each indentation level of the visible text, so you can see which block a line belongs to. They run through blank lines inside a block, follow the theme's colours, and skip folded lines. They are on by default; turn them off with *View: Toggle Indent Guides* or in Settings → Editor.
+
+Both are hidden in [Zen mode](/features/zen-mode) and [Simple UI mode](/features/simple-ui-mode), and kept in [Expert mode](/features/expert-mode). The guides are also off in large-file mode. Neither costs anything while you type inside a line: the rulers are placed from one measurement, and the guides redraw only when something they show has changed.
 """),
     new Feature("undo-history", ED, 7, false,
         "Undo History",
@@ -695,6 +752,21 @@ Saved sites have three surfaces beyond the palette: a **Remote Sites** tool wind
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site; local-only features (running, LSP, Git) are gated off for remote files.
 """),
+    new Feature("file-encodings", WF, 14, false,
+        "File encodings",
+        "Reopen a file in the encoding it is really in, or save it in another one: Shift_JIS, GBK, windows-1251 and every other encoding the JDK knows. The choice is remembered per file.",
+        """
+Editora reads a file as UTF-8 unless a byte-order mark or the project's [`.editorconfig`](/features/editorconfig) says otherwise. A file that is not valid UTF-8 opens through a single-byte stand-in (Windows-1252 or ISO-8859-1) that keeps every byte, and its encoding in the status bar is drawn in the warning colour, because it is a guess.
+
+Click the encoding in the status bar, or use the palette:
+
+- **Reopen with Encoding…** reads the file again in the encoding you pick. If the bytes are not valid in it, nothing changes and the status line names the first line and column that could not be read. Unsaved changes are confirmed first, and Local History keeps a copy.
+- **Save with Encoding…** sets the encoding the file is written in from its next save, whatever `.editorconfig` says. The tab shows as modified until you save, and choosing the file's current encoding again makes it clean. Text the encoding cannot hold is refused, naming the character and its line, rather than written as question marks or quietly switched to UTF-8.
+
+The list starts with the common encodings grouped by script (Unicode, Western, Central European, Cyrillic, Greek, Turkish, Hebrew, Arabic, Baltic, Vietnamese, Thai, Japanese, Chinese, Korean, DOS) and goes on with every other encoding the runtime supports, the same on every operating system.
+
+The choice is **remembered for the file**: it is used when the file opens again, after a restart, and after a rename, and it works for files on a [remote host](/features/remote-sftp), where `.editorconfig` is not read. File Information shows the encoding in use.
+"""),
     new Feature("crash-recovery", WF, 13, false,
         "Crash recovery",
         "Unsaved edits, including untitled buffers, are kept while you work and offered back on the next launch if Editora did not close normally. Restoring never writes to your files.",
@@ -818,7 +890,7 @@ Off by default. Plugins aren't sandboxed, so only install ones you trust.
         "Zen mode",
         "Hides every bar, the line numbers, and the minimap, leaving only the text. Everything you have switched on keeps running.",
         """
-Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, and the column ruler. Fold markers stay in the margin.
+Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, the rulers, and the indent guides. Fold markers stay in the margin.
 
 Nothing is switched off. Language servers, Git, and every command and keybinding keep working, so the palette (`M-x`) and your chords still reach everything while the interface is hidden.
 
@@ -833,7 +905,7 @@ The other three ways to run the editor are [Expert mode](/features/expert-mode),
         "Expert mode",
         "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay.",
         """
-Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the column ruler, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
+Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
 
 It suits people who drive the editor from the keyboard and want the room back without losing their bearings in the file. Nothing is switched off, so language servers, Git, and every command keep working.
 

@@ -78,6 +78,11 @@ round-trip remote URIs and reconnect once the connection is open.
 - **Save As** on a remote tab writes a **local copy**, and the tab becomes that
   local file. This also works after the connection is gone, so unsaved remote
   work can always be kept.
+- An `.editorconfig` is not read for remote files, so a remote file in an
+  encoding other than UTF-8 needs its
+  [encoding chosen](/docs/workspace#file-encodings) with *Buffer: Reopen with
+  Encoding…* or *Save with Encoding…*. The choice is remembered for that file,
+  as for a local one.
 
 Personal notes on a remote file are stored under the path you opened it by, not
 the target of a symlink. Notes made in an earlier version on a file opened
