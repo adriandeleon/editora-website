@@ -31,7 +31,12 @@ to it, and printed diagrams are always light.
 
 It's **on by default**, self-gating on detection, so it stays inert until the
 tool is found. Install with your package manager, for example
-`brew install graphviz plantuml`. The toggles and tool paths live under
-**Settings → Diagrams**.
+`brew install graphviz plantuml`. The toggle and the two tool paths live under
+**Settings → Diagrams**. Under each path a **Detected** line says whether the
+tool is there, for example *dot: found (/usr/bin/dot)* or *plantuml: not found*.
+Editora has no installer for these tools, so a missing one shows a **How to
+install** link to the [Diagrams feature page](/features/diagrams) instead of an
+Install… button.
+The paths are greyed while the preview is turned off.
 
 For diagrams embedded in Markdown, see [Mermaid](/docs/markdown#mermaid-diagrams).

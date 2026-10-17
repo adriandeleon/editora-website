@@ -402,6 +402,18 @@ says so rather than guessing.
 Each tool window remembers **its own size**, rather than sharing one number per
 side, and the whole layout is saved with the session.
 
+**Settings → Tool Windows** lists the windows under **Left**, **Right** and
+**Bottom**, in the order their buttons stand on each stripe. Each row has a
+switch that shows or hides the window's stripe button, the side it docks on,
+and ▲ ▼ to move it one place among the buttons shown on that side; the list
+follows every change. The side of a hidden window can be set too. A window
+whose feature is off (Project, Commit, Personal Notes, Problems, Debug) has its
+row greyed out, with the Settings page that turns it on. The **Layout** row
+says that the layout is saved per project (or per window when no project is
+open), so other projects keep theirs, and that **Reset to Defaults** does not
+change it. Its **Restore Default Layout** button puts every window back on its
+own side, shown or hidden as on a fresh install, in the default order.
+
 ## The Welcome page
 
 With no session to restore, Editora opens a **Welcome** page (a real tab).
@@ -448,7 +460,8 @@ Page) with their shortcuts.
 - **Simple UI mode** strips the editor to the essentials: it hides the extra
   toolbar groups, the tool-window stripe, the breadcrumb, the gutter, and the
   minimap, and turns off the heavier features (LSP, debugging, Git, multiple
-  cursors) for a calm surface. Toggle it from Settings, the toolbar, the palette
+  cursors) for a calm surface. Toggle it from Settings → Interface → Modes, the
+  toolbar, the palette
   (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
   restores everything.
 
@@ -463,9 +476,10 @@ Page) with their shortcuts.
 ## Window chrome
 
 Each row of chrome can be hidden on its own under **Settings → Interface →
-Chrome**: the menu bar, toolbar, status bar, tab bar, breadcrumb and
-tool-window stripe. (Hiding the tool stripe takes precedence over each tool
-window's own visibility toggle.)
+Window chrome**: the menu bar, toolbar, status bar, tab bar, breadcrumb and
+tool-window stripe. (Hiding the tool stripe hides every tool window's button,
+whatever the Tool Windows page says; the windows still open from their
+keyboard shortcuts and the palette.)
 
 **Merge the menu bar into the title bar** goes one further: the window is drawn
 without a system title bar, and the menus, the window title and the system
@@ -675,7 +689,7 @@ Only the wrapper case is gated. Every other build tool (npm, Cargo, Go) launches
 your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
 none of them prompt.
 
-Review or revoke trust in **Settings → Workspace → Trusted Folders**, or from
+Review or revoke trust in **Settings → Advanced → Trusted folders**, or from
 the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
 folder that is still covered by a trusted parent tells you so, rather than
 claiming a revoke that the parent would override.

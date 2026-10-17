@@ -88,10 +88,10 @@ popup.
 
 **Inlay hints** are the server's parameter-name and inferred-type annotations,
 drawn in grey italics inline, at the position they describe. They are **off by
-default**; turn them on in Settings → Code Completion or with `Toggle Inlay
-Hints`. By default a parameter-name hint appears only where the argument is a
-literal; **LSP: Set Inlay Hint Filter** (`lsp.setInlayHintMode`) switches
-between that and hints on all arguments. Type hints are never filtered. They
+default**; turn them on in the **Language server features** card of Settings →
+Code Completion or with `Toggle Inlay Hints`. By default a parameter-name hint
+appears only where the argument is a literal; **LSP: Set Inlay Hint Filter**
+(`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered. They
 cost nothing while off.
 
 **Code lenses** are the server's reference and implementation counts, drawn
@@ -324,8 +324,14 @@ lemminx-maven extension). It is routed by file name, so a `pom.xml` gets
 dependency, plugin and GAV completion while every other XML file keeps the fast
 native lemminx.
 
-Each server has its own enable checkbox and a live found/not-found status on the
-**Settings → LSP** page, plus a per-server command field with a Browse button.
+Each server has a card on the **Settings → LSP** page: its enable switch, its
+command field with **Browse…**, and a **Detected** line such as *jdtls: found
+(/usr/bin/jdtls)* or *rust-analyzer: not found*, with an **Install…** button
+while it is missing. A command left blank uses the program on your `PATH`. While
+**Enable LSP (language servers)** is off, the cards are greyed and a note says to
+turn it on. The switches for inlay hints, code lenses and the other server
+features are in the **Language server features** card on Settings → Code
+Completion; the LSP page links there.
 [Doctor](/docs/troubleshooting#doctor) reports the same detection for every
 enabled server in one place.
 
@@ -343,6 +349,11 @@ Because those commands are programs that run on your machine, they apply only
 to a **trusted folder**. In an untrusted folder the project's server commands
 (and any attempt to re-enable a server you switched off) are ignored until you
 run *LSP: Trust This Project's Server Settings* (`lsp.trustProjectSettings`).
+
+Settings → LSP shows your own commands. When the project in the window
+overrides a server, that server's card says so: which command the project runs,
+which one it asks to run until you trust it, or that it turns the server on or
+off.
 
 A remote project's `.editora/settings.json` is not read; set a server's command
 for a host in Settings → Remote instead (see
@@ -435,8 +446,9 @@ The Bash server finds problems with **ShellCheck** and formats with **shfmt**.
 Without ShellCheck a script gets no diagnostics; without shfmt **Format
 Document** changes nothing. Editora shows whether each one is there:
 
-- The **Bash / Shell** card in **Settings → LSP** has a line for each, for
-  example *ShellCheck: found (/usr/bin/shellcheck)* or *shfmt: not found*.
+- The **Bash / Shell** card in **Settings → LSP** has a command field and a
+  Detected line for each, for example *shellcheck: found (/usr/bin/shellcheck)*
+  or *shfmt: not found*.
 - [Doctor](/docs/troubleshooting#doctor) has a **ShellCheck** and an **shfmt**
   row under the Shell server.
 - Opening a script without ShellCheck says so in the status bar, once per

@@ -9,6 +9,16 @@ Define your own command-line tools in **Settings → External Tools** and run th
 on the current file or buffer, IntelliJ-style. It's available by default (the
 list starts empty until you add one) and off in Simple UI mode.
 
+The page lists your tools on the left and the selected tool's fields on the
+right: **Name**, **Command** (with **Browse…**), **Arguments**, **Working
+directory** (with **Browse…**; blank means the file's directory), **Standard
+input**, **Output**, and an **Enabled** switch. Changes apply as you make them:
+a field when you press Enter, leave it, or close Settings, and the lists and
+the switch at once. There is no Save button. **Remove** asks "Delete “name”?"
+first, with Cancel as the default, and drops the tool's key binding. Renaming a
+tool keeps its key binding. A name that would give the same command as another
+tool's is refused.
+
 ## Macros
 
 A tool's command and arguments expand `$Name$` macros from the active file:

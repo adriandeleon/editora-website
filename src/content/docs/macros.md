@@ -80,8 +80,16 @@ first and removes its key binding.
 **Settings → Macros** lists your saved macros, where you can rename one, edit
 its steps, delete it, or assign its keybinding. Steps are edited by kind: a
 command step with a command picker, a text step as multi-line text, and a key
-step by pressing the key. A step can be marked as typed into a prompt rather
-than the document.
+step by pressing the key. Any key can be a key step, Tab, Enter and Esc
+included: in that field Esc is recorded and does not close Settings. A step can
+be marked as typed into a prompt rather than the document. **Move Up** and
+**Move Down** reorder the selected step, and **Remove Step** deletes it.
+
+Your edits apply when you click **Save**, switch to another macro, or close
+Settings; **Revert** drops them. Two macros cannot share a name: the page says
+so while you type, and the macro keeps its old name. **Delete Macro** asks first,
+with Cancel as the default answer. In the **Keybinding** row, **Record** sets the
+macro's shortcut and **Remove** takes it away.
 
 A macro can run another saved macro as one of its steps. A macro that would run
 itself, directly or through another, stops with a message.

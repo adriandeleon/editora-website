@@ -508,7 +508,10 @@ the `mmdc` (mermaid-cli) command is found. Install it with
 **Install…** button in **Settings → Mermaid** (`install.mermaidSupport`). The
 same page holds the toggle and the two tool paths: a blank `mmdc` path resolves
 `mmdc` on your `PATH`, and a blank `maid` path (the optional linter) runs it
-through `npx`.
+through `npx`. Under each path a **Detected** line says whether the tool is
+there, for example *mmdc: found (/usr/local/bin/mmdc)* or *maid: found (via npx,
+fetched on first use)*. Editora keeps that answer until a path changes, so after
+installing `mmdc` in a terminal press **Check again**.
 
 `mmdc` drives a headless Chrome. If rendering fails with *"Could not find
 Chrome"*, install it once with
@@ -528,7 +531,8 @@ JS, and images load from disk. The server answers only its own browser tab and
 refuses to serve a home directory or a drive root.
 
 It's **on by default**; toggle it in **Settings → Web → HTML Preview** or with
-*View: Toggle HTML Live Preview*. The file must be saved so its assets resolve,
+*View: Toggle HTML Live Preview*. **Open the preview in** on the same card picks
+the browser (the system default until you choose one). The file must be saved so its assets resolve,
 and remote (SFTP) files are excluded. Commands: `htmlPreview.open` and
 `htmlPreview.openIn` (pick a browser).
 
@@ -614,15 +618,15 @@ such as an oversized image, that cannot be split.
 | **Editing** | | |
 | Show format bar on text selection | On | `markdown.toggleFormatBar` |
 | Folder for pasted images | assets | `markdown.setAssetsFolder` |
+| File name for pasted images | pasted-image | `markdown.setImageName` |
+| Ask for alt text when an image is pasted | Off | `view.toggleMarkdownImageAltPrompt` |
+| Move unused pasted images to the trash on save | On | `view.toggleMarkdownTrashUnusedImages` |
 | Table of contents levels | 1–6 | *Markdown: Set Table of Contents Top Level…* / *Deepest Level…* |
 | Leave the document title out of the table of contents | Off | `view.toggleMarkdownTocSkipTitle` |
 | Number the table of contents | Off | `view.toggleMarkdownTocOrdered` |
 | Update the table of contents on save | Off | `view.toggleMarkdownTocOnSave` |
-| File name for pasted images | pasted-image | `markdown.setImageName` |
-| Ask for alt text when an image is pasted | Off | `view.toggleMarkdownImageAltPrompt` |
 | Smart typography | Off | `view.toggleMarkdownSmartTypography` |
 | Wiki links | On | `view.toggleMarkdownWikiLinks` |
-| Move unused pasted images to the trash on save | On | `view.toggleMarkdownTrashUnusedImages` |
 | Update links when a file is renamed or moved | Ask each time | `markdown.setUpdateLinksOnRename` |
 | **Preview & PDF** | | |
 | Open Markdown files in | Editor | `markdown.setDefaultViewMode` |

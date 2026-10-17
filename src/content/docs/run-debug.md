@@ -663,8 +663,10 @@ reached from here whatever the container's network, through a relay that needs
 
 ### Installing adapters
 
-Adapters are not bundled. Three palette commands download each language's
-adapter, together with its language server, into your config folder:
+Adapters are not bundled. Each language's card on **Settings → Debugging** has
+an **Install…** button that downloads what is missing, the adapter together with
+its language server, into your config folder. The same installs are three
+palette commands:
 
 | Command | Installs | Needs |
 | --- | --- | --- |
@@ -686,7 +688,11 @@ script for each:
 - **Python**: `debugpy`, `scripts/install-debugpy.sh`.
 - **JavaScript**: vscode-js-debug, `scripts/install-js-debug.sh`.
 
-The Settings → Debugging page shows a live found/not-found status for each.
+Each card on **Settings → Debugging** has the adapter's path field with
+**Browse…** and a **Detected** line, for example *debugpy: found
+(/usr/bin/python3)* (the interpreter that has debugpy) or *js-debug: not
+found*. While **Enable debugging (DAP)** is off, the cards are greyed and a note
+says to turn it on.
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, npm, Cargo, Go, and Gradle tasks,

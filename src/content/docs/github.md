@@ -16,8 +16,9 @@ these are true:
 
 1. The GitHub integration is enabled in **Settings → Version Control → GitHub**,
    and [Git support](/docs/git) is on.
-2. `gh` is on your `PATH` (or its location is set on that Settings page; a path
-   with spaces in it works).
+2. `gh` is on your `PATH` (or its location is set in **gh command / path** on
+   that Settings page; a path with spaces in it works). When nothing runs at the
+   path you set, the page's **Detected** row says **No gh at** that path.
 3. `gh` is signed in (`gh auth status`).
 4. One of the repository's remotes points at a GitHub host.
 5. The repository has an open pull request, issue, or workflow run.

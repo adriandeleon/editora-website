@@ -42,7 +42,7 @@ If you can describe it, you can find it by typing a few letters. Browse the full
         """
 Editora ships five complete keymaps (**Emacs** (default), **CUA**, **Sublime Text**, **VS Code**, and **IntelliJ IDEA**) selectable in **Settings → Keymaps** and switchable **live, with no restart**. Each is a chord→command map over the same command ids, so switching changes accelerators without stranding any functionality.
 
-For your own bindings, the built-in keybinding editor records multi-key chords (like `C-x C-s`), rebinds any command, and resets to defaults. Overrides are saved in `settings.json`, layered on top of the active keymap, so you only specify what you change.
+For your own bindings, the built-in keybinding editor records multi-key chords (like `C-x C-s`) in the active keymap's notation, rebinds, removes or resets any command, and finds a command by name or by a chord typed in any notation. Shortcuts of macros, external tools and run configurations follow you to another keymap. Overrides are saved in `settings.json`, layered on top of the active keymap, so you only specify what you change.
 
 Every keymap binds the debugger. CUA and Sublime Text use VS Code's function keys, where F11 steps into while a program is paused and switches full screen otherwise.
 
@@ -228,7 +228,7 @@ Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields,
 
 While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running. In Markdown and plain text, a trigger that is an ordinary word expands only when it is alone on its line, and a block snippet (heading, table, alert…) only at the start of a line; mid-sentence, the completion popup still offers it. Shell snippets follow the script's `#!` line: under `sh` or `dash` they write `[ ]` tests instead of bash's `[[ ]]`. In a shell script, Enter on a completion that only repeats the word just typed (`else`, `case`…) starts a new line; Tab still expands the snippet.
 
-Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
+Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in **Settings → Snippets**, for any language, or in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
 """),
     new Feature("smart-indentation", ED, 2, false,
         "Smart indentation",
@@ -312,7 +312,7 @@ A collapsed fold is opened before a line command changes it, and an ordered Mark
         """
 **Rulers** mark line lengths: one at column 80 by default, or as many as you like. Set them in Settings → Editor (**Rulers**, such as `80, 120`), or with *Editor: Set Rulers…* from the palette.
 
-A language can have **its own rulers** instead (**Rulers by language**, such as `java: 100; python: 79, 88`), set from the palette for the current file's language with *Editor: Set Rulers for This Language…*. A language with nothing after its colon has none. A project's [`.editorconfig`](/features/editorconfig) `max_line_length` replaces the first ruler, and `off` hides them all. *View: Toggle Rulers* shows or hides them.
+A file type can have **its own rulers** instead (**Rulers by language**, such as `java: 100; python: 79, 88`, using the names on the Spell Check page's File types list), set from the palette for the current file's language with *Editor: Set Rulers for This Language…*. A language with nothing after its colon has none. A project's [`.editorconfig`](/features/editorconfig) `max_line_length` replaces the first ruler, and `off` hides them all. *View: Toggle Rulers* shows or hides them.
 
 **Indent guides** are faint vertical lines at each indentation level of the visible text, so you can see which block a line belongs to. They run through blank lines inside a block, follow the theme's colours, and skip folded lines. Each guide stands where its level's text starts, measured from the text as it is laid out, so the guides stay on their columns when the line numbers get wider, in a tab-indented file at any tab size, and in a proportional font; scrolled sideways, they are not drawn over the line numbers. They are on by default; turn them off with *View: Toggle Indent Guides* or in Settings → Editor.
 
@@ -369,7 +369,7 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - Server-provided **folding regions** and **expand/shrink selection**
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks; a row shows the rule code, such as `[SC2086]`, and opens the rule's documentation) and **completions**
 
-Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP). For a [remote folder](/features/remote-sftp), the server runs on the host, found on its PATH or set per host, and Java's jdtls keeps its index there. Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
+Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP, where each server's card shows whether its program is found). For a [remote folder](/features/remote-sftp), the server runs on the host, found on its PATH or set per host, and Java's jdtls keeps its index there. Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
 
 **Shell scripts** use bash-language-server, which finds problems with ShellCheck and formats with shfmt. Settings and Doctor show whether both are found, and **Install: ShellCheck and shfmt** downloads the official releases, checked against SHA-256 hashes built into Editora. The Bash card in Settings → LSP sets ShellCheck's arguments, shfmt's style, how many scripts the server reads in the background, and an explainshell server for option help; a project can set the same options in its `.editora/settings.json`.
 
@@ -409,7 +409,7 @@ Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its
 
 **Prose** buffers get inline **ghost text**, a muted suffix you accept with Tab.
 
-Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets) live in Settings → Code Completion.
+Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets, Mermaid) live in Settings → Code Completion.
 """),
     new Feature("run-files", RD, 1, false,
         "Run files & main classes",
@@ -474,7 +474,7 @@ For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in
 
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript, and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
 """),
     new Feature("http-client", RD, 4, false,
         "HTTP client",
@@ -596,7 +596,7 @@ Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as M
         """
 Standalone `.dot`/`.gv` (Graphviz) and `.puml`/`.plantuml` files get the same 3-mode preview as Markdown and Mermaid, rendered off-thread via the external **`dot`** and **`plantuml`** CLIs. Both rasterize to PNG natively, so there's no headless browser, and results are cached by source hash. Zoom resizes the image, and you can export a diagram to **SVG / PNG / PDF** (`diagram.export`).
 
-**On by default**, self-gating on detection, so it's inert until the tool is found (install via your package manager, e.g. `brew install graphviz plantuml`). Tool paths live under Settings → Languages & Tools → Diagrams.
+**On by default**, self-gating on detection, so it's inert until the tool is found (install via your package manager, e.g. `brew install graphviz plantuml`). Tool paths live under Settings → Diagrams, which shows whether each tool is found.
 """),
     new Feature("previews", DD, 7, false,
         "Smart file previews",
@@ -632,7 +632,7 @@ A floating browser-globe button on any `.html`/`.htm`/`.xhtml` file opens it in 
 
 The file is served over a tiny embedded web server bound to **loopback only**, so its sibling CSS, JS, and images load, and a small injected script **reloads the page live as you type** (it serves the buffer's in-memory text, so you don't have to save). No external tool: it uses the JDK's built-in HTTP server.
 
-On by default. Toggle it under Settings → Web → HTML Preview. Read the [deep-dive](/blog/html-live-preview).
+On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. Read the [deep-dive](/blog/html-live-preview).
 """),
     new Feature("projects", WF, 1, false,
         "Project Map navigation",
@@ -762,7 +762,7 @@ A file that isn't writable on disk opens read-only automatically, and the per-fi
         """
 Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* opens the remote folder as a project in its own window, listed with your other projects; reopening it asks to connect, and the tabs you had open come back when it does. From there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
 
-Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled.
+Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled. On the Settings page each field saves as you leave it and a value that cannot work (a port above 65535, a host with spaces) is refused with the reason; removing a site asks first and can also forget the host's permission to run commands.
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site.
 
@@ -827,7 +827,7 @@ Editora highlights **TODO / FIXME-style patterns** everywhere they appear and co
 - Matches are highlighted inline and listed in the tool window, grouped by file; double-click a result to jump. A project window scans the project's tree; the No Project window lists only the current tab and hides the tool window while that tab has no TODOs.
 - Matches also show as **overview stripes** over the scrollbar and on the minimap edge, each in its pattern's color. Click to jump, hover for the line.
 - Jump between matches in the active file with `M-g ]` / `M-g [` (`todo.next` / `todo.previous`), wrapping around.
-- Patterns are configurable in **Settings → TODO → TODO Highlighting**: name, regex, a color picker, case sensitivity, and enabled. TODO and FIXME ship by default.
+- Patterns are configurable in **Settings → TODO → TODO highlighting**: name, regex, a color picker, match case, and enabled. Six ship by default: TODO, FIXME, HACK, NOTE, XXX and DONE. A new pattern's regex follows its name, and deleting one asks first.
 
 On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).
 """),
@@ -872,7 +872,7 @@ Editora has optional AI, off by default and yours to configure.
 
 **AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. It works in the project of its own window, and its file reads and writes stay inside that folder. The agent is a user-installed external tool, never bundled.
 
-**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
+**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Each provider keeps its own key, endpoint and model. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
 """),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",
@@ -882,7 +882,7 @@ Editora has optional AI, off by default and yours to configure.
 
 Twenty-eight themes ship in total: the Editora pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
 
-Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme follows the app theme until you pick one explicitly, after which the two are independent.
+Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme is **Automatic** at first and follows the app theme; pick one and the two are independent, or choose Automatic again to follow. Both pickers group themes under Light and Dark headings.
 
 ## One vocabulary for state
 
@@ -894,7 +894,7 @@ Five monospace fonts ship with the app (**JetBrains Mono**, **Cascadia Code**, *
 
 ## Bring your own
 
-Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears in the picker under its filename, and **Reload User Themes** re-scans without a restart.
+Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears in the picker under its filename, in a **Your themes** group, and **Reload themes** on the Appearance page (or **Reload User Themes** from the palette) re-scans without a restart.
 """),
     new Feature("plugins", CE, 2, false,
         "Plugins",
@@ -967,7 +967,7 @@ Every piece of the interface can be shown or hidden on its own from the View men
         """
 Editora's entire interface is translated (**English, Italian, Spanish, French, Portuguese, and German**) covering the command palette, toolbar tooltips, tool windows, Settings, the status bar, dialogs, and menus.
 
-Pick a language in Settings → Appearance (or let it follow your OS locale); the choice applies on restart. A key-parity test keeps every translation complete.
+Pick a language in Settings → Appearance (or let it follow your OS locale); the choice applies on restart, and until then the Language row says so. A key-parity test keeps every translation complete.
 """),
     new Feature("mcp", CE, 8, true,
         "MCP server",
@@ -981,7 +981,7 @@ It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposi
 - **Writes**: `edit_buffer` (undoable str-replace edits) and `save_buffer`.
 - **Actions**: `open_file` (files inside the window's project, or already open there) and `execute_command`.
 
-So an agent can observe live state, make undoable edits, and drive the editor. `edit_buffer` and `save_buffer` refuse files in Editora's config folder and in version-control metadata such as `.git/`. The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command). It uses the JDK's built-in HTTP server, so there's no new dependency.
+So an agent can observe live state, make undoable edits, and drive the editor. `edit_buffer` and `save_buffer` refuse files in Editora's config folder and in version-control metadata such as `.git/`. The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command), and Settings → MCP Server shows the endpoint, with **Copy Endpoint Command** and **New Token**. It uses the JDK's built-in HTTP server, so there's no new dependency.
 
 It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
 """),
@@ -1001,7 +1001,7 @@ Every tool you define becomes its own palette command (and is bindable to a key)
         "Settings sync",
         "Keeps your snippets, abbreviations, templates and personal dictionary the same on every computer, through a private Git repository you own. Off by default.",
         """
-Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, with your own Git credentials; Editora stores none and there is no Editora account or server.
+Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, signing in with your own Git credential helper or SSH key; a repository URL with a password or token in it is refused, and there is no Editora account or server.
 
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
 - It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand.

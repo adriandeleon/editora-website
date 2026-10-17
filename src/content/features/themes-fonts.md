@@ -10,7 +10,7 @@ summary: "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus
 
 Twenty-eight themes ship in total: the Editora pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
 
-Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme follows the app theme until you pick one explicitly, after which the two are independent.
+Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme is **Automatic** at first and follows the app theme; pick one and the two are independent, or choose Automatic again to follow. Both pickers group themes under Light and Dark headings.
 
 ## One vocabulary for state
 
@@ -22,4 +22,4 @@ Five monospace fonts ship with the app (**JetBrains Mono**, **Cascadia Code**, *
 
 ## Bring your own
 
-Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears in the picker under its filename, and **Reload User Themes** re-scans without a restart.
+Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears in the picker under its filename, in a **Your themes** group, and **Reload themes** on the Appearance page (or **Reload User Themes** from the palette) re-scans without a restart.

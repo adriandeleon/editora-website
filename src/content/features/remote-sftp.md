@@ -8,7 +8,7 @@ summary: "Edit files on a remote host over SSH/SFTP, each remote folder a projec
 
 Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* opens the remote folder as a project in its own window, listed with your other projects; reopening it asks to connect, and the tabs you had open come back when it does. From there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.
 
-Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled.
+Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled. On the Settings page each field saves as you leave it and a value that cannot work (a port above 65535, a host with spaces) is refused with the reason; removing a site asks first and can also forget the host's permission to run commands.
 
 Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site.
 

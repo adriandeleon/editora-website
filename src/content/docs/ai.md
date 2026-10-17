@@ -17,8 +17,9 @@ comes in two parts: quick one-shot actions, and a full embedded agent.
 2. Turn on the part you want: **AI Actions** (`view.toggleAi`), the **AI
    Agent** (`view.toggleAgent`), or both.
 3. For AI Actions, choose a [provider](#providers), give it a key or an
-   endpoint, and run **AI: Test Connection** (`ai.testConnection`). For the
-   agent, install an ACP agent and check its command under Settings → AI Agent.
+   endpoint, and press **Test connection** on the AI Actions page (or run
+   **AI: Test Connection**, `ai.testConnection`). For the agent, install an ACP
+   agent and check its command under Settings → AI Agent.
 4. Inline completion has its own switch under AI Actions
    (`view.toggleAiCompletion`) and stays off until you turn it on.
 
@@ -47,6 +48,13 @@ incomplete.
 Rewrite refuses a selection longer than 120,000 characters instead of sending
 part of it, because the reply replaces the whole selection.
 
+The top of the **AI Actions** page shows whether the provider answers:
+*Connected*, or *Not working* with the reason. Editora checks only while that
+page is open, with one tiny request, and shows a result from the last three
+minutes again instead of asking twice. **Test connection** beside it always
+checks again. While **Enable AI** is off, the page's rows are greyed and a note
+says to turn it on.
+
 There's also **inline completion**: after a typing pause, a muted one-line ghost
 suggestion appears at the caret, and **Tab** accepts it. It uses its own fast
 model (default `claude-haiku-4-5`), separate from the action model (default
@@ -58,7 +66,9 @@ The **AI Agent** is a chat with an embedded coding agent over the
 [Agent Client Protocol](https://agentclientprotocol.com) (ACP). The default is
 Claude Code's `claude-code-acp` adapter, but any ACP agent works
 (Settings → AI Agent). The agent is a **user-installed external tool, never
-bundled**.
+bundled**. Each client has a card with its command and a line saying whether
+it is there, for example *claude-code-acp: found (/usr/local/bin/claude-code-acp)*
+or *gemini: not found*; the card of the client in use is marked **In use**.
 
 - Its file reads see your open buffers' **unsaved** text.
 - Its edits to open files apply as **undoable buffer edits** that you review and
@@ -101,8 +111,8 @@ Pick a provider in Settings:
 - **Anthropic API**: the API key comes from the `ANTHROPIC_API_KEY` environment
   variable or a Settings override; models are configurable.
 - **Local (OpenAI-compatible)**: point every AI feature at **LM Studio**,
-  **Ollama**, or any local OpenAI-compatible server, with no API key and a
-  configurable endpoint.
+  **Ollama**, or any OpenAI-compatible server. It has its own endpoint, action
+  model and inline model, and an optional key for a server that asks for one.
 - **LM Studio / Bionic**: a separate local provider with its own endpoint,
   action model, inline model, and optional token. It can also supply the model
   for the **OpenCode** ACP agent preset without writing OpenCode config files.
@@ -116,9 +126,9 @@ When AI Actions are enabled and connected, the editor right-click menu includes
 **AI Actions → Explain** and **Rewrite**. Generated `explanation.md` buffers
 show the provider and response model when the server reports it.
 
-Each provider has its **own** stored key: the Settings key field shows only the
-selected provider's, and a key set for one provider is never sent to another's
-endpoint. The `ANTHROPIC_API_KEY` fallback applies only to the Anthropic
+Each provider has its **own** stored key, endpoint and models: the Settings
+fields show only the selected provider's, so switching provider never sends
+one provider's key to another provider's server. The `ANTHROPIC_API_KEY` fallback applies only to the Anthropic
 provider. And Editora won't attach a key to a plain-`http://` endpoint on another
 machine, refusing before it connects and asking you to use `https` or a loopback
 address, so your key never crosses the network in the clear. Plain-http on
