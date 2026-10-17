@@ -21,7 +21,7 @@ display, since it waits on actual windows.
 
 October 2026, all six figures on one box:
 
-- MacBook Pro (Mac17,2), Apple M5, 10 cores (4 performance, 6 efficiency)
+- 14-inch MacBook Pro (Mac17,2), Apple M5, 10 cores (4 performance, 6 efficiency)
 - 16 GB unified memory; Apple 1 TB internal SSD (APPLE SSD AP1024Z)
 - macOS 27.0 (build 26A428)
 - AC power; windows painted to an AORUS FI32U at 5120x2880, the main display,
