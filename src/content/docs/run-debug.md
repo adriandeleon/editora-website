@@ -43,6 +43,24 @@ does not look stalled. The Run button on the tool-window stripe badges the same
 spinner on its icon, which shows a run is alive with the Run window closed or
 another window open in its place.
 
+### Which runtime a program runs under
+
+Beside the status, the Run window names the runtime the program runs under:
+**Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
+**Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
+names one. Hover the name for the runtime's own version text and, for Java,
+the JDK's folder.
+
+The name comes from the very program the run starts, asked in the run's folder
+and with its environment. A run configuration's JDK, a virtual environment's
+`python`, a version picked by pyenv and a remote host's or container's own
+runtime are therefore what it shows, rather than whatever is first on your
+PATH. It appears a moment after the launch (the program does not wait for
+it), stays after the program exits, and is replaced by the next run. A plain
+`sh` script and a compiled program show no runtime, and neither does a
+configuration's before-launch command.
+
 A clicked **Java** frame in the Run, Test or Build console is resolved by the
 language server, so a frame inside a dependency or the JDK opens its source
 instead of reporting "not found". Frames in your own code open as usual, and
@@ -364,6 +382,13 @@ restarted.
 A spinner beside the Debug window's status turns while the before-launch build,
 the session start, or the program is running, and stops while the program is
 paused (at a breakpoint, a step, or Pause).
+
+Beside that status, the Debug window names the runtime the debugged program
+runs under, as the [Run window does](#which-runtime-a-program-runs-under): the
+JDK of a Java launch, the Python that debugpy runs the script with, or the
+Node.js of a JavaScript launch. The name clears when the session ends. A
+session started with *Debug → Attach* shows none, because the program was
+already running.
 
 ### Program input in the Debug console
 
