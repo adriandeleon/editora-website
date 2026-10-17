@@ -1,33 +1,42 @@
 ---
 // Cold-start bar chart for the "Built for speed" section.
 //
-// Every number here must come from a real run of scripts/measure-startup.sh in
-// the Editora repo, which reports the median time from process start to the
-// first rendered frame that actually shows the file. Do not add a bar you have
-// not measured yourself on the same machine, with the same metric: a startup
-// comparison is only meaningful if every entry was timed the same way, and a
-// figure taken from someone else's blog post measures a different thing on
-// different hardware.
+// Every number here must come from a real run of scripts/bench/measure-editors.sh,
+// which times all three editors with one metric on one machine. Do not add a bar
+// you have not measured yourself that way: a startup comparison is only
+// meaningful if every entry was timed identically, and a figure taken from
+// someone else's blog post measures a different thing on different hardware.
+//
+// The metric is when the editor's window for the file appears — the moment its
+// title names the file. That is earlier than the first frame showing the file's
+// text, and the caption says so rather than letting the stronger reading stand:
+// Editora's own instrumentation (scripts/measure-startup.sh in the Editora repo)
+// puts window-shown at 475 ms and first paint at 890 ms on this same fixture.
+// The same gap exists for the other two and cannot be measured from outside, so
+// all three bars are the window-appears moment and none of them is first paint.
 //
 // `methodology` renders under the chart and is not optional. A benchmark
 // without its conditions stated is a claim nobody can check.
 const bars = [
-  { label: "Editora", sub: "0.9.9", ms: 1493, highlight: true },
-  { label: "VS Code", sub: "1.125.0", ms: 1491 },
-  { label: "IntelliJ IDEA", sub: "2026.2.0.1", ms: 5602 },
+  { label: "Editora", sub: "0.22.0", ms: 521, highlight: true },
+  { label: "VS Code", sub: "1.142.0", ms: 589 },
+  { label: "IntelliJ IDEA", sub: "2026.2.3", ms: 2183 },
 ];
 
 const methodology =
-  "Measured in July 2026 on Editora 0.9.9, not the current release. " +
-  "Median of five timed runs per editor (a discarded warm-up first), all on " +
-  "one Apple M5 running macOS 26.4.1, each opening the same 710-line Markdown " +
-  "file with no project or workspace loaded. Every editor was fully quit " +
-  "between runs and launched the same way. The clock stops when the editor " +
-  "window showing the file appears, not when a splash screen does: IntelliJ " +
-  "puts a splash window up well before its editor is ready, so timing the " +
-  "first window would have understated its 5.60s by several seconds. These are " +
-  "relaunches on a warm page cache rather than a first boot, and none of them " +
-  "measure background work that continues after the file is on screen.";
+  "Measured in October 2026 on Editora 0.22.0. Median of five timed runs per " +
+  "editor (a discarded warm-up first), all on one Apple M5 running macOS 27.0, " +
+  "each opening the same 710-line Markdown file with no project or workspace " +
+  "loaded. Every editor was fully quit between runs and launched the same way. " +
+  "The clock stops when a window owned by that editor is titled with the " +
+  "file's name, not when a splash screen appears: IntelliJ puts up a splash " +
+  "and a welcome window well before its editor exists. That moment is when the " +
+  "window arrives, which comes before the file's text is painted — Editora's " +
+  "own instrumentation puts its first frame showing the file at 0.89s against " +
+  "the 0.52s here, and the other two have a gap of their own that we cannot " +
+  "measure from outside. These are relaunches on a warm page cache rather than " +
+  "a first boot, and none of them measure background work that continues " +
+  "afterwards.";
 
 const max = Math.max(...bars.map((b) => b.ms));
 const pct = (ms: number) => Math.round((ms / max) * 100);
@@ -53,7 +62,7 @@ const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
     }
   </div>
   <figcaption>
-    <strong>Time from launch to the editor window showing your file.</strong>
+    <strong>Time from launch to the editor's window for your file appearing.</strong>
     {methodology}{" "}
     <a href="/compare">Full method and a project-folder comparison</a>.
   </figcaption>
