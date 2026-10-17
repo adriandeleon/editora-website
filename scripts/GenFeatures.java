@@ -419,7 +419,7 @@ It also runs a **project's main class**. *Run Main Class…* picks any `main` in
 
 For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
 
-Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python and Node frames, and shell errors) to jump to the file and line. The console draws the colours programs print, keeps a `\r` progress bar on one line, and has **End Input** for programs that read until the end of input. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last*. *Run with Trace* runs a shell script with `bash -x`, and each traced line links to its source line. A file in a [remote folder](/features/remote-sftp) runs on its host, with output, input and Stop as for a local one. A spinner turns in the Run window, and on the Run stripe button when the window is closed, while the program runs. Bind it to `C-c r` or run from the palette.
+Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python and Node frames, and shell errors) to jump to the file and line. The console draws the colours programs print, keeps a `\r` progress bar on one line, and has **End Input** for programs that read until the end of input. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last*. *Run with Trace* runs a shell script with `bash -x`, and each traced line links to its source line. A file in a [remote folder](/features/remote-sftp) runs on its host, with output, input and Stop as for a local one. A spinner turns in the Run window, and on the Run stripe button when the window is closed, while the program runs. Beside it the Run window names the **runtime** the program runs under, such as *Java 25.0.4 (Temurin)*, *Python 3.13.5* or *Node.js 24.18.1*, as reported by the very `java`, `python` or `node` the run started. Bind it to `C-c r` or run from the palette.
 """),
     new Feature("run-configurations", RD, 2, false,
         "Run configurations",
@@ -465,6 +465,7 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 - A threads + call-stack view and a lazy variables tree with **set-value**
 - **Watches** and an evaluate console
 - A debugged Java program can read **standard input** typed in the Debug console
+- The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
 - Tests inside JUnit `@Nested` classes run and debug from the gutter
 
 For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening.
