@@ -404,9 +404,34 @@ side, and the whole layout is saved with the session.
 
 ## The Welcome page
 
-With no session to restore, Editora opens a **Welcome** page (a real tab) with
-New / Open / Open Folder / Clone actions (each labeled with its shortcut), your
-recent files, and version and license info. Reopen it with `view.welcome`.
+With no session to restore, Editora opens a **Welcome** page (a real tab).
+Reopen it with `view.welcome`. From top to bottom it has:
+
+- **Start**: New File, Open File, Open Folder as a Project, Clone Git
+  Repository and the Command Palette, each with its shortcut when the keymap
+  binds one.
+- **Recent Projects**, newest first. Picking one opens or focuses that
+  project's window. A project whose folder no longer exists is left out.
+- **Recent Files**. Each row shows the file name, the project it belongs to
+  (or the host of a remote file) and its folder: relative to the project, or
+  starting with `~`. A long folder is shortened from its start. Right-click a
+  row to copy its path or remove it from the list.
+- **Remote Sites**: your saved SFTP sites; picking one opens the connect form
+  filled in.
+- **Customize**: the current keymap and theme; click either to change it. With
+  the Emacs keymap it also explains the notation (`C-` is Ctrl, `M-` is Alt).
+  On a first run, before there is anything recent, this block sits right under
+  Start.
+- **Help**: Documentation, What's New (the release notes of the version you
+  run) and Doctor.
+
+The first nine projects and files are numbered: press **1**–**9** to open one.
+When the page opens, the first entry has the focus, so Enter opens it. Long
+lists show five entries and a "Show N more" link.
+
+Closing the last tab does not bring the Welcome page back. The editor area
+shows a short list instead (Open File, Open Folder, Command Palette, Welcome
+Page) with their shortcuts.
 
 ## Focus modes
 

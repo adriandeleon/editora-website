@@ -87,6 +87,12 @@ in:
 Every one of these is also a command in the palette. Reopen the page any time
 with *View: Welcome Page*.
 
+The page also shows the keymap and theme in use; click either to change it.
+Editora starts with the Emacs keymap, so shortcuts read like `C-x C-f`
+(Ctrl+X, then Ctrl+F) and `M-x` (Alt+X). Pick the VS Code, IntelliJ, Sublime
+or CUA keymap there if you prefer, and every shortcut shown switches to your
+platform's notation. See [Keymaps](/docs/keymaps).
+
 Starting Editora again while it is running does not open a second editor: the
 launch goes to the one already running. And if the editor ever stops without
 closing normally, the next launch offers your unsaved edits back; see
