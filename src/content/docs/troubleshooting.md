@@ -7,26 +7,34 @@ order: 3
 
 ## Doctor
 
-**`View: Doctor`** in the command palette (also linked from the Welcome page)
-opens a full-tab health report of every external command Editora's features rely
-on, in the spirit of `flutter doctor`. It covers Git and the GitHub CLI
-(including whether `gh` is signed in), ripgrep, the preview and diagram tools
-(`mmdc`, `maid`, Graphviz, PlantUML, Typst), every enabled language server (with
-ShellCheck and shfmt under the Shell server), the
-debug adapters (java-debug, debugpy, js-debug), the Run interpreters (with a
-JDK 25 check for Java), the build tools, the selected AI agent CLI, elevated
-save, browsers, and the in-app installer's prerequisites.
+**`View: Doctor`** (in the Tools menu and the command palette, linked from the
+Welcome page and from the message log's **Open Doctor** button) opens a full-tab
+health report of every external command Editora's features rely on, in the
+spirit of `flutter doctor`. It covers Git and the GitHub CLI (including whether
+`gh` is signed in), ripgrep, the preview and diagram tools (`mmdc`, `maid`,
+Graphviz, PlantUML, the Typst CLI), every enabled language server, the Python
+formatter, ShellCheck and shfmt, the debug adapters (java-debug, debugpy,
+js-debug), the Run interpreters (with a JDK 25 check for Java), the Node.js for
+HTTP scripts, the build tools, the AI provider and agent, the container engine
+(and WSL on Windows), elevated save, browsers, and the in-app installer's
+prerequisites.
 
-Each row shows the resolved command and its version where available. When
-something is off, the row carries a plain-language tip plus an **Install…**
-button (the in-app installer) or a **Settings…** link straight to the right page.
-A feature you have switched off shows as a gray informational row and is never
-probed, so Doctor doesn't nag you about tools you don't want. All probes run off
-the UI thread, and only when you open or refresh the screen.
+A missing tool is a problem only when the window needs it: a file of that
+language is open, the project has the tool's marker file, or you set its command.
+Anything else shows as **Not installed** and is not counted. Problems and warnings
+are gathered under **Needs attention** at the top; sections where everything is
+OK fold to one line.
+
+Each row shows the resolved command and its version or path. When something is
+off, the row carries a plain-language tip and its fix: **Install…** (the in-app
+installer), **Turn on** for a switched-off feature, **How to install**, and
+**Settings…** straight to the right page. All probes run off the UI thread, and
+only when you open or refresh the screen.
 
 Start here when something that should work doesn't: it answers "is the tool
 installed, is it the version I think, and is Editora looking at the right one" in
-one pass.
+one pass. **Copy Report** puts the whole report on the clipboard, ready to paste
+into a bug report.
 
 ## A launcher is blocked on first run
 

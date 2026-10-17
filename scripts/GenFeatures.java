@@ -1014,23 +1014,32 @@ Preferences (`settings.json`), keymaps, macros and themes are **not** synced. Se
 """),
     new Feature("doctor", CE, 10, false,
         "Doctor",
-        "A health screen for every external tool Editora can use: what was found, which version, where it lives, what's only half-configured, and what's missing, with an <strong>Install…</strong> button where Editora can fetch it for you.",
+        "A health screen for every external tool Editora can use: what was found, which version, where it lives, and what's missing that you actually need, with problems first and an <strong>Install…</strong> or <strong>Turn on</strong> button where Editora can fix it for you.",
         """
-Editora leans on the tools already on your machine rather than bundling its own copies, so **Doctor** tells you what it found. Run it from the palette with `view.doctor`, or from the Welcome page.
+Editora leans on the tools already on your machine rather than bundling its own copies, so **Doctor** tells you what it found. Open it with **Tools → View: Doctor**, `view.doctor` in the palette, the Welcome page, or the **Open Doctor** button in the message log.
 
 Every integration gets a row, grouped by area:
 
 - **Version control**: `git`, and `gh` for pull requests, issues, and CI runs.
 - **Search**: `ripgrep`, which accelerates Find in Files (the built-in walker is used when it's absent).
-- **Language servers**: one row per enabled server, showing the resolved path, plus ShellCheck and shfmt rows under the Shell server, which the Bash server lints and formats with.
+- **Preview & diagrams**: `mmdc` and `maid` for Mermaid, Graphviz and PlantUML (with their versions), and the Typst CLI.
+- **Language servers**: one row per enabled server, showing the resolved path.
+- **Formatting & linting**: the Python formatter (Ruff or Black), and ShellCheck and shfmt, which the Shell server lints and formats with.
 - **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
-- **Preview & diagrams**: `mmdc` and `maid` for Mermaid, `dot` and `plantuml`, and `typst`.
-- **Run & build**: the JDK used to run a file, plus `python3`, `bash`, `make`, and the build tools.
-- **System**: the browsers available for HTML preview, and the installer prerequisites.
+- **Run**: the JDK used to run a file, the Python interpreter, `bash`, and `make`.
+- **HTTP Client**: the Node.js that runs response handlers and pre-request scripts.
+- **Build tools**: Maven, npm, Cargo, Go and Gradle, checked by the command set in Settings or the project's own wrapper.
+- **AI & agents**: the AI provider (is a key set) and the selected agent's command.
+- **Remote & containers**: the container engine, and WSL on Windows.
+- **System**: the installer prerequisites, elevated save, and the browsers available for HTML preview.
 
-Each row is green (found, with its version and path), amber (found but not usable yet, like a `gh` that isn't signed in or a JDK too old to run a file), red (missing), or grey (the feature is switched off, so nothing is probed). A missing tool that Editora knows how to fetch gets an **Install…** button in the row, and a **Settings…** link jumps to the page that configures it.
+A missing tool is a **problem** only when something in the window needs it: a file of that language is open, the project has the tool's marker file (`pom.xml`, `go.mod`, `Cargo.toml`, `package.json`…), or you set its command. Otherwise the row says **Not installed**, keeps its **Install…** button, and isn't counted, so turning on language servers doesn't paint every language you never use red.
 
-Probes run fresh each time, off the UI thread, so Doctor reflects the machine as it is now rather than a cached answer from startup, and the results re-check live after an install, with no restart needed.
+Problems and warnings (amber: found but not usable yet, like a `gh` that isn't signed in or a JDK too old to run a file) are gathered under **Needs attention** at the top. A section where everything is OK folds to one line, and the not-installed tools of a section fold together; **Show** opens them. The summary counts link to the attention group.
+
+Each row has the fix it needs: **Install…** where Editora can fetch the tool, **Turn on** for a feature that is switched off, **How to install** where it can't, and **Settings…** for the page that configures it. Right-click a row to copy it or its path, or to reveal the path in the file manager. **Copy Report** puts the whole report, with the Editora version, OS and Java, on the clipboard for a bug report.
+
+Probes run fresh each time, off the UI thread, so Doctor reflects the machine as it is now rather than a cached answer from startup. **Refresh** and installs keep the last results on screen while checking again, and the header says when the check ran. In a project on an SSH host, in WSL or in a container, the header says that the rows describe this computer.
 """)
 );
 
