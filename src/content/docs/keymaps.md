@@ -42,6 +42,36 @@ Emacs notation reads `C-` as Ctrl, `M-` as Alt (Option on macOS) and `S-` as
 Shift, and a space separates the steps of a sequence: `C-x C-s` is Ctrl+X, then
 Ctrl+S.
 
+## Debugger keys
+
+Every keymap binds the debugger's commands. The Emacs keymap's are listed under
+[Debugging](/docs/run-debug#debugging); besides those, `C-c C-d` followed by
+`r` restarts, `v` shows the value at the caret, `x` evaluates, `w` adds a
+watch, `l` lists the breakpoints, `m` mutes them, `t` enables or disables the
+caret line's breakpoint, `s` smart-steps into, `f` restarts the frame and `h`
+applies code changes.
+
+The CUA and Sublime Text keymaps use VS Code's function keys:
+
+| Key | Action |
+| --- | --- |
+| F5 | Start or continue |
+| Shift+F5 | Stop |
+| Ctrl+Shift+F5 | Restart |
+| F6 | Pause (CUA only: in Sublime Text, F6 is spell checking) |
+| F9 | Toggle breakpoint |
+| F10 | Step over |
+| F11 | Step into while the program is paused, otherwise Full Screen |
+| Shift+F11 | Step out |
+
+Because F11 steps into only while a program is paused, Full Screen also has
+Ctrl+Alt+F in these two keymaps (Ctrl+⌘F on macOS). The VS Code keymap has the
+same keys, with F11 always Step Into.
+
+The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
+Show Value at Caret, Ctrl+Shift+F9 Breakpoints, Shift+F7 Smart Step Into and
+Ctrl+F9 Apply Code Changes to its usual debugger keys.
+
 ## Rebinding commands
 
 The **Settings → Keymaps** page lists every command with its current chord and a

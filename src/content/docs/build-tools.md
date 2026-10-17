@@ -57,6 +57,9 @@ locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 `JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
 resolution, Java Run and Debug, and before-launch commands. A saved run
 configuration can override it for one project or launch.
+A Java run configuration's before-launch command runs in the project root,
+whatever the configuration's working directory, so a `mvn compile` or
+`gradle classes` step finds the build file.
 
 In a [remote project](/docs/remote#allowing-a-host-to-run-commands), Maven,
 Gradle, npm, Cargo and Go builds and test runs start on the host, over the same

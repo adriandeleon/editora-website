@@ -44,6 +44,8 @@ Editora ships five complete keymaps (**Emacs** (default), **CUA**, **Sublime Tex
 
 For your own bindings, the built-in keybinding editor records multi-key chords (like `C-x C-s`), rebinds any command, and resets to defaults. Overrides are saved in `settings.json`, layered on top of the active keymap, so you only specify what you change.
 
+Every keymap binds the debugger. CUA and Sublime Text use VS Code's function keys, where F11 steps into while a program is paused and switches full screen otherwise.
+
 On macOS the non-Emacs keymaps use ⌘ wherever the [keybindings reference](/keybindings) shows Ctrl.
 """),
     new Feature("search-everywhere", KB, 3, false,
@@ -441,7 +443,7 @@ Run configurations belong to a [project](/features/projects): each project windo
 
 ## A step before the launch
 
-A configuration can name a command to run first, such as a build or a codegen step. A **non-zero exit aborts the launch**, so a stale binary is never run by accident.
+A configuration can name a command to run first, such as a build or a codegen step. A **non-zero exit aborts the launch**, so a stale binary is never run by accident. A Java configuration's step runs in the project root, and Debug uses it as its build.
 
 ## Shareable
 
@@ -468,7 +470,7 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 - The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
 - Tests inside JUnit `@Nested` classes run and debug from the gutter
 
-For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening.
+For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening. A project launch builds the project first and stops on compile errors, which the Debug console lists as links. Saving a file during a session loads the change into the running program (**hot code replace**), and *Restart Frame* and *Smart Step Into* are there when you need them. Step Into skips JDK classes, and JDK or library frames open their source. Breakpoints differ by shape, are listed in one picker you can filter, and can be muted; **Caught** and **Uncaught** exception toggles are kept per project. Every keymap binds the debugger, and the Debug window never takes the keyboard from the editor.
 
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript, and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
