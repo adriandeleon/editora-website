@@ -1,6 +1,6 @@
 ---
 title: Terminal
-description: Shells on this machine in a Terminal tool window, in tabs, with the editor's theme colors and font, and a keyboard that belongs to the shell.
+description: Shells on this machine in a Terminal tool window, in tabs, with Open Terminal Here, clickable file:line links into the editor, the editor's theme colors and font, and a keyboard that belongs to the shell.
 category: Workspace
 order: 8
 ---
@@ -8,7 +8,9 @@ order: 8
 The **Terminal** tool window runs shells on your computer inside Editora, one
 per tab, at the bottom of the window. A focused terminal owns the keyboard, so
 Ctrl+C, Escape, and your shell's own shortcuts work as they do in any terminal.
-Its colors follow the editor theme and its font is the editor's.
+Its colors follow the editor theme and its font is the editor's, and a
+Ctrl+click (⌘-click on macOS) on a file name in the output opens that file in
+the editor.
 
 ## Open a terminal
 
@@ -32,12 +34,29 @@ sets, or else its current folder. A tab closes when you click its **✕**, run
 **Terminal: Close Terminal**, or the shell exits (`exit`, or Ctrl+D at an empty
 prompt). Closing the window ends its shells.
 
-*File: Open Terminal Here* (`file.openTerminal`) still opens your system's
-terminal app.
+## Open Terminal Here
+
+**Open Terminal Here** opens a new terminal tab in a particular folder. It is in
+a tab's right-click menu, the Project tree's right-click menu, and the
+breadcrumb's menu, and it is the **File: Open Terminal Here**
+(`file.openTerminal`) command, which uses the active file's folder. On a folder
+in the Project tree it uses that folder; on a file, the file's folder. If the
+Terminal tool window had no shell yet, it opens with just that tab, not with a
+second shell in the project folder beside it.
+
+To use your system's terminal app instead, as earlier versions did, turn on
+**Settings → Terminal → Open Terminal Here uses the system terminal**. Open Terminal Here then starts your system's
+terminal application, and the Terminal tool window is left alone.
+
+Open Terminal Here works on files and folders on this computer. On a file of a
+[remote project](/docs/remote) it says it can't open a terminal there. In
+[Simple UI mode](/docs/workspace#focus-modes) the trimmed right-click menus
+leave it out; the command still works.
 
 ## Where a shell starts
 
-A new shell starts in the first of these that applies:
+A new shell started from the Terminal tool window, rather than by Open
+Terminal Here, starts in the first of these that applies:
 
 1. The project's folder, when the project is on this computer.
 2. The folder of the active file.
@@ -83,7 +102,29 @@ starts with it. Every other key stays with the shell.
 The terminal's own Copy and Paste are **Ctrl+Shift+C** and **Ctrl+Shift+V**
 (**⌘C** and **⌘V** on macOS). Plain Ctrl+C and Ctrl+V belong to the shell.
 The terminal's right-click menu has Copy, Paste, Select All, Clear Scrollback,
-and, on a link, Open Link and Copy Link Address.
+and, on a link, Open Link and Copy Link Address (see
+[Open files and links](#open-files-and-links-from-the-output)).
+
+## Open files and links from the output
+
+Hold **Ctrl** (**⌘** on macOS) and point at a file name, a path, or a URL in the
+terminal's output: it is underlined when it can be opened. Click to open it:
+
+- **A file** opens in the editor. A position after it, as compilers, test
+  runners and stack traces print it (`src/Main.java:42` or
+  `src/Main.java:42:7`), puts the caret on that line and column.
+- **A folder** is revealed in the Project tree.
+- **A URL** (`http`, `https`, `ftp`, `ftps`, or `mailto`) opens in your browser
+  or mail app. A `file://` URL is treated as the path it names.
+
+A relative path is read against the shell's current folder, so a bare name from
+`ls` or a path from `grep -n` works as printed. Only a path that exists is
+underlined, so ordinary words never turn into links. On a link, the terminal's
+right-click menu has **Open Link**, which does the same as the click, and
+**Copy Link Address**.
+
+A plain click never opens a link: it starts a selection, or goes to a program
+such as vim or tmux that reads the mouse.
 
 ## Colors and font
 
@@ -110,6 +151,7 @@ Terminal → Ask before closing a terminal that is running a program**.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | Shell | (blank) | The shell to start. Blank uses your login shell. |
+| Open Terminal Here uses the system terminal | Off | Off: [Open Terminal Here](#open-terminal-here) opens a tab in the Terminal tool window. On: it starts your system's terminal application. |
 | Text size | 0 | The terminal's text size, 6 to 72. 0 uses the editor's size. |
 | Cursor | Block | Block, Underline, or Bar. |
 | Flash on the bell character | On | Flash the terminal when a program rings the bell. |
@@ -128,4 +170,7 @@ and scrollback apply from the next terminal you open.
   No terminal palette fixes that; use a prompt theme that suits light
   backgrounds, or a dark editor theme.
 - Terminals run on this computer only. A remote project's terminal is a local
-  shell.
+  shell, and Open Terminal Here doesn't work on remote files.
+- Editora reads a shell's current folder on Linux and macOS. On Windows, tab
+  titles don't follow the folder, and only absolute paths and URLs in the
+  output become links, not relative paths.
