@@ -17,6 +17,19 @@ re-run means editing those two files by hand.
 (Xcode command-line tools) to build the watcher on first use, and a real
 display, since it waits on actual windows.
 
+## The machine the published figures came from
+
+October 2026, all six figures on one box:
+
+- MacBook Pro (Mac17,2), Apple M5, 10 cores (4 performance, 6 efficiency)
+- 16 GB unified memory; Apple 1 TB internal SSD (APPLE SSD AP1024Z)
+- macOS 27.0 (build 26A428)
+- AC power; windows painted to an AORUS FI32U at 5120x2880, the main display,
+  with the built-in 3024x1964 Liquid Retina XDR also attached
+
+Re-running on anything else produces numbers that are internally consistent and
+not comparable with the published set. Record whatever you ran on.
+
 ## The metric
 
 Launch of the binary → the window server reports an on-screen window, owned by

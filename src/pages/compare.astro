@@ -25,6 +25,19 @@ const startup = {
 
 const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
 
+// The machine every figure on this page was measured on. A startup benchmark
+// without the hardware under it is unfalsifiable, so this is listed part by
+// part rather than summarised as "an M5".
+const machine = [
+  ["Model", "MacBook Pro (Mac17,2)"],
+  ["Chip", "Apple M5, 10 cores (4 performance, 6 efficiency)"],
+  ["Memory", "16 GB unified"],
+  ["Storage", "Apple 1 TB internal SSD (APPLE SSD AP1024Z), 255 GB free"],
+  ["OS", "macOS 27.0 (build 26A428)"],
+  ["Displays", "AORUS FI32U at 5120\u00d72880 (main, where the windows opened), alongside the built-in 3024\u00d71964 Liquid Retina XDR"],
+  ["Power", "AC, battery at 80%"],
+];
+
 // Where Editora genuinely differs, and where it plainly does not.
 const rows = [
   {
@@ -75,11 +88,26 @@ const rows = [
     <h2>Startup, measured</h2>
     <p>
       These measurements were taken in October&nbsp;2026 on
-      Editora&nbsp;0.22.0. Both tables are the median of timed runs on one
-      Apple&nbsp;M5 running macOS&nbsp;27.0, with every editor fully quit
-      between runs and launched the same way. The clock starts at launch and
-      stops when a window owned by that editor carries the file's or project's
-      name in its title.
+      Editora&nbsp;0.22.0. Both tables are the median of timed runs on the one
+      machine below, with every editor fully quit between runs and launched the
+      same way. The clock starts at launch and stops when a window owned by
+      that editor carries the file's or project's name in its title.
+    </p>
+    <dl class="machine">
+      {
+        machine.map(([k, v]) => (
+          <>
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </>
+        ))
+      }
+    </dl>
+    <p class="note">
+      One machine is the point — every figure here is comparable with every
+      other figure here, and with nothing else. A different Mac, a different
+      macOS, a laptop on battery or one driving an external display will all
+      give different numbers.
     </p>
     <p class="note">
       They replace a set taken in July&nbsp;2026, and the two are not
@@ -260,6 +288,33 @@ const rows = [
     background: var(--accent-soft);
     color: var(--text);
   }
+  .compare .machine {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 0.35rem 1rem;
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.88rem;
+  }
+  .compare .machine dt {
+    color: var(--faint);
+  }
+  .compare .machine dd {
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.92em;
+  }
+
+  @media (max-width: 560px) {
+    .compare .machine {
+      grid-template-columns: 1fr;
+      gap: 0 0;
+    }
+    .compare .machine dt {
+      margin-top: 0.6rem;
+    }
+  }
+
   .compare .ver {
     color: var(--faint);
     font-size: 0.82em;
