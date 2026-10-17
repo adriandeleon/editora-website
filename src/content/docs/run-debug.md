@@ -320,7 +320,7 @@ script as it runs.
 | Continue | `debug.continue` | `C-c C-d c` |
 | Pause | `debug.pause` | `C-c C-d p` |
 | Stop | `debug.stop` | `C-c C-d k` |
-| Restart | `debug.restart` | (palette) |
+| Restart | `debug.restart` | `C-c C-d r` |
 | Step over | `debug.stepOver` | `C-c C-d n` |
 | Step into | `debug.stepInto` | `C-c C-d i` |
 | Step out | `debug.stepOut` | `C-c C-d o` |
@@ -336,8 +336,9 @@ script as it runs.
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
-The keys are the Emacs keymap's; the step commands are also buttons in the
-Debug window.
+The keys are the Emacs keymap's; the other keymaps' keys are listed under
+[Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
+buttons in the Debug window, and the **Run** menu lists every debugger action.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
 **set-value**, **watches**, and an evaluate console. While suspended, **inline
@@ -389,6 +390,8 @@ It is **on by default**. The switch is under **Settings → Debugging → Java**
 sessions, Python, and JavaScript are unaffected. It has not yet been confirmed
 on Windows.
 
+### Debugging Java
+
 Compact `.java` sources and extensionless Java `--source 25+` shebang files can
 be debugged with breakpoints, stepping, and local variables. Editora maps
 breakpoints and stack frames to the original file and removes its temporary
@@ -399,11 +402,188 @@ JUnit tests are debugged from their gutter icon or with *Debug Test at Caret*,
 including tests inside `@Nested` classes; see the
 [test runner](/docs/build-tools#test-runner).
 
-When the Debug panel has the keyboard (it shows an active-focus highlight),
-**gdb-style single keys** drive the session: `n` to step over, `s` to step into,
-`f` to finish (step out), and so on. Stepping keeps focus in the panel, so you
-can step repeatedly without your key presses landing in the editor. A fresh
-breakpoint hit while you're editing still takes you to the code.
+### Starting a Java session
+
+**Debug** on a Java file debugs that file's own `main`. When the file has no
+`main` and its folder has a single main class, Debug runs that class, and the
+Debug console says which program runs. The gutter's Debug ▶ and Debug on a file
+use the saved [run configuration](#run-configurations) that names the same
+class, so its arguments, VM options, environment, working directory and JDK
+apply, as they do for Run ▶. Before a Java launch, Editora saves every unsaved
+Java file of the project.
+
+In a Maven or Gradle project, Debug first asks the Java language server to
+build the project, so the program runs the code you see. If the build finds
+compile errors, nothing is launched: the Debug console lists the errors as
+links to their lines, and the status bar gives their number. If the build
+cannot run, the program starts anyway, and the console warns you when a class
+file is missing or older than its source. Stop during the build cancels the
+launch. A run configuration with a [before-launch step](#a-step-before-the-launch)
+uses that step as its build instead. A Java configuration's step runs in the
+project root, whatever the configuration's working directory.
+
+A class with a `package` line in a folder that has no `pom.xml` or Gradle build
+can be debugged too, and such a class has **Debug File** in the editor's
+right-click menu. In a project window for such a folder, *Debug Main Class* and
+Debug on a saved Java configuration work, and the program runs in the project
+root.
+
+Debug in another Java tab while a session runs asks before it stops that
+session. When Java debugging can't start, the status bar names the missing
+piece: LSP is off, the Java language server is turned off, or jdtls or
+java-debug was not found. The Java card of **Settings → Debugging** has an
+**Install…** button for what is missing.
+
+### Stepping through Java code
+
+Step Into skips JDK classes (`java.*`, `javax.*`, `jdk.*`, `sun.*`, `com.sun.*`
+and a few more) and synthetic methods, and a frame's variables include its
+class's static fields. You can turn either off on the Java card of
+**Settings → Debugging**: **Step Into skips JDK classes and synthetic methods**
+and **Show static fields in Variables**.
+
+When you step into JDK or library code anyway, or click such a frame in the
+call stack, its source opens in a read-only tab. A stop at a breakpoint, a
+Pause or an exception still selects the nearest frame of your own code.
+
+**Debug: Smart Step Into…** (`C-c C-d s`, also in the Run menu) lists the
+calls on the current line, for example `add(twice(1), twice(2))`, `twice(1)`
+and `twice(2)`. Pick one to step into it. On a line with a single call it
+steps straight in.
+
+**Debug: Restart Frame** (`C-c C-d f`, the call stack's right-click menu, or
+the Run menu) runs the method of the selected frame again from its first line
+and pauses there. It is greyed out on the bottom frame.
+
+If the connection to the debugger is lost, Editora ends the program at once and
+says so in the Debug console and the status bar.
+
+### Editing during a session
+
+The running program keeps the code it was started with. When you edit a file
+during a session, Editora matches breakpoints and the stopped line to the code
+the program runs, so they stay on the right lines. At a stop in an edited file,
+the status bar says that the program still runs the code it started with. A
+breakpoint on a line you added during the session is kept, and its hover says
+that it takes effect in the next session. To run the new code, restart the
+session, or let [hot code replace](#hot-code-replace) load a change to a
+method body.
+
+### Hot code replace
+
+During a Java session, saving a `.java` file loads the change into the running
+program without restarting it. Editora builds the project with the Java
+language server and sends the changed classes to the program. The Debug
+console and the status bar say which classes were replaced, or why nothing
+was:
+
+- the project has compile errors: fix them and save again;
+- the program refused the change, with its reason. A change to a method's body
+  can be loaded; a change such as adding or removing a method or a field needs
+  a restart, and the console tells you so;
+- the Java language server could not build the project;
+- the program already runs this code.
+
+Choose when this happens with **Apply code changes to a running Java program**
+on the Java card of **Settings → Debugging**:
+
+| Choice | What a save does |
+| --- | --- |
+| **On save** (default) | loads the change when you save a file yourself; autosave does not |
+| **Only with Debug: Apply Code Changes** | shows a hint in the status bar; run **Debug: Apply Code Changes** (`C-c C-d h`, Run menu) to load the saved changes |
+| **Never** | nothing; Debug: Apply Code Changes says that it is off |
+
+Debug: Apply Code Changes loads only what is saved. When the active Java tab
+has unsaved edits, the console says so.
+
+Hot code replace also runs in an attached session and in Debug Test and Debug
+via Build Tool sessions. There the program runs the classes your build tool
+compiled, so a change can be refused that a session Editora started would
+accept; the console then tells you to restart.
+
+### Managing breakpoints
+
+A breakpoint's glyph shows its kind by shape as well as colour: a dot for a
+plain breakpoint, a diamond for a logpoint, two "=" bars for a breakpoint with
+a condition or a hit count, and grey for a disabled one. Its hover names the
+condition, log message and hit count, and says when it is disabled. A hit
+count stops on that hit in Java too: `3` stops the third time the line runs.
+
+Right-click a glyph for **Edit…**, **Enable Breakpoint** or **Disable
+Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
+right-click menu has Toggle Breakpoint and Edit Breakpoint, and while the
+program is paused also Run to Cursor, Show Value at Caret and Add to Watches.
+
+A breakpoint can't be set on a blank line or on a line that holds only a
+comment; the status bar says so. Removing one is always possible. A line with
+only a closing `}` takes a breakpoint.
+
+**Debug: Breakpoints…** (`C-c C-d l`) lists every breakpoint. Type to filter
+it; Enter jumps to the selected breakpoint, Alt+E enables or disables it,
+Alt+D removes it, and Alt+M mutes them all. **Debug: Mute Breakpoints**
+(`C-c C-d m`) turns every breakpoint off without removing it, until you run it
+again, and the Debug window's state line says "breakpoints muted". Mute is not
+saved: it ends when you close the window. **Debug: Enable / Disable
+Breakpoint** (`C-c C-d t`) switches the breakpoint on the caret line. These
+commands are in the Run menu's **Breakpoints** submenu.
+
+**Debug: Break on Caught Exceptions** stops wherever an exception is thrown,
+even one the program catches. **Debug: Break on Uncaught Exceptions** stops on
+an exception that nothing catches. Both are in the Run menu, checked when on,
+and are the **Caught** and **Uncaught** buttons in the Debug window's toolbar.
+They act on the running session's language, or else on the active file's, and
+Editora keeps your choice for each project. To stop only on some Java exception
+classes, list them, separated by commas, in **Exception breakpoints: only these
+classes** on the Java card of **Settings → Debugging** (for example
+java.lang.IllegalStateException). Left blank, Caught and Uncaught stop on every
+exception.
+
+At an exception stop, the line that threw is drawn red, and the exception's
+type and message are the top row of Variables.
+
+### Inspecting values
+
+The line the program is stopped on is amber, with an arrow in the gutter, and
+it is scrolled into view below any sticky header. Inline values appear only on
+the lines up to the stopped line. Hovering a name shows its value once the
+mouse rests; names in comments and strings are skipped. **Debug: Show Value at
+Caret** (`C-c C-d v`) does the same from the keyboard.
+
+In the Variables tree, the right-click menu has **Copy Value** (a string is
+copied without its quotes and escapes), **Copy Name** and **Add to Watches**,
+which adds the row's whole expression, such as `order.items`. Ctrl+C (⌘C on
+macOS) copies the selected value, and Delete removes the selected watch. In
+the evaluate field, Up and Down bring back the expressions you typed before.
+
+The thread list leaves out the JVM's own housekeeping threads and puts the
+stopped thread first, marked "(paused)". After the program ends, the state line
+keeps "Exited with code N".
+
+### Keys in the Debug window
+
+Starting a session or stopping at a breakpoint never moves the keyboard focus
+into the Debug window: focus stays in the editor, with the caret on the
+stopped line. A stop opens the Debug window again if you closed it.
+
+When you click into the Debug window, single keys drive the session, as in
+gdb:
+
+| Key | Action |
+| --- | --- |
+| `c` | Start or continue |
+| `p` | Pause |
+| `n` | Step over |
+| `s` | Step into |
+| `f` | Step out (finish) |
+| `u` | Run to cursor |
+| Shift+K | Stop |
+| Shift+R | Restart |
+
+Stop and Restart need Shift, so a stray `k` or `r` typed in a list does nothing
+to the program. The keys don't apply while you type in the evaluate field.
+Stepping keeps the focus in the Debug window, so you can step again and again.
+A toolbar button's tooltip shows both its key in your keymap and its key in the
+Debug window, for example "Step Over (F10 · in this window: N)".
 
 ### Debug via the build tool
 
@@ -415,6 +595,14 @@ watches the build output for the JDWP banner and attaches the debugger when the
 app is listening. It complements *Debug Main Class*, which uses the language
 server; a plain Maven `main` has no uniform build-tool debug mechanism, so use
 *Debug Main Class* there.
+
+For Maven test JVMs ([Debug Test](/docs/build-tools#test-runner)) and Spring
+Boot, the JVM listens on a free port, which Editora reads from the JDWP banner,
+so a busy port 5005 does not get in the way. Gradle's `--debug-jvm` always uses
+port 5005. When a run starts several JVMs, for example forked test JVMs,
+Editora attaches to each in turn, as the session before it ends. **Stop** on
+such a session also ends the test or build run that started the JVM, with any
+JVMs still waiting.
 
 ### Debugging on a remote host
 

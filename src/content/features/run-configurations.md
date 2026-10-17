@@ -22,7 +22,7 @@ Run configurations belong to a [project](/features/projects): each project windo
 
 ## A step before the launch
 
-A configuration can name a command to run first, such as a build or a codegen step. A **non-zero exit aborts the launch**, so a stale binary is never run by accident.
+A configuration can name a command to run first, such as a build or a codegen step. A **non-zero exit aborts the launch**, so a stale binary is never run by accident. A Java configuration's step runs in the project root, and Debug uses it as its build.
 
 ## Shareable
 
