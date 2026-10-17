@@ -8,4 +8,4 @@ summary: "Typing <code>([{</code> or quotes inserts the closer, type-over to ski
 
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps the caret between them. Type the closer when it's already next to the caret and Editora types over it; type an opener with a selection and it wraps the selection; Backspace inside an empty pair deletes both halves.
 
-Quotes aren't auto-paired next to a word character, so the apostrophe in `don't` is left alone. And whenever the caret sits next to a bracket, both it and its match are highlighted.
+Quotes aren't auto-paired next to a word character, so the apostrophe in `don't` is left alone. In Python a quote after a string prefix (`f'`, `rb"`, `t'`) pairs as well, the third quote of `"""` adds the closing triple quote with the caret between, and a backtick is not paired. And whenever the caret sits next to a bracket, both it and its match are highlighted.

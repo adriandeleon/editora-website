@@ -12,10 +12,10 @@ Every integration gets a row, grouped by area:
 
 - **Version control**: `git`, and `gh` for pull requests, issues, and CI runs.
 - **Search**: `ripgrep`, which accelerates Find in Files (the built-in walker is used when it's absent).
-- **Language servers**: one row per enabled server, showing the resolved path, plus ShellCheck and shfmt rows under the Shell server, which the Bash server lints and formats with.
+- **Language servers**: one row per enabled server, showing the resolved path (and Pyright's version), plus ShellCheck and shfmt rows under the Shell server, which the Bash server lints and formats with, and the **Python formatter** (Ruff or Black) that Format Document uses.
 - **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, `dot` and `plantuml`, and `typst`.
-- **Run & build**: the JDK used to run a file, plus `python3`, `bash`, `make`, and the build tools.
+- **Run & build**: the JDK used to run a file, the **Python interpreter** that Run, Debug and Pyright share (its version, command and why it was chosen), `bash`, `make`, and the build tools.
 - **System**: the browsers available for HTML preview, and the installer prerequisites.
 
 Each row is green (found, with its version and path), amber (found but not usable yet, like a `gh` that isn't signed in or a JDK too old to run a file), red (missing), or grey (the feature is switched off, so nothing is probed). A missing tool that Editora knows how to fetch gets an **Install…** button in the row, and a **Settings…** link jumps to the page that configures it.

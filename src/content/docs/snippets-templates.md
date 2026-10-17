@@ -83,6 +83,23 @@ Toggle Snippet Expansion on Tab**, `view.toggleSnippetTabExpansion`) turns Tab
 expansion off altogether. Snippets then come from the completion popup and
 **Snippet: Insert…** only.
 
+### Python snippets
+
+The bundled Python snippets cover the usual statements: `def` and `defs` (a
+method with `self`), `deft` and `defst` (with a return type), `class`, `classd`
+(with a base class) and `classi` (with a docstring and an `__init__`), `if`,
+`elif`, `else`, `ifelse`, `ifmain` (the `if __name__ == "__main__":` guard),
+`for`, `forr` (over a `range`), `while`, `with`, `try`, `trya`, `tryf` and
+`tryef` (with `else` and `finally` blocks), `except`, `exceptas`, `match`,
+`case`, `casew` (the `case _:` wildcard), `lambda`, `property`, `import` and
+`fromim`. The `except` bodies re-raise with a bare `raise`, which keeps the
+original traceback. `#env` writes a `#!/usr/bin/env python3` line, and `#cell`
+and `#mark` write `# %%` cell markers.
+
+Several of these are named after a keyword (`try`, `if`, `for`). When the
+popup lists a snippet that only repeats the word you typed, Enter ends the line
+as usual; press Tab to expand the snippet.
+
 ### Snippet variables
 
 A variable is written `$NAME` or `${NAME}`, and `${NAME:default}` supplies a
@@ -285,6 +302,15 @@ already exists and is not empty is refused. The name you enter is
 `${projectName}` and, in a form valid for a package (`my-app` becomes `my_app`),
 the default for `${packageName}`.
 
+The **Python Project** template writes a `src` layout: `src/<package>/` with
+`__init__.py` and `main.py`, a `tests/test_main.py` that runs with `unittest` or
+pytest, a `pyproject.toml` with a console command for `main()` and the pytest
+settings that find `src/`, a `.gitignore`, and a README. The README's commands
+work on the fresh project: create a virtual environment with
+`python3 -m venv .venv`, install the package into it with `pip install -e .`,
+then run it with `python -m <package>.main` (or the installed command) and test
+it with `python -m unittest discover -s tests` or `pytest`.
+
 ## New files by type
 
 **File: New File of Type…** (`file.newFileOfType`, also **New** in the Project
@@ -301,6 +327,10 @@ YAML, and so on) in the current folder. It asks only for a name.
   `setopt errexit nounset pipefail` (the same preamble as the Zsh Script
   template). The caret waits after a blank line. Both are created executable,
   and like templates they follow `.editorconfig`.
+- A Python file starts like the Python Script template: a
+  `#!/usr/bin/env python3` line, a docstring, a `main()` function and an
+  `if __name__ == "__main__":` guard, with the caret in `main()`. It is created
+  executable too.
 - A name that cannot work is refused with the reason: a name Windows reserves
   (`CON`, `NUL`, `COM1`), one of the characters `< > : " | ? *`, a trailing dot
   or space, or a name that starts with `~`. For Java types, a keyword or a name

@@ -8,4 +8,4 @@ summary: "<kbd>M-;</kbd> comments or uncomments the line or selection using the 
 
 `M-;` (Emacs comment-dwim) toggles comments using the language's own syntax. A single line toggles a line comment; a multi-line selection toggles a block/region comment: `//` and `/* */` for Java and C-likes, `#` for Python/shell/YAML, `<!-- -->` for XML/HTML/Markdown, `--` for SQL, and so on.
 
-It preserves indentation, uses whichever form exists in line-only or block-only languages, and is a no-op for languages without comments. A `#!` shebang line is never toggled, and in a shell script the lines of a here-document are left alone unless the selection includes the line that opens it.
+It preserves indentation, uses whichever form exists in line-only or block-only languages, and is a no-op for languages without comments. A `#!` shebang line is never toggled, and in a shell script the lines of a here-document are left alone unless the selection includes the line that opens it. In an INI file such as `setup.cfg` or `tox.ini` the comment character is the one the file already uses (`#` or `;`), and a pip `requirements.txt` file toggles `#`.

@@ -172,8 +172,8 @@ JUnit test classes and methods also get a **run icon in the gutter** (with a
 tooltip naming what it runs), and a test file's right-click menu offers **Run
 Tests** for the whole class. `test.runAtCaret` and `test.runClassAtCaret` do the
 same from the keyboard, and `test.rerun`, `test.rerunFailed`, and `test.stop`
-control the run. Gutter icons are JVM-only and need a detected Maven or Gradle
-project.
+control the run. JUnit gutter icons need a detected Maven or Gradle project;
+Python test files get their own (see [Python tests](#python-tests)).
 
 Tests in **nested classes** have their own icons: a method inside a JUnit
 `@Nested` class, or inside a static nested test class, gets a ▶, and so does
@@ -185,6 +185,44 @@ nested classes is marked the same way.
 launch the selected JUnit method or class through Maven or Gradle with its JVM
 suspended, then attach Editora's Java debugger automatically. This needs the
 same Java debug adapter as ordinary Java debugging.
+
+### Python tests
+
+Python tests need no build tool. A test file (`test_*.py` or `*_test.py`) gets
+a ▶ on every test pytest would collect: each `test` function, each class named
+`Test…` or deriving from `unittest.TestCase`, and each of its `test` methods.
+The first line gets one more ▶, **Run the tests in this file**. Run File
+(`file.run`) on a test file runs its tests instead of the file. The right-click
+menu offers **Run This Test** or **Run Tests**, and **Run Test at Caret**
+(`test.runAtCaret`) and **Run Test Class at Caret** (`test.runClassAtCaret`)
+work from the keyboard. **Run Tests** (`test.run`) runs every test of the
+project when a Python file is in front, or when no build tool is found and the
+project root has a `pyproject.toml`, `setup.py`, `setup.cfg`, `pytest.ini`,
+`tox.ini` or `conftest.py`.
+
+The tests run with the same Python as Run (see
+[Python scripts](/docs/run-debug#python-scripts)), with the project root and its
+`src/` folder on `PYTHONPATH`:
+
+- **With pytest** installed for that Python, Editora runs `python -m pytest`
+  from the project root (the file's folder when there is no project) and reads
+  its JUnit XML report into Test Results. Failure locations such as
+  `tests/test_cart.py:14` are clickable.
+- **Without pytest**, tests written with `unittest.TestCase` run with Python's
+  own `python -m unittest`, from the test file's folder (a whole-project run
+  from the project's `tests` folder, else its root), and the status line says
+  so. Their results fill Test Results as they are printed.
+- **Otherwise** the status line names the Python and how to install pytest
+  there, for example `.venv/bin/python -m pip install pytest`.
+
+The command's output streams to the **Run** console, which starts with the
+command line; Stop there or in Test Results stops the tests. **Rerun Failed
+Tests** (`test.rerunFailed`) runs only the tests that failed, and
+**Rerun This Test**, **Go to Test** and **Rerun Tests** (`test.rerun`) work as
+for JUnit; **Rerun Last** in the Run window repeats the test run too.
+**Debug This Test** and Debug Test at Caret are described under
+[Debugging](/docs/run-debug#debugging). With the test runner turned off, Python
+tests still run, in the Run console only.
 
 Toggle the whole feature under **Settings → Languages & Tools → Build Tools**
 (`view.toggleTestRunner`). It's off in [Simple UI mode](/docs/workspace).

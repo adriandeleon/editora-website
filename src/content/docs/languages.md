@@ -39,10 +39,14 @@ file) takes it from its own first lines:
 
 - **A shebang** on the first line: `#!/bin/sh`, `#!/usr/bin/env bash`,
   `#!/usr/bin/env -S bash -e`, `#!/usr/bin/env -u NAME bash`, `#!/bin/busybox sh`,
-  and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python, Node,
-  Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters. A version suffix
-  is ignored (`python3.12` is Python). A `java` shebang counts when a
-  `--source N` follows it (`#!/usr/bin/env -S java --source 25`).
+  and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python (and
+  PyPy), Node, Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters. A
+  version or build suffix is ignored (`python3.12`, the free-threaded
+  `python3.14t` and `python3-dbg` are Python). A Python runner counts too:
+  `#!/usr/bin/env -S uv run --script` (a script with inline dependencies),
+  `pipx run`, and `poetry`, `pdm`, `hatch`, `rye` or `pipenv` running `python`.
+  A `java` shebang counts when a `--source N` follows it
+  (`#!/usr/bin/env -S java --source 25`).
 - **A modeline**, when there is no shebang Editora knows: a vim modeline in the
   first or last five lines (`# vim: ft=sh`, `# vim: set filetype=bash :`), or an
   emacs line on the first line, or the second after a shebang
@@ -102,6 +106,36 @@ would check them as bash and report valid zsh as errors. `.zsh` scripts stay on
 the server. See [Language servers](/docs/lsp) for the Bash server, and
 [Run & debug](/docs/run-debug) for running scripts.
 
+### Python
+
+`.py`, `.pyw` and `.pyi` files open as Python, and so does any file with a
+Python shebang or modeline (see above). The grammar covers current Python:
+f-strings with nested quotes and format specs (`f"{when:%Y-%m-%d}"`), t-strings
+(`t"Hi {name}"`), `match` and `case` statements (a `match` used as a plain name
+or call stays a name), type parameters (`def first[T](items: list[T])`,
+`class Box[T]:`) and the `type` alias statement. A name after `def` or `class`
+is coloured as a declaration, including `__init__` and a method named like a
+builtin (`def open`), and decorators such as `@property` read as decorators.
+Number prefixes and suffixes (`0x`, `0b`, `3j`) are part of the number.
+
+Without a [language server](/docs/lsp), Python files still fold by indentation
+and get sticky scroll (see [Editing](/docs/editing#python)), the Structure tool
+window lists classes, functions and methods nested by indentation, and
+[Go to Symbol in Project](/docs/code-navigation#go-to-symbol-in-project) finds
+them across the project.
+
+The other files of a Python project open with a format too:
+
+- **pip requirements:** `requirements.txt` and its variants
+  (`requirements-dev.txt`, `dev-requirements.txt`, `requirements.in`,
+  `constraints.txt`, files ending in `.pip`, and any `.txt` or `.in` file in a
+  `requirements` folder). Package names, extras, version specifiers,
+  environment markers, the `-r`, `-c` and `-e` options and URLs are coloured,
+  Toggle Comment uses `#`, and only comments are spell-checked.
+- **TOML:** `Pipfile`, `poetry.lock`, `uv.lock` and `pdm.lock`.
+- **JSON:** `Pipfile.lock` and Jupyter notebooks (`.ipynb`). A notebook opens as
+  its JSON text; there is no notebook view.
+
 ## Autocomplete
 
 Completion appears as you type, debounced and kept off the hot path. Java member
@@ -151,7 +185,9 @@ What is checked depends on the file type:
 - **Source code** has only comments and string literals checked, so identifiers
   aren't flagged. In shell scripts a command's bare arguments and options
   (`pipefail`, package names, `-xzf`) are not checked; quoted strings, here-doc
-  text and comments are.
+  text and comments are. In Python the first word of a prefixed string
+  (`f"…"`, `rb'…'`) is checked like the rest, without its prefix, and in a pip
+  requirements file only the comments are checked.
 - **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.
@@ -196,5 +232,6 @@ turns the personal dictionary off. After editing `dictionary.txt` outside
 Settings, run **Spell Check: Reload Personal Dictionary**.
 
 A bundled **technical-terms dictionary** (`config`, `async`, `middleware`,
-`kubernetes`, and the like) keeps code-adjacent words from being flagged in any
-language; toggle it in Settings or with `view.toggleTechnicalDictionary`.
+`kubernetes`, and the like, plus common Python words such as `kwargs`,
+`asyncio`, `argparse` and `noqa`) keeps code-adjacent words from being flagged
+in any language; toggle it in Settings or with `view.toggleTechnicalDictionary`.
