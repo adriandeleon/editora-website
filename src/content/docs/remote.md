@@ -183,6 +183,7 @@ These work only on files on this machine, whatever a host allows:
 - [external tools](/docs/external-tools)
 - *Reveal in File Manager*, *Open Terminal Here*, and *Save as Administrator*
 - following a growing [log file](/docs/log-viewer)
+- the [Terminal](/docs/terminal), which opens a shell on this machine
 - `.editorconfig` files, a project's committed `.editora/settings.json`, and a
   Markdown lint configuration file
 - Go to Symbol in Project, which would have to read every source file over the
