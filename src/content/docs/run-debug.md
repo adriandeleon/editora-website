@@ -1,14 +1,14 @@
 ---
 title: Running & debugging
-description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, and JavaScript.
+description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript and Groovy.
 category: Run & debug
 order: 1
 ---
 
 ## Running files
 
-You can run compact Java files, Python scripts and shell scripts with
-[language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
+You can run compact Java files, Python scripts, shell scripts and Groovy
+scripts with [language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
 runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
@@ -20,6 +20,9 @@ runnable file:
   [Shell scripts](#shell-scripts)). Startup files that a shell reads rather
   than runs, such as `.bashrc`, `.profile`, `.zshrc`, `.bash_logout`,
   `.xinitrc` and `.envrc`, get no ▶.
+- a **Groovy** script or class (`.groovy`): the ▶ sits on its
+  `static void main` when it has one, else on the first line. See
+  [Groovy scripts](#groovy-scripts).
 
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
@@ -47,7 +50,7 @@ another window open in its place.
 
 Beside the status, the Run window names the runtime the program runs under:
 **Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
-**Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+**Groovy 5.1.3 (Java 25.0.4)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
 distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
 names one. Hover the name for the runtime's own version text and, for Java,
 the JDK's folder.
@@ -128,6 +131,16 @@ reach the script with Unix line endings.
 
 Shell scripts can't be debugged; use [Run with Trace](#run-with-trace) to see
 each line as it runs.
+
+### Groovy scripts
+
+A Groovy file runs with `groovy` on the JDK chosen in Settings for builds and
+runs (the one Maven, Gradle and Java use), which Editora passes as
+`JAVA_HOME`. Editora finds `groovy` through `GROOVY_HOME`, then your `PATH`,
+then SDKMAN. When none of them has it, Run says Groovy is not installed instead
+of starting anything. A Gradle build script (`build.gradle`) and a
+`Jenkinsfile` are Groovy too, but they get no ▶: nobody runs those as a
+program.
 
 ### Run with Trace
 
@@ -229,14 +242,16 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Java main class | a `main` in the project, via the language server or the build tool |
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with the interpreter its shebang names (or `bash`), unless **Interpreter** is set |
+| Groovy script | a `.groovy` file with `groovy`, on the configuration's JDK; its VM arguments go into `JAVA_OPTS` |
 | Make target | a target in a makefile |
 | NPM script | a named `package.json` script via `npm run` |
 
 The form **shows only the fields the selected type uses**. A Java main class
 has no Script / target field; a Python, shell, Make or NPM configuration has no
-Main class, Module, VM arguments or JDK. A hidden field keeps its value, so
-switching the type and back loses nothing. A Python or shell script can be
-picked with **Browse…** beside Script / target; a script inside the project is
+Main class, Module, VM arguments or JDK, and a Groovy one keeps only VM
+arguments and JDK of those. A hidden field keeps its value, so switching the
+type and back loses nothing. A Python, shell or Groovy script can be picked with
+**Browse…** beside Script / target; a script inside the project is
 saved relative to the project root.
 
 A shell configuration also has **Interpreter** and **Interpreter options**.
@@ -344,8 +359,8 @@ file in the project serves, and it reports an error only when there isn't one.
 
 <span class="beta-pill">Beta</span>
 
-Editora debugs **Java**, **Python**, and **JavaScript (Node)** through the Debug
-Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+Editora debugs **Java**, **Python**, **JavaScript (Node)** and **Groovy** through
+the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -704,6 +719,30 @@ several JVMs, for example forked test JVMs, Editora attaches to each in turn,
 as the session before it ends. **Stop** on
 such a session also ends the test or build run that started the JVM, with any
 JVMs still waiting.
+
+### Debugging Groovy
+
+Groovy is debugged by a debugger built into Editora, so there is nothing to
+install. Debug on a Groovy file runs it as [Run does](#groovy-scripts), and
+Debug on a Groovy script run configuration uses that configuration's script,
+arguments, folder, environment, JDK and VM arguments.
+
+- **Breakpoints** work in scripts, classes and closures.
+- **Stepping** goes from line to line of your code and steps over Groovy's own
+  runtime, which sits between nearly every two calls a script makes.
+- **Variables** show the frame's locals, `this`, and the fields of any object or
+  the elements of an array. A closure's frame is named after the method it is
+  in, such as `Report.run { closure }`.
+- **Hover and Watch** read a variable or a field path such as `order.total`.
+  They never call a method, so looking cannot change the program.
+- **Exceptions**: an exception that leaves your code uncaught stops where it was
+  thrown. This is on by default for Groovy; the **Caught** toggle also stops on
+  exceptions your own code catches. Exceptions Groovy throws and catches inside
+  its runtime never stop.
+
+Not supported yet: conditions, hit counts and log messages on a breakpoint (such
+a breakpoint shows hollow and says so), evaluating expressions or method calls,
+hot code replace, and debugging on a remote host or in a container.
 
 ### Debugging on a remote host
 
