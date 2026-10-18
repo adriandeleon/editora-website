@@ -1046,6 +1046,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Settings Sync: Set Up…", id: "sync.setup", desc: "Open Settings on the Sync page: the repository, what is synced, and how the last sync went." },
       { title: "Settings Sync: Toggle Sync Automatically", id: "sync.toggleAuto", desc: "Sync after startup, shortly after a change, and at the interval set in Settings ▸ Sync." },
       { title: "Terminal: Close Terminal", id: "terminal.close", desc: "Close the selected terminal." },
+      { title: "Terminal: Find", id: "terminal.find", desc: "Search the selected terminal's output and scrollback." },
       { title: "Terminal: New Terminal", id: "terminal.new", bindings: { "cua": "C-S-back-quote", "sublime": "C-S-back-quote", "vscode": "C-S-back-quote" }, desc: "Open another terminal in a new tab." },
       { title: "TODO: Add Highlight Pattern…", id: "todo.addPattern", desc: "Add a new highlight pattern (name + regex); edit colors and more in Settings." },
       { title: "TODO: Next Match", id: "todo.next", keys: "M-g ]", bindings: { "emacs": "M-g ]" }, desc: "Move the caret to the next TODO/highlight match in the file." },

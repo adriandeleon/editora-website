@@ -158,9 +158,10 @@ asks about that host if it has not been allowed yet. The same switch covers
 [containers](#tools-in-a-container) and [WSL distributions](#tools-in-wsl-windows):
 while it is off, a project's tools run on this machine.
 
-What the permission covers is the tools Editora already drives, listed below.
-Editora does not open a terminal or start an AI agent on the host, and has no
-box for typing arbitrary commands to run there. It writes on the host only
+What the permission covers is the tools Editora already drives, listed below,
+and the [Terminal](/docs/terminal#terminals-on-a-host-in-a-container-or-in-wsl),
+which opens a shell on the host when you ask for one. Editora does not start an
+AI agent on the host. It writes on the host only
 where those tools write, plus `~/.cache/editora` (the Java language server's
 index, the java-debug plugin, and classes compiled for debugging).
 
@@ -175,6 +176,7 @@ index, the java-debug plugin, and classes compiled for debugging).
 | [Run, builds and tests](/docs/run-debug#running-files) | Run on a file (a shell script under the interpreter its shebang names on the host), a main class, script / make / npm configurations, and Maven, Gradle, npm, Cargo and Go builds and test runs, with output, input and Stop as locally. |
 | [Language servers](/docs/lsp) | Each server runs on the host: completion, hover, diagnostics, go to definition, rename and the rest. |
 | [Debugging](/docs/run-debug#debugging) | Python (debugpy), JavaScript (vscode-js-debug) and Java (java-debug in the host's `jdtls`). |
+| [Terminal](/docs/terminal#terminals-on-a-host-in-a-container-or-in-wsl) | A real terminal on the host, in the project's folder, with [shell integration](/docs/terminal#shell-integration). Open Terminal Here on a remote folder opens there. A dropped connection keeps the tab's text and offers Reconnect. |
 | Outside changes | The project folder is watched on the host, so a `git pull` or a build there updates the Project tree, Git, language servers and an open file that changed. A host with `inotifywait` reports at once; others are checked every few seconds. |
 
 The tools are the ones the host's own `PATH` finds. When it finds the wrong one,
@@ -200,9 +202,8 @@ These work only on files on this machine, whatever a host allows:
 - [Local History](/docs/workspace#local-file-history)
 - the [HTTP client](/docs/http-client) and HTML live preview
 - [external tools](/docs/external-tools)
-- *Reveal in File Manager*, *Open Terminal Here*, and *Save as Administrator*
+- *Reveal in File Manager* and *Save as Administrator*
 - following a growing [log file](/docs/log-viewer)
-- the [Terminal](/docs/terminal), which opens a shell on this machine
 - `.editorconfig` files, a project's committed `.editora/settings.json`, and a
   Markdown lint configuration file
 - Go to Symbol in Project, which would have to read every source file over the
