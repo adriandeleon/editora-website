@@ -308,13 +308,13 @@ server that keeps crashing is not relaunched forever.
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
 Settings field can override the command per server) and uses it if present.
-Twenty-three servers are supported:
+Twenty-four servers are supported:
 
 - **Java** (`jdtls`), **TypeScript / JavaScript** (`typescript-language-server`),
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (`kotlin-language-server`), **Lua** (`lua-language-server`)
+  (`kotlin-language-server`), **Groovy** (gvy), **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
@@ -372,6 +372,9 @@ covered through four channels, picked per server:
   terraform-ls, Lua), extracted into your config folder.
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
   needs a JDK.
+- A **single jar** for the Groovy server (gvy), pinned to one release and checked
+  against its published checksum. It runs on the JDK chosen for builds and runs
+  (Java 17 or later).
 
 There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
@@ -394,6 +397,23 @@ whether it is hoisted in the workspace or installed alongside the server by
 Editora. A TypeScript SDK inside the project is loaded only from a trusted
 folder; otherwise Editora uses the SDK beside the server, or does not start the
 server until you trust the folder. The trust prompt lists the SDK.
+
+## Groovy
+
+The Groovy server is gvy. Install it from its Settings → LSP card, the banner
+on a `.groovy` file, or **Install: Language Server…**. It has no command until
+it is installed. The installer sets its command to `java -jar` with the
+downloaded jar, and Editora runs that with the JDK chosen for Maven, Gradle and
+Run, not the first `java` on your `PATH`.
+
+It reports Groovy compiler errors, and offers completion, hover, go to
+definition, references, rename, the outline and formatting. CodeNarc's style
+rules are off: they flag nearly every line of ordinary Groovy.
+
+A `Jenkinsfile` at a project's root makes [Doctor](/docs/troubleshooting#doctor)
+expect the Groovy server, as an open `.groovy` file does. A `build.gradle` alone
+does not, because most Gradle projects with a Groovy build script are Java
+projects.
 
 ## Workspace roots and lifetime
 
