@@ -142,6 +142,10 @@ A deploy is careful with files it did not put there:
 - **It asks before replacing a file changed on the host.** When a file a deploy
   sent was changed on the host since, **Changed on the Host** lists it and offers
   **Overwrite** with the project's file, **Keep the Host's**, or Cancel.
+  A file you keep is remembered as the host's: later deploys leave it alone, and
+  never remove it, while the project's file stays as it was. Edit it in the
+  project and the next deploy asks again. If the host loses the file, it is sent
+  again.
 - **A first deploy into a folder that already has files asks first.** When the
   folder holds files the project would replace, **Folder Not Empty** lists them
   and **Replace** goes ahead. Files that are already the same are kept as they
