@@ -279,6 +279,24 @@ A configuration can name a command to run first, such as a build or a codegen
 step. A
 **non-zero exit aborts the launch**, so a stale binary is never run by accident.
 
+### Running in a Terminal tab
+
+A configuration's **Console** option, **Run in a Terminal tab**, runs its
+program in the [Terminal](/docs/terminal#run-and-debug-programs-in-a-terminal)
+tool window instead of the Run console. Use it for programs that draw on the
+screen, read single keys, or ask for a password, which need a real terminal.
+It works for every type, on this computer, on the project's host, and in its
+container or WSL distribution.
+
+- **The step before the launch** still runs in the Run console first.
+- **The tab** is named after the configuration. When the program ends, it
+  stays, with the program's exit code in the corner, and the status bar gives
+  the exit code too. Closing the tab while the program runs asks first.
+- **The Run console's own tools don't apply.** Stack-trace links, the runtime
+  chip, End Input and Stop belong to the console. Rerun repeats the last run
+  that used the console, so after a terminal run it is unavailable until the
+  next console run.
+
 ### Sharing them with your team
 
 | Action | Command |
@@ -411,9 +429,18 @@ stderr at almost the same moment can appear in either order.
 
 It is **on by default**. The switch is under **Settings → Debugging → Java**
 (or *Debug: Toggle Program Input in the Debug Console*,
-`debug.toggleProgramConsole`) and takes effect at the next launch. Attached
-sessions, Python, and JavaScript are unaffected. It has not yet been confirmed
+`debug.toggleProgramConsole`) and takes effect at the next launch. It applies
+to a launched Java program, and to a Python program started on this computer.
+Attached sessions and JavaScript are unaffected. It has not yet been confirmed
 on Windows.
+
+**Run the program in a Terminal tab instead**, just below it, runs that program
+in a tab of the [Terminal](/docs/terminal#run-and-debug-programs-in-a-terminal)
+tool window rather than the Debug console. Use it for a program that draws on
+the screen, reads single keys or asks for a password. Its output and input are
+then in that tab, which is titled *Debug: <file>* and stays when the program
+ends. The program's exit still ends the session, and Stop ends the program. It
+is off by default and needs the program console switch on.
 
 With the switch off, the debugger starts a Java program itself. The console
 still reports the program's exit code on Linux and macOS when the program runs
