@@ -236,6 +236,8 @@ Snippets ship for 30 languages, and a bundled snippet can be disabled; add your 
         """
 Enter follows each language's rules: it keeps the current line's indent, adds a level after a block opener (braces, `:` in Python/YAML, `do`/`then` in shell, an open tag in XML/HTML…), and splits a matching pair into an indented stanza with the closer dropped below. Typing a closer (`)]}` or a keyword like `end`/`fi`/`done`) re-aligns the line to its opener. In shell scripts the indent follows the script's structure: a `case` pattern indents its body, `;;` stays at the body's level (as shfmt lays it out), `fi`, `done` and `esac` line up with the block they close, and a here-document's body is left as it is while its closing delimiter is unindented so bash recognises it.
 
+In brace languages such as JavaScript, TypeScript and Java, a `case` label indents its body, the one statement under a brace-less `if`, `for`, `while` or `else` is indented and the next line steps back, an open argument list (`foo(a,`) indents the next argument, a line starting with `.` continues a call chain, and Enter inside a `/** … */` comment continues it with ` * `.
+
 **Smart backspace** removes a whole indent level in one press, and on a blank, auto-indented line, a single Backspace jumps back to the end of the previous line. The indent unit (tabs vs spaces) is inferred from the file.
 """),
     new Feature("auto-close-brackets", ED, 3, false,
@@ -252,7 +254,7 @@ Quotes aren't auto-paired next to a word character, so the apostrophe in `don't`
         """
 `M-;` (Emacs comment-dwim) toggles comments using the language's own syntax. A single line toggles a line comment; a multi-line selection toggles a block/region comment: `//` and `/* */` for Java and C-likes, `#` for Python/shell/YAML, `<!-- -->` for XML/HTML/Markdown, `--` for SQL, and so on.
 
-It preserves indentation, uses whichever form exists in line-only or block-only languages, and is a no-op for languages without comments. A `#!` shebang line is never toggled, and in a shell script the lines of a here-document are left alone unless the selection includes the line that opens it.
+It preserves indentation, lines the markers of several commented lines up in one column, uses whichever form exists in line-only or block-only languages, and is a no-op for languages without comments. A `#!` shebang line is never toggled, in any language (`// #!/usr/bin/env node` would break a Node.js script), and in a shell script the lines of a here-document are left alone unless the selection includes the line that opens it.
 """),
     new Feature("spell-checking", ED, 5, false,
         "Spell checking",
@@ -369,7 +371,7 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - Server-provided **folding regions** and **expand/shrink selection**
 - Inline **diagnostics** (with a Problems tool window and minimap/scrollbar marks; a row shows the rule code, such as `[SC2086]`, and opens the rule's documentation) and **completions**
 
-Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP, where each server's card shows whether its program is found). For a [remote folder](/features/remote-sftp), the server runs on the host, found on its PATH or set per host, and Java's jdtls keeps its index there. Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
+Twenty-three servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScript, Python, Go, Rust, C/C++, C#, Ruby, PHP, Kotlin, HTML, CSS, XML, YAML, JSON, Bash, Lua, SQL, Terraform, TOML, Dockerfile and Typst (`tinymist`). Servers are **auto-detected on your PATH, never bundled** (and configurable in Settings → LSP, where each server's card shows whether its program is found). For a [remote folder](/features/remote-sftp), the server runs on the host, found on its PATH or set per host, and Java's jdtls keeps its index there. TypeScript and JavaScript use typescript-language-server with TypeScript 6, because TypeScript 7 has no `tsserver`; a folder's own `node_modules/typescript` runs only once the folder is trusted, type definitions are not downloaded unless you turn that on, and Organize Imports, inlay hints and code lenses work there too. Astro support finds the TypeScript SDK required by `astro-ls`, including a workspace-hoisted or Editora-installed SDK. A [project can commit](/features/projects) which server it wants and whether to run it, so a repository needing a different JDK doesn't mean flipping a global preference every time you switch.
 
 **Shell scripts** use bash-language-server, which finds problems with ShellCheck and formats with shfmt. Settings and Doctor show whether both are found, and **Install: ShellCheck and shfmt** downloads the official releases, checked against SHA-256 hashes built into Editora. The Bash card in Settings → LSP sets ShellCheck's arguments, shfmt's style, how many scripts the server reads in the background, and an explainshell server for option help; a project can set the same options in its `.editora/settings.json`.
 
@@ -413,9 +415,11 @@ Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets, Mer
 """),
     new Feature("run-files", RD, 1, false,
         "Run files & main classes",
-        "Run a script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
+        "Run a Java, Python, Node.js or shell script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
         """
-A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, or a **shell** script (run with the interpreter its shebang names, else `bash`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
+A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, a **Node.js** script (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, or a `node` shebang), or a **shell** script (run with the interpreter its shebang names, else `bash`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
+
+A Node.js script runs under the Node.js set in Settings → Debugging → JavaScript, else the version a project's `.nvmrc` or `.node-version` names (when nvm has it), else `node` on your `PATH`, from its package folder, with source maps and colours on. TypeScript runs on plain Node.js 22.18 or newer. The ▶ of a test file (`*.test.*`, `*.spec.*`, or under `test/` or `__tests__/`) runs `node --test` and fills Test Results.
 
 It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
 
@@ -425,21 +429,22 @@ Output streams to the Run console, which also accepts **stdin** so `readln`-styl
 """),
     new Feature("run-configurations", RD, 2, false,
         "Run configurations",
-        "Save how a Java main class, Python or shell script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file.",
+        "Save how a Java main class, Python, Node.js or shell script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file.",
         """
 A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands), an optional JDK override, a shell script's interpreter, and a working directory (relative to the project root). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
 
-## Five kinds
+## Six kinds
 
 Choose a **Type** in the project's **Run Configurations** window:
 
 - a **Java main class** (resolved through the language server, or through your Maven/Gradle build)
 - a **Python script**
+- a **Node.js script** (with Node.js arguments; a blank **Interpreter** uses the same Node.js as Run)
 - a **shell script** (its shebang picks the interpreter unless you set **Interpreter** and **Interpreter options**)
 - a **make target**
-- a named **npm script** (`npm run`, with arguments passed after `--`)
+- a named **npm script**, run with the project's own package manager (npm, pnpm, yarn or bun), with arguments passed after `--`
 
-Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Only Java configurations can be debugged, and Debug says so for the others; Python and JavaScript files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
+Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Node.js and npm configurations can be debugged, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
 
 ## A step before the launch
 
@@ -452,26 +457,28 @@ A configuration can name a command to run first, such as a build or a codegen st
 ## Smaller conveniences
 
 - Each configuration **becomes a real command**, so it appears in the palette by name and can be given its own keyboard shortcut, the same way [saved macros](/features/macros) and [external tools](/features/external-tools) already work.
-- **Add** prefills from the file you are looking at: a Python or shell script becomes a configuration for that script; a Java file gives the main class (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you. *Save Run Configuration* works for Python and shell scripts too.
+- **Add** prefills from the file you are looking at: a Python, Node.js or shell script becomes a configuration for that script; a Java file gives the main class (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you. *Save Run Configuration* works for Python, Node.js and shell scripts too.
 - The toolbar group **only appears in a project where you could launch something**, so a project of Markdown notes doesn't carry a dropdown that can never fill. Anything you have already saved keeps it visible regardless.
-- The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python and shell scripts can be picked with **Browse…**.
+- The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python, Node.js and shell scripts can be picked with **Browse…**, and an npm configuration's **Browse…** lists the `package.json` scripts.
 - Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
 """),
     new Feature("debugging", RD, 3, true,
         "Debugging (DAP)",
-        "Full debugging for Java, Python, and JavaScript: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console.",
+        "Full debugging for Java, Python, JavaScript and TypeScript: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console.",
         """
-Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
+Full debugging for **Java**, **Python**, and **JavaScript and TypeScript** (Node.js) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
-- Breakpoints (including conditional and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line**
+- Breakpoints (including conditional and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line** (Python)
 - A threads + call-stack view and a lazy variables tree with **set-value**
 - **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
 - A hover **value popup** that unfolds objects, arrays and collections as a tree
-- A debugged Java program can read **standard input** typed in the Debug console
+- A debugged Java, Python or JavaScript program can read **standard input** typed in the Debug console
 - The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
 - Tests inside JUnit `@Nested` classes run and debug from the gutter
 
 For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening. A project launch builds the project first and stops on compile errors, which the Debug console lists as links. Saving a file during a session loads the change into the running program (**hot code replace**), and *Restart Frame* and *Smart Step Into* are there when you need them. Step Into skips JDK classes, and JDK or library frames open their source. Breakpoints differ by shape, are listed in one picker you can filter, and can be muted; **Caught** and **Uncaught** exception toggles are kept per project. Every keymap binds the debugger, and the Debug window never takes the keyboard from the editor.
+
+JavaScript runs under the same Node.js as Run. `.ts` files debug on Node.js 22.18 or newer, and a breakpoint in a compiled project's `.ts` source stops there through source maps. *Attach* connects to a Node.js started with `--inspect`, *Debug Test at Caret* debugs a `node:test` test, and Node.js and npm run configurations can be debugged.
 
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript, and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
@@ -494,7 +501,7 @@ The response is the `.http` file's own **preview**, in the same Editor / Split /
 Each detected build tool gets its own **tasks tool window** (its stripe appears when the tool's marker file is found): a browsable tree of the tool's goals, scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…). Double-click or Enter runs a task, and the output streams to a separate per-tool console window. A searchable actions popup is also available from the command palette (*Maven: Show Actions*, and so on).
 
 - **Maven** (`pom.xml`): lifecycle phases, the pom's declared profiles (checkable, composing via `-P`), and each plugin's bound goals, plus a *Run custom…* box. Prefers `./mvnw`, else `mvn`. A discovered-JDK selector controls Maven tasks, classpath resolution, Run, Debug, and before-launch steps; a run configuration can override it.
-- **npm** (`package.json`): one entry per `scripts` name (run as `<pm> run <name>`) plus `install` / `ci`. Uses the detected package manager (npm/yarn/pnpm/bun).
+- **npm** (`package.json`, the **Package Scripts** window): one entry per `scripts` name (run as `<pm> run <name>`) plus `install` / `ci`. Uses the project's package manager (npm/yarn/pnpm/bun), found at the workspace root for a monorepo member. A missing manager says how to get it, a failed script with no `node_modules` suggests installing first, and the Output console shows the script's colours and its Node.js version.
 - **Cargo** (`Cargo.toml`): the standard subcommands, any `[[bin]]` / `[[example]]` targets, and a `--release` toggle.
 - **Go** (`go.mod`): the standard subcommands over the whole module.
 - **Gradle** (`build.gradle[.kts]`): the common tasks plus *Load all tasks…*. Prefers `./gradlew`.
@@ -735,7 +742,7 @@ Two ways to mark up code.
         "Find in files",
         "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label.",
         """
-Project-wide search with a results panel (`C-S-f`): matches grouped by file, with case / regex / whole-word options, and it searches open buffers' unsaved text too. **Replace-in-files** rewrites matches across the project (undoable in open buffers). It uses ripgrep when installed, and in a [remote folder](/features/remote-sftp) the host's own ripgrep searches it in one command instead of reading every file over the connection.
+Project-wide search with a results panel (`C-S-f`): matches grouped by file, with case / regex / whole-word options, and it searches open buffers' unsaved text too. It skips what `.gitignore` excludes, and `node_modules` even without a `.gitignore`. **Replace-in-files** rewrites matches across the project (undoable in open buffers). It uses ripgrep when installed, and in a [remote folder](/features/remote-sftp) the host's own ripgrep searches it in one command instead of reading every file over the connection.
 
 In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count. And **AceJump** (`M-g j`) lets you leap the caret to any visible spot by typing the label that appears over it.
 """),
@@ -745,7 +752,7 @@ In-file find (`C-s` / `C-r`) is incremental with highlight-all and a match count
         """
 **New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.
 
-Template bodies use `${variable}`, `${variable:default}` and `${cursor}` for where the caret lands; anything else, such as `$1` or `$HOME`, is written as it is. Before a template writes anything it lists the files that already exist. Editora ships 32 of them: code (Java class, JUnit 5 test, Java shebang script, Python script, pytest module, shell and Zsh scripts, HTML), the formats it previews or runs (Markdown, Typst, Mermaid, Markwhen, HTTP requests with environment files), writing (README, changelog, decision record, blog post, meeting notes) and project files (MIT and Apache 2.0 licenses, `.gitignore`, `.editorconfig`, GitHub issue and PR templates, a Java Dockerfile with optional Compose). Every field starts filled in, so **Create** alone gives a working file. Created files follow the project's `.editorconfig` line endings and indentation (a shell script is always written with LF), and a file that starts with `#!` is made executable; where the file system keeps no executable bit (Windows), the status bar says how to run it. Add your own under `~/.editora/templates/`, or use **Edit User Templates** to copy a bundled one and change it.
+Template bodies use `${variable}`, `${variable:default}` and `${cursor}` for where the caret lands; anything else, such as `$1` or `$HOME`, is written as it is. Before a template writes anything it lists the files that already exist. Editora ships 33 of them: code (Java class, JUnit 5 test, Java shebang script, Python script, pytest module, Node.js script, shell and Zsh scripts, HTML), the formats it previews or runs (Markdown, Typst, Mermaid, Markwhen, HTTP requests with environment files), writing (README, changelog, decision record, blog post, meeting notes) and project files (MIT and Apache 2.0 licenses, `.gitignore`, `.editorconfig`, GitHub issue and PR templates, a Java Dockerfile with optional Compose). Every field starts filled in, so **Create** alone gives a working file. Created files follow the project's `.editorconfig` line endings and indentation (a shell script is always written with LF), and a file that starts with `#!` is made executable; where the file system keeps no executable bit (Windows), the status bar says how to run it. Add your own under `~/.editora/templates/`, or use **Edit User Templates** to copy a bundled one and change it.
 
 A multi-file template can also scaffold a **whole project**: **New Project From Template** asks for a project name and a location, creates that folder, registers it as a [project](/features/projects) and opens it on the template's main file. **Python Project** and **Node.js TypeScript Project** templates ship with it, each with a package layout, a test, a build file, a README and a `.gitignore`.
 """),
