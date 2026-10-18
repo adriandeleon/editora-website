@@ -10,7 +10,8 @@ Full debugging for **Java**, **Python**, and **JavaScript** through the Debug Ad
 
 - Breakpoints (including conditional and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line**
 - A threads + call-stack view and a lazy variables tree with **set-value**
-- **Watches** and an evaluate console
+- **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
+- A hover **value popup** that unfolds objects, arrays and collections as a tree
 - A debugged Java program can read **standard input** typed in the Debug console
 - The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
 - Tests inside JUnit `@Nested` classes run and debug from the gutter
