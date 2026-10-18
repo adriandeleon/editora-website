@@ -1,6 +1,6 @@
 ---
 title: Build tools
-description: Maven, npm, Cargo, Go, and Gradle each get an IntelliJ-style tasks tool window that streams to a shared Output console, plus a test runner with live results.
+description: Maven, npm, Cargo, Go, Gradle, the Clojure CLI, Leiningen and Babashka each get an IntelliJ-style tasks tool window that streams to a shared Output console, plus a test runner with live results.
 category: Run & debug
 order: 3
 ---
@@ -37,6 +37,9 @@ the compile step before the first test reports.
 | Cargo | `Cargo.toml` | Standard subcommands, `[[bin]]` / `[[example]]` targets, and a `--release` toggle |
 | Go | `go.mod` / `go.work` | Standard subcommands over the whole module |
 | Gradle | `build.gradle[.kts]` | Common tasks, plus *Load all tasks…* |
+| Clojure CLI | `deps.edn` | The aliases that run something (`-M:test`, `-X:build`, `-T:build`), plus prepare (`-P`), `deps tree`, `deps list` and the classpath |
+| Leiningen | `project.clj` | `run`, `test`, `check`, `compile`, `jar`, `uberjar`, `install`, `deps`, `clean` |
+| Babashka | `bb.edn` | Each task in `:tasks` (`bb run <task>`), plus `bb tasks` |
 
 Maven and Gradle prefer the project's own `./mvnw` / `./gradlew` wrapper, falling
 back to `mvn` / `gradle` on your `PATH`. npm uses the detected package manager
@@ -84,6 +87,29 @@ the override, or else the tool's own command. For example *mvn: found
 the line shows that it is not found. Below it, **Project** says whether the
 active file's project uses the tool. The command row is greyed while that tool
 is turned off.
+
+## Clojure
+
+A `deps.edn` gets a **Clojure CLI** tasks window. An alias with `:main-opts` is
+listed as `-M:<alias>`, one with `:exec-fn` as `-X:<alias>`, and one with only
+`:ns-default` as the tool `-T:<alias>`; an alias that only adds dependencies or
+paths runs nothing on its own and is not listed. The CLI's own commands follow:
+download the dependencies (`clojure -P`), print the dependency tree and list,
+and print the classpath.
+
+A `project.clj` gets a **Leiningen** window with the common `lein` tasks. A
+`project.clj` is Clojure code, so its aliases and its plugins' tasks are not
+read; run them with *Run custom…*.
+
+A `bb.edn` gets a **Babashka** window with one entry per task in its `:tasks`,
+in file order, run as `bb run <task>`. Private tasks (a name starting with `-`)
+are left out, as `bb tasks` leaves them out.
+
+The three tools run `clojure`, `lein` and `bb` from your `PATH`, or the command
+override in their Settings cards. Their test tasks stream to the Output console;
+the Test Results window does not read Clojure test runners' output. Running and
+debugging a single Clojure file is covered in
+[Clojure files](/docs/run-debug#clojure-files).
 
 ## Maven
 

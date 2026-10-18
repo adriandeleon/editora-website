@@ -1,14 +1,14 @@
 ---
 title: Running & debugging
-description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript and Groovy.
+description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript, Groovy and Clojure.
 category: Run & debug
 order: 1
 ---
 
 ## Running files
 
-You can run compact Java files, Python scripts, shell scripts and Groovy
-scripts with [language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
+You can run compact Java files, Python scripts, shell scripts, Groovy scripts
+and Clojure files with [language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
 runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
@@ -23,6 +23,10 @@ runnable file:
 - a **Groovy** script or class (`.groovy`): the ▶ sits on its
   `static void main` when it has one, else on the first line. See
   [Groovy scripts](#groovy-scripts).
+- a **Clojure** file (`.clj`, `.cljc`, `.bb`, or a script with a `clojure` or
+  `bb` shebang): the ▶ sits on its `(defn -main` when it has one, else on the
+  first line. EDN files (`deps.edn` and the like), `project.clj` and
+  ClojureScript (`.cljs`) get no ▶. See [Clojure files](#clojure-files).
 
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
@@ -51,7 +55,8 @@ another window open in its place.
 
 Beside the status, the Run window names the runtime the program runs under:
 **Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
-**Groovy 5.1.3 (Java 25.0.4)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+**Groovy 5.1.3 (Java 25.0.4)**, **Clojure CLI 1.12.6.1673**, **Leiningen 2.13.0**,
+**Babashka 1.13.226**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
 distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
 names one. Hover the name for the runtime's own version text and, for Java,
 the JDK's folder.
@@ -142,6 +147,36 @@ then SDKMAN. When none of them has it, Run says Groovy is not installed instead
 of starting anything. A Gradle build script (`build.gradle`) and a
 `Jenkinsfile` are Groovy too, but they get no ▶: nobody runs those as a
 program.
+
+### Clojure files
+
+A Clojure file runs with one of three tools, picked from the file and its
+project, the nearest folder above it with a `deps.edn`, `project.clj` or
+`bb.edn`:
+
+| The file | Runs as |
+| --- | --- |
+| a namespace with `-main` in a `deps.edn` project | `clojure -M -m my-app.core`, in the project folder |
+| a namespace with `-main` in a `project.clj` project | `lein run -m my-app.core`, in the project folder |
+| a namespace with `-main` in no project | `clojure -M -m hello`, with the file's folder on the classpath |
+| any other `.clj` or `.cljc` file | a script: `clojure -M <file>` (or `lein run -m clojure.main <file>`) |
+| a `.bb` file, a `#!/usr/bin/env bb` script, or any file of a project with only a `bb.edn` | `bb <file>` |
+
+A namespace runs through `-m` only when its name matches its path, such as
+`my-app.core` in `src/my_app/core.clj`, so the tool can find it on the
+classpath. A namespace outside `src` is added to it for the run. A project with
+both a `deps.edn` and a `project.clj` runs with the Clojure CLI.
+
+The Clojure CLI and Leiningen run on the JDK chosen in Settings for builds and
+runs. Since Clojure 1.10.1 the CLI writes an uncaught exception's stack trace
+to a temporary file and prints only a summary; Run sets
+`clojure.main.report=stderr`, so the whole report is in the Run console and its
+frames are links.
+
+Editora finds `clojure`, `lein` and `bb` on your `PATH`. When the one a file
+needs is missing, Run says so instead of starting anything. On Windows the
+Clojure CLI is best used under WSL; see
+[Running in a container or WSL](#running-in-a-container-or-wsl).
 
 ### Run with Trace
 
@@ -244,16 +279,18 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with the interpreter its shebang names (or `bash`), unless **Interpreter** is set |
 | Groovy script | a `.groovy` file with `groovy`, on the configuration's JDK; its VM arguments go into `JAVA_OPTS` |
+| Clojure script | a Clojure file with the tool [Run File picks](#clojure-files), on the configuration's JDK; its VM arguments go to the program's JVM (`-J` arguments for the Clojure CLI, `JVM_OPTS` for Leiningen) |
 | Make target | a target in a makefile |
 | NPM script | a named `package.json` script via `npm run` |
 
 The form **shows only the fields the selected type uses**. A Java main class
 has no Script / target field; a Python, shell, Make or NPM configuration has no
-Main class, Module, VM arguments or JDK, and a Groovy one keeps only VM
-arguments and JDK of those. A hidden field keeps its value, so switching the
-type and back loses nothing. A Python, shell or Groovy script can be picked with
-**Browse…** beside Script / target; a script inside the project is
-saved relative to the project root.
+Main class, Module, VM arguments or JDK, and a Groovy or Clojure one keeps only
+VM arguments and JDK of those. A hidden field keeps its value, so switching the
+type and back loses nothing. A Python, shell, Groovy or Clojure script can be
+picked with **Browse…** beside Script / target; a script inside the project is
+saved relative to the project root. A Clojure configuration with no working
+directory runs in its project's folder.
 
 A shell configuration also has **Interpreter** and **Interpreter options**.
 Left blank, the script's shebang decides (see [Shell scripts](#shell-scripts));
@@ -360,8 +397,8 @@ file in the project serves, and it reports an error only when there isn't one.
 
 <span class="beta-pill">Beta</span>
 
-Editora debugs **Java**, **Python**, **JavaScript (Node)** and **Groovy** through
-the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+Editora debugs **Java**, **Python**, **JavaScript (Node)**, **Groovy** and
+**Clojure** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -744,6 +781,39 @@ arguments, folder, environment, JDK and VM arguments.
 Not supported yet: conditions, hit counts and log messages on a breakpoint (such
 a breakpoint shows hollow and says so), evaluating expressions or method calls,
 hot code replace, and debugging on a remote host or in a container.
+
+### Debugging Clojure
+
+Clojure is debugged by the same built-in debugger as Groovy, with nothing to
+install. Debug on a Clojure file runs it as [Run does](#clojure-files), under
+the Clojure CLI or Leiningen, and Debug on a Clojure script run configuration
+uses that configuration's file, arguments, folder, environment, JDK and VM
+arguments.
+
+- **Breakpoints** work in a namespace's functions and in a script's top-level
+  forms. Clojure compiles `src/my_app/core.clj` to classes that name
+  `core.clj` as their source, which is how a breakpoint finds them.
+- **Stepping** goes from line to line of your code and steps over Clojure's
+  runtime and `clojure.core`.
+- **Frames** are named as Clojure names the function, such as
+  `my-app.core/greet` (not the class `my_app.core$greet`).
+- **Variables** show a frame's locals, kept alive for the whole function during
+  a session (`clojure.compiler.disable-locals-clearing`), so a local still reads
+  after its last use. A value shows as its class, such as `PersistentVector`;
+  expand it for its fields. Nothing in the program is called to print it.
+- **Exceptions**: an exception that leaves your code uncaught stops where it was
+  thrown, on by default as for Groovy.
+
+Babashka scripts can't be debugged: `bb` is a native program, with no JVM for
+the debugger to attach to. Debug says so and runs nothing; run the script, or
+debug the same code under the Clojure CLI.
+
+The debugger sees the classes your files were compiled to when the program
+loaded them. A function you redefine from a REPL is compiled again to a new
+class, so a breakpoint set before the redefinition does not stop in it, and
+code evaluated in a REPL has no file to stop in. Breakpoint conditions and log
+messages, evaluating expressions, and debugging on a remote host are not
+supported yet, as for Groovy.
 
 ### Debugging on a remote host
 
