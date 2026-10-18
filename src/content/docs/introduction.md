@@ -71,6 +71,8 @@ Workspace and customization:
 - **[Server log viewer](/docs/log-viewer)**: severity highlighting, follow, and filtering for `.log` files.
 - **[CSV & TSV](/docs/csv)**: rainbow columns and an editable grid for data files.
 - **[Terminal](/docs/terminal)**: shells in a tool window, in the editor's theme.
+- **[Encrypted files](/docs/encrypted-files)**: open and save GnuPG-encrypted
+  files as their text, and sign and verify.
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH, and run Git, builds,
   language servers and debuggers on the host.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
