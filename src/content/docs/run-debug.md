@@ -415,6 +415,11 @@ It is **on by default**. The switch is under **Settings → Debugging → Java**
 sessions, Python, and JavaScript are unaffected. It has not yet been confirmed
 on Windows.
 
+With the switch off, the debugger starts a Java program itself. The console
+still reports the program's exit code on Linux and macOS when the program runs
+on this machine. On Windows, and on a remote host, in WSL or in a container, it
+says "The program ended." instead.
+
 ### Debugging Java
 
 Compact `.java` sources and extensionless Java `--source 25+` shebang files can
@@ -547,8 +552,11 @@ only a closing `}` takes a breakpoint.
 it; Enter jumps to the selected breakpoint, Alt+E enables or disables it,
 Alt+D removes it, and Alt+M mutes them all. **Debug: Mute Breakpoints**
 (`C-c C-d m`) turns every breakpoint off without removing it, until you run it
-again, and the Debug window's state line says "breakpoints muted". Mute is not
-saved: it ends when you close the window. **Debug: Enable / Disable
+again. While breakpoints are muted, every glyph is faded, a glyph's hover says
+that none of them stops the program, Mute Breakpoints is checked in the Run
+menu, and the Debug window's state line says "breakpoints muted". Editora keeps
+the choice for each project, so a muted project is still muted when you open it
+again. **Debug: Enable / Disable
 Breakpoint** (`C-c C-d t`) switches the breakpoint on the caret line. These
 commands are in the Run menu's **Breakpoints** submenu.
 
@@ -574,11 +582,49 @@ the lines up to the stopped line. Hovering a name shows its value once the
 mouse rests; names in comments and strings are skipped. **Debug: Show Value at
 Caret** (`C-c C-d v`) does the same from the keyboard.
 
+A plain value, such as a number, shows on one line. An object, array or
+collection shows as a tree that opens with its first level unfolded; unfold a
+row to see its fields or elements. A Java `String` is an object to the
+debugger, so it shows as a tree too: its value, then its fields. A big array comes a page at a time: its
+last row is "Show N more…". Right-click a row for **Copy Value** and **Add to
+Watches**. The popup closes with Esc or when the mouse leaves it. When you open
+it with Show Value at Caret, the keyboard works it while it is open:
+
+| Key | Action |
+| --- | --- |
+| Up / Down | Move between rows |
+| Right | Unfold the row |
+| Left | Fold the row, or move to its parent |
+| Enter | Unfold or fold the row, or load the next page on "Show N more…" |
+| Shift+Enter | Add the row's expression to Watches |
+| Ctrl+C (⌘C on macOS) | Copy the row's value |
+| Esc | Close the popup |
+
+Any other key closes the popup and does its usual thing in the editor. When the
+popup was opened by the mouse, any key closes it.
+
 In the Variables tree, the right-click menu has **Copy Value** (a string is
 copied without its quotes and escapes), **Copy Name** and **Add to Watches**,
 which adds the row's whole expression, such as `order.items`. Ctrl+C (⌘C on
 macOS) copies the selected value, and Delete removes the selected watch. In
 the evaluate field, Up and Down bring back the expressions you typed before.
+
+While the program is paused, **completion** works in the Debug console's
+evaluate field, the Add Watch and Edit Watch prompts, and a breakpoint's
+condition and log message. Press Ctrl+Space, or type `.`, to list what the
+debugger can complete in the stopped frame. Keep typing to narrow the list, use
+Up and Down to move in it, Enter or Tab to insert the selected item, and Esc to
+close it. In the evaluate field, Enter inserts the item and does not evaluate
+yet. In a log message, only the `{expression}` part at the caret is completed.
+When the program is not paused, Ctrl+Space says under the field that
+completion needs a pause. A breakpoint's condition is completed against the
+frame the program is stopped in, not the breakpoint's own line.
+
+Emoji and other characters outside the Basic Multilingual Plane show as
+written in Java string values: in Variables, watches, the hover popup and
+inline values. One limit remains, from a bug in the Java language server's
+debugger: a string that an evaluation builds, such as `name + "!"`, and the
+text inside a `toString()` result can still show such characters garbled.
 
 The thread list leaves out the JVM's own housekeeping threads and puts the
 stopped thread first, marked "(paused)". After the program ends, the state line
@@ -614,18 +660,21 @@ Debug window, for example "Step Over (F10 · in this window: N)".
 
 Some applications are meant to be started by the build tool rather than by a bare
 `java` command. **Debug: Debug via Build Tool** (`debug.viaBuild`) launches the
-app under a suspended JVM through Gradle (`run` or `bootRun` with `--debug-jvm`)
-or, for a Spring Boot Maven project, `spring-boot:run` with a JDWP agent. Editora
+app under a suspended JVM through Gradle (`run` or `bootRun`) or, for a Spring
+Boot Maven project, `spring-boot:run` with a JDWP agent. Editora
 watches the build output for the JDWP banner and attaches the debugger when the
 app is listening. It complements *Debug Main Class*, which uses the language
 server; a plain Maven `main` has no uniform build-tool debug mechanism, so use
 *Debug Main Class* there.
 
-For Maven test JVMs ([Debug Test](/docs/build-tools#test-runner)) and Spring
-Boot, the JVM listens on a free port, which Editora reads from the JDWP banner,
-so a busy port 5005 does not get in the way. Gradle's `--debug-jvm` always uses
-port 5005. When a run starts several JVMs, for example forked test JVMs,
-Editora attaches to each in turn, as the session before it ends. **Stop** on
+For [Debug Test](/docs/build-tools#test-runner) and Debug via Build Tool, in
+Maven and in Gradle, every JVM the build starts listens on a free port, which
+Editora reads from the JDWP banner, so a busy port 5005 does not get in the
+way. For Gradle, Editora passes an init script that adds the debug agent to
+the `test`, `run` or `bootRun` task. A Gradle build that runs on another
+machine uses `--debug-jvm` and its fixed port 5005 instead. When a run starts
+several JVMs, for example forked test JVMs, Editora attaches to each in turn,
+as the session before it ends. **Stop** on
 such a session also ends the test or build run that started the JVM, with any
 JVMs still waiting.
 

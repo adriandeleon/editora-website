@@ -72,6 +72,14 @@ The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
 Show Value at Caret, Ctrl+Shift+F9 Breakpoints, Shift+F7 Smart Step Into and
 Ctrl+F9 Apply Code Changes to its usual debugger keys.
 
+Some debugger keys are the same in every keymap. While the program is paused,
+Ctrl+Space completes an expression in the evaluate field, a watch prompt and a
+breakpoint's condition and log message, and typing `.` opens the same list.
+In the value popup of Show Value at Caret, the arrow keys move and unfold,
+Enter unfolds a row or loads the next page, Shift+Enter adds the row to
+Watches, Ctrl+C (⌘C on macOS) copies its value and Esc closes the popup. See
+[Inspecting values](/docs/run-debug#inspecting-values).
+
 ## Rebinding commands
 
 The **Settings → Keymaps** page lists every command with its current chord and a
