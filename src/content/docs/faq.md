@@ -156,12 +156,14 @@ folder. See [Configuration](/docs/configuration).
 
 ## Is it slow to start? It's a Java app.
 
-That's the usual assumption, so here are measurements. On one
-Apple M5, opening the same file, Editora and VS Code were level at about 1.5
-seconds, and IntelliJ IDEA took about 5.6. Opening a real project folder,
-Editora reached its window in about 2.3 seconds against 2.9 for VS Code and 7.3
-for IntelliJ. The method, the caveats, and the run-to-run spread are all on
-[how Editora compares](/compare).
+That's the usual assumption, so here are measurements. On one 14-inch MacBook
+Pro with an Apple M5, opening a single file, Editora 0.22.0 had its window up in
+about 0.52 seconds, against 0.59 for VS Code and 2.2 for IntelliJ IDEA. Opening
+a real project folder, it took about 0.58 seconds against 0.66 for VS Code and
+3.2 for IntelliJ. A lead of under a tenth of a second over VS Code is real but
+not one you will feel, and these are warm relaunches timed to the window
+appearing, not cold boots or indexing. The machine, the method, the caveats,
+and the run-to-run spread are all on [how Editora compares](/compare).
 
 The native builds bake in an AOT class cache, which is worth roughly a third of
 the startup time on its own. If startup or editing ever feels slow, see
