@@ -6,7 +6,7 @@ beta: true
 summary: "Keeps your snippets, abbreviations, templates and personal dictionary the same on every computer, through a private Git repository you own. Off by default."
 ---
 
-Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, with your own Git credentials; Editora stores none and there is no Editora account or server.
+Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, signing in with your own Git credential helper or SSH key; a repository URL with a password or token in it is refused, and there is no Editora account or server.
 
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
 - It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand.

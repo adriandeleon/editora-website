@@ -427,7 +427,10 @@ script's value (or an earlier response's), the secrets prompt says the host is
 chosen by an earlier response or a script.
 
 **Settings → Languages & Tools → Web** turns scripts off, picks the Node.js to
-use (empty means `node` on the `PATH`) and sets the timeout. The
+use (empty means `node` on the `PATH`) and sets the timeout. A Detected line
+under **Node.js for HTTP scripts** says whether that node is there (*node: found
+(/usr/bin/node)* or *node: not found*), and the script rows are greyed out while
+the HTTP client or its scripts are off. The
 [Doctor](/docs/troubleshooting#doctor) shows which Node.js runs them and whether the permission
 model is on.
 

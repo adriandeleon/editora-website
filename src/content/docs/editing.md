@@ -48,8 +48,9 @@ these to the palette.
 
 Movement chords fan out too: `C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`, `M-f` and
 `M-b` move every caret, like the arrow keys. Document, paragraph, sentence and
-page motions stay on the primary caret. Multiple cursors can be turned off in
-Settings, and they're disabled in Simple UI mode.
+page motions stay on the primary caret. Multiple cursors can be turned off with
+**Enable multiple cursors & column selection** (Settings → Editor → Editing),
+and they're disabled in Simple UI mode.
 
 ## Auto-indent
 
@@ -130,8 +131,8 @@ Brackets inside strings and comments are skipped, because a stray `{` in a
 string would otherwise shift the colour of every bracket below it. Six depth
 colours cycle, and an unmatched closer is red.
 
-On by default. Turn it off in Settings → Editor or with
-`view.toggleBracketColors`.
+On by default. Turn it off with **Bracket pair colorization** (Settings → Editor
+→ Display) or with `view.toggleBracketColors`.
 
 ## Expand and shrink selection
 
@@ -254,8 +255,8 @@ assignments; it only adds spaces, so re-running it is a no-op.
 
 **Copy with syntax highlighting** puts a colored HTML flavor on the clipboard
 alongside the plain text, so code pasted into Slack, an email or a document keeps
-its highlighting. It is on by default for ordinary copies (Settings → Editor, or
-`view.toggleCopyWithHighlighting`) and uses a light GitHub-style palette, since
+its highlighting. It is on by default for ordinary copies (Settings → Editor →
+Clipboard, or `view.toggleCopyWithHighlighting`) and uses a light GitHub-style palette, since
 pasted code usually lands on a light background. The explicit command ignores
 both the setting and the size cap. Plain text is always on the clipboard too, so
 pasting into a plain-text field is unchanged.
@@ -267,6 +268,13 @@ text. Expand the word before the caret on demand with `C-x a e`, or turn on
 **Abbrev Mode** (`view.toggleAbbrevMode`) to expand automatically when you type a
 space or punctuation. Define a new one with `C-x a g`, and manage the whole
 dictionary in **Settings → Abbreviations** (`abbrev.manage`).
+
+On that page an expansion can span several lines. Changes apply as you make
+them, with no Save button: the expansion once you pause typing, the
+abbreviation itself when you press Enter or leave its field. **Remove** asks
+before it deletes an abbreviation. An abbreviation that repeats another one,
+ignoring case, is refused with a message and the old one is put back, because
+one would hide the other.
 
 An abbreviation can contain punctuation as well as letters and digits: `;sig`,
 `e.g`, `adl-fn`. When more than one abbreviation ends at the caret, the longest
@@ -432,14 +440,25 @@ and the file can be saved again once it is removed.
 
 ## Whitespace and the column ruler
 
-View options in Settings toggle whitespace markers, the rulers, indent guides,
-the minimap, and line numbers. These render as lightweight overlays drawn only
-for the visible lines, so they stay cheap on large files.
+The **Display** card of Settings → Editor toggles whitespace markers, the
+rulers, indent guides, the minimap, and line numbers. These render as
+lightweight overlays drawn only for the visible lines, so they stay cheap on
+large files. The page's other cards are **Editing** (multiple cursors, tag
+auto-rename and auto-close, auto-fill, the project symbol index),
+**Clipboard**, **Indentation**, **Saving** (auto save, save as administrator),
+**Performance**, **Logs**, **CSV**, **File previews** and **Export & Print**.
+While Simple UI mode is on, the Display card says that line numbers, the
+minimap and indent guides stay hidden whatever their switches say.
 
-**Rulers** are vertical lines at chosen columns, 80 by default. Settings →
-Editor takes a list (`80, 120`; blank for none) and, under **Rulers by
-language**, lists that replace it for a language (`java: 100; python: 79, 88`; a
-language with nothing after its colon has no rulers). From the palette,
+**Rulers** are vertical lines at chosen columns, 80 by default. In Settings →
+Editor, **Rulers** takes a list (`80, 120`; blank for none) and **Rulers by
+language** takes lists that replace it for a file type (`java: 100; python: 79,
+88`; a file type with nothing after its colon has no rulers). The names are the
+file types on the Spell Check page's **File types** list (`java`, `python`,
+`shell`…), in any letter case; they are stored in lower case. Text that cannot
+be read, such as a column past 1000 or a name no file type has, turns the field
+red with the reason in its tooltip, and nothing is saved until you fix it. Both
+rows are greyed out while **Show rulers** is off. From the palette,
 *Editor: Set Rulers…* (`editor.setRulers`) sets the global list and *Editor: Set
 Rulers for This Language…* (`editor.setLanguageRulers`) sets the current file's
 language, where a blank answer goes back to the global rulers. An

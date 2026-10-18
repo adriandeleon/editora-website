@@ -16,11 +16,18 @@ windows, editor-menu items, and status-bar segments. Browse the
 
 1. Enable plugins in **Settings → Plugins**.
 2. **Browse plugins…** (or the `plugins.browse` command) installs from the
-   official registry; **Install from file…** installs a local `.zip`.
+   official registry; **Install from file…** installs a local `.zip`. The
+   plugin list opens in the main window, and the Settings window steps aside
+   when it appears.
 3. Confirm the **Enable this plugin?** dialog, which lists what the plugin will
    do. If you decline, the plugin stays installed but not enabled; its checkbox
    in Settings → Plugins enables it later, behind the same dialog.
 4. Restart Editora to load newly installed plugins.
+
+Under **Installed Plugins**, each plugin's checkbox is greyed out while
+**Enable plugins** is off. A plugin you switch on or off shows **Restart to
+apply** until Editora restarts. A plugin whose `plugin.json` cannot be read is
+listed with the reason and the line and column where reading stopped.
 
 Installed plugins live in your config folder under `plugins/<id>/`, and the
 enabled set is tracked in `plugins.json`. (Plugins are loaded at startup, so
@@ -42,8 +49,10 @@ from, and that you agreed to it.
   not verify. A registry of your own (`plugins.setRegistryUrl`) cannot be
   signed with that key, so using one means turning the requirement off.
 - **Checksum.** A plugin downloaded from the registry must match the SHA-256
-  listed in the index, and the registry and its downloads are HTTPS-only. A
-  `.zip` installed from a file has no checksum to match.
+  listed in the index, and the registry and its downloads are HTTPS-only. The
+  **Registry URL** field takes only an `https://` address: anything else turns
+  the field red, and the registry in use stays. A `.zip` installed from a file
+  has no checksum to match.
 - **Consent.** Before a plugin is enabled, a dialog lists whether it runs
   executable code (a Java plugin), which external commands it declares, and
   which keyboard shortcuts it remaps. Each plugin has its own enable switch,

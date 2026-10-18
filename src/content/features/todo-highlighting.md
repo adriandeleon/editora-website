@@ -11,6 +11,6 @@ Editora highlights **TODO / FIXME-style patterns** everywhere they appear and co
 - Matches are highlighted inline and listed in the tool window, grouped by file; double-click a result to jump. A project window scans the project's tree; the No Project window lists only the current tab and hides the tool window while that tab has no TODOs.
 - Matches also show as **overview stripes** over the scrollbar and on the minimap edge, each in its pattern's color. Click to jump, hover for the line.
 - Jump between matches in the active file with `M-g ]` / `M-g [` (`todo.next` / `todo.previous`), wrapping around.
-- Patterns are configurable in **Settings → TODO → TODO Highlighting**: name, regex, a color picker, case sensitivity, and enabled. TODO and FIXME ship by default.
+- Patterns are configurable in **Settings → TODO → TODO highlighting**: name, regex, a color picker, match case, and enabled. Six ship by default: TODO, FIXME, HACK, NOTE, XXX and DONE. A new pattern's regex follows its name, and deleting one asks first.
 
 On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).

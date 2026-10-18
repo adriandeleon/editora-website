@@ -10,4 +10,4 @@ A floating browser-globe button on any `.html`/`.htm`/`.xhtml` file opens it in 
 
 The file is served over a tiny embedded web server bound to **loopback only**, so its sibling CSS, JS, and images load, and a small injected script **reloads the page live as you type** (it serves the buffer's in-memory text, so you don't have to save). No external tool: it uses the JDK's built-in HTTP server.
 
-On by default. Toggle it under Settings → Web → HTML Preview. Read the [deep-dive](/blog/html-live-preview).
+On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. Read the [deep-dive](/blog/html-live-preview).

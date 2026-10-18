@@ -13,7 +13,8 @@ IntelliJ-style, and collects them in a **TODO** tool window. It's on by default.
 - Matches are highlighted inline and listed in the **TODO** tool window
   (`tool.todo`, `M-g o`), grouped by file. Double-click a result to jump to it.
 - In a project window, the tool window scans the project's tree, plus any open
-  files outside it.
+  files outside it. It skips what `.gitignore` excludes while **Exclude
+  .gitignore files and folders from search** is on (Settings → Search).
 - In the **No Project** window, the tool window lists only the current tab and
   keeps up as you edit it. It is hidden, stripe button included, while the tab
   has no TODOs; an unsaved new file counts as having none. If it was open when
@@ -24,11 +25,21 @@ IntelliJ-style, and collects them in a **TODO** tool window. It's on by default.
 
 ## Patterns
 
-Configure patterns in **Settings → TODO → TODO Highlighting**: a name, a
-regex, a color picker, case sensitivity, and an enabled flag. Six ship by
-default, each in its own color: **TODO**, **FIXME**, **HACK**, **NOTE**,
-**XXX**, and **DONE**. Add a quick one from the palette with **TODO: Add
-Highlight Pattern…** (`todo.addPattern`).
+Configure patterns in **Settings → TODO → TODO highlighting**. Each row has
+an enabled box, a name, a regex, a color picker, **Aa** (match case) and a
+remove button. Six ship by default, each in its own color: **TODO**,
+**FIXME**, **HACK**, **NOTE**, **XXX**, and **DONE**. Add a quick one from the
+palette with **TODO: Add Highlight Pattern…** (`todo.addPattern`).
+
+- **Add pattern** adds an empty row with the cursor in its name. Type a name
+  such as `BUG` and the regex fills in as `\bBUG\b`, the name as a whole word.
+  While the regex is still the name's own, renaming the pattern changes it too;
+  a regex you wrote yourself is left alone.
+- A row needs a name and a regex. A blank name, an empty regex or a regex that
+  is not valid turns the field red, with the reason in its tooltip, and is not
+  saved until you fix it.
+- The remove button asks before it deletes a pattern; **Cancel** is the
+  default.
 
 ## Structured TODOs
 
@@ -42,7 +53,7 @@ The form is `KEYWORD [tag] (priority) description`. Only the keyword is
 required; the tag and the priority are optional and come in that order. A colon
 straight after the keyword is fine (`TODO: fix it`). The priority is one of
 `critical`, `high`, `medium`, or `low`, in any letter case. Each part gets its
-own color, set in **Settings → TODO → TODO Part Colors** or with
+own color, set in **Settings → TODO → TODO part colors** or with
 `todo.setPartColor`.
 
 The tool window's **Group by** selector groups matches by **File**,

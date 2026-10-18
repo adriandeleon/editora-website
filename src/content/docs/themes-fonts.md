@@ -25,8 +25,14 @@ Twenty-eight themes ship in total:
   them in light and dark)
 
 The app chrome is themed by AtlantaFX; the editor surface, gutter, syntax tokens
-and project tree are themed separately. By default the **editor** theme follows
-the app theme; pick one explicitly and it sticks.
+and project tree are themed separately. The **Editor theme** picker starts with
+**Automatic**, which follows the app theme. A theme you pick there stays when
+the app theme changes; choose **Automatic** again to go back to following it.
+
+Both pickers group the themes under **Light** and **Dark** headings, with the
+members of a family next to each other. Your own themes are listed last, under
+**Your themes**. The headings are titles only: the mouse and the arrow keys pass
+over them.
 
 ### What the colors mean
 
@@ -47,8 +53,10 @@ read a GitHub-style light page inside a dark editor.
 
 **User themes**: drop your own theme CSS in a `themes/` (app + editor theme) or
 `editor-themes/` (editor only) folder in your [config directory](/docs/configuration),
-and it joins the picker. *Theme: Reload User Themes* (`theme.reloadUserThemes`)
-picks up changes without a restart.
+and it joins the picker under its file name. The **Your own themes** row on the
+Appearance page has **Open themes folder** and **Reload themes** links;
+*Theme: Reload User Themes* (`theme.reloadUserThemes`) does the same reload from
+the palette, without a restart.
 
 ## Fonts
 
@@ -60,7 +68,10 @@ Five monospace families ship with the app, so nothing needs a system install:
 - **IBM Plex Mono**
 - **Source Code Pro**
 
-They're listed ahead of your system monospace families in the font picker.
+They're listed first in the font picker, marked "(bundled)", ahead of your
+system's monospace families. Only monospaced fonts are listed. A weight or style
+that a font installs as a family of its own (such as "IBM Plex Mono Light") is
+left out when the family itself is listed, and so are math and symbol fonts.
 
 The **interface itself** is set in **Inter** on every platform, so Editora looks
 the same wherever you run it rather than inheriting each system's default UI
@@ -78,4 +89,7 @@ Zoom the editor text independently of the configured font size:
 
 Ctrl+wheel zooms too, and the status bar has `−` / `+` buttons. When the active
 buffer is a Markdown preview, the same gestures zoom the preview instead of the
-editor text. The zoom level is saved as `fontZoom` and isn't shown in Settings.
+editor text. The zoom level is saved as `fontZoom`. It has no field in Settings,
+but while the text is zoomed the Appearance page says so under **Font size**
+("Text zoom is 160%, so the editor and the preview show 29 px.") with a
+**Reset zoom** link, and the live preview uses the zoomed size.

@@ -77,6 +77,14 @@ Discovery parses the marker file directly, with no shell-out and no new
 dependency, so it's instant and offline. Toggle each under **Settings →
 Languages & Tools → Build Tools**.
 
+Each tool's card there has a **Command override** field with **Browse…** and a
+**Detected** line for the program a run uses when the project has no wrapper:
+the override, or else the tool's own command. For example *mvn: found
+(/usr/bin/mvn)* or *gradle: not found*. A misspelled override is still saved;
+the line shows that it is not found. Below it, **Project** says whether the
+active file's project uses the tool. The command row is greyed while that tool
+is turned off.
+
 ## Maven
 
 ### Every goal a plugin offers

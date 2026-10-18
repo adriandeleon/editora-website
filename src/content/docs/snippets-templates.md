@@ -114,10 +114,19 @@ them:
 
 - **Snippet: Manage…** opens **Settings → Snippets**, where you add, edit, and
   remove them without touching the JSON. The list has a filter and a trigger
-  column.
+  column, and the **Language** picker lists every language Editora knows, so
+  you can start snippets for a language that has none yet.
 - **Snippet: Edit User Snippets…** opens the file for the current language. It
   reloads when you save.
 - **Snippet: Reload Snippets** picks up changes without a restart.
+
+The Snippets page has no Save button. A change applies when you press Enter,
+when you leave the field, or a moment after you stop typing. A new **Name**
+applies only on Enter or when you leave that field, so a half-typed name never
+renames the snippet. **Remove** asks before it deletes one of your snippets. A
+trigger cannot contain a space, because Tab could never expand it: the
+**Triggers** field turns red and says why, and nothing is saved until you fix
+it.
 
 The format is the VS Code snippet JSON, and the reader is lenient about
 real-world files. A snippet can have several triggers: an array `prefix` in the
@@ -240,7 +249,10 @@ the order bundled, plugin, user. The author name used by `${author}` comes from
 - **Template: Manage…** opens **Settings → Templates** to add, edit, or remove
   single-file templates, including the ones plugins provide. Editing a bundled
   or plugin template saves a copy in your `templates/` folder that overrides it;
-  **Remove** asks first, deletes your copy, and the original comes back.
+  **Remove** asks first, deletes your copy, and the original comes back. There
+  is no Save button: a change applies on Enter, when you leave the field, or a
+  moment after you stop typing. The **Id** is the file name, so it applies only
+  on Enter or when you leave it, and a blank Id keeps the old one.
 - **Template: Edit User Templates…** (`template.editUser`) opens a list: pick
   one of your templates to open as JSON, choose **New template…** for a starter
   file, or choose **Customize** on a bundled or plugin template to copy it to

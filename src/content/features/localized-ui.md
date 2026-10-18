@@ -8,4 +8,4 @@ summary: "The whole interface is translated into English, Italian, Spanish, Fren
 
 Editora's entire interface is translated (**English, Italian, Spanish, French, Portuguese, and German**) covering the command palette, toolbar tooltips, tool windows, Settings, the status bar, dialogs, and menus.
 
-Pick a language in Settings → Appearance (or let it follow your OS locale); the choice applies on restart. A key-parity test keeps every translation complete.
+Pick a language in Settings → Appearance (or let it follow your OS locale); the choice applies on restart, and until then the Language row says so. A key-parity test keeps every translation complete.

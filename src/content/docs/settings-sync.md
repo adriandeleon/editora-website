@@ -19,12 +19,12 @@ no Editora account and no Editora server. It is **off by default**.
 | Templates | `templates/<id>.json` |
 | Personal dictionary | `dictionary.txt` |
 
-Each of the four has its own checkbox under **What to sync**, so you can leave
+Each of the four has its own switch under **What to sync**, so you can leave
 one out.
 
 Nothing else is synced. Preferences (`settings.json`), keymaps and key
 rebinds, macros, themes, plugins, and session state stay on the computer they
-were made on.
+were made on. The **What to sync** card says so too.
 
 ## Setting it up
 
@@ -40,10 +40,18 @@ snippets and templates can contain private text.
    in.
 3. Click **Connect**.
 
+The **Repository** field does not take a URL with a password or token in it
+(`https://me:TOKEN@host/…`, or a token used as the user name): the field turns
+red, says why, and nothing is saved. Such a URL would sit in plain text in your
+settings. Sign in through a Git credential helper instead (for GitHub,
+`gh auth setup-git`), or use an SSH URL. A **Branch** name that Git would
+refuse, such as `a..b`, turns that field red the same way and is not saved.
+
 Connect looks at the repository before anything changes. If it already holds
 data, a dialog states how many entries would arrive on this computer, how many
 this computer would send, and how many differ on both. Nothing is removed on
-either side by connecting.
+either side by connecting. While it looks, **Cancel** stops waiting; nothing
+changes on either side.
 
 If Connect cannot go ahead (the repository or branch is missing, the repository
 cannot be reached, or GitHub reports an error), the **Status** row says why. The
@@ -98,6 +106,13 @@ kept. **Open Sync Folder** on the Sync page opens the folder.
 
 Editora signs in to the repository with **your own Git credentials or SSH
 key**, the same ones `git` uses in a terminal, and stores none of its own.
+
+A repository URL saved with a password or token in it, before the field refused
+them, is still in your settings. The Sync page then shows a warning above the
+repository with two buttons. **Remove from URL** saves the URL without the
+secret; the next sync signs in with your credential helper or SSH key, so set
+one up first. **Keep for now** hides the warning until Editora starts again.
+**Export Configuration…** always leaves such a secret out of the archive.
 
 With more than one account in the [GitHub CLI](/docs/github) (a personal and a
 work account, switched with `gh auth switch`), sync does not depend on which

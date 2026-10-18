@@ -9,6 +9,51 @@ Editora keeps preferences and session state in a config folder. Most settings
 have a UI in the Settings window; everything underneath is plain text you can
 edit by hand.
 
+## The Settings window
+
+Open it with **View: Settings** (`view.settings`, `Ctrl+,` in the CUA, Sublime
+and VS Code keymaps). The sidebar groups the pages; a page whose feature is
+still in beta (AI, AI Agent, AI Actions, LSP, Debugging, Remote, Sync, MCP
+Server) carries a **Beta** pill in the sidebar and beside its title. The window
+fits its 900 px minimum width in every language.
+
+- Changes apply as you make them. There is no OK or Save button, and the footer
+  says so. Every setting is also a palette command.
+- A text field applies when you press Enter, when you leave it, and when you
+  close the window.
+- A number field takes a whole number in its range. Any other text stays in the
+  field, marked red, with a tooltip that gives the range; the setting keeps its
+  value until you fix the text or use the arrows.
+- Rows that only matter while a switch is on are greyed out while it is off,
+  with the note "Turn on “…” to change these settings."
+- A new **Language** on the Appearance page applies after a restart. Until then
+  the row says "Restart Editora to apply the new language."
+
+### Search
+
+The search box at the top of the sidebar finds a setting by its title, its
+description, its card and page names, the choices of a list, and extra
+keywords. Every word you type must appear, in any order. Pages without a match
+are greyed out in the sidebar, and rows whose title or description matches are
+tinted.
+
+The page with the best match opens. A match in a row's title counts more than
+one in its description or keywords, and a whole word more than part of one;
+words that name a page (*keymaps*, *build tools*) open that page. Some settings
+are found by other names too: *zoom* finds Font size, *line endings* and *crlf*
+the EditorConfig row (end of line), *encoding* its charset, *hotkey* and
+*keybinding* the shortcuts, *colour scheme* the themes, *soft wrap* the wrapping
+rows, and *gutter* the line numbers. A command name finds the Keymaps page and
+puts your words in its shortcut filter.
+
+- `Ctrl+F` (`Cmd+F` on macOS) goes to the search box from anywhere in the
+  window. Typing a letter or digit while the sidebar has the focus starts a
+  search, and Down in the search box goes back to the sidebar.
+- Escape clears the search; a second Escape closes the window.
+- A command that opens Settings on a page, such as **Snippet: Manage…** or
+  **Settings Sync: Set Up…**, clears the search first. Opening the window again
+  keeps the last search, selected so that typing replaces it.
+
 ## Config directory
 
 The folder is chosen by this precedence:
@@ -80,7 +125,7 @@ They are created only when needed.
 | `save-backups/` | The previous contents of a file that is being overwritten in place, until that save finishes. One left by an interrupted save is offered at the next launch |
 | `line-ending-originals/` | The original bytes of the last 30 files whose [mixed line endings](/docs/editorconfig#files-with-mixed-line-endings) a save rewrote |
 | `sync/` | The [Settings sync](/docs/settings-sync) working copy (`sync/repo/`) and copies of files a sync replaced (`sync/backups/`) |
-| `settings.json.before-reset-<date>.bak` | The preferences as they were before **Reset to Defaults** |
+| `settings.json.before-reset-<date>.bak` | The preferences as they were before **Reset to Defaults** or **Restore from Backup…** |
 | `<name>.v<n>.bak` | A file written by a newer Editora, set aside by an older one (see [Schema versioning](#schema-versioning)) |
 | `<name>.corrupt.bak` | A config file that was empty, damaged, or not valid UTF-8 when it was read |
 
@@ -120,8 +165,24 @@ Edit in the Settings window, or directly:
 ```
 
 `autoSave` accepts `off`, `afterDelay`, or `onFocusChange`. Text zoom is stored
-separately as `fontZoom` (adjusted with `C-=` / `C--` / `C-0` or Ctrl+wheel) and
-isn't shown in the Settings window.
+separately as `fontZoom` (adjusted with `C-=` / `C--` / `C-0` or Ctrl+wheel).
+While it is not 100%, the Appearance page says so, with a
+**Reset zoom** link.
+
+### Editing settings.json by hand
+
+The **Path** link on the Advanced page opens `settings.json` in an editor tab.
+Saving it there applies it at once in every window, Settings windows included,
+and the status bar says "Applied the saved settings.json." A file that is not
+valid JSON applies nothing; fix it and save again. Changes made with another
+program apply the next time Editora starts.
+
+Under the path, the Advanced page lists the values that are not used as
+written:
+
+- a key that is not a setting: it is ignored and removed at the next save;
+- a value of the wrong type: the default is used;
+- a value that was changed to fit, such as a font size of -5, used as 6.
 
 ### Containers
 
@@ -196,21 +257,39 @@ copy back, provided the file left in its place still holds only defaults.
 - **Export Configuration…** (Settings → Advanced, or `config.export`) zips the
   active config folder into a timestamped archive in your home directory.
   `.bak` backups and installed plugins are included. Local History is left out,
-  because it holds the text of your files rather than configuration. The HTTP
-  client's response history is left out too, unless you tick **Include HTTP
-  response history** in the dialog that asks before exporting: saved responses
-  hold response bodies and full request URLs, which can contain tokens or keys.
-  Runtime files are never included: downloaded language servers and debug adapters,
-  the installed ShellCheck and shfmt, the Typst CLI, `jdtls` workspaces, the `sync/` folder, the lock files, the MCP endpoint file
-  with its live token, and the session log.
-- **Reset to Defaults** (Settings → Advanced) resets every preference, including
-  the keymap choice, which goes back to Emacs. Text zoom is kept, and your key
-  rebinds stay stored with the keymap you made them in, so they apply again when
-  you switch back to it. Before anything is reset, the current preferences are
-  saved beside `settings.json` as `settings.json.before-reset-<date>.bak`, and
-  the status bar names that file; if the copy cannot be written, nothing is
-  reset. A Local History limit that is higher than the default is kept, so a
-  reset never deletes revisions.
+  because it holds the text of your files rather than configuration. A dialog
+  asks before exporting when there is something sensitive to leave out:
+  - AI API keys are blank in the exported `settings.json` and its backups
+    unless you tick **Include AI API keys**. A key is a billable credential.
+  - The HTTP client's response history is left out unless you tick **Include
+    HTTP response history**: saved responses hold response bodies and full
+    request URLs, which can contain tokens or keys.
+
+  A password or token in the [Settings sync](/docs/settings-sync) repository URL
+  is always removed from the export. Runtime files are never included:
+  downloaded language servers and debug adapters, the installed ShellCheck and
+  shfmt, the Typst CLI, `jdtls` workspaces, the `sync/` folder, the lock files,
+  the MCP endpoint file with its live token, and the session log.
+- **Reset to Defaults** (the window's footer, or Settings → Advanced) asks
+  first, and **Cancel** is the default button. The dialog lists what is reset
+  and what is kept, and names the backup it is about to write.
+  - Reset: appearance, editor and language settings, the keymap choice (back to
+    Emacs), tool and server commands, AI and language-server options, external
+    tools, TODO patterns, the toolbar layout, and plugins (turned off).
+  - Kept: AI API keys, the Sync connection, saved Remote sites, text zoom, your
+    custom shortcuts (stored with the keymap you made them in; shortcuts of
+    macros, external tools and run configurations come along to the default
+    keymap), snippets, templates, abbreviations, macros, and the personal
+    dictionary. A Local History limit that is higher than the default is kept
+    too, so a reset never deletes revisions.
+
+  Before anything is reset, the current preferences are saved beside
+  `settings.json` as `settings.json.before-reset-<date>.bak`, and the status bar
+  names that file. If the copy cannot be written, nothing is reset.
+- **Restore from Backup…** (Settings → Advanced, beside **Reset to Defaults**)
+  lists those backups, newest first, and puts the one you pick back. The
+  settings in force are saved as a new backup first, so a restore can be undone
+  the same way.
 
 ## More
 

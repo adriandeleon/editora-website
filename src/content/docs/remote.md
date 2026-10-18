@@ -81,6 +81,18 @@ Saved sites have three surfaces beyond the palette picker:
 Picking a site opens the connection form pre-filled; your password or key
 passphrase is still prompted each time and is never stored.
 
+On the Settings page, each field is saved when you leave it or press Enter;
+there is no Save button. A value that cannot work turns its field red, with the
+reason in its tooltip, and the site keeps its last good values until you fix it:
+**Port** takes a number from 1 to 65535 (blank means 22), **Host** takes only
+the server's name or address (no spaces, no `user@`, no port and no `sftp://`),
+and **User** takes no spaces, `@` or `:`. A **Key file** written as
+`~/.ssh/...` is saved with your home folder filled in, and **Browse…** opens
+in `~/.ssh`. A key file that cannot be read is marked with a warning but kept,
+since the key may be on a drive that is not mounted yet. **Connect…** opens the
+connection form for the selected site. **Remove** asks
+**Delete “*site*”?** first; Cancel is the default button.
+
 ## Authentication
 
 Each connection uses the one method you pick in the form: your default `~/.ssh`
@@ -127,14 +139,21 @@ To withdraw a host's permission, open **Settings → Remote**
 (`remote.settings`), pick the site, and untick **Allow running commands on this
 host** under **This Host**. That is also where you can allow a host you said
 Not Now to. Changes reach every open window at once: Git, language servers and
-the outside-change watch start or stop accordingly. Removing a saved site keeps
-its answer and tool commands, so adding it back neither asks again nor loses
-them.
+the outside-change watch start or stop accordingly.
 
-The switch for all hosts is **Run commands on the remote host** at the top of
-Settings → Remote, also **Remote: Toggle Running Commands on the Host**
+Removing a site on Settings → Remote offers to forget the host's permission as
+well (**Also forget that Editora may run commands on** the host, ticked), when
+the host was allowed and no other saved site uses it; connecting again then asks
+first. Removing a site from the Remote Sites tool window, or leaving that box
+unticked, keeps its answer and tool commands, so adding it back neither asks
+again nor loses them.
+
+The switch for all hosts is **Run commands on the remote host** on
+Settings → Remote, below the saved sites, also **Remote: Toggle Running
+Commands on the Host**
 (`remote.toggleExecution`). It is on by default; turned off, no host runs
-anything, whatever it was allowed. Turning it back on with a remote folder open
+anything, whatever it was allowed, and the **This Host** section of each site
+is greyed out. Turning it back on with a remote folder open
 asks about that host if it has not been allowed yet. The same switch covers
 [containers](#tools-in-a-container) and [WSL distributions](#tools-in-wsl-windows):
 while it is off, a project's tools run on this machine.

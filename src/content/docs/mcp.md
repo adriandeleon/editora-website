@@ -78,9 +78,11 @@ Every tool validates its arguments before doing anything:
 
 1. Turn it on in **Settings → MCP Server** (or run **View: Toggle MCP Server**,
    `view.toggleMcp`), and accept the security notice.
-2. A status-bar **MCP** indicator shows while it's running. Click it, or run
-   **MCP: Copy Endpoint Command** (`mcp.copyEndpoint`), to copy a ready-to-paste
-   `claude mcp add` command with the endpoint URL and token.
+2. A status-bar **MCP** indicator shows while it's running. Click it, run
+   **MCP: Copy Endpoint Command** (`mcp.copyEndpoint`), or click **Copy Endpoint
+   Command** on the Settings page, to copy a ready-to-paste `claude mcp add`
+   command with the endpoint URL and token. The page's **Server** row shows
+   **Running at** the endpoint URL, or **Off**.
 3. The endpoint is also written to `mcp-endpoint.json` in your
    [config folder](/docs/configuration) for discovery.
 
@@ -102,5 +104,9 @@ program on your computer from driving the editor, so any program that can read
 that file can connect. The port and token are new each time the server starts:
 after restarting Editora or toggling the server, copy the connection command
 again.
+
+**New Token** on Settings → MCP Server replaces the token while the server keeps
+running on the same port, and rewrites `mcp-endpoint.json`. Every agent set up
+with the old token is refused from then on; give it the new command.
 
 Commands: `view.toggleMcp`, `mcp.copyEndpoint`.
