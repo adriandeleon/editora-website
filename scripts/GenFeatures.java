@@ -333,7 +333,7 @@ It's session-only and disabled for very large files. The tool-window stripe is o
         "Syntax highlighting",
         "TextMate grammars (via tm4e) for Java, Astro, Python, Rust, Go, Kotlin, C/C++, C#, Ruby, SQL, Markdown, and more.",
         """
-Highlighting uses **TextMate grammars** (via tm4e) for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL, plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers. Astro uses the official grammar for mixed frontmatter, HTML, and CSS.
+Highlighting uses **TextMate grammars** (via tm4e) for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Scala, Clojure, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL, plus TypeScript/JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, and more added alongside their language servers. Astro uses the official grammar for mixed frontmatter, HTML, and CSS.
 
 A file whose name gives no language takes it from a shebang (`#!/usr/bin/env bash`, or `java --source 25` for Java) or a vim or emacs modeline (`# vim: ft=sh`, `-*- mode: sh -*-`), and the status-bar language picker sets it by hand; the language server, Run and the tab's file-type icon follow either way. Shell scripts are also recognised by their startup-file names (`.bashrc`, `.zshrc`, direnv's `.envrc`, `/etc/profile`, …), and a command's bare arguments are plain text, so commands, variables and strings stand out. See [Languages & highlighting](/docs/languages).
 

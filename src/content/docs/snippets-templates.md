@@ -27,7 +27,7 @@ Type a trigger and press **Tab**, or pick from the **Snippet: Insert…** list
 
 Bodies use the standard syntax: `$1`, `${1:default}`, mirrors (a repeated
 number), `${1|a,b|}` choices, and [variables](#snippet-variables). Snippets ship
-for 30 languages, plus a global set that applies to every file. The TypeScript
+for 32 languages, plus a global set that applies to every file. The TypeScript
 set also applies to JSX and TSX files.
 
 ### Expanding with Tab

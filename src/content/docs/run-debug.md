@@ -24,8 +24,9 @@ runnable file:
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
 console-style programs work. Double-click a **stack-trace line** to jump to the
-file and line: Java, Python and Node frames, and shell errors such as
-`deploy.sh: line 12: …`.
+file and line: JVM frames from Java, Kotlin, Groovy, Scala and Clojure code
+(and Clojure's own `at my-app.core/f (core.clj:4)`), Python and Node frames, and
+shell errors such as `deploy.sh: line 12: …`.
 
 The console reads the terminal codes programs print: colours are drawn in the
 theme's colours, a carriage return (`\r`) rewrites the current line so a
