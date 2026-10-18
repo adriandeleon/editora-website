@@ -7,8 +7,8 @@ order: 1
 
 ## Running files
 
-You can run compact Java files, Python scripts and shell scripts with
-[language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
+You can run compact Java files, Python scripts, shell scripts and Kotlin files
+with [language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
 runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
@@ -20,6 +20,9 @@ runnable file:
   [Shell scripts](#shell-scripts)). Startup files that a shell reads rather
   than runs, such as `.bashrc`, `.profile`, `.zshrc`, `.bash_logout`,
   `.xinitrc` and `.envrc`, get no ▶.
+- a **Kotlin** script (`.kts`, `.main.kts`), with the ▶ on its first line, or a
+  `.kt` file with a top-level `fun main`, with the ▶ on that line. See
+  [Kotlin files](#kotlin-files).
 
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
@@ -47,7 +50,7 @@ another window open in its place.
 
 Beside the status, the Run window names the runtime the program runs under:
 **Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
-**Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+**Kotlin 2.4.21 (Java 25.0.4)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
 distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
 names one. Hover the name for the runtime's own version text and, for Java,
 the JDK's folder.
@@ -128,6 +131,28 @@ reach the script with Unix line endings.
 
 Shell scripts can't be debugged; use [Run with Trace](#run-with-trace) to see
 each line as it runs.
+
+### Kotlin files
+
+Kotlin runs with the Kotlin compiler, `kotlinc`, on the JDK chosen in Settings
+for builds and runs (the one Maven, Gradle and Java use). Editora finds
+`kotlinc` through `KOTLIN_HOME`, then your `PATH`, then SDKMAN (`sdk install
+kotlin`). When none of them has it, Run says Kotlin is not installed instead of
+starting anything. Only `kotlinc` is used: JetBrains' newer Kotlin toolchain
+command is also called `kotlin` and is not the compiler.
+
+- A **script** (`.kts`, `.main.kts`) runs with `kotlinc -script`, from the top.
+- A **program** (a `.kt` file with a top-level `fun main`) is compiled first,
+  together with the Kotlin standard library, into a jar that Editora keeps
+  in its config folder, and then runs with `java -jar`. The compile shows in the
+  Run window, and Stop ends it. Running the file again without changing it
+  skips the compile; after an edit the file is compiled again and the old jar
+  is deleted. The file is compiled on its own, so a `.kt` file that uses other
+  files of a Gradle project runs through the build tool instead.
+
+A Gradle build script (`build.gradle.kts`, `settings.gradle.kts`) gets no ▶. A
+Kotlin program in a [remote folder](/docs/remote) is not compiled from here;
+a Kotlin script there runs on its host.
 
 ### Run with Trace
 
@@ -229,6 +254,7 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Java main class | a `main` in the project, via the language server or the build tool |
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with the interpreter its shebang names (or `bash`), unless **Interpreter** is set |
+| Kotlin file | a `.kts` script with `kotlinc -script`, or a `.kt` program compiled and run with `java -jar`, on the configuration's JDK |
 | Make target | a target in a makefile |
 | NPM script | a named `package.json` script via `npm run` |
 
@@ -245,7 +271,7 @@ set, they replace it, for example `/opt/homebrew/bin/bash` with `-eu`. Options
 alone keep the shebang's interpreter and replace its options.
 
 Script and make configurations need **no language server**.
-Only Java configurations can be debugged; Debug on any other type says so, and
+Java and Kotlin configurations can be debugged; Debug on any other type says so, and
 for a shell configuration it points to [Run with Trace](#run-with-trace).
 
 ### The toolbar selector
@@ -344,8 +370,8 @@ file in the project serves, and it reports an error only when there isn't one.
 
 <span class="beta-pill">Beta</span>
 
-Editora debugs **Java**, **Python**, and **JavaScript (Node)** through the Debug
-Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+Editora debugs **Java**, **Python**, **JavaScript (Node)** and **Kotlin** through
+the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -704,6 +730,37 @@ several JVMs, for example forked test JVMs, Editora attaches to each in turn,
 as the session before it ends. **Stop** on
 such a session also ends the test or build run that started the JVM, with any
 JVMs still waiting.
+
+### Debugging Kotlin
+
+Kotlin is debugged by a debugger built into Editora, so there is nothing to
+install beyond the Kotlin compiler. Debug on a Kotlin file runs it as
+[Run does](#kotlin-files), compiling a program first, and Debug on a Kotlin run
+configuration uses that configuration's file, arguments, folder, environment,
+JDK and VM arguments.
+
+- **Breakpoints** work in programs, scripts and lambdas, whether or not the
+  file sits in a folder named after its package.
+- **Frames** are named as Kotlin names them: `Hello.main` for a top-level
+  function in `Hello.kt`, and `Hello.main { lambda }` for a lambda inside it.
+- **Stepping** goes from line to line of your code and steps over the Kotlin
+  standard library and the coroutines machinery.
+- **Variables** show the frame's locals, `this`, and the fields of any object or
+  the elements of an array. **Hover and Watch** read a variable or a field
+  path; they never call a method.
+- **Exceptions**: an exception that leaves your code uncaught stops where it is
+  thrown, on by default; the **Caught** toggle also stops on exceptions your
+  code catches.
+
+For a Gradle project, open a Kotlin file and use
+[Debug via Build Tool](#debug-via-the-build-tool): Gradle starts the app under
+a suspended JVM and Editora's Kotlin debugger attaches to it, so breakpoints in
+`.kt` files bind. **Debug: Attach to JVM…** (`debug.attach`) from a Kotlin file attaches the same
+way to any JVM listening for a debugger.
+
+Not supported yet: conditions, hit counts and log messages on a breakpoint (such
+a breakpoint shows hollow and says so), evaluating expressions or method calls,
+hot code replace, and debugging on a remote host or in a container.
 
 ### Debugging on a remote host
 
