@@ -1,14 +1,14 @@
 ---
 title: Running & debugging
-description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, and JavaScript.
+description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript and Scala.
 category: Run & debug
 order: 1
 ---
 
 ## Running files
 
-You can run compact Java files, Python scripts and shell scripts with
-[language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
+You can run compact Java files, Python scripts, shell scripts and Scala files
+with [language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
 runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
@@ -20,6 +20,10 @@ runnable file:
   [Shell scripts](#shell-scripts)). Startup files that a shell reads rather
   than runs, such as `.bashrc`, `.profile`, `.zshrc`, `.bash_logout`,
   `.xinitrc` and `.envrc`, get no ▶.
+- a **Scala** program: the ▶ sits on an `@main def`, an `object … extends App`
+  or an object's `def main(args: Array[String])`, and on the first line of a
+  `.sc` script. A build definition (`build.sbt`, `build.mill`, `build.sc`) gets
+  none. See [Scala files](#scala-files).
 
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
@@ -47,7 +51,7 @@ another window open in its place.
 
 Beside the status, the Run window names the runtime the program runs under:
 **Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
-**Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+**Scala CLI 1.18.0 (Scala 3.9.0)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
 distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
 names one. Hover the name for the runtime's own version text and, for Java,
 the JDK's folder.
@@ -128,6 +132,32 @@ reach the script with Unix line endings.
 
 Shell scripts can't be debugged; use [Run with Trace](#run-with-trace) to see
 each line as it runs.
+
+### Scala files
+
+How a Scala file runs depends on the build it belongs to:
+
+- A file of an **sbt** build (a `build.sbt` above it) runs its main class
+  through sbt, in the sbt console of the [Output window](/docs/build-tools):
+  `sbt "runMain demo.hello"` with your arguments, from the build's root (the
+  highest folder with a `build.sbt`).
+- A file of a **Mill** build runs through Mill the same way:
+  `./mill app.runMain demo.hello`, where `app` is the module whose `src` folder
+  holds the file. The project's own `./mill` launcher is used when it has one,
+  after the same [trust](/docs/build-tools) question as for `./mvnw`.
+- A file of a **Gradle** or **Maven** build is run from that build's tool
+  window; Run says so instead of running the file on its own.
+- Any other file, and a `.sc` script, runs with **Scala CLI**:
+  `scala-cli run Main.scala -- args`. In a Scala CLI project (a folder with
+  `project.scala`), the whole folder runs, with the file's main class. Scala
+  CLI reads the `//> using` directives for dependencies and the Scala version.
+
+Scala CLI runs on the JDK chosen in Settings for builds and runs, which Editora
+passes as `JAVA_HOME`. Editora finds it as `scala-cli` on your `PATH`, then
+`scala` (the `scala` command is Scala CLI since Scala 3.5), then SDKMAN's
+`scalacli` and `scala`. When there is none, Run says Scala CLI is not installed
+instead of starting anything. The first run of a Scala version downloads its
+compiler, so it takes longer.
 
 ### Run with Trace
 
@@ -229,15 +259,17 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Java main class | a `main` in the project, via the language server or the build tool |
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with the interpreter its shebang names (or `bash`), unless **Interpreter** is set |
+| Scala (Scala CLI) | a `.scala` or `.sc` file with Scala CLI, on the configuration's JDK; its VM arguments are passed as `--java-opt` |
 | Make target | a target in a makefile |
 | NPM script | a named `package.json` script via `npm run` |
 
 The form **shows only the fields the selected type uses**. A Java main class
 has no Script / target field; a Python, shell, Make or NPM configuration has no
-Main class, Module, VM arguments or JDK. A hidden field keeps its value, so
-switching the type and back loses nothing. A Python or shell script can be
-picked with **Browse…** beside Script / target; a script inside the project is
-saved relative to the project root.
+Main class, Module, VM arguments or JDK, and a Scala one keeps only VM
+arguments and JDK of those. A hidden field keeps its value, so switching the
+type and back loses nothing. A Python, shell or Scala file can be picked with
+**Browse…** beside Script / target; a file inside the project is saved relative
+to the project root.
 
 A shell configuration also has **Interpreter** and **Interpreter options**.
 Left blank, the script's shebang decides (see [Shell scripts](#shell-scripts));
@@ -245,8 +277,9 @@ set, they replace it, for example `/opt/homebrew/bin/bash` with `-eu`. Options
 alone keep the shebang's interpreter and replace its options.
 
 Script and make configurations need **no language server**.
-Only Java configurations can be debugged; Debug on any other type says so, and
-for a shell configuration it points to [Run with Trace](#run-with-trace).
+Only Java and Scala configurations can be debugged; Debug on any other type
+says so, and for a shell configuration it points to
+[Run with Trace](#run-with-trace).
 
 ### The toolbar selector
 
@@ -344,8 +377,8 @@ file in the project serves, and it reports an error only when there isn't one.
 
 <span class="beta-pill">Beta</span>
 
-Editora debugs **Java**, **Python**, and **JavaScript (Node)** through the Debug
-Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+Editora debugs **Java**, **Python**, **JavaScript (Node)** and **Scala** through
+the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -704,6 +737,26 @@ several JVMs, for example forked test JVMs, Editora attaches to each in turn,
 as the session before it ends. **Stop** on
 such a session also ends the test or build run that started the JVM, with any
 JVMs still waiting.
+
+### Debugging Scala
+
+A file of an sbt, Mill, Gradle or Maven build is debugged by
+[Metals](/docs/lsp#scala), which has imported the build: Debug asks Metals to
+compile the file's build target and start its debug adapter, which runs the
+program on the build's classpath. Metals needs to be installed, running for the
+file, and done importing the build; otherwise Debug says so. The first session
+waits for the compile.
+
+A `.sc` script, a file outside any build, and a Scala CLI project are debugged
+by a debugger built into Editora, so there is nothing to install: the program
+runs with Scala CLI as Run runs it, with the debugger's agent passed as a
+`--java-opt`. Breakpoints bind by file name, since a Scala file's package does
+not have to match its folder. Stepping skips the standard library
+(`scala.runtime`, the collections, `Predef`). A lambda's frame reads
+`Main { lambda }`, a top-level definition's `Main.greet`, and an object's
+methods `Util.twice`. Locals, `this` and fields are shown without running any
+code in the program. Conditional breakpoints and logpoints are not supported
+there yet.
 
 ### Debugging on a remote host
 

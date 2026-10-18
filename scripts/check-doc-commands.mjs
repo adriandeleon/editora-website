@@ -29,7 +29,7 @@ if (emacsById.size < 100) {
 }
 const namespaces = new Set([...emacsById.keys()].map((id) => id.split(".")[0]));
 
-const FILE_EXT = /\.(json|md|xml|yml|yaml|toml|properties|java|ts|js|mjs|css|html|txt|log|sh|py|typ|csv|http|env|png|svg|jar|exe|app|d|mod|work|sum|scss|lock)$/i;
+const FILE_EXT = /\.(json|md|xml|yml|yaml|toml|properties|java|ts|js|mjs|css|html|txt|log|sh|py|typ|csv|http|env|png|svg|jar|exe|app|d|mod|work|sum|scss|lock|scala|sbt|mill|sc)$/i;
 const ID_SHAPE = /^[a-z][A-Za-z]*(\.[A-Za-z][A-Za-z0-9]*)+$/;
 const CHORD_SHAPE = /^(?:(?:[CMS]|Cmd)-)*[^\s-]+(?: (?:(?:[CMS]|Cmd)-)*[^\s-]+)*$/;
 

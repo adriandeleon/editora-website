@@ -1,6 +1,6 @@
 ---
 title: Build tools
-description: Maven, npm, Cargo, Go, and Gradle each get an IntelliJ-style tasks tool window that streams to a shared Output console, plus a test runner with live results.
+description: Maven, npm, Cargo, Go, Gradle, sbt, Mill and Scala CLI each get an IntelliJ-style tasks tool window that streams to a shared Output console, plus a test runner with live results.
 category: Run & debug
 order: 3
 ---
@@ -37,9 +37,17 @@ the compile step before the first test reports.
 | Cargo | `Cargo.toml` | Standard subcommands, `[[bin]]` / `[[example]]` targets, and a `--release` toggle |
 | Go | `go.mod` / `go.work` | Standard subcommands over the whole module |
 | Gradle | `build.gradle[.kts]` | Common tasks, plus *Load all tasks…* |
+| sbt | `build.sbt` | Common tasks (`compile`, `test`, `run`, `clean`, `package`, …), plus *Load all tasks…*: each subproject's `compile`, `test` and `run` |
+| Mill | `build.mill` (or a Mill 0.x `build.sc`) | `__.compile`, `__.test`, `clean` and `resolve _`, plus *Load all tasks…*: each module's `compile` and `run`, and each test module |
+| Scala CLI | `project.scala` | `compile`, `run`, `test`, `package`, `fmt` and `clean` over the project folder |
 
-Maven and Gradle prefer the project's own `./mvnw` / `./gradlew` wrapper, falling
-back to `mvn` / `gradle` on your `PATH`. npm uses the detected package manager
+Maven, Gradle and Mill prefer the project's own `./mvnw` / `./gradlew` /
+`./mill` launcher, falling back to `mvn` / `gradle` / `mill` on your `PATH`. sbt
+runs `sbt` and Scala CLI `scala-cli` from your `PATH`; sbt runs each task as one
+batch command (`sbt compile`), which with sbt 2 starts sbt's server in the
+background and keeps it for the next task. *Load all tasks…* runs the tool once
+to list the build (`sbt projects`, `mill resolve __.compile`), which takes a
+while the first time. npm uses the detected package manager
 (npm / yarn / pnpm / bun) from the `packageManager` field or the lockfile.
 
 A wrapper is a script the repository ships, and it runs with your privileges.
@@ -55,7 +63,8 @@ Tools → Default JDK**. The selector finds installed JDKs in standard platform
 locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 **System default** keeps using `JAVA_HOME` / `PATH`. The choice supplies both
 `JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
-resolution, Java Run and Debug, and before-launch commands. A saved run
+resolution, Java Run and Debug, and before-launch commands, and the same JDK
+runs sbt, Mill, Scala CLI and Scala's Run and Debug. A saved run
 configuration can override it for one project or launch.
 A Java run configuration's before-launch command runs in the project root,
 whatever the configuration's working directory, so a `mvn compile` or
@@ -170,7 +179,8 @@ a line between them saying how much was left out.
 
 Results are parsed per tool: Maven and Gradle read the JUnit XML reports as they
 are written, Go uses `go test -json`, npm reads TAP when the reporter emits it,
-and Cargo parses libtest output. Where a structured format isn't available, the
+and Cargo parses libtest output. sbt, Mill and Scala CLI tests are not read
+yet: their output stays in the Output console. Where a structured format isn't available, the
 window says so and points at the Output console.
 
 For an unfiltered JVM run, Editora scans the project's test sources up front and
