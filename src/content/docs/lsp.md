@@ -305,6 +305,14 @@ check) drive the status-bar loading bar and show what they are doing, with a
 title and percentage, in the echo area. Each message starts with the name of the
 server it comes from, for example `bash-language-server: …`.
 
+Startup ends with a line that says it is done, such as
+`jdtls: Loaded and ready`. It appears once the server is ready and has had no work outstanding for
+a moment; for jdtls that is after the project import, not at its own earlier
+"Ready". After that, background work (diagnostics after an edit, a search) is
+shown only when it is still running after that moment, and work that was shown
+ends with another ready line, so the last line never reads as a job left
+unfinished. A line that repeats the one just shown is skipped.
+
 External file changes are forwarded to the running servers, so a server's
 project model stays current after a `git checkout`, a branch switch, a CLI build
 or an edit in an external editor. In a window without a project, and for a
@@ -375,7 +383,7 @@ for a host in Settings → Remote instead (see
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
-covered through four channels, picked per server:
+covered through one of these channels, picked per server:
 
 - **npm** packages (Astro, JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
   Python/Pyright), needing Node.
@@ -383,6 +391,9 @@ covered through four channels, picked per server:
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
 - **Binary** releases downloaded per OS/architecture (clangd, lemminx,
   terraform-ls, Lua), extracted into your config folder.
+- A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
+  into your config folder. A server installed earlier keeps its version until
+  you install it again.
 - A **pinned distribution** for the Kotlin server, checked against its published
   checksum. It is about 370 MB to download and about 1.2 GB once installed,
   because it brings its own Java runtime, so Editora asks before it starts.

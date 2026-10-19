@@ -10,4 +10,4 @@ Extend Editora without forking it. A plugin adds commands, keybindings, tool win
 
 Install from the built-in **registry** of 19 plugins (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
 
-Off by default. Plugins aren't sandboxed, so only install ones you trust.
+Off by default. Plugins aren't sandboxed, so only install ones you trust, and Editora asks first: the consent dialog lists a plugin's code, its external commands and the chords it replaces, an install or update is staged and put in place only once you agree, and a plugin whose code, commands or chords differ from what you agreed to waits until you agree again. A plugin's commands stay in its own namespace, so it cannot replace a built-in one. Start with `--disable-plugins` to run a session without any, and the [Doctor](/features/doctor) lists any plugin that failed to load or start, or started slowly.

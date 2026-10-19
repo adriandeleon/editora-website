@@ -270,3 +270,15 @@ A bundled **technical-terms dictionary** (`config`, `async`, `middleware`,
 `kubernetes`, and the like, plus common Python words such as `kwargs`,
 `asyncio`, `argparse` and `noqa`) keeps code-adjacent words from being flagged
 in any language; toggle it in Settings or with `view.toggleTechnicalDictionary`.
+Its over 2,000 terms cover Git (`worktree`, `unstaged`, `rebasing`), editor and
+UI words (`submenu`, `breakpoint`, `monospace`), shell tools (`ripgrep`, `fzf`),
+Unix and C (`inode`, `glibc`, `malloc`), cryptography, fonts and graphics
+(`harfbuzz`, `grayscale`), the Java toolchain (`jlink`, `jpackage`), language
+servers, web, devops and AI names, the -ed and -ing forms of the words it lists
+(`deserialized`, `symlinking`), and British spellings (`tokenised`). It leaves
+out short words a typo could make, such as "nat" for "not" or "elt" for "let".
+
+A word's possessive is accepted when the word itself is: "someone else's" and
+"another's" pass because the dictionary spells "else" and "another". A word in
+your personal dictionary or the technical dictionary also accepts its plural
+(`configs`, `regexes`), so only list the base form.

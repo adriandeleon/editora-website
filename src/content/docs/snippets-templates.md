@@ -100,6 +100,43 @@ Several of these are named after a keyword (`try`, `if`, `for`). When the
 popup lists a snippet that only repeats the word you typed, Enter ends the line
 as usual; press Tab to expand the snippet.
 
+### Java snippets
+
+The bundled Java snippets cover:
+
+- **Declarations:** `class`, `interface`, `record` and `enum` named after the
+  file, `sealed` (a sealed interface with two record implementations),
+  `package` (the package of the folder under `src/main/java` or
+  `src/test/java`), `import`, `ctor` (a constructor for the file's class),
+  `main` (also `psvm`) and `cmain` (the `void main()` of a compact source
+  file).
+- **Methods and fields:** `method`, `static_method` and `field` (each with a
+  choice of access modifier), `private_method`, `public_method`,
+  `protected_method`, `private_static_method`, `public_static_method`,
+  `private_field`, `protected_field`, `public_field`, `const` (also `psf`, a
+  `static final` constant) and `new`.
+- **Output and logging:** `sysout` (also `sout`), `soutv` (a value with its
+  name), `souf` (also `printf`), `syserr` (also `serr`), `ioprintln` (also
+  `iop`) and `ioreadln` for JDK 25's IO class, `logger` (a `System.Logger`
+  field, with no dependency) and `slf4j` (an SLF4J logger field with its
+  imports).
+- **Statements:** `if`, `ifelse`, `ifnull` (also `ifn`), `ifnotnull` (also
+  `inn`), `instanceof` (also `inst`, with a pattern variable), `switch` (with
+  arrow cases), `switchexpr` (also `sw`), `fori`, `forr` (counting down),
+  `foreach` (also `iter`), `formap` (over a map's entries), `while`,
+  `dowhile`, `try_catch`, `try_finally`, `try_resources` (also `twr`), `throw`
+  (also `thr`) and `synchronized`.
+- **Expressions and threads:** `lambda`, `stream` (a filter, map and toList
+  pipeline), `textblock` (also `tb`), `vthread` (starts a virtual thread) and
+  `vexecutor` (a virtual-thread-per-task executor, closed when done).
+- **JUnit 5:** `test`, `ptest` (a parameterized test), `beforeeach`,
+  `aftereach` and `assertthrows`.
+
+The Java language server offers templates of its own under some of the same
+names (`sysout`, `fori`, `try_catch` and others). A server template named like
+one of your snippets, bundled or your own, is left out of the completion list,
+so the popup shows a single row for the trigger: the snippet that Tab expands.
+
 ### Snippet variables
 
 A variable is written `$NAME` or `${NAME}`, and `${NAME:default}` supplies a

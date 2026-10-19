@@ -3,7 +3,7 @@ title: "Language servers (LSP)"
 group: "Code intelligence"
 order: 2
 beta: true
-summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 23 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
+summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
 ---
 
 Editora supports the **Language Server Protocol**, both the requests that read your code and the ones that change it.
@@ -32,7 +32,7 @@ Twenty-six servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScrip
 
 **Python** uses Pyright, told the project's interpreter: an activated environment, a `.venv` or `venv` in the project, or the one you pick. A status-bar item on Python files shows it and why (`Python 3.13.5 (.venv)`); click it or run **Python: Select Interpreter** to choose another per project. The same interpreter is used by Run, Debug and the tests, also on SSH hosts, in WSL and in containers. Go to Definition into the standard library opens it read-only, Organize Imports sorts a file's imports, untitled Python buffers are analysed too, and Python keeps its server up to 50,000 lines.
 
-Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed. A Java script without a `.java` name (a `java --source 25` shebang file) gets completion, hover, the outline and syntax errors from jdtls too.
+Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. Startup ends with a "<server>: Loaded and ready" line in the status bar (for jdtls, once the project import is done). **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed. A Java script without a `.java` name (a `java --source 25` shebang file) gets completion, hover, the outline and syntax errors from jdtls too.
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 

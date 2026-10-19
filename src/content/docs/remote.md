@@ -37,12 +37,60 @@ each run, then runs, builds and debugs the program in that copy.
 | Open a remote file by URI | `remote.openFile` |
 | Disconnect | `remote.disconnect` |
 
-`remote.connect` opens a form for host, port, user, and authentication. On
-success the remote folder opens as a [project in its own
-window](#remote-folders-as-projects), with the Project tool window showing its
-tree. The window you connected from is left as it was. With projects turned off
-(Settings → Workspace), the folder is mounted as the Project tree of the
-current window instead. Connections are remembered in `connections.json`.
+`remote.connect` (*Remote: Connect to SFTP…*) opens a form for host, port,
+user, the login method, and the folder to open (blank is the home folder). The
+form has no password field: a password, a key's passphrase or a 2FA code is
+asked for while the login runs, when the server or the key needs it (see
+[Authentication](#authentication)). On success the remote folder opens as a
+[project in its own window](#remote-folders-as-projects), with the Project tool
+window showing its tree. The window you connected from is left as it was. With
+projects turned off (Settings → Workspace), the folder is mounted as the
+Project tree of the current window instead. Connections are remembered in
+`connections.json`.
+
+### Hosts from your SSH config
+
+When `~/.ssh/config` names hosts, the form has a **From ssh config** button
+listing them: every single host name of a `Host` line, in file order (patterns
+such as `*.example.com` are left out). Pick one, or type a name the config
+knows, and the form shows below the fields what the config says about it, as
+`From ~/.ssh/config: HostName … · ProxyJump … · IdentityFile …`, and fills in
+its **User** and **Port** until you type in those fields yourself.
+
+The login then follows the config the way `ssh` does:
+
+- **HostName**, **Port** and **User** decide where it goes and as whom.
+- **ProxyJump** connects through the jump host first. The jump host's key is
+  checked against `known_hosts` too, and asked about the same way if it is
+  new.
+- **IdentityFile** keys are offered by an Automatic login, before the default
+  keys; **IdentitiesOnly yes** leaves the default keys out.
+- **IdentityAgent** chooses the [SSH agent](#ssh-agent).
+- **Include** lines are followed, globs too (`Include conf.d/*`, on Windows as
+  well). A relative name is under `~/.ssh`, and a glob's files are read in
+  name order.
+
+`Match` sections are skipped, since Editora cannot evaluate their conditions,
+and the rest of the file is read; options set only in a `Match` section do not
+apply. `ProxyCommand` is not supported. A config that cannot be read at all is
+ignored, and the connect goes on as if there were none. The file, and every
+file it includes, is read again when it changes.
+
+### When a connect fails
+
+A connect that fails says why, in a dialog with advice and the underlying
+message:
+
+- **Could not reach** the host: no such name, nothing listening on the port,
+  or no route from this network.
+- The host **did not answer in time**.
+- **The host key of** the host **has changed**: see
+  [Host-key verification](#host-key-verification).
+- The host **did not accept the login**: none of the ways tried were accepted.
+
+Anything else reads **Could not connect to** the host, with the server's
+message. Cancelling a login question, or declining a new host's key, only says
+**Login to** the host **cancelled** in the status bar.
 
 **Disconnect** closes every connection of the window, not only the mounted one,
 and closes the SSH connection itself rather than only its file channel. When
@@ -56,6 +104,14 @@ projects in the project switcher (`project.switch`), and it has its own window,
 its own saved tabs and layout, and its own [trust](/docs/workspace#trusted-folders).
 A folder on a server and a local folder with the same path are trusted
 separately.
+
+Connecting to a remote folder from another window logs in once. The project's
+window takes over
+the connection you just logged in with, so a password or passphrase is asked
+for once, and a server that wants a one-time 2FA code needs only one. Closing
+the window you connected from leaves the project's window connected. Only when
+the window you connected from still has tabs open on that host does it keep its
+connection, and the project's window then logs in for itself.
 
 Reopening a remote project, from the project switcher or when Editora restores
 its windows at startup, opens its window and brings up the connect form filled
@@ -82,8 +138,8 @@ Saved sites have three surfaces beyond the palette picker:
   and which tool commands to use there.
 - A **Remote Sites** quick-connect list on the [Welcome page](/docs/workspace).
 
-Picking a site opens the connection form pre-filled; your password or key
-passphrase is still prompted each time and is never stored.
+Picking a site opens the connection form pre-filled. A password or key
+passphrase is asked for during each login that needs it, and is never stored.
 
 On the Settings page, each field is saved when you leave it or press Enter;
 there is no Save button. A value that cannot work turns its field red, with the
@@ -93,29 +149,95 @@ the server's name or address (no spaces, no `user@`, no port and no `sftp://`),
 and **User** takes no spaces, `@` or `:`. A **Key file** written as
 `~/.ssh/...` is saved with your home folder filled in, and **Browse…** opens
 in `~/.ssh`. A key file that cannot be read is marked with a warning but kept,
-since the key may be on a drive that is not mounted yet. **Connect…** opens the
-connection form for the selected site. **Remove** asks
+since the key may be on a drive that is not mounted yet. **Connect…** saves
+what is typed and opens the connection form for the selected site. **Remove** asks
 **Delete “*site*”?** first; Cancel is the default button.
 
 ## Authentication
 
-Each connection uses the one method you pick in the form: your default `~/.ssh`
-keys, a specific private key file, or a password. Only that method is tried;
-there is no fallback from one to the next. Secrets are never stored, only
-the connection details (host, user, last path, and which method to use). The
-password or passphrase you type is never written to disk, and a password is
-removed from the SSH session as soon as authentication finishes.
+The form's **Authentication** choice decides what the login may use:
+
+- **Automatic (like ssh)**, the default, logs in the way `ssh` does: first the
+  keys your [SSH agent](#ssh-agent) holds, then the `IdentityFile` keys
+  `~/.ssh/config` names for the host, then the default keys in `~/.ssh` that
+  exist (`id_ed25519`, `id_ecdsa`, `id_rsa`, unless the config says
+  `IdentitiesOnly yes`), and then a password or the server's own questions, if
+  the server offers those.
+- **Private key file** offers only that key: no agent and no other key file. A
+  server that asks for a 2FA code after the key still gets its questions.
+- **Password** logs in with a password and the server's own questions, and
+  offers no key at all.
+
+Secrets are never stored, only the connection details (host, user, last path,
+and which method to use). A password or passphrase you type is never written
+to disk, and it and the keys are dropped from the SSH session as soon as the
+login finishes.
 
 Keys of every type `ssh-keygen` makes work, ed25519 (its default) included, and
 so does a server that offers only an ed25519 host key.
+
+### Questions during a login
+
+What a login needs is asked for in a **Log In** dialog, at the moment the
+server or the key needs it, as `ssh` asks at the terminal:
+
+- **Password for** *user@host*, when the server wants a password.
+- **Passphrase for the key** *file*, only when a key turns out to be encrypted
+  and is about to be used.
+- The server's own questions, such as a 2FA or one-time code or a Duo answer,
+  in its own words, each in its own field. An answer is hidden as you type
+  unless the server says it may be shown.
+
+An answer that is not accepted is asked for again, and the dialog says **That
+was not accepted. Try again.** A password and each key's passphrase get three
+tries. Cancelling a passphrase skips that key and the login goes on with the next way
+in. Cancelling a password or a server's question ends the login, and only the
+status bar says so. A question left unanswered for two minutes counts as
+cancelled. A server that asks for a new password because the old one expired
+is not supported: the login fails.
+
+The time you spend answering, the host-key question and a security key's touch
+included, does not count toward the login's time limit, so a code read off a
+phone does not time the connect out.
+
+### SSH agent
+
+An Automatic login uses the keys your SSH agent holds, before any key file:
+`ssh-agent`, 1Password, Secretive, gpg-agent, or Windows' OpenSSH agent. So a
+key on a security key (FIDO) or a smartcard, or one kept in a password
+manager, logs in, and a key the agent has unlocked needs no passphrase.
+Waiting for a security key's touch or a password manager's approval does not
+time the login out.
+
+The agent is found as `ssh` finds it:
+
+1. The host's `IdentityAgent` in `~/.ssh/config`, when it names one: a socket
+   path (it may start with `~` and use `%d` for your home folder and `%u` for
+   your user name), `SSH_AUTH_SOCK`, or a variable such as `$MY_AGENT_SOCK`.
+   `IdentityAgent none` turns the agent off for that host.
+2. Otherwise `$SSH_AUTH_SOCK`.
+3. Otherwise, on Windows, the OpenSSH agent's pipe
+   (`\\.\pipe\openssh-ssh-agent`), which 1Password can serve too.
+
+An agent that is not running is passed over quietly, and the login goes on with
+the key files. When an Automatic login goes through a `ProxyJump` jump host,
+the jump host is logged in with the agent too. Private key file and Password
+logins never ask the agent, and the agent is never forwarded to the server.
 
 ## Host-key verification
 
 Editora verifies the server's host key against `~/.ssh/known_hosts`, the same
 file `ssh` uses, so a host you've already accepted at the terminal connects with
 no prompt. A host you've never connected to shows its fingerprint and asks you
-first. A host whose key has **changed** is refused outright, without any button to
+first (**Unknown Host Key**); **Connect** saves the key to `known_hosts`, so you
+are not asked again, and declining ends the connect with only a note in the
+status bar. Through a `ProxyJump`, the jump host's key is checked the same way.
+
+A host whose key has **changed** is refused outright, without any button to
 wave it through, since a changed key is how an impersonation attempt looks.
+The error says so, and gives the command that removes the old entry
+(`ssh-keygen -R host`, or `ssh-keygen -R [host]:port` for a port other than
+22) for when the server was reinstalled or its key replaced on purpose.
 
 ## What works remotely, and what doesn't
 
@@ -256,6 +378,12 @@ open, save, list, and search code paths work unchanged. The transport is Apache
 MINA SSHD. Saves use a server-side atomic rename when the host supports it. If a
 safe replacement cannot be completed, Editora retains the previous remote copy
 instead of risking a partial file.
+
+Every window connects through one shared SSH client, which is what lets a
+logged-in connection move to the project's window; each window still checks
+host keys and asks its login questions itself. Editora reaches the SSH agent
+over its Unix socket or, on Windows, its named pipe with no native library,
+and offers the server no agent forwarding.
 
 ## Tools in a container
 

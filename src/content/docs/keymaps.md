@@ -88,7 +88,8 @@ buttons:
 
 - **Record** captures a new chord. Multi-key sequences like `C-x C-s` work.
   The field shows the chord in the active keymap's notation (`Ctrl+Shift+K`,
-  `⇧⌘K`, or `C-S-k` in the Emacs keymap). Enter saves it and Esc cancels.
+  `⇧⌘K`, or `C-S-k` in the Emacs keymap), and so do the question about a
+  clashing chord and the status-bar message. Enter saves it and Esc cancels.
 - **Reset** restores that command's default chord. If another command has taken
   that chord, Editora asks first, because the other command loses it.
 - **Remove** unbinds the command. Delete or Backspace on a row does the same.

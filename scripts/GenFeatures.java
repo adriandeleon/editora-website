@@ -220,15 +220,15 @@ Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and i
 """),
     new Feature("snippets", ED, 1, false,
         "Snippets",
-        "Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for 30 languages.",
+        "Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for 32 languages.",
         """
 Expand boilerplate with interactive templates. Type a prefix and press **Tab**, or pick from the **Snippet: Insert…** list (`C-c i`).
 
 Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields, mirrors update live, choice fields show a dropdown, and `$0` is the final caret. Bodies use the standard VS Code / TextMate syntax, `$1`, `${1:default}`, mirrors, `${1|a,b|}` choices, and variables (`$TM_FILENAME`, `$CLIPBOARD`, date/time, the selection…).
 
-While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running. In Markdown and plain text, a trigger that is an ordinary word expands only when it is alone on its line, and a block snippet (heading, table, alert…) only at the start of a line; mid-sentence, the completion popup still offers it. Shell snippets follow the script's `#!` line: under `sh` or `dash` they write `[ ]` tests instead of bash's `[[ ]]`. Python snippets cover functions, methods, classes, `if`/`for`/`while`/`with`, `try`/`except` blocks, `match`/`case` and the `__main__` guard, and `#env` writes a `python3` shebang. In shell and Python, Enter on a completion that only repeats the word just typed (`else`, `case`, `try`…) starts a new line; Tab still expands the snippet.
+While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running. In Markdown and plain text, a trigger that is an ordinary word expands only when it is alone on its line, and a block snippet (heading, table, alert…) only at the start of a line; mid-sentence, the completion popup still offers it. Shell snippets follow the script's `#!` line: under `sh` or `dash` they write `[ ]` tests instead of bash's `[[ ]]`. Python snippets cover functions, methods, classes, `if`/`for`/`while`/`with`, `try`/`except` blocks, `match`/`case` and the `__main__` guard, and `#env` writes a `python3` shebang. Java snippets cover declarations named after the file, methods and fields by access modifier, `sysout`, `soutv` and `printf` output and loggers, statements such as `ifnull`, `switchexpr`, `foreach` and `try_resources`, streams, text blocks, virtual threads and JUnit 5 tests; a language server's own template named like a snippet (jdtls's `sysout`, `fori`…) is left out of the completion list. In shell and Python, Enter on a completion that only repeats the word just typed (`else`, `case`, `try`…) starts a new line; Tab still expands the snippet.
 
-Snippets ship for 30 languages, and a bundled snippet can be disabled; add your own in **Settings → Snippets**, for any language, or in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
+Snippets ship for 32 languages, and a bundled snippet can be disabled; add your own in **Settings → Snippets**, for any language, or in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
 """),
     new Feature("smart-indentation", ED, 2, false,
         "Smart indentation",
@@ -264,7 +264,7 @@ Misspelled words get a red wavy underline; right-click for **suggestions** (clic
 
 Commands move to the next or previous misspelling and correct, add or ignore the word at the caret, and the status bar shows the dictionary in use.
 
-It's powered by Apache Lucene's pure-Java **Hunspell** engine, no native dependency. Ships **English (en_US, en_GB)**, **Spanish**, and **French**; pick a dictionary per file with *Spell Check: Set Language…*, or set a default in Settings → Spell Check. Your added words live in `dictionary.txt`. A bundled technical dictionary keeps common programming words (`async`, `kubernetes`, Python's `kwargs` and `noqa`) from being flagged.
+It's powered by Apache Lucene's pure-Java **Hunspell** engine, no native dependency. Ships **English (en_US, en_GB)**, **Spanish**, and **French**; pick a dictionary per file with *Spell Check: Set Language…*, or set a default in Settings → Spell Check. Your added words live in `dictionary.txt`. A bundled technical dictionary of over 2,000 terms keeps programming words (`async`, `kubernetes`, `worktree`, `ripgrep`, Python's `kwargs` and `noqa`) from being flagged, with their plurals and possessives, and the possessive of any dictionary word (\"someone else's\") is accepted.
 """),
     new Feature("editorconfig", ED, 6, false,
         "EditorConfig",
@@ -349,7 +349,7 @@ Brackets inside strings and comments are skipped, as is the `)` that ends a shel
 """),
     new Feature("lsp", CI, 2, true,
         "Language servers (LSP)",
-        "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 23 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
+        "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
         """
 Editora supports the **Language Server Protocol**, both the requests that read your code and the ones that change it.
 
@@ -377,7 +377,7 @@ Twenty-six servers are supported: Java, Astro (`astro-ls`), TypeScript/JavaScrip
 
 **Python** uses Pyright, told the project's interpreter: an activated environment, a `.venv` or `venv` in the project, or the one you pick. A status-bar item on Python files shows it and why (`Python 3.13.5 (.venv)`); click it or run **Python: Select Interpreter** to choose another per project. The same interpreter is used by Run, Debug and the tests, also on SSH hosts, in WSL and in containers. Go to Definition into the standard library opens it read-only, Organize Imports sorts a file's imports, untitled Python buffers are analysed too, and Python keeps its server up to 50,000 lines.
 
-Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed. A Java script without a `.java` name (a `java --source 25` shebang file) gets completion, hover, the outline and syntax errors from jdtls too.
+Document sync is incremental, semantic highlighting transfers only what changed where the server supports token deltas, a crashed server restarts itself, and a server shuts down a few minutes after its last file closes. Startup ends with a "<server>: Loaded and ready" line in the status bar (for jdtls, once the project import is done). **LSP: Clear Java Index Caches** deletes the Java indexes no running server is using and reports the space freed. A Java script without a `.java` name (a `java --source 25` shebang file) gets completion, hover, the outline and syntax errors from jdtls too.
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
@@ -464,7 +464,7 @@ A configuration can name a command to run first, such as a build or a codegen st
 - Each configuration **becomes a real command**, so it appears in the palette by name and can be given its own keyboard shortcut, the same way [saved macros](/features/macros) and [external tools](/features/external-tools) already work.
 - **Add** prefills from the file you are looking at: a Python, Node.js, shell, Groovy or Clojure script becomes a configuration for that script; a Java file gives the main class (or the one your Gradle build declares), the name from that class, and the cursor in whichever field still needs you. *Save Run Configuration* works for Python, Node.js, shell, Groovy and Clojure scripts too. A script's folder goes into Working directory (a Node.js script's stays blank, so it runs from its package folder), so the saved configuration runs as its gutter ▶ does.
 - The toolbar group **only appears in a project where you could launch something**, so a project of Markdown notes doesn't carry a dropdown that can never fill. Anything you have already saved keeps it visible regardless.
-- The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python, Node.js, shell, Groovy and Clojure scripts can be picked with **Browse…**, and an npm configuration's **Browse…** lists the `package.json` scripts.
+- The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python, Node.js, shell, Groovy and Clojure scripts can be picked with **Browse…**, a Java configuration's Main class **Browse…** takes a `.java` file and fills in its fully qualified class name, and an npm configuration's **Browse…** lists the `package.json` scripts.
 - Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
 """),
     new Feature("debugging", RD, 3, true,
@@ -474,7 +474,7 @@ A configuration can name a command to run first, such as a build or a codegen st
 Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure** and **Scala** (through Metals for a build's file, Editora's own debugger for a script) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
 - Breakpoints (conditional, with a hit count, and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line** (Python)
-- A threads + call-stack view and a lazy variables tree with **set-value**
+- A threads + call-stack view and a lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme
 - **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
 - A hover **value popup** that unfolds objects, arrays and collections as a tree
 - **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start)
@@ -791,7 +791,7 @@ Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* open
 
 Saved sites have three surfaces beyond the palette: a **Remote Sites** tool window (`M-g r`) with New / Connect / Remove, a **Settings → Remote** page to manage them, and a quick-connect list on the Welcome page. Picking a site opens the form pre-filled. On the Settings page each field saves as you leave it and a value that cannot work (a port above 65535, a host with spaces) is refused with the reason; removing a site asks first and can also forget the host's permission to run commands.
 
-Auth supports your default `~/.ssh` keys, a key file, or a password; connections are remembered (without secrets). Nothing connects until you add a site.
+Logins work the way `ssh` does: **Automatic (like ssh)** uses your SSH agent's keys (`ssh-agent`, 1Password, Secretive, gpg-agent or Windows' OpenSSH agent, so keys on a security key or a smartcard work), then the keys `~/.ssh/config` names, then your default `~/.ssh` keys; or pick one key file, or a password. A password, passphrase or 2FA code is asked for while the login runs. The connect form offers the hosts in `~/.ssh/config` and follows its HostName, User, Port, IdentityFile, IdentitiesOnly, ProxyJump and Include lines. Connecting a remote folder from another window logs in once, and a failed connect says why. Connections are remembered without secrets. Nothing connects until you add a site. See [Authentication](/docs/remote#authentication).
 
 On a host you allow to run commands (Editora asks once per host; withdraw it in Settings → Remote), the tools Editora drives run on the host over the same SSH connection: Git and `gh`, ripgrep for Find in Files, Run, builds and tests, language servers, debuggers for Python, JavaScript and Java, and a watch for outside changes. Each host can name its own tool commands. It works with OpenSSH (Linux, macOS) and dropbear servers, and with ed25519 keys. See [Remote files](/docs/remote).
 
@@ -899,7 +899,7 @@ Editora has optional AI, off by default and yours to configure.
 
 **AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. It works in the project of its own window, and its file reads and writes stay inside that folder. The agent is a user-installed external tool, never bundled.
 
-**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Each provider keeps its own key, endpoint and model. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
+**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Each provider keeps its own key, endpoint and model (Codex has its own model too), so switching provider never sends one provider's key to another's server. Keys typed into Settings are kept in the system keychain (macOS Keychain, Windows Credential Manager, Secret Service), or in `settings.json` where there is none. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
 """),
     new Feature("themes-fonts", CE, 1, false,
         "Themes & fonts",
@@ -931,7 +931,7 @@ Extend Editora without forking it. A plugin adds commands, keybindings, tool win
 
 Install from the built-in **registry** of 19 plugins (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
 
-Off by default. Plugins aren't sandboxed, so only install ones you trust.
+Off by default. Plugins aren't sandboxed, so only install ones you trust, and Editora asks first: the consent dialog lists a plugin's code, its external commands and the chords it replaces, an install or update is staged and put in place only once you agree, and a plugin whose code, commands or chords differ from what you agreed to waits until you agree again. A plugin's commands stay in its own namespace, so it cannot replace a built-in one. Start with `--disable-plugins` to run a session without any, and the [Doctor](/features/doctor) lists any plugin that failed to load or start, or started slowly.
 """),
     new Feature("zen-mode", CE, 3, false,
         "Zen mode",
@@ -969,7 +969,7 @@ The other three ways to run the editor are [Zen mode](/features/zen-mode), [Simp
         """
 One toggle strips the editor to the essentials (hiding the extra toolbar groups, the tool-window stripe, the breadcrumb, the **entire gutter** (line numbers, fold chevrons, and all markers), and the minimap) and turns off the heavier features (LSP, debugging, Git, multiple cursors) for a calm, minimal surface.
 
-The [menu bar](/features/menu-bar) stays, **simplified rather than hidden**, with File, Edit, Find, View and Help. The menus that go are the ones for features the mode switches off, which would otherwise be entirely greyed out. The Simple mode toggle stays in that reduced View menu, so anyone who entered the mode from there can leave it the same way.
+The [menu bar](/features/menu-bar) stays, **simplified rather than hidden**, with File, Edit, Find, View and Help. The menus that go are the ones for features the mode switches off, which would otherwise be entirely greyed out. The Simple mode toggle stays in that reduced View menu, so anyone who entered the mode from there can leave it the same way. The right-click menus are trimmed the same way: the tab, editor, Project tree and preview menus keep saving, editing, printing, closing and file management, and leave out Git, Local History, Run, Debug and the language-server, build and AI items. Turning the mode off brings every entry back.
 
 Toggle it from Settings → Interface → Modes, the toolbar, the palette, or the `--simple` CLI flag (session-only). Toggling off restores everything exactly.
 
@@ -1031,11 +1031,11 @@ Every tool you define becomes its own palette command (and is bindable to a key)
 Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, signing in with your own Git credential helper or SSH key; a repository URL with a password or token in it is refused, and there is no Editora account or server.
 
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
-- It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand.
+- It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand, and a running sync can be cancelled until it starts writing files on this computer.
 - Changes **merge entry by entry**, so two computers that each added a snippet keep both. If the same entry changed on two computers, the one that syncs keeps its version and the other stays in the repository history.
 - With several accounts in the GitHub CLI, sync finds the one that can read the repository and keeps using it across `gh auth switch`; Editora never sees a token.
 - Files a sync replaces are first copied to a backups folder in the config directory.
-- Automatic syncs never prompt. A failing sync shows as "Sync ⚠" in the status bar.
+- Automatic syncs never prompt. A failing sync shows as "Sync ⚠" in the status bar, and Settings → Sync shows a Connected / Not connected / Sync failing pill.
 
 Preferences (`settings.json`), keymaps, macros and themes are **not** synced. See the [Settings sync guide](/docs/settings-sync).
 """),

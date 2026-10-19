@@ -501,6 +501,13 @@ a script inside the project is saved relative to the project root. A Clojure
 configuration with no working directory runs in its project's folder. For an
 npm configuration, **Browse…** lists the scripts in the `package.json` instead.
 
+A Java main class configuration has **Browse…** beside **Main class**: pick a
+`.java` file and its fully qualified class name is filled in, so
+`src/main/java/test/App.java` gives test.App. The name comes from a `main`
+method the file declares, or else from the file's package and name. A
+configuration still named "New Configuration", or named after the class it
+launched before, is renamed after the new class; a name you typed is kept.
+
 A **Node.js script** configuration has the script, **Node.js arguments** (such
 as `--max-old-space-size=4096`), **Interpreter**, program arguments and
 environment. Left blank, **Interpreter** uses the Node.js that Run uses (see
@@ -680,6 +687,13 @@ values** appear after each line and hovering a variable shows its value.
 Hovering an attribute shows the whole expression: the `x` of `p.x` shows
 `p.x`, not a variable named `x`. Hovering stops at a call or an index, so it
 never runs code.
+
+In Variables and watches, each row's name, value and type are coloured like
+code in the current editor theme: strings, numbers, constants such as `true`,
+`null` and `None`, and type names, including each element of a list or dict
+value. A watch that cannot be evaluated shows the debugger's message in red
+italics instead.
+
 Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
 message** (which turns it into a logpoint that logs and never suspends), and an

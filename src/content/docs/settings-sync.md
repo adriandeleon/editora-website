@@ -75,9 +75,26 @@ With **Sync automatically** on, Editora syncs:
 demand. A file you edit by hand in the config folder is picked up by the next
 timed sync.
 
-The **Status** row shows when the last sync ran and what it did, for example
-"3 received, 1 sent". Changes that arrive are applied to every open window
-without a restart.
+While a sync runs, **Cancel** on the Sync page stops it, up to the moment it
+starts writing the merged files on this computer. A cancelled sync changes
+nothing here, and the next one starts afresh. Once the files are being
+written it is too late: the page says so and the sync finishes.
+
+The **Status** row starts with a pill:
+
+- green **Connected**, with when it last synced (*synced 5 min ago*, or *not
+  synced yet*);
+- amber **Not connected**: sync is not set up or is turned off, another
+  Editora on the same config folder does the syncing, or the repository could
+  not be reached and the next sync retries by itself;
+- red **Sync failing**: it needs you, for example because the sign-in was
+  refused, the repository is not there, `git` is missing, or a large removal
+  waits for **Sync Anyway**.
+
+While a sync runs, the pill adds *syncing…*. The line under it gives the
+reason a sync failed, or what the last one did, for example "3 received,
+1 sent". Changes that arrive are applied to every open window without a
+restart.
 
 ## How changes merge
 
