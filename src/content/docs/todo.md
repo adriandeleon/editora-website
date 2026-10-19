@@ -13,8 +13,9 @@ IntelliJ-style, and collects them in a **TODO** tool window. It's on by default.
 - Matches are highlighted inline and listed in the **TODO** tool window
   (`tool.todo`, `M-g o`), grouped by file. Double-click a result to jump to it.
 - In a project window, the tool window scans the project's tree, plus any open
-  files outside it. It skips what `.gitignore` excludes while **Exclude
-  .gitignore files and folders from search** is on (Settings → Search).
+  files outside it. It skips what `.gitignore` excludes, and every
+  `node_modules` folder, while **Exclude .gitignore files and folders from
+  search** is on (Settings → Search).
 - In the **No Project** window, the tool window lists only the current tab and
   keeps up as you edit it. It is hidden, stripe button included, while the tab
   has no TODOs; an unsaved new file counts as having none. If it was open when

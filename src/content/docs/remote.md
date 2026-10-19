@@ -186,8 +186,8 @@ index, the java-debug plugin, and classes compiled for debugging).
 The tools are the ones the host's own `PATH` finds. When it finds the wrong one,
 or none, set the command for that host in **Settings → Remote → This Host**:
 **Git**, **GitHub CLI**, **ripgrep**, **JDK home**, **Node.js**, **Python for
-debugging**, **js-debug server**, **java-debug plugin jar**, and **Language
-servers**, one `server = command` line each (for example
+debugging**, **JavaScript debugger (vscode-js-debug)**, **java-debug plugin
+jar**, and **Language servers**, one `server = command` line each (for example
 `python = basedpyright-langserver --stdio`). Commands and paths are as the host
 knows them; a change applies to the next command or server started there.
 Settings that name programs on this machine, such as your local Git command or
