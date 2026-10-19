@@ -685,9 +685,9 @@ The whole map is keyboard-navigable: arrows follow the selected flow and move am
 
 ## Settings you can commit
 
-A project can carry `.editora/settings.json` saying **which language server to run and whether to run it**, overriding your global preferences for anyone who opens that project. This is for cases where one repository needs a JDK 17 server and another a JDK 25 one, so that nobody has to remember to flip a global preference between them. **Project: Edit Project Settings…** creates the file with an example.
+A project can carry `.editora/settings.json` with values that override yours for anyone who opens that project: indentation, tab size, rulers, wrapping, trimming trailing whitespace and the final newline, the spell-check language, the command each build tool runs, the Java, Python and JavaScript debugger programs, and **which language server to run and whether to run it**. One repository can then use two-space indentation and a JDK 17 server while another uses tabs and a JDK 25 one, and nobody has to flip a global preference between them. The values apply once the folder is trusted, and `.editorconfig` still comes first. In a project window, Settings has a **User | Project** switch to edit them on the usual rows, and **Project: Edit Project Settings…** creates the file with an example.
 
-Only toolchain settings can be overridden. Appearance, keymap and fonts stay personal, because checking out a repository should not rearrange somebody's editor.
+Appearance, keymap and fonts stay personal, because checking out a repository should not rearrange somebody's editor.
 """),
     new Feature("starting-a-project", WF, 2, false,
         "Starting a project",

@@ -363,8 +363,10 @@ a language and whether to run it**, which overrides your global preference for
 anyone who opens that project. It can also set the
 [Bash server's options](#bash-server-options). This covers one repository needing a
 JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
-setting when switching between them. See
-[projects](/docs/workspace#settings-a-project-can-commit).
+setting when switching between them. The same file can also set indentation,
+rulers, build commands and debugger programs; see
+[projects](/docs/workspace#settings-a-project-can-commit) and the full list in
+[Configuration](/docs/configuration#inside-a-project).
 
 Because those commands are programs that run on your machine, they apply only
 to a **trusted folder**. In an untrusted folder the project's server commands
