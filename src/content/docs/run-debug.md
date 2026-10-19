@@ -1,6 +1,6 @@
 ---
 title: Running & debugging
-description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript, Groovy and Clojure.
+description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript, Groovy, Kotlin, Clojure and Scala.
 category: Run & debug
 order: 1
 ---
@@ -8,8 +8,9 @@ order: 1
 ## Running files
 
 You can run compact Java files, Python scripts, Node.js scripts, shell scripts,
-Groovy scripts, Kotlin files and Clojure files with [language services](/docs/lsp)
-disabled. A green ▶ appears in the gutter of a runnable file:
+Groovy scripts, Kotlin files, Clojure files and Scala files with
+[language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
+runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
   `void main`) or an extensionless Java file with a `java --source 25+`
@@ -33,6 +34,10 @@ disabled. A green ▶ appears in the gutter of a runnable file:
   `bb` shebang): the ▶ sits on its `(defn -main` when it has one, else on the
   first line. EDN files (`deps.edn` and the like), `project.clj` and
   ClojureScript (`.cljs`) get no ▶. See [Clojure files](#clojure-files).
+- a **Scala** program: the ▶ sits on an `@main def`, an `object … extends App`
+  or an object's `def main(args: Array[String])`, and on the first line of a
+  `.sc` script. A build definition (`build.sbt`, `build.mill`, `build.sc`) gets
+  none. See [Scala files](#scala-files).
 
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
@@ -71,7 +76,7 @@ another window open in its place.
 Beside the status, the Run window names the runtime the program runs under:
 **Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
 **Groovy 5.1.3 (Java 25.0.4)**, **Kotlin 2.4.21 (Java 25.0.4)**, **Clojure CLI 1.12.6.1673**,
-**Leiningen 2.13.0**, **Babashka 1.13.226**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+**Leiningen 2.13.0**, **Babashka 1.13.226**, **Scala CLI 1.18.0 (Scala 3.9.0)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
 distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
 names one. Hover the name for the runtime's own version text and, for Java,
 the JDK's folder.
@@ -263,6 +268,32 @@ needs is missing, Run says so instead of starting anything. On Windows the
 Clojure CLI is best used under WSL; see
 [Running in a container or WSL](#running-in-a-container-or-wsl).
 
+### Scala files
+
+How a Scala file runs depends on the build it belongs to:
+
+- A file of an **sbt** build (a `build.sbt` above it) runs its main class
+  through sbt, in the sbt console of the [Output window](/docs/build-tools):
+  `sbt "runMain demo.hello"` with your arguments, from the build's root (the
+  highest folder with a `build.sbt`).
+- A file of a **Mill** build runs through Mill the same way:
+  `./mill app.runMain demo.hello`, where `app` is the module whose `src` folder
+  holds the file. The project's own `./mill` launcher is used when it has one,
+  after the same [trust](/docs/build-tools) question as for `./mvnw`.
+- A file of a **Gradle** or **Maven** build is run from that build's tool
+  window; Run says so instead of running the file on its own.
+- Any other file, and a `.sc` script, runs with **Scala CLI**:
+  `scala-cli run Main.scala -- args`. In a Scala CLI project (a folder with
+  `project.scala`), the whole folder runs, with the file's main class. Scala
+  CLI reads the `//> using` directives for dependencies and the Scala version.
+
+Scala CLI runs on the JDK chosen in Settings for builds and runs, which Editora
+passes as `JAVA_HOME`. Editora finds it as `scala-cli` on your `PATH`, then
+`scala` (the `scala` command is Scala CLI since Scala 3.5), then SDKMAN's
+`scalacli` and `scala`. When there is none, Run says Scala CLI is not installed
+instead of starting anything. The first run of a Scala version downloads its
+compiler, so it takes longer.
+
 ### Run with Trace
 
 **Run: Run with Trace** (`run.trace`, also in the Run menu and the editor's
@@ -375,15 +406,17 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Groovy script | a `.groovy` file with `groovy`, on the configuration's JDK; its VM arguments go into `JAVA_OPTS` |
 | Kotlin file | a `.kts` script with `kotlinc -script`, or a `.kt` program compiled and run with `java -jar`, on the configuration's JDK |
 | Clojure script | a Clojure file with the tool [Run File picks](#clojure-files), on the configuration's JDK; its VM arguments go to the program's JVM (`-J` arguments for the Clojure CLI, `JVM_OPTS` for Leiningen) |
+| Scala (Scala CLI) | a `.scala` or `.sc` file with Scala CLI, on the configuration's JDK; its VM arguments are passed as `--java-opt` |
 | Make target | a target in a makefile |
 | npm script | a named `package.json` script, run with the project's package manager |
 
 The form **shows only the fields the selected type uses**. A Java main class
 has no Script / target field; a Python, Node.js, shell, Make or npm
 configuration has no Main class, Module, VM arguments or JDK, and a Groovy or
-Clojure one keeps only VM arguments and JDK of those. A hidden field keeps its
-value, so switching the type and back loses nothing. A Python, Node.js, shell,
-Groovy or Clojure script can be picked with **Browse…** beside Script / target;
+Clojure or Scala one keeps only VM arguments and JDK of those. A hidden field
+keeps its value, so switching the type and back loses nothing. A Python,
+Node.js, shell, Groovy, Clojure or Scala file can be picked with **Browse…**
+beside Script / target;
 a script inside the project is saved relative to the project root. A Clojure
 configuration with no working directory runs in its project's folder. For an
 npm configuration, **Browse…** lists the scripts in the `package.json` instead.
@@ -407,7 +440,7 @@ set, they replace it, for example `/opt/homebrew/bin/bash` with `-eu`. Options
 alone keep the shebang's interpreter and replace its options.
 
 Script and make configurations need **no language server**.
-Java, Groovy, Kotlin, Node.js script and npm script configurations can be debugged. A Node.js
+Java, Groovy, Kotlin, Clojure, Scala, Node.js script and npm script configurations can be debugged. A Node.js
 or npm configuration is debugged the way Run starts it, with the same Node.js,
 package manager, folder and environment (see
 [Debugging JavaScript and TypeScript](#debugging-javascript-and-typescript)).
@@ -512,7 +545,7 @@ file in the project serves, and it reports an error only when there isn't one.
 <span class="beta-pill">Beta</span>
 
 Editora debugs **Java**, **Python**, **JavaScript and TypeScript (Node.js)**,
-**Groovy**, **Kotlin** and **Clojure** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+**Groovy**, **Kotlin**, **Clojure** and **Scala** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -1009,6 +1042,26 @@ class, so a breakpoint set before the redefinition does not stop in it, and
 code evaluated in a REPL has no file to stop in. Breakpoint conditions and log
 messages, evaluating expressions, and debugging on a remote host are not
 supported yet, as for Groovy.
+
+### Debugging Scala
+
+A file of an sbt, Mill, Gradle or Maven build is debugged by
+[Metals](/docs/lsp#scala), which has imported the build: Debug asks Metals to
+compile the file's build target and start its debug adapter, which runs the
+program on the build's classpath. Metals needs to be installed, running for the
+file, and done importing the build; otherwise Debug says so. The first session
+waits for the compile.
+
+A `.sc` script, a file outside any build, and a Scala CLI project are debugged
+by a debugger built into Editora, so there is nothing to install: the program
+runs with Scala CLI as Run runs it, with the debugger's agent passed as a
+`--java-opt`. Breakpoints bind by file name, since a Scala file's package does
+not have to match its folder. Stepping skips the standard library
+(`scala.runtime`, the collections, `Predef`). A lambda's frame reads
+`Main { lambda }`, a top-level definition's `Main.greet`, and an object's
+methods `Util.twice`. Locals, `this` and fields are shown without running any
+code in the program. Conditional breakpoints and logpoints are not supported
+there yet.
 
 ### Debugging on a remote host
 

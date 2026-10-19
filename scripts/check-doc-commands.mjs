@@ -29,7 +29,7 @@ if (emacsById.size < 100) {
 }
 const namespaces = new Set([...emacsById.keys()].map((id) => id.split(".")[0]));
 
-const FILE_EXT = /\.(json|md|xml|yml|yaml|toml|properties|java|ts|js|mjs|css|html|txt|log|sh|py|typ|csv|http|env|png|svg|jar|exe|app|d|mod|work|sum|scss|lock|gpg|pgp|asc|sig|clj|cljs|cljc|edn|bb)$/i;
+const FILE_EXT = /\.(json|md|xml|yml|yaml|toml|properties|java|ts|js|mjs|css|html|txt|log|sh|py|typ|csv|http|env|png|svg|jar|exe|app|d|mod|work|sum|scss|lock|gpg|pgp|asc|sig|clj|cljs|cljc|edn|bb|scala|sbt|mill|sc)$/i;
 // Dotted names that share a namespace with commands but are not commands (a JavaScript API).
 const NOT_COMMANDS = new Set(["crypto.subtle"]);
 const ID_SHAPE = /^[a-z][A-Za-z]*(\.[A-Za-z][A-Za-z0-9]*)+$/;

@@ -308,14 +308,14 @@ server that keeps crashing is not relaunched forever.
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
 Settings field can override the command per server) and uses it if present.
-Twenty-five servers are supported:
+Twenty-six servers are supported:
 
 - **Java** (`jdtls`), **TypeScript / JavaScript** (`typescript-language-server`),
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
   (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
-  **Lua** (`lua-language-server`)
+  **Scala** (Metals), **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
@@ -381,6 +381,10 @@ covered through four channels, picked per server:
   (Java 17 or later).
 - A **pinned native binary** for clojure-lsp, one per OS and architecture, each
   checked against its SHA-256 before it is unpacked. It needs no JVM.
+- **Coursier** for Metals, the Scala server, which is published only as Maven
+  artifacts: Editora downloads coursier's launcher (pinned, and checked against
+  its published checksum), which fetches Metals' jars into your config folder.
+  It runs on the JDK chosen for builds and runs (Java 17 or later).
 
 There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
@@ -464,6 +468,33 @@ A server runs per project root: the folder with a `deps.edn`, `project.clj`,
 `bb.edn`, `shadow-cljs.edn` or `build.boot`, else the repository. Any of those
 files at a project's root also makes [Doctor](/docs/troubleshooting#doctor)
 expect the Clojure server.
+
+## Scala
+
+The Scala server is [Metals](https://scalameta.org/metals/) 1.6.9. Install it
+from its Settings → LSP card, the banner on a `.scala` file, or **Install:
+Language Server…**. It has no command until it is installed: the installer
+sets it to `java` with Metals' JVM options and the fetched jars, and Editora
+runs that with the JDK chosen for Maven, Gradle and Run, not the first `java`
+on your `PATH`.
+
+Metals works on the build it finds at the workspace root: an sbt build
+(`build.sbt`), a Mill build (`build.mill`, or a Mill 0.x `build.sc`), a Scala
+CLI project (`project.scala`), a build already exported over BSP (`.bsp/`), or a
+Gradle or Maven build. The first time it sees one it asks whether to **import
+the build**; the question appears as a dialog, and the editor stays usable while
+it is open. An import runs the build tool and compiles the project, which takes
+a minute or more the first time. Metals shows its progress in the status bar.
+
+It reports compiler errors, and offers completion, hover, go to definition,
+references, rename, the outline and formatting (with a `.scalafmt.conf`). When
+Metals asks for a value or a choice of its own, a text field or a picker opens.
+
+A `build.sbt`, `build.mill`, `build.sc` or `project.scala` at a project's root
+makes [Doctor](/docs/troubleshooting#doctor) expect Metals.
+
+Any server's question with buttons gets the same dialog; before, such a
+question went unanswered.
 
 ## Workspace roots and lifetime
 

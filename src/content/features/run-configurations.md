@@ -3,7 +3,7 @@ title: "Run configurations"
 group: "Run & debug"
 order: 2
 beta: false
-summary: "Save how a Java main class, Python, Node.js, shell, Groovy or Clojure script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file."
+summary: "Save how a Java main class, Python, Node.js, shell, Groovy, Clojure or Scala script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file."
 ---
 
 A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands), an optional JDK override, a shell script's interpreter, and a working directory (relative to the project root). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
@@ -15,13 +15,14 @@ Choose a **Type** in the project's **Run Configurations** window:
 - a **Java main class** (resolved through the language server, or through your Maven/Gradle build)
 - a **Python script**
 - a **Node.js script** (with Node.js arguments; a blank **Interpreter** uses the same Node.js as Run)
+- a **Scala** file or script, run with Scala CLI
 - a **shell script** (its shebang picks the interpreter unless you set **Interpreter** and **Interpreter options**)
 - a **Groovy script** (run with `groovy` on the configuration's JDK, its VM arguments in `JAVA_OPTS`)
 - a **Clojure script** (run with the Clojure CLI, Leiningen or Babashka, as its project says, on the configuration's JDK)
 - a **make target**
 - a named **npm script**, run with the project's own package manager (npm, pnpm, yarn or bun), with arguments passed after `--`
 
-Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Groovy, Clojure, Node.js and npm configurations can be debugged, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
+Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Groovy, Clojure, Scala, Node.js and npm configurations can be debugged, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
 
 ## A step before the launch
 

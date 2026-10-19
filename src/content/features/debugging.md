@@ -3,10 +3,10 @@ title: "Debugging (DAP)"
 group: "Run & debug"
 order: 3
 beta: true
-summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin and Clojure: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
+summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure and Scala: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
 ---
 
-Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin** and **Clojure** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
+Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure** and **Scala** (through Metals for a build's file, Editora's own debugger for a script) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
 - Breakpoints (including conditional and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line** (Python)
 - A threads + call-stack view and a lazy variables tree with **set-value**
