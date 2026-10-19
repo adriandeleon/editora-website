@@ -63,6 +63,8 @@ once, for example), the index is marked stale and the next query walks the
 project again. **Rebuild Symbol Index** (`index.rebuild`) forces that walk.
 
 It honours your `.gitignore` the same way Find in Files and the project tree do,
+skips `node_modules` even without a `.gitignore` (see
+[Find in files](/docs/navigation#find-in-files)),
 skips files over 2 MB, and is bounded at 20,000 files and 400,000 symbols so
 that it cannot grow without limit in the background.
 

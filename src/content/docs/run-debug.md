@@ -7,14 +7,17 @@ order: 1
 
 ## Running files
 
-You can run compact Java files, Python scripts and shell scripts with
-[language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
-runnable file:
+You can run compact Java files, Python scripts, Node.js scripts and shell
+scripts with [language services](/docs/lsp) disabled. A green ▶ appears in the
+gutter of a runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
   `void main`) or an extensionless Java file with a `java --source 25+`
   shebang,
-- a **Python** script (the ▶ sits on the `if __name__ == "__main__"` guard), or
+- a **Python** script (the ▶ sits on the `if __name__ == "__main__"` guard),
+- a **JavaScript or TypeScript** file (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`,
+  `.cts`) or a script whose shebang names `node` (see
+  [Node.js scripts](#nodejs-scripts)), or
 - a **shell** script: `.sh`, `.bash`, `.zsh`, `.ksh` and the other shell
   types, or a file whose shebang names a shell (see
   [Shell scripts](#shell-scripts)). Startup files that a shell reads rather
@@ -26,13 +29,22 @@ streams to the **Run** tool window (`M-9`), which accepts **stdin** so
 console-style programs work. Double-click a **stack-trace line** to jump to the
 file and line: JVM frames from Java, Kotlin, Groovy, Scala and Clojure code
 (and Clojure's own `at my-app.core/f (core.clj:4)`), Python and Node frames, and
-shell errors such as `deploy.sh: line 12: …`.
+shell errors such as `deploy.sh: line 12: …`. A Node frame or a `tsc` error opens
+at its column too, also for an ES module's `file://` path and a path with spaces.
 
 The console reads the terminal codes programs print: colours are drawn in the
 theme's colours, a carriage return (`\r`) rewrites the current line so a
 progress bar stays on one line, and `clear` empties the console. Other cursor
 codes are dropped. Stop ends the program and everything it started, and the
-console then says **Stopped**. **End Input** in the console's header, or
+console then says **Stopped**. A Node.js program (and npm, pnpm, yarn or bun)
+first gets Ctrl+C (SIGINT), so it can clean up, and is ended only if it does
+not stop.
+
+The console keeps the newest output. When a program prints faster than the
+console can show, some lines are skipped (the program is never slowed down),
+but the last screenful is always complete, and the console says that output
+was skipped. When the console reaches its size limit, it drops the oldest
+output and says so at the top. **End Input** in the console's header, or
 `Ctrl+D` in the empty input field, closes the program's input, so a loop that
 reads lines until the end of input can finish (*Run: End Program Input*,
 `run.endInput`).
@@ -130,6 +142,54 @@ reach the script with Unix line endings.
 Shell scripts can't be debugged; use [Run with Trace](#run-with-trace) to see
 each line as it runs.
 
+### Node.js scripts
+
+A `.js`, `.mjs`, `.cjs`, `.ts`, `.mts` or `.cts` file runs under Node.js, and
+so does a script whose shebang names `node`. A type declaration file (`.d.ts`)
+has no code, so it gets no ▶. JSX and TSX files need a bundler, so Run does not
+start them.
+
+**Which Node.js runs.** Run, run configurations, Debug, npm scripts and the
+TypeScript language server all use the same Node.js. The first of these wins:
+
+1. a run configuration's **Interpreter** field;
+2. the **Node.js** field under **Settings → Debugging → JavaScript**;
+3. the version that a `.nvmrc` or `.node-version` file names, when nvm has that
+   version installed (the file is looked for from the script's folder up to its
+   package folder). A version such as `20` or `20.11` picks the newest matching
+   install; an alias such as `lts/*` is not followed;
+4. `node` on your `PATH` (the login shell's `PATH`, so the default of nvm, fnm
+   or Volta counts).
+
+[Doctor](/docs/troubleshooting#doctor) has a **Node.js** row that names the
+Node.js in use and why it was chosen, for example *Node.js setting* or
+*.nvmrc, via nvm*.
+
+**Where it runs.** A script runs in its package folder: the nearest folder above
+it with a `package.json`, never one inside `node_modules` and never your home
+folder. Without a `package.json`, it runs in the script's own folder.
+
+**How it runs.** Editora adds `--enable-source-maps`, so a stack trace from
+compiled code names the original source, and sets `FORCE_COLOR=1`, so the Run
+console shows the program's colours (unless you set `NO_COLOR`). A `node`
+shebang keeps its flags, such as `#!/usr/bin/env -S node --no-warnings`, but
+runs under the Node.js chosen above. A shebang that names `deno`, `bun`, `tsx`
+or `ts-node` runs with that program, as written.
+
+**TypeScript** runs on plain Node.js 22.18 or newer, which removes the types
+itself; no `tsx` or build step is needed. On an older Node.js, Run says that
+the file needs 22.18 or newer instead of showing a syntax error.
+
+**Test files.** The ▶ of a test file runs `node --test` and shows the results
+in [Test Results](/docs/build-tools#test-runner). A test file is a
+`*.test.*` or `*.spec.*` file, or any script under a `test/`, `tests/` or
+`__tests__/` folder. **Rerun Failed** and **Rerun This Test** work on these
+results.
+
+While the program runs, the Run window names its runtime, such as
+**Node.js 24.18.1** (see
+[Which runtime a program runs under](#which-runtime-a-program-runs-under)).
+
 ### Run with Trace
 
 **Run: Run with Trace** (`run.trace`, also in the Run menu and the editor's
@@ -166,6 +226,10 @@ working directory is a folder on the host.
 The host's own `java` is used, or the **JDK home** set for that host in
 Settings → Remote. Your local Default JDK and a configuration's JDK override
 are paths on this machine, so they are not sent to the host.
+
+A project on this machine can run on a host too: set a configuration's **Run
+on** to a [deployment](/docs/deployments), and Editora copies what changed in the
+project to a folder on the host before each run, then runs the program there.
 
 ### Running in a container or WSL
 
@@ -221,6 +285,10 @@ A relative **Working directory** is relative to the project root.
 Run names a working directory or script that does not exist, and opens the
 configuration at the field to fix.
 
+**Run on** picks where the configuration runs: **This machine**, or one of the
+project's [deployments](/docs/deployments), a folder on an SSH host that the
+project is copied to before the run. **Deployments…** beside it opens the list.
+
 ### What a configuration can launch
 
 Pick a **Type** in the project's **Run Configurations** window:
@@ -230,15 +298,30 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Java main class | a `main` in the project, via the language server or the build tool |
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with the interpreter its shebang names (or `bash`), unless **Interpreter** is set |
+| Node.js script | a `.js` or `.ts` file under Node.js |
 | Make target | a target in a makefile |
-| NPM script | a named `package.json` script via `npm run` |
+| npm script | a named `package.json` script, run with the project's package manager |
 
 The form **shows only the fields the selected type uses**. A Java main class
-has no Script / target field; a Python, shell, Make or NPM configuration has no
-Main class, Module, VM arguments or JDK. A hidden field keeps its value, so
-switching the type and back loses nothing. A Python or shell script can be
-picked with **Browse…** beside Script / target; a script inside the project is
-saved relative to the project root.
+has no Script / target field; a Python, Node.js, shell, Make or npm
+configuration has no Main class, Module, VM arguments or JDK. A hidden field
+keeps its value, so switching the type and back loses nothing. A Python,
+Node.js or shell script can be picked with **Browse…** beside Script / target;
+a script inside the project is saved relative to the project root. For an npm
+configuration, **Browse…** lists the scripts in the `package.json` instead.
+
+A **Node.js script** configuration has the script, **Node.js arguments** (such
+as `--max-old-space-size=4096`), **Interpreter**, program arguments and
+environment. Left blank, **Interpreter** uses the Node.js that Run uses (see
+[Node.js scripts](#nodejs-scripts)), and a blank working directory is the
+package folder, the nearest one with a `package.json`.
+
+An **npm script** configuration runs `<manager> run <name>`, with its arguments
+after `--`. The manager is the one the project uses (npm, pnpm, yarn or bun), as
+in the [Package Scripts](/docs/build-tools#npm-and-other-package-managers)
+window, so a pnpm workspace member runs pnpm too. The npm command set in
+Settings → Build Tools applies only when it names that same manager, or is a
+wrapper script.
 
 A shell configuration also has **Interpreter** and **Interpreter options**.
 Left blank, the script's shebang decides (see [Shell scripts](#shell-scripts));
@@ -246,8 +329,13 @@ set, they replace it, for example `/opt/homebrew/bin/bash` with `-eu`. Options
 alone keep the shebang's interpreter and replace its options.
 
 Script and make configurations need **no language server**.
-Only Java configurations can be debugged; Debug on any other type says so, and
-for a shell configuration it points to [Run with Trace](#run-with-trace).
+Java, Node.js script and npm script configurations can be debugged. A Node.js
+or npm configuration is debugged the way Run starts it, with the same Node.js,
+package manager, folder and environment (see
+[Debugging JavaScript and TypeScript](#debugging-javascript-and-typescript)).
+Debugging a Node.js or npm configuration of a remote project is not supported
+yet. Debug on any other type says so, and for a shell configuration it points to
+[Run with Trace](#run-with-trace).
 
 ### The toolbar selector
 
@@ -321,8 +409,8 @@ list, and
 removes one.
 
 **Add** starts from the file you are looking at rather than a blank entry. For
-an active Python or shell script it adds a configuration of that type for the
-script, named after the file. For a Java file it
+an active Python, Node.js or shell script it adds a configuration of that type
+for the script, named after the file. For a Java file it
 prefills the main class from the active Java file (or the one your Gradle build
 declares as `mainClass`, `mainClass.set(…)`, or the legacy `mainClassName`), names
 the configuration after that class, and puts the cursor in whichever field still
@@ -330,7 +418,7 @@ needs you. Adding twice from the same file gets you "App" and "App (2)" rather
 than two entries sharing a name.
 
 **Run: Save Run Configuration…** saves the active Java file's main class, or the
-active Python or shell script, with the file's program arguments.
+active Python, Node.js or shell script, with the file's program arguments.
 
 Running an **incomplete** configuration opens its form at the field you need to
 fill in, rather than naming the problem and leaving you to find it. VM arguments
@@ -345,8 +433,8 @@ file in the project serves, and it reports an error only when there isn't one.
 
 <span class="beta-pill">Beta</span>
 
-Editora debugs **Java**, **Python**, and **JavaScript (Node)** through the Debug
-Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+Editora debugs **Java**, **Python**, and **JavaScript and TypeScript
+(Node.js)** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -369,13 +457,17 @@ script as it runs.
 | Debug a project main class | `debug.mainClass` | (palette) |
 | Debug a saved run configuration | `debug.config` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
-| Attach to a running JVM | `debug.attach` | `C-c C-d a` |
+| Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and the **Run** menu lists every debugger action.
+
+**Jump to Line** moves the program to another line without running the code in
+between. It needs a debugger that can do that: Python's debugpy can. The Java
+and JavaScript debuggers cannot, and Jump to Line then says it is not supported.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
 **set-value**, **watches**, and an evaluate console. While suspended, **inline
@@ -412,7 +504,8 @@ already running.
 
 ### Program input in the Debug console
 
-A debugged **Java** program can read its standard input from the Debug console.
+A debugged **Java**, **Python** or **JavaScript** program can read its standard
+input from the Debug console.
 The field does one of two things, and its prompt says which:
 
 - While the program **runs**, Enter sends the line to the program (an empty
@@ -422,7 +515,7 @@ The field does one of two things, and its prompt says which:
 End the input with `Ctrl+D` in the field, the console's right-click menu, or
 *Debug: End Program Input (EOF)* (`debug.endProgramInput`).
 
-In this mode Editora starts the Java program itself rather than leaving it to
+In this mode Editora starts the program itself rather than leaving it to
 the debugger, and stops it on Stop, Restart, a new launch, a failed launch, or
 closing the window. The session ends when the program exits, after its last
 output, and the console reports the exit code. Lines written to stdout and
@@ -431,8 +524,8 @@ stderr at almost the same moment can appear in either order.
 It is **on by default**. The switch is under **Settings → Debugging → Java**
 (or *Debug: Toggle Program Input in the Debug Console*,
 `debug.toggleProgramConsole`) and takes effect at the next launch. It applies
-to a launched Java program, and to a Python program started on this computer.
-Attached sessions and JavaScript are unaffected. It has not yet been confirmed
+to a launched Java program, and to a Python or JavaScript program started on
+this computer. Attached sessions are unaffected. It has not yet been confirmed
 on Windows.
 
 **Run the program in a Terminal tab instead**, just below it, runs that program
@@ -446,7 +539,9 @@ is off by default and needs the program console switch on.
 With the switch off, the debugger starts a Java program itself. The console
 still reports the program's exit code on Linux and macOS when the program runs
 on this machine. On Windows, and on a remote host, in WSL or in a container, it
-says "The program ended." instead.
+says "The program ended." instead. A JavaScript program's output, including
+`process.stdout.write`, still reaches the console, but the program cannot read
+input.
 
 ### Debugging Java
 
@@ -558,6 +653,49 @@ Hot code replace also runs in an attached session and in Debug Test and Debug
 via Build Tool sessions. There the program runs the classes your build tool
 compiled, so a change can be refused that a session Editora started would
 accept; the console then tells you to restart.
+
+### Debugging JavaScript and TypeScript
+
+**Debug** on a JavaScript or TypeScript file (`.js`, `.mjs`, `.cjs`, `.ts`,
+`.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug with
+the same Node.js, folder and flags as Run (see
+[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js**
+field under **Settings → Debugging → JavaScript**; left blank, Editora uses the
+version a project's `.nvmrc` or `.node-version` names (when nvm has it), else
+`node` on your `PATH`. The card's **Detected** line names that Node.js version
+and where vscode-js-debug was found.
+
+- **TypeScript** files are debugged directly on Node.js 22.18 or newer. With an
+  older Node.js, Debug says so. In a project that compiles its TypeScript, a
+  breakpoint in a `.ts` source stops there when the compiled JavaScript runs,
+  through its source maps.
+- **JSX and TSX** files can't be run by Node.js. Debug the compiled JavaScript
+  instead; a breakpoint in the `.jsx` or `.tsx` file still stops there through
+  its source map.
+- **Output and input.** All output reaches the Debug console, including
+  `process.stdout.write` and `readline` prompts, and the program can read lines
+  you type there (see
+  [Program input in the Debug console](#program-input-in-the-debug-console)).
+- Node.js's own modules are skipped, so they don't fill the call stack and Step
+  Into doesn't enter them.
+- A breakpoint condition that isn't valid JavaScript marks the breakpoint as
+  rejected, and the console says why, once.
+- Child processes and worker threads show all their threads.
+- **Debug Test at Caret** (`test.debugAtCaret`) on a `node:test` test runs that
+  test under `node --test` and stops at its breakpoints.
+- **Node.js script** and **npm script** [run configurations](#run-configurations)
+  can be debugged, started the way Run starts them.
+
+**Attach to a running program.** Start Node.js with `--inspect` (for example
+`node --inspect server.js`), then run **Debug: Attach to JVM…** (`debug.attach`)
+on a JavaScript or TypeScript file. It asks for the inspector's `host:port`,
+such as `localhost:9229`. A program started with `--inspect-brk` waits before its
+first line; attaching does not start it, so press Continue.
+
+vscode-js-debug itself needs Node.js 18 or newer to run. When it can't start,
+or the Node.js is too old, Debug says so instead of stopping without a word.
+**Install…** on the JavaScript card installs vscode-js-debug v1.117.0, a version
+tested with Editora.
 
 ### Managing breakpoints
 
@@ -715,7 +853,8 @@ Breakpoints of a remote file are kept across reconnects.
 
 - **Python** runs debugpy on the host, which needs its own
   (`pip install debugpy`).
-- **JavaScript** runs vscode-js-debug and `node` on the host.
+- **JavaScript** runs vscode-js-debug and `node` on the host. The program's
+  output reaches the Debug console, but it can't read typed input there.
 - **Java** in a Maven or Gradle project goes through the host's `jdtls`: Debug,
   Debug Main Class, Attach (where `localhost` is the host), Debug Test, and a
   saved configuration. Editora copies its java-debug plugin to
@@ -723,8 +862,13 @@ Breakpoints of a remote file are kept across reconnects.
   the host for the debugger.
 
 The adapters' locations can be set per host in Settings → Remote (**Python for
-debugging**, **js-debug server**, **Node.js**, **java-debug plugin jar**). Other
+debugging**, **JavaScript debugger (vscode-js-debug)**, **Node.js**,
+**java-debug plugin jar**). Other
 languages cannot be debugged on a host yet.
+
+A Java configuration that runs on a [deployment](/docs/deployments#debugging-on-a-deployment)
+is debugged on its host too: the program starts there and the debugger attaches
+through a tunnel, with breakpoints in the local files.
 
 ### Debugging in a container or WSL
 
@@ -749,7 +893,7 @@ palette commands:
 | --- | --- | --- |
 | **Install: Java Language Support** (`install.javaSupport`) | jdtls and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
 | **Install: Python Language Support** (`install.pythonSupport`) | Pyright and debugpy | Node.js with `npm`, and Python with `pip` |
-| **Install: JavaScript / Node Language Support** (`install.jsSupport`) | `typescript-language-server` and vscode-js-debug | Node.js with `npm`, and `tar` |
+| **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` with TypeScript 6, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
 
 Editora does not install those runtimes for you. A downloaded server or adapter
 is unpacked beside the installed version and replaces it only once it is
