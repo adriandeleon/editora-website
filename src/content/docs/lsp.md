@@ -308,13 +308,14 @@ server that keeps crashing is not relaunched forever.
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
 Settings field can override the command per server) and uses it if present.
-Twenty-four servers are supported:
+Twenty-five servers are supported:
 
 - **Java** (`jdtls`), **TypeScript / JavaScript** (`typescript-language-server`),
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Lua** (`lua-language-server`)
+  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
+  **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
@@ -378,6 +379,8 @@ covered through four channels, picked per server:
 - A **single jar** for the Groovy server (gvy), pinned to one release and checked
   against its published checksum. It runs on the JDK chosen for builds and runs
   (Java 17 or later).
+- A **pinned native binary** for clojure-lsp, one per OS and architecture, each
+  checked against its SHA-256 before it is unpacked. It needs no JVM.
 
 There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
@@ -440,6 +443,27 @@ The server is an alpha. It checks the `.kt` files in the build's source
 folders; a `.kts` script, `build.gradle.kts`, and a `.kt` file outside a build
 get no diagnostics or hover from it. A folder without a build file is not
 imported at all.
+
+## Clojure
+
+The Clojure server is clojure-lsp. Editora uses the `clojure-lsp` on your `PATH`,
+or installs its own copy from the server's Settings → LSP card, the banner on a
+Clojure file, or **Install: Language Server…**. The install is the native build
+for your platform (Linux and macOS on x64 and arm64, Windows on x64), pinned to
+one release and checked against its SHA-256.
+
+It serves `.clj`, `.cljs`, `.cljc` and `.edn` files with clj-kondo's diagnostics,
+completion, hover, go to definition, references, rename, code actions, the
+outline and formatting. To resolve the project's dependencies it asks the
+project's own tool for the classpath (`clojure -Spath`, `lein classpath`,
+`bb print-deps` or `npx shadow-cljs classpath`), which it finds on the same
+`PATH` Editora gives every language server. Without that tool it still works on
+the project's own files.
+
+A server runs per project root: the folder with a `deps.edn`, `project.clj`,
+`bb.edn`, `shadow-cljs.edn` or `build.boot`, else the repository. Any of those
+files at a project's root also makes [Doctor](/docs/troubleshooting#doctor)
+expect the Clojure server.
 
 ## Workspace roots and lifetime
 

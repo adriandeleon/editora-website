@@ -3,10 +3,10 @@ title: "Debugging (DAP)"
 group: "Run & debug"
 order: 3
 beta: true
-summary: "Full debugging for Java, Python, JavaScript, TypeScript and Groovy: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
+summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin and Clojure: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
 ---
 
-Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js) and **Groovy** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
+Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin** and **Clojure** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
 - Breakpoints (including conditional and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line** (Python)
 - A threads + call-stack view and a lazy variables tree with **set-value**
@@ -21,6 +21,8 @@ For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in
 JavaScript runs under the same Node.js as Run. `.ts` files debug on Node.js 22.18 or newer, and a breakpoint in a compiled project's `.ts` source stops there through source maps. *Attach* connects to a Node.js started with `--inspect`, *Debug Test at Caret* debugs a `node:test` test, and Node.js and npm run configurations can be debugged.
 
 Groovy is debugged by a debugger built into Editora, with nothing to install: breakpoints in scripts, classes and closures, stepping that skips Groovy's own runtime, locals and fields, and a stop where an uncaught exception is thrown. It reads variables and field paths but does not evaluate expressions, and breakpoint conditions and log messages are not supported yet.
+
+Clojure uses the same debugger, under the Clojure CLI or Leiningen: breakpoints in a namespace's functions and a script's top-level forms, frames named as Clojure names them (`my-app.core/greet`), locals kept visible for the whole function, and stepping that skips Clojure's runtime. Babashka, a native program, can't be debugged, and says so.
 
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript, and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
