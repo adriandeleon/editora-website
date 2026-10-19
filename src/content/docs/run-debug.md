@@ -1,25 +1,39 @@
 ---
 title: Running & debugging
-description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript and Scala.
+description: Run files from the gutter, run and debug a project's main class, save run configurations, and debug Java, Python, JavaScript, Groovy, Kotlin, Clojure and Scala.
 category: Run & debug
 order: 1
 ---
 
 ## Running files
 
-You can run compact Java files, Python scripts, shell scripts and Scala files
-with [language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
+You can run compact Java files, Python scripts, Node.js scripts, shell scripts,
+Groovy scripts, Kotlin files, Clojure files and Scala files with
+[language services](/docs/lsp) disabled. A green ▶ appears in the gutter of a
 runnable file:
 
 - a **Java compact source file** (JEP 512, a `.java` with a top-level
   `void main`) or an extensionless Java file with a `java --source 25+`
   shebang,
-- a **Python** script (the ▶ sits on the `if __name__ == "__main__"` guard), or
+- a **Python** script (the ▶ sits on the `if __name__ == "__main__"` guard),
+- a **JavaScript or TypeScript** file (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`,
+  `.cts`) or a script whose shebang names `node` (see
+  [Node.js scripts](#nodejs-scripts)), or
 - a **shell** script: `.sh`, `.bash`, `.zsh`, `.ksh` and the other shell
   types, or a file whose shebang names a shell (see
   [Shell scripts](#shell-scripts)). Startup files that a shell reads rather
   than runs, such as `.bashrc`, `.profile`, `.zshrc`, `.bash_logout`,
   `.xinitrc` and `.envrc`, get no ▶.
+- a **Groovy** script or class (`.groovy`): the ▶ sits on its
+  `static void main` when it has one, else on the first line. See
+  [Groovy scripts](#groovy-scripts).
+- a **Kotlin** script (`.kts`, `.main.kts`), with the ▶ on its first line, or a
+  `.kt` file with a top-level `fun main`, with the ▶ on that line. See
+  [Kotlin files](#kotlin-files).
+- a **Clojure** file (`.clj`, `.cljc`, `.bb`, or a script with a `clojure` or
+  `bb` shebang): the ▶ sits on its `(defn -main` when it has one, else on the
+  first line. EDN files (`deps.edn` and the like), `project.clj` and
+  ClojureScript (`.cljs`) get no ▶. See [Clojure files](#clojure-files).
 - a **Scala** program: the ▶ sits on an `@main def`, an `object … extends App`
   or an object's `def main(args: Array[String])`, and on the first line of a
   `.sc` script. A build definition (`build.sbt`, `build.mill`, `build.sc`) gets
@@ -28,14 +42,24 @@ runnable file:
 Click the ▶, use the right-click *Run File*, or bind `file.run` (`C-c r`). Output
 streams to the **Run** tool window (`M-9`), which accepts **stdin** so
 console-style programs work. Double-click a **stack-trace line** to jump to the
-file and line: Java, Python and Node frames, and shell errors such as
-`deploy.sh: line 12: …`.
+file and line: JVM frames from Java, Kotlin, Groovy, Scala and Clojure code
+(and Clojure's own `at my-app.core/f (core.clj:4)`), Python and Node frames, and
+shell errors such as `deploy.sh: line 12: …`. A Node frame or a `tsc` error opens
+at its column too, also for an ES module's `file://` path and a path with spaces.
 
 The console reads the terminal codes programs print: colours are drawn in the
 theme's colours, a carriage return (`\r`) rewrites the current line so a
 progress bar stays on one line, and `clear` empties the console. Other cursor
 codes are dropped. Stop ends the program and everything it started, and the
-console then says **Stopped**. **End Input** in the console's header, or
+console then says **Stopped**. A Node.js program (and npm, pnpm, yarn or bun)
+first gets Ctrl+C (SIGINT), so it can clean up, and is ended only if it does
+not stop.
+
+The console keeps the newest output. When a program prints faster than the
+console can show, some lines are skipped (the program is never slowed down),
+but the last screenful is always complete, and the console says that output
+was skipped. When the console reaches its size limit, it drops the oldest
+output and says so at the top. **End Input** in the console's header, or
 `Ctrl+D` in the empty input field, closes the program's input, so a loop that
 reads lines until the end of input can finish (*Run: End Program Input*,
 `run.endInput`).
@@ -51,7 +75,8 @@ another window open in its place.
 
 Beside the status, the Run window names the runtime the program runs under:
 **Java 25.0.4 (Temurin)**, **Python 3.13.5**, **Node.js 24.18.1**,
-**Scala CLI 1.18.0 (Scala 3.9.0)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
+**Groovy 5.1.3 (Java 25.0.4)**, **Kotlin 2.4.21 (Java 25.0.4)**, **Clojure CLI 1.12.6.1673**,
+**Leiningen 2.13.0**, **Babashka 1.13.226**, **Scala CLI 1.18.0 (Scala 3.9.0)**, **Bash 5.2.37** or **GNU Make 4.4.1**. A Java runtime also shows its
 distribution (Temurin, Corretto, Zulu, GraalVM CE and others) when the JDK
 names one. Hover the name for the runtime's own version text and, for Java,
 the JDK's folder.
@@ -133,6 +158,116 @@ reach the script with Unix line endings.
 Shell scripts can't be debugged; use [Run with Trace](#run-with-trace) to see
 each line as it runs.
 
+### Node.js scripts
+
+A `.js`, `.mjs`, `.cjs`, `.ts`, `.mts` or `.cts` file runs under Node.js, and
+so does a script whose shebang names `node`. A type declaration file (`.d.ts`)
+has no code, so it gets no ▶. JSX and TSX files need a bundler, so Run does not
+start them.
+
+**Which Node.js runs.** Run, run configurations, Debug, npm scripts and the
+TypeScript language server all use the same Node.js. The first of these wins:
+
+1. a run configuration's **Interpreter** field;
+2. the **Node.js** field under **Settings → Debugging → JavaScript**;
+3. the version that a `.nvmrc` or `.node-version` file names, when nvm has that
+   version installed (the file is looked for from the script's folder up to its
+   package folder). A version such as `20` or `20.11` picks the newest matching
+   install; an alias such as `lts/*` is not followed;
+4. `node` on your `PATH` (the login shell's `PATH`, so the default of nvm, fnm
+   or Volta counts).
+
+[Doctor](/docs/troubleshooting#doctor) has a **Node.js** row that names the
+Node.js in use and why it was chosen, for example *Node.js setting* or
+*.nvmrc, via nvm*.
+
+**Where it runs.** A script runs in its package folder: the nearest folder above
+it with a `package.json`, never one inside `node_modules` and never your home
+folder. Without a `package.json`, it runs in the script's own folder.
+
+**How it runs.** Editora adds `--enable-source-maps`, so a stack trace from
+compiled code names the original source, and sets `FORCE_COLOR=1`, so the Run
+console shows the program's colours (unless you set `NO_COLOR`). A `node`
+shebang keeps its flags, such as `#!/usr/bin/env -S node --no-warnings`, but
+runs under the Node.js chosen above. A shebang that names `deno`, `bun`, `tsx`
+or `ts-node` runs with that program, as written.
+
+**TypeScript** runs on plain Node.js 22.18 or newer, which removes the types
+itself; no `tsx` or build step is needed. On an older Node.js, Run says that
+the file needs 22.18 or newer instead of showing a syntax error.
+
+**Test files.** The ▶ of a test file runs `node --test` and shows the results
+in [Test Results](/docs/build-tools#test-runner). A test file is a
+`*.test.*` or `*.spec.*` file, or any script under a `test/`, `tests/` or
+`__tests__/` folder. **Rerun Failed** and **Rerun This Test** work on these
+results.
+
+While the program runs, the Run window names its runtime, such as
+**Node.js 24.18.1** (see
+[Which runtime a program runs under](#which-runtime-a-program-runs-under)).
+
+### Groovy scripts
+
+A Groovy file runs with `groovy` on the JDK chosen in Settings for builds and
+runs (the one Maven, Gradle and Java use), which Editora passes as
+`JAVA_HOME`. Editora finds `groovy` through `GROOVY_HOME`, then your `PATH`,
+then SDKMAN. When none of them has it, Run says Groovy is not installed instead
+of starting anything. A Gradle build script (`build.gradle`) and a
+`Jenkinsfile` are Groovy too, but they get no ▶: nobody runs those as a
+program.
+
+### Kotlin files
+
+Kotlin runs with the Kotlin compiler, `kotlinc`, on the JDK chosen in Settings
+for builds and runs (the one Maven, Gradle and Java use). Editora finds
+`kotlinc` through `KOTLIN_HOME`, then your `PATH`, then SDKMAN (`sdk install
+kotlin`). When none of them has it, Run says Kotlin is not installed instead of
+starting anything. Only `kotlinc` is used: JetBrains' newer Kotlin toolchain
+command is also called `kotlin` and is not the compiler.
+
+- A **script** (`.kts`, `.main.kts`) runs with `kotlinc -script`, from the top.
+- A **program** (a `.kt` file with a top-level `fun main`) is compiled first,
+  together with the Kotlin standard library, into a jar that Editora keeps
+  in its config folder, and then runs with `java -jar`. The compile shows in the
+  Run window, and Stop ends it. Running the file again without changing it
+  skips the compile; after an edit the file is compiled again and the old jar
+  is deleted. The file is compiled on its own, so a `.kt` file that uses other
+  files of a Gradle project runs through the build tool instead.
+
+A Gradle build script (`build.gradle.kts`, `settings.gradle.kts`) gets no ▶. A
+Kotlin program in a [remote folder](/docs/remote) is not compiled from here;
+a Kotlin script there runs on its host.
+
+### Clojure files
+
+A Clojure file runs with one of three tools, picked from the file and its
+project, the nearest folder above it with a `deps.edn`, `project.clj` or
+`bb.edn`:
+
+| The file | Runs as |
+| --- | --- |
+| a namespace with `-main` in a `deps.edn` project | `clojure -M -m my-app.core`, in the project folder |
+| a namespace with `-main` in a `project.clj` project | `lein run -m my-app.core`, in the project folder |
+| a namespace with `-main` in no project | `clojure -M -m hello`, with the file's folder on the classpath |
+| any other `.clj` or `.cljc` file | a script: `clojure -M <file>` (or `lein run -m clojure.main <file>`) |
+| a `.bb` file, a `#!/usr/bin/env bb` script, or any file of a project with only a `bb.edn` | `bb <file>` |
+
+A namespace runs through `-m` only when its name matches its path, such as
+`my-app.core` in `src/my_app/core.clj`, so the tool can find it on the
+classpath. A namespace outside `src` is added to it for the run. A project with
+both a `deps.edn` and a `project.clj` runs with the Clojure CLI.
+
+The Clojure CLI and Leiningen run on the JDK chosen in Settings for builds and
+runs. Since Clojure 1.10.1 the CLI writes an uncaught exception's stack trace
+to a temporary file and prints only a summary; Run sets
+`clojure.main.report=stderr`, so the whole report is in the Run console and its
+frames are links.
+
+Editora finds `clojure`, `lein` and `bb` on your `PATH`. When the one a file
+needs is missing, Run says so instead of starting anything. On Windows the
+Clojure CLI is best used under WSL; see
+[Running in a container or WSL](#running-in-a-container-or-wsl).
+
 ### Scala files
 
 How a Scala file runs depends on the build it belongs to:
@@ -196,6 +331,10 @@ The host's own `java` is used, or the **JDK home** set for that host in
 Settings → Remote. Your local Default JDK and a configuration's JDK override
 are paths on this machine, so they are not sent to the host.
 
+A project on this machine can run on a host too: set a configuration's **Run
+on** to a [deployment](/docs/deployments), and Editora copies what changed in the
+project to a folder on the host before each run, then runs the program there.
+
 ### Running in a container or WSL
 
 A project whose tools [run in a container](/docs/remote#tools-in-a-container)
@@ -250,6 +389,10 @@ A relative **Working directory** is relative to the project root.
 Run names a working directory or script that does not exist, and opens the
 configuration at the field to fix.
 
+**Run on** picks where the configuration runs: **This machine**, or one of the
+project's [deployments](/docs/deployments), a folder on an SSH host that the
+project is copied to before the run. **Deployments…** beside it opens the list.
+
 ### What a configuration can launch
 
 Pick a **Type** in the project's **Run Configurations** window:
@@ -259,17 +402,37 @@ Pick a **Type** in the project's **Run Configurations** window:
 | Java main class | a `main` in the project, via the language server or the build tool |
 | Python script | a `.py` file with your `python3` |
 | Shell script | a script with the interpreter its shebang names (or `bash`), unless **Interpreter** is set |
+| Node.js script | a `.js` or `.ts` file under Node.js |
+| Groovy script | a `.groovy` file with `groovy`, on the configuration's JDK; its VM arguments go into `JAVA_OPTS` |
+| Kotlin file | a `.kts` script with `kotlinc -script`, or a `.kt` program compiled and run with `java -jar`, on the configuration's JDK |
+| Clojure script | a Clojure file with the tool [Run File picks](#clojure-files), on the configuration's JDK; its VM arguments go to the program's JVM (`-J` arguments for the Clojure CLI, `JVM_OPTS` for Leiningen) |
 | Scala (Scala CLI) | a `.scala` or `.sc` file with Scala CLI, on the configuration's JDK; its VM arguments are passed as `--java-opt` |
 | Make target | a target in a makefile |
-| NPM script | a named `package.json` script via `npm run` |
+| npm script | a named `package.json` script, run with the project's package manager |
 
 The form **shows only the fields the selected type uses**. A Java main class
-has no Script / target field; a Python, shell, Make or NPM configuration has no
-Main class, Module, VM arguments or JDK, and a Scala one keeps only VM
-arguments and JDK of those. A hidden field keeps its value, so switching the
-type and back loses nothing. A Python, shell or Scala file can be picked with
-**Browse…** beside Script / target; a file inside the project is saved relative
-to the project root.
+has no Script / target field; a Python, Node.js, shell, Make or npm
+configuration has no Main class, Module, VM arguments or JDK, and a Groovy or
+Clojure or Scala one keeps only VM arguments and JDK of those. A hidden field
+keeps its value, so switching the type and back loses nothing. A Python,
+Node.js, shell, Groovy, Clojure or Scala file can be picked with **Browse…**
+beside Script / target;
+a script inside the project is saved relative to the project root. A Clojure
+configuration with no working directory runs in its project's folder. For an
+npm configuration, **Browse…** lists the scripts in the `package.json` instead.
+
+A **Node.js script** configuration has the script, **Node.js arguments** (such
+as `--max-old-space-size=4096`), **Interpreter**, program arguments and
+environment. Left blank, **Interpreter** uses the Node.js that Run uses (see
+[Node.js scripts](#nodejs-scripts)), and a blank working directory is the
+package folder, the nearest one with a `package.json`.
+
+An **npm script** configuration runs `<manager> run <name>`, with its arguments
+after `--`. The manager is the one the project uses (npm, pnpm, yarn or bun), as
+in the [Package Scripts](/docs/build-tools#npm-and-other-package-managers)
+window, so a pnpm workspace member runs pnpm too. The npm command set in
+Settings → Build Tools applies only when it names that same manager, or is a
+wrapper script.
 
 A shell configuration also has **Interpreter** and **Interpreter options**.
 Left blank, the script's shebang decides (see [Shell scripts](#shell-scripts));
@@ -277,8 +440,12 @@ set, they replace it, for example `/opt/homebrew/bin/bash` with `-eu`. Options
 alone keep the shebang's interpreter and replace its options.
 
 Script and make configurations need **no language server**.
-Only Java and Scala configurations can be debugged; Debug on any other type
-says so, and for a shell configuration it points to
+Java, Groovy, Kotlin, Clojure, Scala, Node.js script and npm script configurations can be debugged. A Node.js
+or npm configuration is debugged the way Run starts it, with the same Node.js,
+package manager, folder and environment (see
+[Debugging JavaScript and TypeScript](#debugging-javascript-and-typescript)).
+Debugging a Node.js or npm configuration of a remote project is not supported
+yet. Debug on any other type says so, and for a shell configuration it points to
 [Run with Trace](#run-with-trace).
 
 ### The toolbar selector
@@ -353,8 +520,8 @@ list, and
 removes one.
 
 **Add** starts from the file you are looking at rather than a blank entry. For
-an active Python or shell script it adds a configuration of that type for the
-script, named after the file. For a Java file it
+an active Python, Node.js or shell script it adds a configuration of that type
+for the script, named after the file. For a Java file it
 prefills the main class from the active Java file (or the one your Gradle build
 declares as `mainClass`, `mainClass.set(…)`, or the legacy `mainClassName`), names
 the configuration after that class, and puts the cursor in whichever field still
@@ -362,7 +529,7 @@ needs you. Adding twice from the same file gets you "App" and "App (2)" rather
 than two entries sharing a name.
 
 **Run: Save Run Configuration…** saves the active Java file's main class, or the
-active Python or shell script, with the file's program arguments.
+active Python, Node.js or shell script, with the file's program arguments.
 
 Running an **incomplete** configuration opens its form at the field you need to
 fill in, rather than naming the problem and leaving you to find it. VM arguments
@@ -377,8 +544,8 @@ file in the project serves, and it reports an error only when there isn't one.
 
 <span class="beta-pill">Beta</span>
 
-Editora debugs **Java**, **Python**, **JavaScript (Node)** and **Scala** through
-the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+Editora debugs **Java**, **Python**, **JavaScript and TypeScript (Node.js)**,
+**Groovy**, **Kotlin**, **Clojure** and **Scala** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
@@ -401,13 +568,17 @@ script as it runs.
 | Debug a project main class | `debug.mainClass` | (palette) |
 | Debug a saved run configuration | `debug.config` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
-| Attach to a running JVM | `debug.attach` | `C-c C-d a` |
+| Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and the **Run** menu lists every debugger action.
+
+**Jump to Line** moves the program to another line without running the code in
+between. It needs a debugger that can do that: Python's debugpy can. The Java
+and JavaScript debuggers cannot, and Jump to Line then says it is not supported.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
 **set-value**, **watches**, and an evaluate console. While suspended, **inline
@@ -444,7 +615,8 @@ already running.
 
 ### Program input in the Debug console
 
-A debugged **Java** program can read its standard input from the Debug console.
+A debugged **Java**, **Python** or **JavaScript** program can read its standard
+input from the Debug console.
 The field does one of two things, and its prompt says which:
 
 - While the program **runs**, Enter sends the line to the program (an empty
@@ -454,7 +626,7 @@ The field does one of two things, and its prompt says which:
 End the input with `Ctrl+D` in the field, the console's right-click menu, or
 *Debug: End Program Input (EOF)* (`debug.endProgramInput`).
 
-In this mode Editora starts the Java program itself rather than leaving it to
+In this mode Editora starts the program itself rather than leaving it to
 the debugger, and stops it on Stop, Restart, a new launch, a failed launch, or
 closing the window. The session ends when the program exits, after its last
 output, and the console reports the exit code. Lines written to stdout and
@@ -463,8 +635,8 @@ stderr at almost the same moment can appear in either order.
 It is **on by default**. The switch is under **Settings → Debugging → Java**
 (or *Debug: Toggle Program Input in the Debug Console*,
 `debug.toggleProgramConsole`) and takes effect at the next launch. It applies
-to a launched Java program, and to a Python program started on this computer.
-Attached sessions and JavaScript are unaffected. It has not yet been confirmed
+to a launched Java program, and to a Python or JavaScript program started on
+this computer. Attached sessions are unaffected. It has not yet been confirmed
 on Windows.
 
 **Run the program in a Terminal tab instead**, just below it, runs that program
@@ -478,7 +650,9 @@ is off by default and needs the program console switch on.
 With the switch off, the debugger starts a Java program itself. The console
 still reports the program's exit code on Linux and macOS when the program runs
 on this machine. On Windows, and on a remote host, in WSL or in a container, it
-says "The program ended." instead.
+says "The program ended." instead. A JavaScript program's output, including
+`process.stdout.write`, still reaches the console, but the program cannot read
+input.
 
 ### Debugging Java
 
@@ -590,6 +764,49 @@ Hot code replace also runs in an attached session and in Debug Test and Debug
 via Build Tool sessions. There the program runs the classes your build tool
 compiled, so a change can be refused that a session Editora started would
 accept; the console then tells you to restart.
+
+### Debugging JavaScript and TypeScript
+
+**Debug** on a JavaScript or TypeScript file (`.js`, `.mjs`, `.cjs`, `.ts`,
+`.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug with
+the same Node.js, folder and flags as Run (see
+[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js**
+field under **Settings → Debugging → JavaScript**; left blank, Editora uses the
+version a project's `.nvmrc` or `.node-version` names (when nvm has it), else
+`node` on your `PATH`. The card's **Detected** line names that Node.js version
+and where vscode-js-debug was found.
+
+- **TypeScript** files are debugged directly on Node.js 22.18 or newer. With an
+  older Node.js, Debug says so. In a project that compiles its TypeScript, a
+  breakpoint in a `.ts` source stops there when the compiled JavaScript runs,
+  through its source maps.
+- **JSX and TSX** files can't be run by Node.js. Debug the compiled JavaScript
+  instead; a breakpoint in the `.jsx` or `.tsx` file still stops there through
+  its source map.
+- **Output and input.** All output reaches the Debug console, including
+  `process.stdout.write` and `readline` prompts, and the program can read lines
+  you type there (see
+  [Program input in the Debug console](#program-input-in-the-debug-console)).
+- Node.js's own modules are skipped, so they don't fill the call stack and Step
+  Into doesn't enter them.
+- A breakpoint condition that isn't valid JavaScript marks the breakpoint as
+  rejected, and the console says why, once.
+- Child processes and worker threads show all their threads.
+- **Debug Test at Caret** (`test.debugAtCaret`) on a `node:test` test runs that
+  test under `node --test` and stops at its breakpoints.
+- **Node.js script** and **npm script** [run configurations](#run-configurations)
+  can be debugged, started the way Run starts them.
+
+**Attach to a running program.** Start Node.js with `--inspect` (for example
+`node --inspect server.js`), then run **Debug: Attach to JVM…** (`debug.attach`)
+on a JavaScript or TypeScript file. It asks for the inspector's `host:port`,
+such as `localhost:9229`. A program started with `--inspect-brk` waits before its
+first line; attaching does not start it, so press Continue.
+
+vscode-js-debug itself needs Node.js 18 or newer to run. When it can't start,
+or the Node.js is too old, Debug says so instead of stopping without a word.
+**Install…** on the JavaScript card installs vscode-js-debug v1.117.0, a version
+tested with Editora.
 
 ### Managing breakpoints
 
@@ -738,6 +955,94 @@ as the session before it ends. **Stop** on
 such a session also ends the test or build run that started the JVM, with any
 JVMs still waiting.
 
+### Debugging Groovy
+
+Groovy is debugged by a debugger built into Editora, so there is nothing to
+install. Debug on a Groovy file runs it as [Run does](#groovy-scripts), and
+Debug on a Groovy script run configuration uses that configuration's script,
+arguments, folder, environment, JDK and VM arguments.
+
+- **Breakpoints** work in scripts, classes and closures.
+- **Stepping** goes from line to line of your code and steps over Groovy's own
+  runtime, which sits between nearly every two calls a script makes.
+- **Variables** show the frame's locals, `this`, and the fields of any object or
+  the elements of an array. A closure's frame is named after the method it is
+  in, such as `Report.run { closure }`.
+- **Hover and Watch** read a variable or a field path such as `order.total`.
+  They never call a method, so looking cannot change the program.
+- **Exceptions**: an exception that leaves your code uncaught stops where it was
+  thrown. This is on by default for Groovy; the **Caught** toggle also stops on
+  exceptions your own code catches. Exceptions Groovy throws and catches inside
+  its runtime never stop.
+
+Not supported yet: conditions, hit counts and log messages on a breakpoint (such
+a breakpoint shows hollow and says so), evaluating expressions or method calls,
+hot code replace, and debugging on a remote host or in a container.
+
+### Debugging Kotlin
+
+Kotlin is debugged by a debugger built into Editora, so there is nothing to
+install beyond the Kotlin compiler. Debug on a Kotlin file runs it as
+[Run does](#kotlin-files), compiling a program first, and Debug on a Kotlin run
+configuration uses that configuration's file, arguments, folder, environment,
+JDK and VM arguments.
+
+- **Breakpoints** work in programs, scripts and lambdas, whether or not the
+  file sits in a folder named after its package.
+- **Frames** are named as Kotlin names them: `Hello.main` for a top-level
+  function in `Hello.kt`, and `Hello.main { lambda }` for a lambda inside it.
+- **Stepping** goes from line to line of your code and steps over the Kotlin
+  standard library and the coroutines machinery.
+- **Variables** show the frame's locals, `this`, and the fields of any object or
+  the elements of an array. **Hover and Watch** read a variable or a field
+  path; they never call a method.
+- **Exceptions**: an exception that leaves your code uncaught stops where it is
+  thrown, on by default; the **Caught** toggle also stops on exceptions your
+  code catches.
+
+For a Gradle project, open a Kotlin file and use
+[Debug via Build Tool](#debug-via-the-build-tool): Gradle starts the app under
+a suspended JVM and Editora's Kotlin debugger attaches to it, so breakpoints in
+`.kt` files bind. **Debug: Attach to JVM…** (`debug.attach`) from a Kotlin file attaches the same
+way to any JVM listening for a debugger.
+
+Not supported yet: conditions, hit counts and log messages on a breakpoint (such
+a breakpoint shows hollow and says so), evaluating expressions or method calls,
+hot code replace, and debugging on a remote host or in a container.
+
+### Debugging Clojure
+
+Clojure is debugged by the same built-in debugger as Groovy, with nothing to
+install. Debug on a Clojure file runs it as [Run does](#clojure-files), under
+the Clojure CLI or Leiningen, and Debug on a Clojure script run configuration
+uses that configuration's file, arguments, folder, environment, JDK and VM
+arguments.
+
+- **Breakpoints** work in a namespace's functions and in a script's top-level
+  forms. Clojure compiles `src/my_app/core.clj` to classes that name
+  `core.clj` as their source, which is how a breakpoint finds them.
+- **Stepping** goes from line to line of your code and steps over Clojure's
+  runtime and `clojure.core`.
+- **Frames** are named as Clojure names the function, such as
+  `my-app.core/greet` (not the class `my_app.core$greet`).
+- **Variables** show a frame's locals, kept alive for the whole function during
+  a session (`clojure.compiler.disable-locals-clearing`), so a local still reads
+  after its last use. A value shows as its class, such as `PersistentVector`;
+  expand it for its fields. Nothing in the program is called to print it.
+- **Exceptions**: an exception that leaves your code uncaught stops where it was
+  thrown, on by default as for Groovy.
+
+Babashka scripts can't be debugged: `bb` is a native program, with no JVM for
+the debugger to attach to. Debug says so and runs nothing; run the script, or
+debug the same code under the Clojure CLI.
+
+The debugger sees the classes your files were compiled to when the program
+loaded them. A function you redefine from a REPL is compiled again to a new
+class, so a breakpoint set before the redefinition does not stop in it, and
+code evaluated in a REPL has no file to stop in. Breakpoint conditions and log
+messages, evaluating expressions, and debugging on a remote host are not
+supported yet, as for Groovy.
+
 ### Debugging Scala
 
 A file of an sbt, Mill, Gradle or Maven build is debugged by
@@ -767,7 +1072,8 @@ Breakpoints of a remote file are kept across reconnects.
 
 - **Python** runs debugpy on the host, which needs its own
   (`pip install debugpy`).
-- **JavaScript** runs vscode-js-debug and `node` on the host.
+- **JavaScript** runs vscode-js-debug and `node` on the host. The program's
+  output reaches the Debug console, but it can't read typed input there.
 - **Java** in a Maven or Gradle project goes through the host's `jdtls`: Debug,
   Debug Main Class, Attach (where `localhost` is the host), Debug Test, and a
   saved configuration. Editora copies its java-debug plugin to
@@ -775,8 +1081,13 @@ Breakpoints of a remote file are kept across reconnects.
   the host for the debugger.
 
 The adapters' locations can be set per host in Settings → Remote (**Python for
-debugging**, **js-debug server**, **Node.js**, **java-debug plugin jar**). Other
+debugging**, **JavaScript debugger (vscode-js-debug)**, **Node.js**,
+**java-debug plugin jar**). Other
 languages cannot be debugged on a host yet.
+
+A Java configuration that runs on a [deployment](/docs/deployments#debugging-on-a-deployment)
+is debugged on its host too: the program starts there and the debugger attaches
+through a tunnel, with breakpoints in the local files.
 
 ### Debugging in a container or WSL
 
@@ -801,7 +1112,7 @@ palette commands:
 | --- | --- | --- |
 | **Install: Java Language Support** (`install.javaSupport`) | jdtls and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
 | **Install: Python Language Support** (`install.pythonSupport`) | Pyright and debugpy | Node.js with `npm`, and Python with `pip` |
-| **Install: JavaScript / Node Language Support** (`install.jsSupport`) | `typescript-language-server` and vscode-js-debug | Node.js with `npm`, and `tar` |
+| **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` with TypeScript 6, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
 
 Editora does not install those runtimes for you. A downloaded server or adapter
 is unpacked beside the installed version and replaces it only once it is

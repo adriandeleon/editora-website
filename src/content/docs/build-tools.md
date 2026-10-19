@@ -1,6 +1,6 @@
 ---
 title: Build tools
-description: Maven, npm, Cargo, Go, Gradle, sbt, Mill and Scala CLI each get an IntelliJ-style tasks tool window that streams to a shared Output console, plus a test runner with live results.
+description: Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka each get an IntelliJ-style tasks tool window that streams to a shared Output console, plus a test runner with live results.
 category: Run & debug
 order: 3
 ---
@@ -33,13 +33,16 @@ the compile step before the first test reports.
 | Tool | Marker | Actions |
 | --- | --- | --- |
 | Maven | `pom.xml` | Lifecycle phases, declared profiles (checkable, composing via `-P`), each plugin's bound goals and its full goal list, and *Run custom…* |
-| npm | `package.json` | One entry per `scripts` name, plus `install` / `ci` |
+| npm (the **Package Scripts** window) | `package.json` | One entry per `scripts` name, plus `install` / `ci` |
 | Cargo | `Cargo.toml` | Standard subcommands, `[[bin]]` / `[[example]]` targets, and a `--release` toggle |
 | Go | `go.mod` / `go.work` | Standard subcommands over the whole module |
 | Gradle | `build.gradle[.kts]` | Common tasks, plus *Load all tasks…* |
 | sbt | `build.sbt` | Common tasks (`compile`, `test`, `run`, `clean`, `package`, …), plus *Load all tasks…*: each subproject's `compile`, `test` and `run` |
 | Mill | `build.mill` (or a Mill 0.x `build.sc`) | `__.compile`, `__.test`, `clean` and `resolve _`, plus *Load all tasks…*: each module's `compile` and `run`, and each test module |
 | Scala CLI | `project.scala` | `compile`, `run`, `test`, `package`, `fmt` and `clean` over the project folder |
+| Clojure CLI | `deps.edn` | The aliases that run something (`-M:test`, `-X:build`, `-T:build`), plus prepare (`-P`), `deps tree`, `deps list` and the classpath |
+| Leiningen | `project.clj` | `run`, `test`, `check`, `compile`, `jar`, `uberjar`, `install`, `deps`, `clean` |
+| Babashka | `bb.edn` | Each task in `:tasks` (`bb run <task>`), plus `bb tasks` |
 
 Maven, Gradle and Mill prefer the project's own `./mvnw` / `./gradlew` /
 `./mill` launcher, falling back to `mvn` / `gradle` / `mill` on your `PATH`. sbt
@@ -47,8 +50,9 @@ runs `sbt` and Scala CLI `scala-cli` from your `PATH`; sbt runs each task as one
 batch command (`sbt compile`), which with sbt 2 starts sbt's server in the
 background and keeps it for the next task. *Load all tasks…* runs the tool once
 to list the build (`sbt projects`, `mill resolve __.compile`), which takes a
-while the first time. npm uses the detected package manager
-(npm / yarn / pnpm / bun) from the `packageManager` field or the lockfile.
+while the first time. A `package.json` project uses its own package manager
+(npm, pnpm, yarn or bun); see
+[npm and other package managers](#npm-and-other-package-managers).
 
 A wrapper is a script the repository ships, and it runs with your privileges.
 The first time a task (or Gradle's *Load all tasks…*) would run one, Editora
@@ -93,6 +97,29 @@ the override, or else the tool's own command. For example *mvn: found
 the line shows that it is not found. Below it, **Project** says whether the
 active file's project uses the tool. The command row is greyed while that tool
 is turned off.
+
+## Clojure
+
+A `deps.edn` gets a **Clojure CLI** tasks window. An alias with `:main-opts` is
+listed as `-M:<alias>`, one with `:exec-fn` as `-X:<alias>`, and one with only
+`:ns-default` as the tool `-T:<alias>`; an alias that only adds dependencies or
+paths runs nothing on its own and is not listed. The CLI's own commands follow:
+download the dependencies (`clojure -P`), print the dependency tree and list,
+and print the classpath.
+
+A `project.clj` gets a **Leiningen** window with the common `lein` tasks. A
+`project.clj` is Clojure code, so its aliases and its plugins' tasks are not
+read; run them with *Run custom…*.
+
+A `bb.edn` gets a **Babashka** window with one entry per task in its `:tasks`,
+in file order, run as `bb run <task>`. Private tasks (a name starting with `-`)
+are left out, as `bb tasks` leaves them out.
+
+The three tools run `clojure`, `lein` and `bb` from your `PATH`, or the command
+override in their Settings cards. Their test tasks stream to the Output console;
+the Test Results window does not read Clojure test runners' output. Running and
+debugging a single Clojure file is covered in
+[Clojure files](/docs/run-debug#clojure-files).
 
 ## Maven
 
@@ -159,6 +186,49 @@ writing one would change how the plugin is resolved.
 The same option is offered up front when [generating a new
 project](/features/starting-a-project).
 
+## npm and other package managers
+
+The `package.json` scripts are in the **Package Scripts** tool window
+(`tool.npm`). Each row shows a script's name and its command; run one with
+double-click or Enter. Scripts run as `<manager> run <name>`, where the manager
+is the one the project uses:
+
+1. the `packageManager` field of `package.json` (for example `"pnpm@9.12.0"`);
+2. else the lockfile: `pnpm-lock.yaml` → pnpm, `yarn.lock` → yarn, a `bun`
+   lockfile → bun;
+3. else npm.
+
+In a **workspace** (a monorepo), a member package has no lockfile of its own, so
+Editora looks upward to the workspace root that has the `packageManager` field,
+the lockfile or a `pnpm-workspace.yaml`, and stops at the project root. A member
+of a pnpm workspace therefore runs pnpm, not npm, and is never offered
+`npm install`. Run configurations of the npm type use the same manager.
+
+The npm card in **Settings → Languages & Tools → Build Tools** names the manager
+the active project uses and why, for example *pnpm (pnpm-lock.yaml)*. Its
+**Command override** applies only when it names that same manager, or is a
+wrapper script of your own; an override of `npm` no longer makes a pnpm or yarn
+project run npm.
+
+The window always shows the project's own `package.json`: opening a file inside
+`node_modules` does not switch it to that dependency's scripts.
+
+**When something is missing,** the Output console says how to fix it instead of
+showing an error from Java:
+
+- a missing npm says to install Node.js (npm comes with it);
+- a missing pnpm or yarn says which file asked for it, and to run
+  `corepack enable` (corepack comes with Node.js) or install it;
+- a missing bun says to install it from bun.sh;
+- a script that fails while the package has no `node_modules` suggests running
+  `<manager> install` first;
+- a `package.json` that can't be read says where the mistake is.
+
+The Output tab is named after the manager, and it shows the colours the script
+prints and the Node.js it runs under, such as **Node.js 24.18.1**. Scripts use
+the same Node.js as [Run](/docs/run-debug#nodejs-scripts). Stop first sends
+Ctrl+C (SIGINT), so the script and its child processes can clean up.
+
 ## Test runner
 
 Running a build tool's **test** task, from the tasks tree, the palette
@@ -179,8 +249,11 @@ a line between them saying how much was left out.
 
 Results are parsed per tool: Maven and Gradle read the JUnit XML reports as they
 are written, Go uses `go test -json`, npm reads TAP when the reporter emits it,
-and Cargo parses libtest output. sbt, Mill and Scala CLI tests are not read
-yet: their output stays in the Output console. Where a structured format isn't available, the
+and Cargo parses libtest output. For `node --test`, Test Results also reads
+node:test's own default output, so `"test": "node --test"` fills the tree with no
+reporter flag. In TAP output a `describe` block is a group, not a failed test,
+and a failure shows its error and stack. sbt, Mill and Scala CLI tests are not
+read yet: their output stays in the Output console. Where a structured format isn't available, the
 window says so and points at the Output console.
 
 For an unfiltered JVM run, Editora scans the project's test sources up front and
@@ -193,8 +266,10 @@ JUnit test classes and methods also get a **run icon in the gutter** (with a
 tooltip naming what it runs), and a test file's right-click menu offers **Run
 Tests** for the whole class. `test.runAtCaret` and `test.runClassAtCaret` do the
 same from the keyboard, and `test.rerun`, `test.rerunFailed`, and `test.stop`
-control the run. Gutter icons are JVM-only and need a detected Maven or Gradle
-project.
+control the run. These test gutter icons are JVM-only and need a detected Maven
+or Gradle project. A Node.js test file has one ▶ for the whole file, which runs
+`node --test` (see [Node.js scripts](/docs/run-debug#nodejs-scripts)); its
+results can be rerun one test at a time or failed-only.
 
 Tests in **nested classes** have their own icons: a method inside a JUnit
 `@Nested` class, or inside a static nested test class, gets a ▶, and so does
@@ -205,7 +280,9 @@ nested classes is marked the same way.
 **Debug Test at Caret** (`test.debugAtCaret`) and the test-results context menu
 launch the selected JUnit method or class through Maven or Gradle with its JVM
 suspended, then attach Editora's Java debugger automatically. This needs the
-same Java debug adapter as ordinary Java debugging.
+same Java debug adapter as ordinary Java debugging. In a Node.js test file,
+Debug Test at Caret debugs the `node:test` test at the caret (see
+[Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)).
 
 Toggle the whole feature under **Settings → Languages & Tools → Build Tools**
 (`view.toggleTestRunner`). It's off in [Simple UI mode](/docs/workspace).
