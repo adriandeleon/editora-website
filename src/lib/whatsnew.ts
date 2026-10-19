@@ -5,10 +5,10 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Tools on the host, in a container, or in WSL", detail: "Git, builds, tests, language servers and debuggers run on the host of a remote folder once you allow it, or inside the Docker or Podman container a project is mounted into, or its WSL distribution." },
-  { title: "Choose a file's encoding", detail: "Reopen a file in the encoding it is really in, or save it in another: Shift_JIS, GBK, windows-1251 and every other encoding the JDK knows. The choice is remembered per file." },
-  { title: "More from multiple cursors", detail: "Split a selection into lines, put a cursor at every line end, skip an occurrence or take back the last cursor; line commands and text tools run at every cursor." },
-  { title: "HTTP Client scripts", detail: "Response handlers, tests and pre-request scripts in the JetBrains format run on your Node.js, with crypto and JWT for signing, and Debug Request steps through them." },
-  { title: "Shell scripts, end to end", detail: "Scripts run as their shebang says, with no language server needed. Run with Trace links each traced line to its source, and ShellCheck and shfmt install in one click." },
-  { title: "Markdown wiki links and backlinks", detail: "[[note]] links resolve, complete, follow renames and are checked by lint, and a Backlinks window lists what links to the open note." },
+  { title: "Kotlin, Scala, Clojure and Groovy", detail: "Language servers installed in one click, Run File and the gutter ▶, sbt, Mill, Leiningen and Babashka tasks, and Debug through the JVM debugger built into Editora." },
+  { title: "A terminal inside Editora", detail: "Shells in tabs, in the project's folder or on its host, container or WSL distribution, with shell integration, clickable paths and Find." },
+  { title: "Node.js and TypeScript, run and debugged", detail: "Run File runs JS and TS scripts, node:test fills Test Results, TypeScript debugs through source maps, and one Node.js setting serves everything." },
+  { title: "One Python for everything", detail: "Run, Debug, Pyright and the formatter use the project's own venv, picked from the status bar, and a pytest runner fills Test Results." },
+  { title: "Deployments", detail: "Develop locally, run on another machine: a run configuration copies what changed to an SSH host and builds and runs it there." },
+  { title: "Encrypted files", detail: "GnuPG is built in: a .gpg file opens as its text, saves encrypted again, and stays out of crash recovery, Local History and AI tools." },
 ];

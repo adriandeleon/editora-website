@@ -19,9 +19,10 @@ Files without a bundled grammar are left unstyled rather than guessed at.
 ### Supported languages
 
 Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
-Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, SQL,
-TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, Mermaid, and the
-HTTP request format. The TypeScript grammar also covers plain JavaScript.
+Kotlin, Scala, Clojure, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML,
+YAML, INI, SQL, TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML,
+Mermaid, and the HTTP request format. The TypeScript grammar also covers plain
+JavaScript.
 
 Astro files use the official Astro TextMate grammar, including mixed
 frontmatter, HTML, and CSS regions. The same language integration supplies
@@ -39,10 +40,15 @@ file) takes it from its own first lines:
 
 - **A shebang** on the first line: `#!/bin/sh`, `#!/usr/bin/env bash`,
   `#!/usr/bin/env -S bash -e`, `#!/usr/bin/env -u NAME bash`, `#!/bin/busybox sh`,
-  and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python, Node,
-  Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters. A version suffix
-  is ignored (`python3.12` is Python). A `java` shebang counts when a
-  `--source N` follows it (`#!/usr/bin/env -S java --source 25`).
+  and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python (and
+  PyPy), Node, Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters,
+  and `kotlin`, `scala`, `scala-cli` (`#!/usr/bin/env -S scala-cli shebang`),
+  `clojure`, `clj` and Babashka's `bb`. A version or build suffix is ignored
+  (`python3.12`, the free-threaded `python3.14t` and `python3-dbg` are Python).
+  A Python runner counts too: `#!/usr/bin/env -S uv run --script` (a script
+  with inline dependencies), `pipx run`, and `poetry`, `pdm`, `hatch`, `rye` or
+  `pipenv` running `python`. A `java` shebang counts when a `--source N` follows
+  it (`#!/usr/bin/env -S java --source 25`).
 - **A modeline**, when there is no shebang Editora knows: a vim modeline in the
   first or last five lines (`# vim: ft=sh`, `# vim: set filetype=bash :`), or an
   emacs line on the first line, or the second after a shebang
@@ -69,6 +75,39 @@ reports syntax errors but not type errors, as for any `.java` file outside a
 project. This works for scripts on this machine, not for one in a
 [remote folder](/docs/remote). See [Run & debug](/docs/run-debug) for running
 and debugging one.
+
+### Scala and Clojure
+
+**Scala** files are `.scala`, Scala CLI and Ammonite scripts (`.sc`), sbt builds
+(`.sbt`) and Mill builds (`.mill`). Scala 3's optional braces are understood:
+Enter indents after a line that opens a block (`class Shelf:`, `def f =`,
+`case x =>`, `if … then`, `for … do`, `match`, `else`), and such a block folds
+from its first line to the end of its indentation, through its `end` marker when
+it has one. Brace-style Scala 2 code folds on its braces, and a `'symbol`
+literal is not read as the start of a string.
+
+**Clojure** files are `.clj`, ClojureScript `.cljs`, shared `.cljc` (and the
+older `.cljx`), EDN data (`.edn`, including `deps.edn` and `bb.edn`), Babashka
+scripts (`.bb`) and Leiningen's project.clj.
+
+- Comment toggling uses `;;`.
+- Enter and Tab indent the way Clojure is written: a call's arguments line up
+  under its first argument, the body of a definition or binding form (`defn`,
+  `let`, `when`, `ns`, `with-…` and the like) sits two spaces in, and the
+  elements of a vector or map line up after the bracket. Tab sets a line to that
+  indent exactly, pulling back a line that is too deep.
+- Every form that spans lines folds. Brackets inside strings, comments,
+  character literals (`\(`) and regexes (`#"…"`) are skipped.
+- Typing `'` or a backtick inserts just that character: they are Clojure's
+  quote, not string delimiters.
+- The Structure panel lists the namespace and the top-level `def`, `defn`,
+  `defmacro`, `defmulti`, `deftest`, `defprotocol` and `defrecord` forms, with a
+  function's parameter vector beside its name.
+
+Both languages have snippets, file icons, [Go to Symbol](/docs/code-navigation)
+without a language server, and entries in the Project tree's **New ▸** menu:
+**Scala** and **Clojure** under Languages, **Scala CLI** and **Babashka** under
+Scripts.
 
 ### Shell scripts
 
@@ -101,6 +140,36 @@ not opened on the Bash language server: nothing in them says they are zsh, so it
 would check them as bash and report valid zsh as errors. `.zsh` scripts stay on
 the server. See [Language servers](/docs/lsp) for the Bash server, and
 [Run & debug](/docs/run-debug) for running scripts.
+
+### Python
+
+`.py`, `.pyw` and `.pyi` files open as Python, and so does any file with a
+Python shebang or modeline (see above). The grammar covers current Python:
+f-strings with nested quotes and format specs (`f"{when:%Y-%m-%d}"`), t-strings
+(`t"Hi {name}"`), `match` and `case` statements (a `match` used as a plain name
+or call stays a name), type parameters (`def first[T](items: list[T])`,
+`class Box[T]:`) and the `type` alias statement. A name after `def` or `class`
+is coloured as a declaration, including `__init__` and a method named like a
+builtin (`def open`), and decorators such as `@property` read as decorators.
+Number prefixes and suffixes (`0x`, `0b`, `3j`) are part of the number.
+
+Without a [language server](/docs/lsp), Python files still fold by indentation
+and get sticky scroll (see [Editing](/docs/editing#python)), the Structure tool
+window lists classes, functions and methods nested by indentation, and
+[Go to Symbol in Project](/docs/code-navigation#go-to-symbol-in-project) finds
+them across the project.
+
+The other files of a Python project open with a format too:
+
+- **pip requirements:** `requirements.txt` and its variants
+  (`requirements-dev.txt`, `dev-requirements.txt`, `requirements.in`,
+  `constraints.txt`, files ending in `.pip`, and any `.txt` or `.in` file in a
+  `requirements` folder). Package names, extras, version specifiers,
+  environment markers, the `-r`, `-c` and `-e` options and URLs are coloured,
+  Toggle Comment uses `#`, and only comments are spell-checked.
+- **TOML:** `Pipfile`, `poetry.lock`, `uv.lock` and `pdm.lock`.
+- **JSON:** `Pipfile.lock` and Jupyter notebooks (`.ipynb`). A notebook opens as
+  its JSON text; there is no notebook view.
 
 ## Autocomplete
 
@@ -151,7 +220,9 @@ What is checked depends on the file type:
 - **Source code** has only comments and string literals checked, so identifiers
   aren't flagged. In shell scripts a command's bare arguments and options
   (`pipefail`, package names, `-xzf`) are not checked; quoted strings, here-doc
-  text and comments are.
+  text and comments are. In Python the first word of a prefixed string
+  (`f"…"`, `rb'…'`) is checked like the rest, without its prefix, and in a pip
+  requirements file only the comments are checked.
 - **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.
@@ -196,5 +267,18 @@ turns the personal dictionary off. After editing `dictionary.txt` outside
 Settings, run **Spell Check: Reload Personal Dictionary**.
 
 A bundled **technical-terms dictionary** (`config`, `async`, `middleware`,
-`kubernetes`, and the like) keeps code-adjacent words from being flagged in any
-language; toggle it in Settings or with `view.toggleTechnicalDictionary`.
+`kubernetes`, and the like, plus common Python words such as `kwargs`,
+`asyncio`, `argparse` and `noqa`) keeps code-adjacent words from being flagged
+in any language; toggle it in Settings or with `view.toggleTechnicalDictionary`.
+Its over 2,000 terms cover Git (`worktree`, `unstaged`, `rebasing`), editor and
+UI words (`submenu`, `breakpoint`, `monospace`), shell tools (`ripgrep`, `fzf`),
+Unix and C (`inode`, `glibc`, `malloc`), cryptography, fonts and graphics
+(`harfbuzz`, `grayscale`), the Java toolchain (`jlink`, `jpackage`), language
+servers, web, devops and AI names, the -ed and -ing forms of the words it lists
+(`deserialized`, `symlinking`), and British spellings (`tokenised`). It leaves
+out short words a typo could make, such as "nat" for "not" or "elt" for "let".
+
+A word's possessive is accepted when the word itself is: "someone else's" and
+"another's" pass because the dictionary spells "else" and "another". A word in
+your personal dictionary or the technical dictionary also accepts its plural
+(`configs`, `regexes`), so only list the base form.

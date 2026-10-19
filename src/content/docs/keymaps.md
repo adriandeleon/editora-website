@@ -42,21 +42,80 @@ Emacs notation reads `C-` as Ctrl, `M-` as Alt (Option on macOS) and `S-` as
 Shift, and a space separates the steps of a sequence: `C-x C-s` is Ctrl+X, then
 Ctrl+S.
 
+## Debugger keys
+
+Every keymap binds the debugger's commands. The Emacs keymap's are listed under
+[Debugging](/docs/run-debug#debugging); besides those, `C-c C-d` followed by
+`r` restarts, `v` shows the value at the caret, `x` evaluates, `w` adds a
+watch, `l` lists the breakpoints, `m` mutes them, `t` enables or disables the
+caret line's breakpoint, `s` smart-steps into, `f` restarts the frame and `h`
+applies code changes.
+
+The CUA and Sublime Text keymaps use VS Code's function keys:
+
+| Key | Action |
+| --- | --- |
+| F5 | Start or continue |
+| Shift+F5 | Stop |
+| Ctrl+Shift+F5 | Restart |
+| F6 | Pause (CUA only: in Sublime Text, F6 is spell checking) |
+| F9 | Toggle breakpoint |
+| F10 | Step over |
+| F11 | Step into while the program is paused, otherwise Full Screen |
+| Shift+F11 | Step out |
+
+Because F11 steps into only while a program is paused, Full Screen also has
+Ctrl+Alt+F in these two keymaps (Ctrl+⌘F on macOS). The VS Code keymap has the
+same keys, with F11 always Step Into.
+
+The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
+Show Value at Caret, Ctrl+Shift+F9 Breakpoints, Shift+F7 Smart Step Into and
+Ctrl+F9 Apply Code Changes to its usual debugger keys.
+
+Some debugger keys are the same in every keymap. While the program is paused,
+Ctrl+Space completes an expression in the evaluate field, a watch prompt and a
+breakpoint's condition and log message, and typing `.` opens the same list.
+In the value popup of Show Value at Caret, the arrow keys move and unfold,
+Enter unfolds a row or loads the next page, Shift+Enter adds the row to
+Watches, Ctrl+C (⌘C on macOS) copies its value and Esc closes the popup. See
+[Inspecting values](/docs/run-debug#inspecting-values).
+
 ## Rebinding commands
 
-The **Settings → Keymaps** page lists every command with its current chord and a
-filter. For any command:
+The **Settings → Keymaps** page lists every command with its current chord.
+Click a row, or move to it with the arrow keys and press Enter, to show its
+buttons:
 
-- **Record** captures a new chord (multi-key sequences like `C-x C-s` are
-  supported; Enter saves it and Esc cancels the capture).
-- **Reset** restores that command's default.
-- **Reset all shortcuts** clears every override.
+- **Record** captures a new chord. Multi-key sequences like `C-x C-s` work.
+  The field shows the chord in the active keymap's notation (`Ctrl+Shift+K`,
+  `⇧⌘K`, or `C-S-k` in the Emacs keymap), and so do the question about a
+  clashing chord and the status-bar message. Enter saves it and Esc cancels.
+- **Reset** restores that command's default chord. If another command has taken
+  that chord, Editora asks first, because the other command loses it.
+- **Remove** unbinds the command. Delete or Backspace on a row does the same.
+- **Reset all shortcuts** clears every override of the keymap in use. Overrides
+  made under another keymap stay with that keymap.
+
+A chord cannot start with a key that types a character, such as a letter, a
+digit, punctuation or Space with no modifier other than Shift. Bound, that key
+would run the command everywhere you type, so Editora refuses it and asks you to
+add Ctrl, Alt or another modifier. When a new chord collides with existing
+bindings, Editora lists them and asks before binding it.
+
+The **Filter commands…** field matches every word you type, in any order, so
+`save file` finds **File: Save**. You can also type a chord in any notation:
+`Ctrl+S`, `C-s`, `⇧⌘S` or a sequence like `Ctrl+K Ctrl+W` lists the commands on
+that chord, written the way the active keymap writes it.
 
 Changes apply live across all windows. Your overrides are saved in
 `settings.json` (the `keymap` name plus per-command entries) and layer on top of
 the active keymap, so you only store what you change. Overrides are kept **per
 keymap**: switching keymap does not unbind unrelated keys, and switching back
-restores the rebinds you made there. Overrides are also stored **per platform**, since a chord is
+restores the rebinds you made there. Shortcuts of commands that no keymap binds
+by default (saved macros, external tools and run configurations) follow you to
+the new keymap instead. When the new keymap already uses that chord, or the
+chord would clash with one of its chords, the shortcut stays with the keymap it
+was made in and comes back when you switch back. Overrides are also stored **per platform**, since a chord is
 modifier-specific (⌘ on macOS, Ctrl elsewhere), so a config synced between a Mac
 and a Windows or Linux machine binds each OS's own chord instead of both.
 
@@ -69,6 +128,5 @@ and a Windows or Linux machine binds each OS's own chord instead of both.
 
 ## Limitations
 
-The recorder allows a modifier-less chord, which can shadow plain typing, so use
-care there. Modal **Vim** is deferred: the flat chord-to-command resolver can't
+Modal **Vim** is deferred: the flat chord-to-command resolver can't
 express a normal/insert/visual state machine yet.

@@ -7,26 +7,36 @@ order: 3
 
 ## Doctor
 
-**`View: Doctor`** in the command palette (also linked from the Welcome page)
-opens a full-tab health report of every external command Editora's features rely
-on, in the spirit of `flutter doctor`. It covers Git and the GitHub CLI
-(including whether `gh` is signed in), ripgrep, the preview and diagram tools
-(`mmdc`, `maid`, Graphviz, PlantUML, Typst), every enabled language server (with
-ShellCheck and shfmt under the Shell server), the
-debug adapters (java-debug, debugpy, js-debug), the Run interpreters (with a
-JDK 25 check for Java), the build tools, the selected AI agent CLI, elevated
-save, browsers, and the in-app installer's prerequisites.
+**`View: Doctor`** (in the Tools menu and the command palette, linked from the
+Welcome page and from the message log's **Open Doctor** button) opens a full-tab
+health report of every external command Editora's features rely on, in the
+spirit of `flutter doctor`. It covers Git and the GitHub CLI (including whether
+`gh` is signed in), ripgrep, GnuPG and its passphrase prompt for encrypted
+files, the preview and diagram tools (`mmdc`, `maid`, Graphviz, PlantUML, the
+Typst CLI), every enabled language server, the Python formatter, ShellCheck and
+shfmt, the debug adapters (java-debug, debugpy, js-debug), the Run interpreters
+(with a JDK 25 check for Java, and the Python interpreter and Node.js that Run,
+Debug and the language servers share), the Node.js for HTTP scripts, the build
+tools, the AI provider and agent, the container engine (and WSL on Windows),
+elevated save, browsers, the in-app installer's prerequisites, and plugins that
+failed to load or start.
 
-Each row shows the resolved command and its version where available. When
-something is off, the row carries a plain-language tip plus an **Install…**
-button (the in-app installer) or a **Settings…** link straight to the right page.
-A feature you have switched off shows as a gray informational row and is never
-probed, so Doctor doesn't nag you about tools you don't want. All probes run off
-the UI thread, and only when you open or refresh the screen.
+A missing tool is a problem only when the window needs it: a file of that
+language is open, the project has the tool's marker file, or you set its command.
+Anything else shows as **Not installed** and is not counted. Problems and warnings
+are gathered under **Needs attention** at the top; sections where everything is
+OK fold to one line.
+
+Each row shows the resolved command and its version or path. When something is
+off, the row carries a plain-language tip and its fix: **Install…** (the in-app
+installer), **Turn on** for a switched-off feature, **How to install**, and
+**Settings…** straight to the right page. All probes run off the UI thread, and
+only when you open or refresh the screen.
 
 Start here when something that should work doesn't: it answers "is the tool
 installed, is it the version I think, and is Editora looking at the right one" in
-one pass.
+one pass. **Copy Report** puts the whole report on the clipboard, ready to paste
+into a bug report.
 
 ## A launcher is blocked on first run
 
@@ -50,7 +60,9 @@ tool that works in your terminal may look "not found" in the app.
 
 Editora rebuilds the `PATH` from your login shell plus the usual install
 locations before launching anything, which recovers most setups (including
-nvm/fnm/asdf per-version bins). If a tool still isn't found:
+nvm/fnm/asdf per-version bins). A Python environment you activated before
+starting Editora (`$VIRTUAL_ENV`, `$CONDA_PREFIX`) stays first on that `PATH`.
+If a tool still isn't found:
 
 - Set its absolute path in the relevant Settings page (LSP, Debugging, Mermaid).
 - Confirm it runs from a plain login shell, since that's the `PATH` Editora reads.
@@ -63,6 +75,26 @@ server initializes. If it never settles, restart servers with *LSP: Restart
 Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls` process from a
 previous run can hold its workspace lock; the loading bar clearing is the sign
 the handshake completed.
+
+## Python imports show as errors
+
+`Import "requests" could not be resolved` on a package you have installed
+means Pyright is looking at a different Python than the one the package is in.
+
+- Look at the interpreter item in the status bar, for example
+  `Python 3.13.5 (PATH)`. `(PATH)` means no project environment was found.
+- Click it, or run **Python: Select Interpreter** (`python.selectInterpreter`),
+  and pick the project's environment, or **Browse…** to the environment's
+  `python`. The server picks the change up at once.
+- An environment named something other than `.venv`, `venv`, `env` or `.env`, or
+  one outside the project, is not found by itself: pick it once, and the project
+  keeps it.
+- A `pyrightconfig.json` or `[tool.pyright]` section that sets `venv` wins over
+  the pick inside Pyright.
+- Doctor's **Python interpreter** row shows the same interpreter, its version
+  and why it was chosen.
+
+See [the Python interpreter](/docs/lsp#the-python-interpreter).
 
 ## A project's tools don't run in its container
 

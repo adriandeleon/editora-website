@@ -82,16 +82,16 @@ connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
   `http-client.private.env.json` (keep that one out of Git). Editora reads them
   from the request file's folder, or the nearest folder above it, up to the open
   project's root, else the file's Git (or Mercurial, Subversion) repository root;
-  outside a repository only the file's own folder counts. Pick one from the environment dropdown in the response view
-  (`http.selectEnvironment` takes you to it); the choice is remembered per
-  `.http` file, and the list includes environments defined only in the private
-  file. A `$shared` section applies to every environment. The private file wins
+  outside a repository only the file's own folder counts. Pick one as described
+  in [Choosing an environment](#choosing-an-environment); the list includes
+  environments defined only in the private file. A `$shared` section applies
+  to every environment. The private file wins
   over the public one, and a named environment wins over `$shared`. Nested
   objects are reached with dots (`{{client.host.url}}`) or indexes
   (`{{users[0].name}}`), and a value may refer to another environment value
   (not to the file's `@var` lines). The files may hold `//` comments and trailing
-  commas; one that can't be read is named in the response's warnings and in the
-  editor marks.
+  commas; one that can't be read is named in the environment menu, the
+  response's warnings and the editor marks.
 - **Dynamic variables**: `{{$uuid}}`, `{{$timestamp}}`, `{{$isoTimestamp}}`,
   `{{$randomInt}}` (or `{{$randomInt 1 10}}`), `{{$random.integer(1, 100)}}`,
   `{{$random.float}}`, `{{$random.alphabetic(8)}}`,
@@ -108,11 +108,38 @@ connection gets 15 s, the response headers 60 s, and the whole body 5 minutes.
   leads elsewhere is not read).
 
 A variable that can't be resolved (a typo, no environment selected, a request
-the file doesn't have) is underlined as you type; hover it for the reason. If you
-send it anyway it goes out as an empty value, and the response lists it under
-its warnings. Typing `{{` offers the variables available at that point, the
-dynamic variables, the keys of the `.env` file, and `name.response.` for each
-request in the file.
+the file doesn't have) is underlined as you type; hover it for the reason.
+When one of the file's environments defines it, a **Use environment dev** quick
+fix selects that environment: it is in the right-click menu and in the Code
+Actions popup (`lsp.codeActions`), which serves a `.http` file without a
+language server. With another environment selected, the reason says which
+environments define the variable. If you send it anyway it goes out as an empty
+value, and the response lists it under its warnings, naming those environments
+too. Typing `{{` offers the variables available at that point, the dynamic
+variables, the keys of the `.env` file, and `name.response.` for each request in
+the file.
+
+### Choosing an environment
+
+The environment is chosen per `.http` file, from the moment the file opens, so
+the first run of a file already goes out in it:
+
+- **The Env pill** sits beside the Editor / Split / Preview toggle in every view
+  mode: "● Env: dev", or a muted "No environment". Click it for its menu: the
+  file's environments, **No environment**, any problem reading the env files,
+  and **Open http-client.env.json** (and the private file, when there is one).
+  In a folder without an env file, the menu says that no `http-client.env.json`
+  was found beside the file.
+- **The status bar** shows the same choice ("Env: dev", or "No environment") for
+  the active `.http` file; click it for the same menu.
+- **HTTP: Select Environment** (`http.selectEnvironment`) opens the menu from the
+  keyboard, before any run too. The arrow keys and Enter pick; Escape goes back
+  to the editor.
+
+The choice is remembered with the file's history, so it comes back when you
+reopen the file. Each response records the environment it was sent in: the
+response view shows it beside the time and size ("env dev"), and History keeps
+it.
 
 ### Secrets and trusted folders
 
@@ -192,16 +219,17 @@ when the file already exists:
   [Local History](/docs/undo-history), and it leaves the file alone when the file
   is open in the editor with unsaved changes.
 
-The response view reports what happened to every target: which files were
-written or replaced, and which were not and why.
+The response's **Notes** tab reports what happened to every target: which files
+were written or replaced, and which were not and why.
 
 ## Tests and response handlers
 
 A request can test its response and keep values from it for later requests,
 with `# @assert` and `# @capture` lines or with a JavaScript response handler.
-Each test shows in the response view's **Tests** block, with ✓ or ✗ and why it
-failed, and a count such as `✓ 3 passed · ✗ 1 failed` sits beside the status
-line.
+Each test shows in the response view's **Tests** tab, with ✓ or ✗ and why it
+failed. The tab's count reads passed of total (`2/3`), red when a test failed,
+and a run with a failed test opens on that tab. The request's line in the editor
+shows the result too (see [Results on the request lines](#results-on-the-request-lines)).
 
 ### Checks without JavaScript
 
@@ -277,11 +305,11 @@ Handlers use the JetBrains API:
 | `jsonPath(value, path)` | A value from an object or JSON text: `jsonPath(response.body, "$.items[0].id")` |
 
 A test whose function returns a promise is waited for, so `fetch` can be used
-with `await`. An error stops the handler and shows in the Tests block with its
+with `await`. An error stops the handler and shows in the Tests tab with its
 line in the `.http` file (or the handler file); with no test to count, the
-block is titled **Response handler error**, and `✗ handler error` sits beside
-the status line. `client.log` lines show there too, in a block titled
-**Script output** when they are all there is. `xpath`, streamed responses and
+tab's heading reads **Response handler error** and its count is a red ✗.
+`client.log` lines show there too, under **Script output** when they are all
+there is. `xpath`, streamed responses and
 `crypto.subtle` are not supported yet.
 
 ### Pre-request scripts
@@ -322,10 +350,12 @@ before the script and `getRaw()` as written, `method`, `environment.get`,
 
 `crypto` and `jwt` work in response handlers too. If a pre-request script can't
 run (an untrusted folder, no Node.js, an error, a timeout), its request is
-**not sent** and its response view says why; the other requests of a Run All
-still run. A script that stopped with an error shows it in the Tests block,
-titled **Pre-request script error**, with `✗ pre-request error` beside the
-status line. `client.exit()` ends the script and sends the request.
+**not sent**, and the response view opens on a **Pre-request script did not
+run** card that says why (see [When a request fails](#when-a-request-fails));
+the other requests of a Run All still run. A script that stopped with an error
+shows it in the Tests tab, under **Pre-request script error**; the card's
+**Show script output** button opens it. `client.exit()` ends the script and
+sends the request.
 
 ### Debugging scripts
 
@@ -397,7 +427,10 @@ script's value (or an earlier response's), the secrets prompt says the host is
 chosen by an earlier response or a script.
 
 **Settings → Languages & Tools → Web** turns scripts off, picks the Node.js to
-use (empty means `node` on the `PATH`) and sets the timeout. The
+use (empty means `node` on the `PATH`) and sets the timeout. A Detected line
+under **Node.js for HTTP scripts** says whether that node is there (*node: found
+(/usr/bin/node)* or *node: not found*), and the script rows are greyed out while
+the HTTP client or its scripts are off. The
 [Doctor](/docs/troubleshooting#doctor) shows which Node.js runs them and whether the permission
 model is on.
 
@@ -408,10 +441,11 @@ model is on.
 | Run the request at the caret | `http.runRequest` | `C-c C-c` (or the gutter ▶) |
 | Run every request in the file | `http.runFile` | `C-c C-r` |
 | Cancel the running request | `http.cancelRequest` | `C-c C-k` |
-| Select environment | `http.selectEnvironment` | (palette) |
-| Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL button) |
+| Select environment | `http.selectEnvironment` | (palette, Env pill or status bar) |
+| Show or hide the results after request lines | **HTTP: Toggle Results After Request Lines** | (palette) |
+| Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL icon) |
 | Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
-| Open the response body in its own tab | `http.openResponseInTab` | (Open in tab button) |
+| Open the response body in its own tab | `http.openResponseInTab` | (Open in tab icon) |
 
 In the other keymaps, Run Request is `Ctrl+Alt+R`, Run All is
 `Ctrl+Alt+Shift+Enter` and Cancel is `Ctrl+Alt+K` (`Option+Cmd+R`,
@@ -433,35 +467,86 @@ sits beside the request that produced it. Running a request from the gutter ▶
 opens the split automatically, and the view mode is remembered per file. Switch
 views with `view.togglePreview` and `view.toggleSplitPreview`, or the floating
 3-mode toggle at the top right. Escape in the response view goes back to the
-editor, and the response, headers and Request text answer your keymap's
-movement and copy keys (`M-w`, `C-n`, `M->` in Emacs).
+editor, and the body, headers and Request text answer your keymap's movement
+and copy keys (`M-w`, `C-n`, `M->` in Emacs).
 
-The response view shows:
+### Results on the request lines
 
-- a status line such as `200 OK · 32 ms · 44 B`, coloured by outcome, and,
-  while a request runs, its request line with variables filled in and the
-  elapsed time. Run All shows its progress ("2 of 5"), says how many requests'
-  tests failed, and ends on the first failed request, or else on the first
-  whose tests failed.
-- a **Request** section with the request as it was sent, variables filled in,
-  and the address a redirect ended at.
-- a **Tests** block with the request's [tests](#tests-and-response-handlers), the
-  handlers' log and any error.
-- warnings in their own block, with a count beside the status line (unresolved
-  variables, skipped scripts, headers that couldn't be sent, a redirect to
-  another host that carried custom headers) and the files `>>` wrote.
-- the protocol version, the headers, and the body: JSON pretty-printed,
-  one-line XML indented, images shown as pictures, other binary bodies
-  summarised. gzip and deflate responses are decoded, and **Wrap** wraps long
-  lines.
+After a request runs, its method and URL line shows how it went, after the
+text: `200 OK · 83 ms · ✗ 1 of 3 tests`, `404 Not Found · 1 ms`,
+`Connection refused` or `Not sent`. The status is in the outcome's colour,
+failed tests and script errors are red, and passing tests show quietly
+(`✓ 3 tests`). The gutter ▶ takes the colour of the outcome too: amber for a
+4xx, red for a 5xx, a failure or failed tests, and the accent colour for a 3xx;
+a success keeps the green ▶.
 
-The **Run** button sends the request the selected response came from again,
-found by its name (or its method and URL) even if the file changed since; it
-turns into **Cancel** while a request runs. Cancelling a Run All keeps the
-responses that had already arrived. A request that was refused or couldn't be
-sent shows **Not sent**, and Copy as cURL is off for it. Errors read as sentences, such as "Connection refused — is
-a server listening on …?" or "Host not found". Responses over 50 MB are cut, and
-the view says so.
+- Click a result to show that response (an Editor view switches to Split);
+  hover it to see when it ran.
+- The text is drawn after the line, never added to it: it isn't copied,
+  searched, saved or undone.
+- The results come from the file's [history](#history), so they are back when
+  you reopen the file. A result stays while the method and URL line reads as it
+  did when the request ran; edit that line and the result goes. Editing the
+  headers or the body keeps it.
+- A cancelled request leaves the previous result, since it isn't kept in
+  History.
+
+**Show results after each request line**, in the HTTP Client section of
+**Settings → Languages & Tools → Web**, turns them off (on by default), as does
+**HTTP: Toggle Results After Request Lines**.
+
+### The response view
+
+The response view has one header row, a row of tabs, and the tab's content.
+
+**The header row** holds **Run**, with the Run key beside it, then the status
+as a coloured pill (`200 OK`), the time and size (`32 ms · 44 B`), the
+environment the request was sent in, and the **History** picker. Hover the
+status for the full status line and when the request was sent. **Run** sends
+the request the shown response came from again, found by its name (or its
+method and URL) even if the file changed since; it turns into **Cancel** while
+a request runs.
+
+**The tabs** are:
+
+| Tab | What it shows |
+| --- | --- |
+| **Body** | The response body (the default tab) |
+| **Headers** | The protocol and status (`HTTP/2 200 OK`), then the headers as a name and value table, with their count on the tab |
+| **Tests** | The request's [tests](#tests-and-response-handlers), the scripts' log and any error; the count reads passed of total, red when one failed |
+| **Request** | The request as it was sent, variables filled in, and the address a redirect ended at |
+| **Notes** | The warnings (unresolved variables, skipped scripts, headers that couldn't be sent, a redirect to another host that carried custom headers) and the files `>>` wrote; the count is amber when there is a warning |
+
+Headers, Tests and Notes show only when they have something in them. A run
+opens on **Tests** when a test or a script failed, and on **Body** when the
+request got no response; warnings never switch tabs. Otherwise a tab you picked
+stays across runs while the response has it. The arrow keys, Home and End move
+between tabs. In the Headers table, right-click to copy a value, a header or all
+of them; the copy key copies the selected rows.
+
+**The actions** sit at the end of the tab strip as icons: **Wrap** (long body
+lines; the Request tab always wraps), **Copy as cURL**, **Open in tab** and
+**Save response**. Their tooltips show their keys. **Clear** is in the **⋯**
+menu. In a narrow panel the History picker narrows first, then the time and size
+hide, then History moves to a second row; the icons fold into the ⋯ menu, and
+then the tabs show only their counts.
+
+**The body** is decoded from gzip or deflate and laid out by its type:
+
+- JSON is pretty-printed with a 2-space indent, one field or array element per
+  line (`"id": 42`), and `[]` / `{}` for empty ones. NDJSON shows one value per
+  line.
+- One-line HTML is indented, one block element per line, with inline text kept
+  on its block's line (`<h1>Not Found</h1>`). `pre`, `script`, `style` and
+  comments are kept exactly; HTML the server already indented is left as it is.
+- One-line XML is indented.
+- An image is shown as a picture, with a caption (`PNG · 160 × 160 · 858 B`), a
+  checkerboard under transparent pixels, and **Fit** / **100%**. Fit, the
+  default, only ever scales a picture down.
+- Other binary bodies are summarised.
+
+The layout is only for the view: **Save response** and **Open in tab** have the
+body exactly as received. Responses over 50 MB are cut, and the view says so.
 
 **Copy as cURL** produces a command for bash or zsh that is safe to paste and
 reproduces what was sent, including file bodies, forms, Digest auth and
@@ -474,18 +559,71 @@ handler. **Save response** writes the body exactly as
 received (an image saves as the image); the status-and-headers text is the
 second choice in the dialog.
 
+### Before, during and after a run
+
+- **Before the first run**, and after **Clear**, the Body tab says what Run will
+  send ("Run will send **Get a user**", the request at the caret), shows the Run
+  key, and lists the file's requests. Click one, or move to it and press Enter,
+  to run it.
+- **While a request runs**, the status reads "Sending Get a user… 1.2 s"
+  ("Sending 3 of 10: …" in a Run All), with a thin progress line under the
+  header row. The Body tab shows a **Previous** row ("Previous: 200 OK ·
+  16:42:31 · Get a user") instead of the old body; click it to see that response.
+- **After Cancel**, the status reads "Cancelled after 4.2 s", the Previous row
+  comes back, and History shows that response selected.
+- **While a trust prompt waits** (for [secrets](#secrets-and-trusted-folders) or
+  [scripts](#what-a-handler-may-do)), the panel says "Waiting for your answer…",
+  with no clock: nothing has been sent yet, and the time starts when you answer.
+  Cancelling while the prompt is open goes back to what was shown before.
+
+### When a request fails
+
+A request that got no response opens on the Body tab with a card:
+
+- a title naming what went wrong: **Connection refused**, **Host not found**,
+  **Host unreachable**, **Timed out**, **Certificate problem**, **Secure
+  connection failed**, **Connection closed**, **Not an HTTP server**, **Invalid
+  URL**, **Not sent** or **Pre-request script did not run**;
+- the explanation, as a sentence you can select and copy, such as
+  "Connection refused — is a server listening on …?";
+- **Run again** and **Copy as cURL** (off for a request that was never sent),
+  plus **Show script output** when a pre-request script did not run.
+
+### Run All results
+
+After a Run All, a list of its requests sits between the header row and the
+tabs.
+
+- **The title line** gives the outcome as a coloured pill ("3 of 10 failed",
+  "All 10 succeeded", "Cancelled · 2 of 4 ran"), "tests failed in 2 requests" in
+  red when any did, and how long the run took. **Only failures** keeps the
+  requests that failed, weren't sent or had a failed test, and the chevron
+  collapses the list.
+- **Each row** shows the status (the code, "failed" or "not sent"), the
+  request's name with its method and path, its time, and its tests (`✗ 2/3`,
+  `✓ 3` or `—`).
+- **Selecting a row** shows that response in the tabs. The first failed
+  request, else the first whose tests failed, is selected when the run ends.
+  Enter or a double-click goes to the request in the editor; right-click to
+  **Run again**, **Copy as cURL** or **Go to request**.
+
+The list takes at most about 40% of the panel and scrolls on its own. It goes
+away at the next run and on **Clear**. A cancelled Run All keeps and lists the
+requests that had finished.
+
 ### History
 
-The **History** dropdown holds the file's recent responses, each with its
-request's name and time. The last 10 are saved in Editora's config folder and
-come back when you reopen the file. Saved bodies are capped at 1 MB, and the
-values of credential headers (Authorization, cookies, and headers named like
-tokens, secrets, API keys and passwords) are masked, and so is any value a run
-read from `$processEnv`, `$env` or `$dotenv`. A request marked
-`# @no-log` is never saved. **Clear** empties the file's history, saved copy
-included. The history follows a renamed or moved file, is removed with a deleted
-one, and is shared by every window showing the file. **Export Configuration**
-includes it only when you tick "Include HTTP response history".
+The **History** picker in the header row holds the file's recent responses,
+each with its request's name and time. The last 10 are saved in Editora's config
+folder and come back when you reopen the file. Saved bodies are capped at 1 MB,
+and the values of credential headers (Authorization, cookies, and headers named
+like tokens, secrets, API keys and passwords) are masked, and so is any value a
+run read from `$processEnv`, `$env` or `$dotenv`. A request marked
+`# @no-log` is never saved. **Clear**, in the ⋯ menu, empties the file's
+history, saved copy included. The history follows a renamed or moved file, is
+removed with a deleted one, and is shared by every window showing the file.
+**Export Configuration** includes it only when you tick "Include HTTP response
+history".
 
 Cookies last for one run: Run All shares them between its requests, and a
 request run on its own starts without any.

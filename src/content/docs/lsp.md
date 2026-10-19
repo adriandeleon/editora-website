@@ -88,10 +88,10 @@ popup.
 
 **Inlay hints** are the server's parameter-name and inferred-type annotations,
 drawn in grey italics inline, at the position they describe. They are **off by
-default**; turn them on in Settings → Code Completion or with `Toggle Inlay
-Hints`. By default a parameter-name hint appears only where the argument is a
-literal; **LSP: Set Inlay Hint Filter** (`lsp.setInlayHintMode`) switches
-between that and hints on all arguments. Type hints are never filtered. They
+default**; turn them on in the **Language server features** card of Settings →
+Code Completion or with `Toggle Inlay Hints`. By default a parameter-name hint
+appears only where the argument is a literal; **LSP: Set Inlay Hint Filter**
+(`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered. They
 cost nothing while off.
 
 **Code lenses** are the server's reference and implementation counts, drawn
@@ -113,8 +113,10 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 **Diagnostics** appear as inline squiggles, in the **Problems** tool window
 (`M-8`), and as marks on the minimap and scrollbar. A hint (ShellCheck's
 "style" level, for example) is drawn as a faint dotted line rather than a full
-squiggle, and code the server marks as unused, such as a variable nothing
-reads, is drawn faded. **Completion** is merged into
+squiggle, code the server marks as unused, such as a variable nothing reads,
+is drawn faded, and a call the server marks as deprecated is struck through.
+Those unused and deprecated marks are not listed in the Problems window.
+**Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures. A server that lists its symbols
@@ -170,6 +172,12 @@ undo step per file, and a multi-file fix opens the untouched files in background
 tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
 
+**Organize Imports** works the way the file's server does it: jdtls's own
+request, Pyright's organize-imports command, or the server's organize-imports
+code action. If the server has none of these, the status bar says so. On a
+Python file **Format Document** uses Ruff or Black; see
+[Formatting Python](#formatting-python).
+
 A multi-file edit is applied **completely or not at all**. An action that would
 delete a folder or replace an existing file asks first and names the paths, and
 whatever an edit deletes or replaces is copied to
@@ -221,8 +229,8 @@ public String greet(Helper helper, int n, boolean loud = false)
 A line that cannot be read as a method signature is rejected and nothing
 changes.
 
-Three Java commands sit outside the menu: **Organize Imports** sorts and prunes a
-file's imports directly, **Copy Fully Qualified Name** puts the full name of the
+Three commands sit outside the menu: **Organize Imports** sorts and prunes a
+file's imports directly (in Java, JavaScript and TypeScript), **Copy Fully Qualified Name** puts the full name of the
 symbol at the caret on the clipboard, and **Reload Project Configuration** makes
 the server re-read `pom.xml` or `build.gradle` when a dependency change hasn't
 been picked up.
@@ -297,9 +305,21 @@ check) drive the status-bar loading bar and show what they are doing, with a
 title and percentage, in the echo area. Each message starts with the name of the
 server it comes from, for example `bash-language-server: …`.
 
+Startup ends with a line that says it is done, such as
+`jdtls: Loaded and ready`. It appears once the server is ready and has had no work outstanding for
+a moment; for jdtls that is after the project import, not at its own earlier
+"Ready". After that, background work (diagnostics after an edit, a search) is
+shown only when it is still running after that moment, and work that was shown
+ends with another ready line, so the last line never reads as a job left
+unfinished. A line that repeats the one just shown is skipped.
+
 External file changes are forwarded to the running servers, so a server's
 project model stays current after a `git checkout`, a branch switch, a CLI build
-or an edit in an external editor. A server that dies mid-session (a crash, an
+or an edit in an external editor. In a window without a project, and for a
+server whose folder is outside the project, Editora watches the server's folder
+itself (hidden folders, `node_modules`, `__pycache__` and virtual environments
+aside), so a module created by `git` or a terminal resolves without a restart.
+A server that dies mid-session (a crash, an
 OOM-kill, a failed handshake) is announced in the status bar, has its stale
 diagnostics cleared, and is restarted for the affected files, with a cap so a
 server that keeps crashing is not relaunched forever.
@@ -308,13 +328,14 @@ server that keeps crashing is not relaunched forever.
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
 Settings field can override the command per server) and uses it if present.
-Twenty-three servers are supported:
+Twenty-six servers are supported:
 
 - **Java** (`jdtls`), **TypeScript / JavaScript** (`typescript-language-server`),
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (`kotlin-language-server`), **Lua** (`lua-language-server`)
+  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
+  **Scala** (Metals), **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
@@ -324,8 +345,14 @@ lemminx-maven extension). It is routed by file name, so a `pom.xml` gets
 dependency, plugin and GAV completion while every other XML file keeps the fast
 native lemminx.
 
-Each server has its own enable checkbox and a live found/not-found status on the
-**Settings → LSP** page, plus a per-server command field with a Browse button.
+Each server has a card on the **Settings → LSP** page: its enable switch, its
+command field with **Browse…**, and a **Detected** line such as *jdtls: found
+(/usr/bin/jdtls)* or *rust-analyzer: not found*, with an **Install…** button
+while it is missing. A command left blank uses the program on your `PATH`. While
+**Enable LSP (language servers)** is off, the cards are greyed and a note says to
+turn it on. The switches for inlay hints, code lenses and the other server
+features are in the **Language server features** card on Settings → Code
+Completion; the LSP page links there.
 [Doctor](/docs/troubleshooting#doctor) reports the same detection for every
 enabled server in one place.
 
@@ -336,13 +363,20 @@ a language and whether to run it**, which overrides your global preference for
 anyone who opens that project. It can also set the
 [Bash server's options](#bash-server-options). This covers one repository needing a
 JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
-setting when switching between them. See
-[projects](/docs/workspace#settings-a-project-can-commit).
+setting when switching between them. The same file can also set indentation,
+rulers, build commands and debugger programs; see
+[projects](/docs/workspace#settings-a-project-can-commit) and the full list in
+[Configuration](/docs/configuration#inside-a-project).
 
 Because those commands are programs that run on your machine, they apply only
 to a **trusted folder**. In an untrusted folder the project's server commands
 (and any attempt to re-enable a server you switched off) are ignored until you
-run *LSP: Trust This Project's Server Settings* (`lsp.trustProjectSettings`).
+run *Project: Trust This Project's Settings* (`lsp.trustProjectSettings`).
+
+Settings → LSP shows your own commands. When the project in the window
+overrides a server, that server's card says so: which command the project runs,
+which one it asks to run until you trust it, or that it turns the server on or
+off.
 
 A remote project's `.editora/settings.json` is not read; set a server's command
 for a host in Settings → Remote instead (see
@@ -351,16 +385,31 @@ for a host in Settings → Remote instead (see
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
-covered through four channels, picked per server:
+covered through one of these channels, picked per server:
 
 - **npm** packages (Astro, JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
   Python/Pyright), needing Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
-- **Binary** releases downloaded per OS/architecture (clangd, lemminx, Kotlin,
+- **Binary** releases downloaded per OS/architecture (clangd, lemminx,
   terraform-ls, Lua), extracted into your config folder.
+- A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
+  into your config folder. A server installed earlier keeps its version until
+  you install it again.
+- A **pinned distribution** for the Kotlin server, checked against its published
+  checksum. It is about 370 MB to download and about 1.2 GB once installed,
+  because it brings its own Java runtime, so Editora asks before it starts.
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
   needs a JDK.
+- A **single jar** for the Groovy server (gvy), pinned to one release and checked
+  against its published checksum. It runs on the JDK chosen for builds and runs
+  (Java 17 or later).
+- A **pinned native binary** for clojure-lsp, one per OS and architecture, each
+  checked against its SHA-256 before it is unpacked. It needs no JVM.
+- **Coursier** for Metals, the Scala server, which is published only as Maven
+  artifacts: Editora downloads coursier's launcher (pinned, and checked against
+  its published checksum), which fetches Metals' jars into your config folder.
+  It runs on the JDK chosen for builds and runs (Java 17 or later).
 
 There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
@@ -380,16 +429,104 @@ version in place.
 
 For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
 whether it is hoisted in the workspace or installed alongside the server by
-Editora. A TypeScript SDK inside the project is loaded only from a trusted
+Editora (TypeScript 6, as for the
+[TypeScript / JavaScript server](#typescript-and-javascript)). A TypeScript SDK inside the project is loaded only from a trusted
 folder; otherwise Editora uses the SDK beside the server, or does not start the
 server until you trust the folder. The trust prompt lists the SDK.
+
+## Groovy
+
+The Groovy server is gvy. Install it from its Settings → LSP card, the banner
+on a `.groovy` file, or **Install: Language Server…**. It has no command until
+it is installed. The installer sets its command to `java -jar` with the
+downloaded jar, and Editora runs that with the JDK chosen for Maven, Gradle and
+Run, not the first `java` on your `PATH`.
+
+It reports Groovy compiler errors, and offers completion, hover, go to
+definition, references, rename, the outline and formatting. CodeNarc's style
+rules are off: they flag nearly every line of ordinary Groovy.
+
+A `Jenkinsfile` at a project's root makes [Doctor](/docs/troubleshooting#doctor)
+expect the Groovy server, as an open `.groovy` file does. A `build.gradle` alone
+does not, because most Gradle projects with a Groovy build script are Java
+projects.
+
+## Kotlin
+
+The Kotlin server is JetBrains' Kotlin LSP. Install it from its Settings → LSP
+card, the banner on a `.kt` file, or **Install: Language Server…**; Editora says
+how large the download is and waits for your answer. The installer sets the
+server's command to the downloaded launcher. Left blank, the command is
+`kotlin-lsp --stdio`, the name Homebrew's `kotlin-lsp` gives it. A command you
+set yourself is kept, so fwcd's `kotlin-language-server` still works there.
+
+The server imports the project's Gradle or Maven build, so its root is the
+folder with `settings.gradle.kts` (or `settings.gradle`), else the nearest
+`build.gradle.kts`, `build.gradle` or `pom.xml`: every module of a multi-module
+build shares one server. Once the import ends (a few seconds for a small
+project, longer the first time Gradle fetches its plugins) it reports
+compiler errors and warnings and offers completion, hover, go to definition,
+references, rename, the outline, formatting and code actions.
+
+The server is an alpha. It checks the `.kt` files in the build's source
+folders; a `.kts` script, `build.gradle.kts`, and a `.kt` file outside a build
+get no diagnostics or hover from it. A folder without a build file is not
+imported at all.
+
+## Clojure
+
+The Clojure server is clojure-lsp. Editora uses the `clojure-lsp` on your `PATH`,
+or installs its own copy from the server's Settings → LSP card, the banner on a
+Clojure file, or **Install: Language Server…**. The install is the native build
+for your platform (Linux and macOS on x64 and arm64, Windows on x64), pinned to
+one release and checked against its SHA-256.
+
+It serves `.clj`, `.cljs`, `.cljc` and `.edn` files with clj-kondo's diagnostics,
+completion, hover, go to definition, references, rename, code actions, the
+outline and formatting. To resolve the project's dependencies it asks the
+project's own tool for the classpath (`clojure -Spath`, `lein classpath`,
+`bb print-deps` or `npx shadow-cljs classpath`), which it finds on the same
+`PATH` Editora gives every language server. Without that tool it still works on
+the project's own files.
+
+A server runs per project root: the folder with a `deps.edn`, `project.clj`,
+`bb.edn`, `shadow-cljs.edn` or `build.boot`, else the repository. Any of those
+files at a project's root also makes [Doctor](/docs/troubleshooting#doctor)
+expect the Clojure server.
+
+## Scala
+
+The Scala server is [Metals](https://scalameta.org/metals/) 1.6.9. Install it
+from its Settings → LSP card, the banner on a `.scala` file, or **Install:
+Language Server…**. It has no command until it is installed: the installer
+sets it to `java` with Metals' JVM options and the fetched jars, and Editora
+runs that with the JDK chosen for Maven, Gradle and Run, not the first `java`
+on your `PATH`.
+
+Metals works on the build it finds at the workspace root: an sbt build
+(`build.sbt`), a Mill build (`build.mill`, or a Mill 0.x `build.sc`), a Scala
+CLI project (`project.scala`), a build already exported over BSP (`.bsp/`), or a
+Gradle or Maven build. The first time it sees one it asks whether to **import
+the build**; the question appears as a dialog, and the editor stays usable while
+it is open. An import runs the build tool and compiles the project, which takes
+a minute or more the first time. Metals shows its progress in the status bar.
+
+It reports compiler errors, and offers completion, hover, go to definition,
+references, rename, the outline and formatting (with a `.scalafmt.conf`). When
+Metals asks for a value or a choice of its own, a text field or a picker opens.
+
+A `build.sbt`, `build.mill`, `build.sc` or `project.scala` at a project's root
+makes [Doctor](/docs/troubleshooting#doctor) expect Metals.
+
+Any server's question with buttons gets the same dialog; before, such a
+question went unanswered.
 
 ## Workspace roots and lifetime
 
 A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
-single server.
+single server. Python looks for its own markers first; see [Python](#python).
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -417,6 +554,57 @@ completion, hover, the outline and syntax errors, and an import a completion
 adds goes below the `#!` line. The copy sits outside any project, so type
 errors are not reported. A script in a remote folder is not given a copy.
 
+## TypeScript and JavaScript
+
+JavaScript and TypeScript files use **typescript-language-server**, which runs
+TypeScript's own `tsserver`. **Install…** on its card (or *Install: TypeScript
+/ JavaScript (Node.js) Language Support*, `install.jsSupport`) installs the
+server with **TypeScript 6** beside it. The server runs on the same Node.js as
+[Run](/docs/run-debug#nodejs-scripts).
+
+**Why TypeScript 6.** TypeScript 7 is a new compiler written in Go. It has no
+`tsserver`, so typescript-language-server cannot run on it. npm's newest
+TypeScript is now 7, so Editora asks for TypeScript 6, the last version with a
+`tsserver`. When the only TypeScript found has no `tsserver`, or there is none,
+Editora does not start the server and says why, with the fix:
+`npm install -g typescript@6`, or **Install…** on the card. It does not try
+again each time you open another tab. [Doctor](/docs/troubleshooting#doctor)
+and the card's **TypeScript** line show the version in use, or that it has no
+`tsserver`.
+
+**A folder's own TypeScript runs only once you trust the folder.** Many projects
+have their own `node_modules/typescript`. That is code from the folder, so
+Editora uses it only in a [trusted folder](/docs/workspace#trusted-folders),
+and the trust prompt lists it. Until then, the TypeScript installed beside the
+server is used. When the folder's own copy is the only one, the server waits
+until you run *Project: Trust This Project's Settings*
+(`lsp.trustProjectSettings`). On a remote host, the server still picks its
+TypeScript itself.
+
+**Type definitions are not downloaded.** Left to itself, the server downloads
+`@types` packages from the npm registry for the libraries your JavaScript uses.
+Editora turns that off. To turn it on, use **Download type definitions
+automatically** on the TypeScript / JavaScript card in **Settings → LSP**. When
+a folder has no Node.js types, the status bar suggests
+`npm install --save-dev @types/node`, so hover and completion know Node's APIs.
+
+**What it adds:**
+
+- **Organize Imports** (`lsp.organizeImports`) sorts the imports and removes
+  unused ones. The code-action menu also offers **Fix all**, **Add missing
+  imports** and **Remove unused**, and quick fixes follow the file's own
+  indentation.
+- **Inlay hints** for parameter names, return types and enum values, when
+  [inlay hints](#reading-the-code) are on.
+- **Code lenses**: a references count on each function, when code lenses are
+  on.
+
+**Workspace roots.** Without a project open, a file's server root is the
+nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
+`package.json`, then the Git repository. This gives each package in a monorepo
+its own root. Scripts with none of these above them share one server, wherever
+they are, instead of starting one each.
+
 ## Shell scripts
 
 Shell scripts use **bash-language-server** (`bash-language-server start`).
@@ -435,8 +623,9 @@ The Bash server finds problems with **ShellCheck** and formats with **shfmt**.
 Without ShellCheck a script gets no diagnostics; without shfmt **Format
 Document** changes nothing. Editora shows whether each one is there:
 
-- The **Bash / Shell** card in **Settings → LSP** has a line for each, for
-  example *ShellCheck: found (/usr/bin/shellcheck)* or *shfmt: not found*.
+- The **Bash / Shell** card in **Settings → LSP** has a command field and a
+  Detected line for each, for example *shellcheck: found (/usr/bin/shellcheck)*
+  or *shfmt: not found*.
 - [Doctor](/docs/troubleshooting#doctor) has a **ShellCheck** and an **shfmt**
   row under the Shell server.
 - Opening a script without ShellCheck says so in the status bar, once per
@@ -507,6 +696,97 @@ path. Put shared settings in the root
 `# shellcheck` directives) in the script itself for anything that applies to
 one folder or file.
 
+## Python
+
+Python files use **Pyright** (`pyright-langserver --stdio`). Language servers
+are off by default, so the first Python file a window opens asks **Turn on
+Python code intelligence?** with **Turn on** and **Not now**. The offer comes
+once per window and follows the same switch as the install banners
+(`view.toggleInstallPrompts`).
+
+### The Python interpreter
+
+Pyright analyses your code with a Python interpreter, and it can only resolve
+the packages installed in that interpreter. Editora picks one interpreter per
+file and uses it for Run, Debug, the tests, Pyright and Format Document alike.
+The first match wins:
+
+1. the **Interpreter** field of a [run configuration](/docs/run-debug), for that
+   configuration;
+2. the interpreter picked for this project (see below);
+3. the environment Editora was started from (`$VIRTUAL_ENV`, then
+   `$CONDA_PREFIX`), so activating a virtual environment before starting
+   Editora works;
+4. a virtual environment in the project: a `.venv`, `venv`, `env` or `.env`
+   folder with a `pyvenv.cfg`, looked for from the file's folder up to the
+   project root;
+5. **Settings → Debugging → Python interpreter (fallback for Run, Debug and code
+   intelligence)**;
+6. the system Python on `PATH` (`python3`, then `python`; on Windows `py -3`,
+   then `python`, never the Microsoft Store stub).
+
+A status-bar item on Python files shows the result and why, for example
+`Python 3.13.5 (.venv)`, `Python 3.12.4 (PATH)` or `Python 3.13.5 (picked)`.
+Hover it for the full command. Click it, or run **Python: Select Interpreter**
+(`python.selectInterpreter`), to choose another one: **Detect automatically**
+(the order above), the one in use, the project's environments, every Python on
+`PATH`, or **Browse…** for any file. The pick is kept per project; inside the
+project folder it is stored as a relative path. In a window without a project
+it applies to every loose Python file in that window.
+
+Pyright is told the interpreter, so the packages in a project's `.venv` resolve
+with no `pyrightconfig.json`. A changed pick reaches the running server at once.
+A `pyrightconfig.json` or a `[tool.pyright]` section with `venvPath` and `venv`
+still wins inside Pyright, and settings such as `pythonVersion` or
+`typeCheckingMode` belong there too.
+[Doctor](/docs/troubleshooting#doctor) shows the same interpreter in its
+**Python interpreter** row.
+
+### What Pyright adds
+
+- **Unused names are faded** (an import or a variable nothing reads) and
+  **calls to a deprecated function are struck through**. These marks are drawn
+  in the editor but not listed in the Problems window, where they would bury
+  the real errors.
+- **Organize Imports** (`lsp.organizeImports`) sorts and groups the imports
+  with Pyright's own command. It leaves unused ones in place; they are the
+  faded ones.
+- **Go to Definition** into the standard library, site-packages or Pyright's
+  bundled stubs opens that file in View mode, on the project's server, and
+  without the library's own type errors. **Enable Editing** in the View mode
+  bar makes it editable.
+- An **untitled** buffer set to Python is analysed too. In a project window it
+  sees the project's modules. Once you save it, its file takes over.
+- A Python file keeps its server up to **50,000 lines**, even above the
+  **Disable minimap & LSP above** limit (10,000 lines by default), which then
+  turns off only the minimap.
+
+The Python server's root is the nearest folder with a `pyproject.toml`,
+`setup.py` or `setup.cfg`, else the repository (`.git`), else the nearest
+`requirements.txt` or `Pipfile`. A `docs/requirements.txt` therefore does not
+split the documentation off from the package it documents. In a project window
+the project root is the root.
+
+To use another server, set the Python command in **Settings → LSP**, for example
+`basedpyright-langserver --stdio`. If that command is not found, the banner
+names it and offers **Settings…**, rather than installing Pyright.
+
+### Formatting Python
+
+Pyright does not format. **LSP: Format Document** (`lsp.formatDocument`) on a
+Python file runs **Ruff** (`ruff format`) or, failing that, **Black**, giving
+them the editor's text with the file's name so they read the project's
+`pyproject.toml`. Each is looked for first in the interpreter's environment
+(the project's `.venv`), then on `PATH`, in this order: the environment's Ruff,
+the environment's Black, Ruff on `PATH`, Black on `PATH`. The result is one
+undoable edit, and the status bar names the tool, for example
+`Formatted with ruff`. It works with language servers off too.
+
+If neither is installed, the status bar says so; install one into the project's
+environment (`pip install ruff`). A Python server that formats by itself, such
+as `ruff server`, keeps the job. Doctor's **Python formatter** row shows which
+tool Format Document will use.
+
 ## Language servers on a remote host
 
 A file in a [remote folder](/docs/remote) is served by a language server running
@@ -523,6 +803,11 @@ than a path on this machine.
   outside the project folder, such as a library source reached by Go to
   Definition.
 - Renames and other cross-file edits create, move and delete files on the host.
+- **Python**: Pyright on the host is told the project's virtual environment as
+  the host names it, found there the way [Run](/docs/run-debug) finds it, else
+  the host's own `python` tool. The status-bar item names it, for example
+  `python (.venv)`, without running it on this machine. If the connection
+  drops, the host's own `python3` is used.
 - **Java** works too: jdtls runs on the host with the host's JDKs and keeps its
   index in `~/.cache/editora` there.
   *LSP: Clear Java Index Caches* clears only the indexes on this machine.
@@ -544,6 +829,8 @@ set in Settings → LSP is used there only when it is a bare program name.
   `~/.cache/editora` inside, so it is kept across restarts of Editora for as long
   as the container lasts. *LSP: Clear Java Index Caches* clears only the indexes
   on this machine.
+- **Python**: Pyright inside is told the project's virtual environment by the
+  name it has inside, as on a remote host.
 - The Astro server does not run in a container or distribution yet.
 
 ## Finding the server's binary

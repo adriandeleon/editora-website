@@ -27,7 +27,7 @@ Type a trigger and press **Tab**, or pick from the **Snippet: Insert…** list
 
 Bodies use the standard syntax: `$1`, `${1:default}`, mirrors (a repeated
 number), `${1|a,b|}` choices, and [variables](#snippet-variables). Snippets ship
-for 30 languages, plus a global set that applies to every file. The TypeScript
+for 32 languages, plus a global set that applies to every file. The TypeScript
 set also applies to JSX and TSX files.
 
 ### Expanding with Tab
@@ -83,6 +83,60 @@ Toggle Snippet Expansion on Tab**, `view.toggleSnippetTabExpansion`) turns Tab
 expansion off altogether. Snippets then come from the completion popup and
 **Snippet: Insert…** only.
 
+### Python snippets
+
+The bundled Python snippets cover the usual statements: `def` and `defs` (a
+method with `self`), `deft` and `defst` (with a return type), `class`, `classd`
+(with a base class) and `classi` (with a docstring and an `__init__`), `if`,
+`elif`, `else`, `ifelse`, `ifmain` (the `if __name__ == "__main__":` guard),
+`for`, `forr` (over a `range`), `while`, `with`, `try`, `trya`, `tryf` and
+`tryef` (with `else` and `finally` blocks), `except`, `exceptas`, `match`,
+`case`, `casew` (the `case _:` wildcard), `lambda`, `property`, `import` and
+`fromim`. The `except` bodies re-raise with a bare `raise`, which keeps the
+original traceback. `#env` writes a `#!/usr/bin/env python3` line, and `#cell`
+and `#mark` write `# %%` cell markers.
+
+Several of these are named after a keyword (`try`, `if`, `for`). When the
+popup lists a snippet that only repeats the word you typed, Enter ends the line
+as usual; press Tab to expand the snippet.
+
+### Java snippets
+
+The bundled Java snippets cover:
+
+- **Declarations:** `class`, `interface`, `record` and `enum` named after the
+  file, `sealed` (a sealed interface with two record implementations),
+  `package` (the package of the folder under `src/main/java` or
+  `src/test/java`), `import`, `ctor` (a constructor for the file's class),
+  `main` (also `psvm`) and `cmain` (the `void main()` of a compact source
+  file).
+- **Methods and fields:** `method`, `static_method` and `field` (each with a
+  choice of access modifier), `private_method`, `public_method`,
+  `protected_method`, `private_static_method`, `public_static_method`,
+  `private_field`, `protected_field`, `public_field`, `const` (also `psf`, a
+  `static final` constant) and `new`.
+- **Output and logging:** `sysout` (also `sout`), `soutv` (a value with its
+  name), `souf` (also `printf`), `syserr` (also `serr`), `ioprintln` (also
+  `iop`) and `ioreadln` for JDK 25's IO class, `logger` (a `System.Logger`
+  field, with no dependency) and `slf4j` (an SLF4J logger field with its
+  imports).
+- **Statements:** `if`, `ifelse`, `ifnull` (also `ifn`), `ifnotnull` (also
+  `inn`), `instanceof` (also `inst`, with a pattern variable), `switch` (with
+  arrow cases), `switchexpr` (also `sw`), `fori`, `forr` (counting down),
+  `foreach` (also `iter`), `formap` (over a map's entries), `while`,
+  `dowhile`, `try_catch`, `try_finally`, `try_resources` (also `twr`), `throw`
+  (also `thr`) and `synchronized`.
+- **Expressions and threads:** `lambda`, `stream` (a filter, map and toList
+  pipeline), `textblock` (also `tb`), `vthread` (starts a virtual thread) and
+  `vexecutor` (a virtual-thread-per-task executor, closed when done).
+- **JUnit 5:** `test`, `ptest` (a parameterized test), `beforeeach`,
+  `aftereach` and `assertthrows`.
+
+The Java language server offers templates of its own under some of the same
+names (`sysout`, `fori`, `try_catch` and others). A server template named like
+one of your snippets, bundled or your own, is left out of the completion list,
+so the popup shows a single row for the trigger: the snippet that Tab expands.
+
 ### Snippet variables
 
 A variable is written `$NAME` or `${NAME}`, and `${NAME:default}` supplies a
@@ -114,10 +168,19 @@ them:
 
 - **Snippet: Manage…** opens **Settings → Snippets**, where you add, edit, and
   remove them without touching the JSON. The list has a filter and a trigger
-  column.
+  column, and the **Language** picker lists every language Editora knows, so
+  you can start snippets for a language that has none yet.
 - **Snippet: Edit User Snippets…** opens the file for the current language. It
   reloads when you save.
 - **Snippet: Reload Snippets** picks up changes without a restart.
+
+The Snippets page has no Save button. A change applies when you press Enter,
+when you leave the field, or a moment after you stop typing. A new **Name**
+applies only on Enter or when you leave that field, so a half-typed name never
+renames the snippet. **Remove** asks before it deletes one of your snippets. A
+trigger cannot contain a space, because Tab could never expand it: the
+**Triggers** field turns red and says why, and nothing is saved until you fix
+it.
 
 The format is the VS Code snippet JSON, and the reader is lenient about
 real-world files. A snippet can have several triggers: an array `prefix` in the
@@ -143,9 +206,28 @@ template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
 
-Bundled templates cover a Java class, a Java compact source file, an HTML page,
-an HTML bundle (multiple files), a Markdown doc, a Python script, a Python
-project (multiple files), a shell script, and a Zsh script.
+Editora ships 33 templates:
+
+- **Code:** a Java class, a Java compact source file, a JUnit 5 test, a Java
+  shebang script (an extensionless file the `java` launcher runs directly), a
+  Python script, a pytest test module, a Node.js script, shell and Zsh scripts,
+  an HTML page, and an HTML page with a stylesheet.
+- **Files Editora previews or runs:** a Markdown document, a Typst document
+  (on its own, or with its page setup in a reusable `template.typ`), a Mermaid
+  diagram, a Markwhen timeline, and HTTP requests with `@assert` and `@capture`
+  checks plus dev and prod environment files.
+- **Writing:** a README, a changelog in the Keep a Changelog format, an
+  architecture decision record, a blog post with YAML front matter, and meeting
+  notes.
+- **Project files:** the MIT license (with this year and your author name) and
+  the Apache 2.0 license, `.gitignore` files for Java, Python and Node, an
+  `.editorconfig`, GitHub issue and pull request templates, and a multi-stage
+  Java Dockerfile, on its own or with a `compose.yaml` and `.dockerignore`.
+- **Projects:** a Python project and a Node.js TypeScript project (which installs
+  TypeScript 6; see [why](/docs/lsp#typescript-and-javascript)).
+
+Every field the wizard shows starts filled in, so pressing **Create** without
+changing anything gives a working file.
 
 ### Template syntax
 
@@ -197,8 +279,15 @@ levels, and each level becomes a tab or the configured number of spaces. A
 shell script is the exception for line endings: it is always written with LF,
 because bash cannot run a script with CRLF line endings.
 
-A file that starts with `#!`, such as the shell and Zsh scripts, is created
-executable on Linux and macOS. On a file system without that permission
+The **Node.js Script** template writes a `.js` file with a `#!/usr/bin/env node`
+shebang and an `async function main(args)`. An error thrown from `main` is
+printed and sets a non-zero exit code. It runs from its gutter ▶ (see
+[Node.js scripts](/docs/run-debug#nodejs-scripts)). **New ▸ Scripts ▸
+Node.js** in the Project tree's right-click menu creates the same kind of file
+without the wizard.
+
+A file that starts with `#!`, such as the shell, Zsh and Node.js scripts, is
+created executable on Linux and macOS. On a file system without that permission
 (Windows, FAT, some network drives) the status bar says so: run the script with
 its interpreter (`bash tool.sh`), and mark it executable in Git with
 `git update-index --chmod=+x tool.sh`.
@@ -222,7 +311,10 @@ the order bundled, plugin, user. The author name used by `${author}` comes from
 - **Template: Manage…** opens **Settings → Templates** to add, edit, or remove
   single-file templates, including the ones plugins provide. Editing a bundled
   or plugin template saves a copy in your `templates/` folder that overrides it;
-  **Remove** asks first, deletes your copy, and the original comes back.
+  **Remove** asks first, deletes your copy, and the original comes back. There
+  is no Save button: a change applies on Enter, when you leave the field, or a
+  moment after you stop typing. The **Id** is the file name, so it applies only
+  on Enter or when you leave it, and a blank Id keeps the old one.
 - **Template: Edit User Templates…** (`template.editUser`) opens a list: pick
   one of your templates to open as JSON, choose **New template…** for a starter
   file, or choose **Customize** on a bundled or plugin template to copy it to
@@ -267,6 +359,15 @@ already exists and is not empty is refused. The name you enter is
 `${projectName}` and, in a form valid for a package (`my-app` becomes `my_app`),
 the default for `${packageName}`.
 
+The **Python Project** template writes a `src` layout: `src/<package>/` with
+`__init__.py` and `main.py`, a `tests/test_main.py` that runs with `unittest` or
+pytest, a `pyproject.toml` with a console command for `main()` and the pytest
+settings that find `src/`, a `.gitignore`, and a README. The README's commands
+work on the fresh project: create a virtual environment with
+`python3 -m venv .venv`, install the package into it with `pip install -e .`,
+then run it with `python -m <package>.main` (or the installed command) and test
+it with `python -m unittest discover -s tests` or `pytest`.
+
 ## New files by type
 
 **File: New File of Type…** (`file.newFileOfType`, also **New** in the Project
@@ -283,6 +384,10 @@ YAML, and so on) in the current folder. It asks only for a name.
   `setopt errexit nounset pipefail` (the same preamble as the Zsh Script
   template). The caret waits after a blank line. Both are created executable,
   and like templates they follow `.editorconfig`.
+- A Python file starts like the Python Script template: a
+  `#!/usr/bin/env python3` line, a docstring, a `main()` function and an
+  `if __name__ == "__main__":` guard, with the caret in `main()`. It is created
+  executable too.
 - A name that cannot work is refused with the reason: a name Windows reserves
   (`CON`, `NUL`, `COM1`), one of the characters `< > : " | ? *`, a trailing dot
   or space, or a name that starts with `~`. For Java types, a keyword or a name

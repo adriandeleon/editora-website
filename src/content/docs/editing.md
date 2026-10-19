@@ -48,8 +48,9 @@ these to the palette.
 
 Movement chords fan out too: `C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`, `M-f` and
 `M-b` move every caret, like the arrow keys. Document, paragraph, sentence and
-page motions stay on the primary caret. Multiple cursors can be turned off in
-Settings, and they're disabled in Simple UI mode.
+page motions stay on the primary caret. Multiple cursors can be turned off with
+**Enable multiple cursors & column selection** (Settings → Editor → Editing),
+and they're disabled in Simple UI mode.
 
 ## Auto-indent
 
@@ -60,9 +61,30 @@ into an indented stanza with the closer dropped below. Typing a closer such as
 `)`, `]`, `}`, or a keyword like `end` / `fi` / `done` re-aligns the line to its
 opener.
 
-**Smart backspace** removes a whole indent level in one press. On a blank,
+In brace languages (JavaScript, TypeScript, Java, C, Go and the others), Enter
+also follows these shapes:
+
+- **`case` bodies.** After a `case …:` or `default:` label, the body is
+  indented. A new label typed at the body's level steps back to the level of
+  the label above it.
+- **Headers without braces.** The one statement under a brace-less `if (…)`,
+  `for (…)`, `while (…)` or `else` is indented, and the line after it goes back
+  to the header's level.
+- **Open argument lists.** After `foo(a,` the next argument is indented, and
+  after the line that closes the call (`b);`) the next line goes back to the
+  statement's level.
+- **Call chains.** A line that starts with `.` continues the statement above,
+  such as `.then(…)` under `return fetch(url)`, and the line after the chain
+  ends goes back to the chain's first line.
+- **Doc comments.** Enter inside a `/** … */` comment (JSDoc, Javadoc) starts
+  the new line with ` * `. Enter right after a new `/**` also adds the closing
+  ` */` below.
+
+**Smart backspace** clears a line's indentation in one press. On a blank,
 auto-indented line, a single Backspace jumps back to the end of the previous
-line. The indent unit (tabs or spaces) is inferred from the file, including its
+line. In Python and YAML, where indentation is syntax, Backspace in the
+indentation removes one indent level instead and never joins the line above.
+The indent unit (tabs or spaces) is inferred from the file, including its
 width: a 2-space file gets 2-space Tab, Enter, and Shift-Tab whatever the tab
 size setting says. A tab character is drawn at the configured tab size (the
 setting or `.editorconfig`), 4 columns by default.
@@ -103,6 +125,39 @@ A script with Windows (CRLF) line endings or a byte-order mark gets a notice
 above the editor that converts it. See
 [EditorConfig](/docs/editorconfig#shell-scripts).
 
+### Python
+
+In a Python file, Enter follows Python's own structure, so a block typed line
+by line comes out nested the way Python reads it:
+
+- After a line that ends in `:` the next line goes one level in, measured from
+  the line where the statement starts. The body of a wrapped
+  `if (this_is_one_thing and` / `that_is_another_thing):` goes one level past
+  the `if`, not past the continuation line.
+- After `return`, `pass`, `raise`, `break` or `continue` at the end of a line,
+  Enter steps out one level, since nothing more runs in that block.
+- Typing the `:` of `else`, `elif …`, `except …`, `finally` or `case …` moves
+  the line to the statement it belongs to: the `if`, `for`, `while` or `try` of
+  an `else`, the `try` of an `except`, the previous `case`.
+- Inside an open bracket that ends its line, the next line hangs one level in.
+  When an argument follows the bracket (`result = some_function(arg_one,`), the
+  next line lines up with that argument, as PEP 8 shows. After the closing
+  bracket the next line goes back to the statement's indent.
+- A trailing `\` continues the statement one level in.
+- Inside a docstring or another triple-quoted string, Enter keeps the line's own
+  indent.
+- Backspace in the indentation removes one level.
+
+The indent size is guessed from the lines that start a statement, so the hanging
+indents of wrapped calls and signatures do not make a 4-space file look like an
+8-space one.
+
+Python blocks [fold](/docs/navigation#folding) by indentation, with or without
+a language server. A statement that ends in `:` folds over its body, and a
+statement that spans lines (a wrapped call, a multi-line list or dict, a
+docstring) folds over its own lines. A comment at the block's own level does not
+end it. Sticky scroll pins the same blocks.
+
 ## Brackets and quotes
 
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps
@@ -112,6 +167,11 @@ selection. Backspace inside an empty pair deletes both halves. Quotes aren't
 auto-paired next to a word character, so the apostrophe in `don't` is left
 alone. Whenever the caret sits next to a bracket, it and its match are
 highlighted.
+
+In Python a quote after a string prefix pairs too (`f`, `r`, `b`, `u`, `t`, and
+pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
+`'''` adds the closing triple quote, with the caret between them. A backtick is
+not Python syntax, so it is not paired there.
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
@@ -130,8 +190,8 @@ Brackets inside strings and comments are skipped, because a stray `{` in a
 string would otherwise shift the colour of every bracket below it. Six depth
 colours cycle, and an unmatched closer is red.
 
-On by default. Turn it off in Settings → Editor or with
-`view.toggleBracketColors`.
+On by default. Turn it off with **Bracket pair colorization** (Settings → Editor
+→ Display) or with `view.toggleBracketColors`.
 
 ## Expand and shrink selection
 
@@ -154,19 +214,26 @@ always-available baseline.
 syntax. A single line toggles a line comment; a multi-line selection toggles a
 block or region comment. It covers `//` and `/* */`, `#`, `<!-- -->`, `--`, and
 the rest, preserving indentation, and toggles back off when the text is already
-commented.
+commented. When several lines are commented, every marker goes in one column,
+at the indent of the least-indented line, so the markers line up.
 
 **Edit: Toggle Comment** (`edit.toggleComment`, also in the Edit menu and as
 **Comment / Uncomment** in the editor's right-click menu) is the same action.
 Two kinds of line in a script are left alone, and the status bar says why:
 
-- A `#!` line at the top of a file in a `#`-comment language (shell, Python,
-  Ruby…) is not a comment, so it is never toggled. A selection that includes it
-  toggles only the lines after it.
+- A `#!` shebang line at the top of a file is not a comment, so it is never
+  toggled, in any language: removing its `#` breaks a shell or Python script,
+  and `// #!/usr/bin/env node` breaks a Node.js script. A selection that
+  includes it toggles only the lines after it. (Rust's `#![…]` is code, and
+  toggles as usual.)
 - The body and delimiter of a here-document are data. A selection that reaches
   into one without its `cat <<EOF` line toggles nothing, because a `#` there
   would end up in the script's output. Selecting the whole statement comments it
   as one block, and uncommenting restores it.
+
+In an INI file such as `setup.cfg`, `tox.ini` or `.flake8`, the comment
+character is the one the file already uses: `#` when most of its comments start
+with `#`, otherwise `;`.
 
 ## Small operations
 
@@ -254,8 +321,8 @@ assignments; it only adds spaces, so re-running it is a no-op.
 
 **Copy with syntax highlighting** puts a colored HTML flavor on the clipboard
 alongside the plain text, so code pasted into Slack, an email or a document keeps
-its highlighting. It is on by default for ordinary copies (Settings → Editor, or
-`view.toggleCopyWithHighlighting`) and uses a light GitHub-style palette, since
+its highlighting. It is on by default for ordinary copies (Settings → Editor →
+Clipboard, or `view.toggleCopyWithHighlighting`) and uses a light GitHub-style palette, since
 pasted code usually lands on a light background. The explicit command ignores
 both the setting and the size cap. Plain text is always on the clipboard too, so
 pasting into a plain-text field is unchanged.
@@ -267,6 +334,13 @@ text. Expand the word before the caret on demand with `C-x a e`, or turn on
 **Abbrev Mode** (`view.toggleAbbrevMode`) to expand automatically when you type a
 space or punctuation. Define a new one with `C-x a g`, and manage the whole
 dictionary in **Settings → Abbreviations** (`abbrev.manage`).
+
+On that page an expansion can span several lines. Changes apply as you make
+them, with no Save button: the expansion once you pause typing, the
+abbreviation itself when you press Enter or leave its field. **Remove** asks
+before it deletes an abbreviation. An abbreviation that repeats another one,
+ignoring case, is refused with a message and the old one is put back, because
+one would hide the other.
 
 An abbreviation can contain punctuation as well as letters and digits: `;sig`,
 `e.g`, `adl-fn`. When more than one abbreviation ends at the caret, the longest
@@ -432,14 +506,25 @@ and the file can be saved again once it is removed.
 
 ## Whitespace and the column ruler
 
-View options in Settings toggle whitespace markers, the rulers, indent guides,
-the minimap, and line numbers. These render as lightweight overlays drawn only
-for the visible lines, so they stay cheap on large files.
+The **Display** card of Settings → Editor toggles whitespace markers, the
+rulers, indent guides, the minimap, and line numbers. These render as
+lightweight overlays drawn only for the visible lines, so they stay cheap on
+large files. The page's other cards are **Editing** (multiple cursors, tag
+auto-rename and auto-close, auto-fill, the project symbol index),
+**Clipboard**, **Indentation**, **Saving** (auto save, save as administrator),
+**Performance**, **Logs**, **CSV**, **File previews** and **Export & Print**.
+While Simple UI mode is on, the Display card says that line numbers, the
+minimap and indent guides stay hidden whatever their switches say.
 
-**Rulers** are vertical lines at chosen columns, 80 by default. Settings →
-Editor takes a list (`80, 120`; blank for none) and, under **Rulers by
-language**, lists that replace it for a language (`java: 100; python: 79, 88`; a
-language with nothing after its colon has no rulers). From the palette,
+**Rulers** are vertical lines at chosen columns, 80 by default. In Settings →
+Editor, **Rulers** takes a list (`80, 120`; blank for none) and **Rulers by
+language** takes lists that replace it for a file type (`java: 100; python: 79,
+88`; a file type with nothing after its colon has no rulers). The names are the
+file types on the Spell Check page's **File types** list (`java`, `python`,
+`shell`…), in any letter case; they are stored in lower case. Text that cannot
+be read, such as a column past 1000 or a name no file type has, turns the field
+red with the reason in its tooltip, and nothing is saved until you fix it. Both
+rows are greyed out while **Show rulers** is off. From the palette,
 *Editor: Set Rulers…* (`editor.setRulers`) sets the global list and *Editor: Set
 Rulers for This Language…* (`editor.setLanguageRulers`) sets the current file's
 language, where a blank answer goes back to the global rulers. An

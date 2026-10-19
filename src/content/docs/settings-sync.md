@@ -19,12 +19,12 @@ no Editora account and no Editora server. It is **off by default**.
 | Templates | `templates/<id>.json` |
 | Personal dictionary | `dictionary.txt` |
 
-Each of the four has its own checkbox under **What to sync**, so you can leave
+Each of the four has its own switch under **What to sync**, so you can leave
 one out.
 
 Nothing else is synced. Preferences (`settings.json`), keymaps and key
 rebinds, macros, themes, plugins, and session state stay on the computer they
-were made on.
+were made on. The **What to sync** card says so too.
 
 ## Setting it up
 
@@ -40,10 +40,18 @@ snippets and templates can contain private text.
    in.
 3. Click **Connect**.
 
+The **Repository** field does not take a URL with a password or token in it
+(`https://me:TOKEN@host/…`, or a token used as the user name): the field turns
+red, says why, and nothing is saved. Such a URL would sit in plain text in your
+settings. Sign in through a Git credential helper instead (for GitHub,
+`gh auth setup-git`), or use an SSH URL. A **Branch** name that Git would
+refuse, such as `a..b`, turns that field red the same way and is not saved.
+
 Connect looks at the repository before anything changes. If it already holds
 data, a dialog states how many entries would arrive on this computer, how many
 this computer would send, and how many differ on both. Nothing is removed on
-either side by connecting.
+either side by connecting. While it looks, **Cancel** stops waiting; nothing
+changes on either side.
 
 If Connect cannot go ahead (the repository or branch is missing, the repository
 cannot be reached, or GitHub reports an error), the **Status** row says why. The
@@ -67,9 +75,26 @@ With **Sync automatically** on, Editora syncs:
 demand. A file you edit by hand in the config folder is picked up by the next
 timed sync.
 
-The **Status** row shows when the last sync ran and what it did, for example
-"3 received, 1 sent". Changes that arrive are applied to every open window
-without a restart.
+While a sync runs, **Cancel** on the Sync page stops it, up to the moment it
+starts writing the merged files on this computer. A cancelled sync changes
+nothing here, and the next one starts afresh. Once the files are being
+written it is too late: the page says so and the sync finishes.
+
+The **Status** row starts with a pill:
+
+- green **Connected**, with when it last synced (*synced 5 min ago*, or *not
+  synced yet*);
+- amber **Not connected**: sync is not set up or is turned off, another
+  Editora on the same config folder does the syncing, or the repository could
+  not be reached and the next sync retries by itself;
+- red **Sync failing**: it needs you, for example because the sign-in was
+  refused, the repository is not there, `git` is missing, or a large removal
+  waits for **Sync Anyway**.
+
+While a sync runs, the pill adds *syncing…*. The line under it gives the
+reason a sync failed, or what the last one did, for example "3 received,
+1 sent". Changes that arrive are applied to every open window without a
+restart.
 
 ## How changes merge
 
@@ -98,6 +123,13 @@ kept. **Open Sync Folder** on the Sync page opens the folder.
 
 Editora signs in to the repository with **your own Git credentials or SSH
 key**, the same ones `git` uses in a terminal, and stores none of its own.
+
+A repository URL saved with a password or token in it, before the field refused
+them, is still in your settings. The Sync page then shows a warning above the
+repository with two buttons. **Remove from URL** saves the URL without the
+secret; the next sync signs in with your credential helper or SSH key, so set
+one up first. **Keep for now** hides the warning until Editora starts again.
+**Export Configuration…** always leaves such a secret out of the archive.
 
 With more than one account in the [GitHub CLI](/docs/github) (a personal and a
 work account, switched with `gh auth switch`), sync does not depend on which

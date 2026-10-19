@@ -56,6 +56,8 @@ Running, tools, and version control:
 - **[Running & debugging](/docs/run-debug)**: run files and debug Java, Python,
   and JavaScript.
 - **[Build tools](/docs/build-tools)**: Maven, npm, Cargo, Go, and Gradle.
+- **[Deployments](/docs/deployments)**: keep a project here and run or debug it
+  on an SSH host.
 - **[HTTP client](/docs/http-client)**: send requests from `.http` files.
 - **[Git](/docs/git)**: the built-in Git integration.
 - **[GitHub](/docs/github)**: pull requests, reviews, and CI logs through the
@@ -70,6 +72,9 @@ Workspace and customization:
 - **[TODO highlighting](/docs/todo)**: highlight and list TODO/FIXME patterns.
 - **[Server log viewer](/docs/log-viewer)**: severity highlighting, follow, and filtering for `.log` files.
 - **[CSV & TSV](/docs/csv)**: rainbow columns and an editable grid for data files.
+- **[Terminal](/docs/terminal)**: shells in a tool window, in the editor's theme.
+- **[Encrypted files](/docs/encrypted-files)**: open and save GnuPG-encrypted
+  files as their text, and sign and verify.
 - **[Remote files (SFTP)](/docs/remote)**: edit over SSH, and run Git, builds,
   language servers and debuggers on the host.
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.

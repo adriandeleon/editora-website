@@ -65,6 +65,20 @@ agent like any other open buffer, with one exception: `edit_buffer` and
 run commands, so they are not written on an agent's behalf. The
 [AI Agent](/docs/ai#ai-agent) has the same limit.
 
+### Plugins
+
+Turning plugins on and installing them are your decisions, never an agent's.
+`execute_command` refuses **View: Toggle Plugins** (`view.togglePlugins`) and
+every **Plugins:** command: browsing and installing (`plugins.browse`,
+`plugins.installFromDisk`), the signed-registry requirement
+(`plugins.toggleRequireSignature`) and the registry address
+(`plugins.setRegistryUrl`). They are left out of `list_commands`, and a refused
+request tells the agent to ask you to run it. Removing a plugin is done only from
+Settings → Plugins, and `edit_buffer` and `save_buffer` refuse files in the
+plugins folder and `plugins.json`, which are in the config folder.
+
+An agent can still run the commands an enabled plugin adds.
+
 ### Argument checks
 
 Every tool validates its arguments before doing anything:
@@ -78,9 +92,11 @@ Every tool validates its arguments before doing anything:
 
 1. Turn it on in **Settings → MCP Server** (or run **View: Toggle MCP Server**,
    `view.toggleMcp`), and accept the security notice.
-2. A status-bar **MCP** indicator shows while it's running. Click it, or run
-   **MCP: Copy Endpoint Command** (`mcp.copyEndpoint`), to copy a ready-to-paste
-   `claude mcp add` command with the endpoint URL and token.
+2. A status-bar **MCP** indicator shows while it's running. Click it, run
+   **MCP: Copy Endpoint Command** (`mcp.copyEndpoint`), or click **Copy Endpoint
+   Command** on the Settings page, to copy a ready-to-paste `claude mcp add`
+   command with the endpoint URL and token. The page's **Server** row shows
+   **Running at** the endpoint URL, or **Off**.
 3. The endpoint is also written to `mcp-endpoint.json` in your
    [config folder](/docs/configuration) for discovery.
 
@@ -91,7 +107,8 @@ token, stays off until you enable it, and shows a security notice first.
 `open_file` is confined to the window's project and the write tools refuse the
 config folder and version-control metadata (see
 [Which files an agent can reach](#which-files-an-agent-can-reach)). Even so,
-`execute_command` can run any command, so only connect agents you trust. Simple
+`execute_command` can run almost any command (not the plugin ones; see
+[Plugins](#plugins)), so only connect agents you trust. Simple
 UI mode turns it off.
 
 `mcp-endpoint.json` holds the endpoint URL **and the bearer token**. Where the
@@ -102,5 +119,9 @@ program on your computer from driving the editor, so any program that can read
 that file can connect. The port and token are new each time the server starts:
 after restarting Editora or toggling the server, copy the connection command
 again.
+
+**New Token** on Settings → MCP Server replaces the token while the server keeps
+running on the same port, and rewrites `mcp-endpoint.json`. Every agent set up
+with the old token is refused from then on; give it the new command.
 
 Commands: `view.toggleMcp`, `mcp.copyEndpoint`.

@@ -81,8 +81,12 @@ History mutations and refreshes also revalidate the active file and working-tree
 state before applying their result.
 
 Editora uses the `git` on your `PATH`; **Git: Set Git Command**
-(`git.setCommand`) points it somewhere else, and a blank value goes back to the
-`PATH` one. Editora never asks for a password, a key passphrase, or a host-key
+(`git.setCommand`) or the **Git command** field on Settings → Version Control →
+Git points it somewhere else, and a blank value goes back to the `PATH` one. The
+**Detected** row on that page shows the version found, or, when nothing runs at
+the path you set, **No git at** that path. **Enable Git** stays usable either
+way. While Git is off, the page's blame, **Pull mode** and **Fetch
+automatically** rows are greyed out; the command path stays editable. Editora never asks for a password, a key passphrase, or a host-key
 confirmation, and Git commands never start an external editor. When a remote
 refuses to sign you in, the error says what to set up (a credential helper, an
 SSH agent, or a first connection from a terminal).

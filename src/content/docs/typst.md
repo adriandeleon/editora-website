@@ -84,4 +84,5 @@ It's **on by default**, self-gating on detection, so it stays inert until the
 `typst` CLI is found. Install it with your package manager
 (`brew install typst`, `cargo install typst-cli`) or the in-app **Install…**
 button (`install.typstCli`). The toggle and tool path live under **Settings →
-Typst**.
+Typst**, with a **Detected** line below the path, for example *typst: found
+(/usr/local/bin/typst)* or *typst: not found* beside the Install… button.

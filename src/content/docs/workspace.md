@@ -172,27 +172,47 @@ multi-file [template](/docs/snippets-templates), enter a **project name** and a
 **location**, and fill in the template's variables. The dialog shows the folder
 it will create; a folder that already exists and is not empty is refused.
 Editora creates the folder, registers it as a project, and opens it in its own
-window on the template's main file. A **Python Project** template ships with it (package layout, a test,
-`pyproject.toml`, README and `.gitignore`), and your own multi-file templates
-appear in the same picker.
+window on the template's main file. Two project templates ship with Editora:
+**Python Project** (package layout, a test, `pyproject.toml`, README and
+`.gitignore`) and **Node.js TypeScript Project** (a module, a `node:test` test,
+`tsconfig.json`, README and `.gitignore`). Every other multi-file template, yours
+included, appears in the same picker.
 
 ### Settings a project can commit
 
-A project can carry a `.editora/settings.json` file saying **which language
-server to run for a language, and whether to run it**. It overrides your global
-preferences for anyone who opens that project. This suits the case where one
-repository needs a JDK 17 server and another a JDK 25 one, because nobody has to
-remember to flip a global preference when switching between them.
+A project can carry a `.editora/settings.json` file with values that override
+your own for anyone who opens that project, so they travel with the repository:
+
+- how its files are edited: indent style, tab size, rulers (also by language),
+  wrapping for code and for prose, trimming trailing whitespace and ending
+  files with a newline on save, and the spell-check language;
+- the command each build tool runs, and the program of the Java, Python and
+  JavaScript debuggers;
+- **which language server to run for a language, and whether to run it**, and
+  the Bash server's options such as ShellCheck's arguments and shfmt's style
+  (see [Bash server options](/docs/lsp#bash-server-options)).
+
+One repository can then use two-space indentation and a JDK 17 language
+server while another uses tabs and a JDK 25 one, and nobody has to flip a
+global preference when switching between them.
+
+The values apply only once the folder is trusted: run *Project: Trust This
+Project's Settings* (`lsp.trustProjectSettings`), or use **Trust Folder…** in
+Settings. A file's `.editorconfig` rules still come before the project's
+values.
+
+In a project window, Settings has a **User | Project** switch at the top.
+Choose **Project** to change the project's values on the same rows you use for
+your own; the change is written to `.editora/settings.json`. In **User**, a row
+the project sets says "Overridden by this project", and in **Project** it says
+"Set for this project" and offers **Use my setting**.
 
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
-with an example and opens it.
-
-Only **toolchain** settings can be overridden this way: the language servers,
-and the Bash server's options such as ShellCheck's arguments and shfmt's style
-(see [Bash server options](/docs/lsp#bash-server-options)). Appearance, keymap and
-fonts stay personal, because checking out a repository should not rearrange
-somebody else's editor. Run configurations have their own shared file,
-described in [Run & debug](/docs/run-debug).
+with an example and opens it. Appearance, keymap and fonts stay personal,
+because checking out a repository should not rearrange somebody else's editor.
+The whole list, the file's keys and the trust rules are in
+[Configuration](/docs/configuration#inside-a-project). Run configurations have
+their own shared file, described in [Run & debug](/docs/run-debug).
 
 ## Multiple windows
 
@@ -400,11 +420,48 @@ says so rather than guessing.
 Each tool window remembers **its own size**, rather than sharing one number per
 side, and the whole layout is saved with the session.
 
+**Settings → Tool Windows** lists the windows under **Left**, **Right** and
+**Bottom**, in the order their buttons stand on each stripe. Each row has a
+switch that shows or hides the window's stripe button, the side it docks on,
+and ▲ ▼ to move it one place among the buttons shown on that side; the list
+follows every change. The side of a hidden window can be set too. A window
+whose feature is off (Project, Commit, Personal Notes, Problems, Debug) has its
+row greyed out, with the Settings page that turns it on. The **Layout** row
+says that the layout is saved per project (or per window when no project is
+open), so other projects keep theirs, and that **Reset to Defaults** does not
+change it. Its **Restore Default Layout** button puts every window back on its
+own side, shown or hidden as on a fresh install, in the default order.
+
 ## The Welcome page
 
-With no session to restore, Editora opens a **Welcome** page (a real tab) with
-New / Open / Open Folder / Clone actions (each labeled with its shortcut), your
-recent files, and version and license info. Reopen it with `view.welcome`.
+With no session to restore, Editora opens a **Welcome** page (a real tab).
+Reopen it with `view.welcome`. From top to bottom it has:
+
+- **Start**: New File, Open File, Open Folder as a Project, Clone Git
+  Repository and the Command Palette, each with its shortcut when the keymap
+  binds one.
+- **Recent Projects**, newest first. Picking one opens or focuses that
+  project's window. A project whose folder no longer exists is left out.
+- **Recent Files**. Each row shows the file name, the project it belongs to
+  (or the host of a remote file) and its folder: relative to the project, or
+  starting with `~`. A long folder is shortened from its start. Right-click a
+  row to copy its path or remove it from the list.
+- **Remote Sites**: your saved SFTP sites; picking one opens the connect form
+  filled in.
+- **Customize**: the current keymap and theme; click either to change it. With
+  the Emacs keymap it also explains the notation (`C-` is Ctrl, `M-` is Alt).
+  On a first run, before there is anything recent, this block sits right under
+  Start.
+- **Help**: Documentation, What's New (the release notes of the version you
+  run) and Doctor.
+
+The first nine projects and files are numbered: press **1**–**9** to open one.
+When the page opens, the first entry has the focus, so Enter opens it. Long
+lists show five entries and a "Show N more" link.
+
+Closing the last tab does not bring the Welcome page back. The editor area
+shows a short list instead (Open File, Open Folder, Command Palette, Welcome
+Page) with their shortcuts.
 
 ## Focus modes
 
@@ -421,7 +478,8 @@ recent files, and version and license info. Reopen it with `view.welcome`.
 - **Simple UI mode** strips the editor to the essentials: it hides the extra
   toolbar groups, the tool-window stripe, the breadcrumb, the gutter, and the
   minimap, and turns off the heavier features (LSP, debugging, Git, multiple
-  cursors) for a calm surface. Toggle it from Settings, the toolbar, the palette
+  cursors) for a calm surface. Toggle it from Settings → Interface → Modes, the
+  toolbar, the palette
   (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
   restores everything.
 
@@ -433,12 +491,30 @@ recent files, and version and license info. Reopen it with `view.welcome`.
   Simple UI mode toggle stays in the reduced View menu, so anyone who entered
   the mode from there can leave it the same way.
 
+  The right-click menus are trimmed the same way:
+
+  - **Tab:** Save, Save As, Encrypt… (Lock File on an encrypted file), Print,
+    Export to PDF, Close, Close Others, Close All, Reveal in File Manager, Copy
+    Path and Rename. Unpin stays on a tab that was pinned before.
+  - **Editor:** Comment / Uncomment, the spelling suggestions, Cut, Copy,
+    Paste, Undo, Redo, Select All, Print and Export to PDF.
+  - **Project tree:** New (a file or a folder), Rename, Undo Move, Delete and
+    Reveal in File Manager.
+  - **Preview** (Markdown, Typst, Markwhen, diagrams): the copy actions, Go to
+    Source, Enlarge, Export to PDF and Print. Copy HTML and the other export
+    formats are hidden.
+
+  Git, Local History, the compare actions, Open Terminal, Pin, bookmarks and
+  notes, External Tools and plugin items, and the Run, Debug, language-server,
+  build, AI, Markdown and Typst submenus are left out. Turning Simple mode off brings every entry back.
+
 ## Window chrome
 
 Each row of chrome can be hidden on its own under **Settings → Interface →
-Chrome**: the menu bar, toolbar, status bar, tab bar, breadcrumb and
-tool-window stripe. (Hiding the tool stripe takes precedence over each tool
-window's own visibility toggle.)
+Window chrome**: the menu bar, toolbar, status bar, tab bar, breadcrumb and
+tool-window stripe. (Hiding the tool stripe hides every tool window's button,
+whatever the Tool Windows page says; the windows still open from their
+keyboard shortcuts and the palette.)
 
 **Merge the menu bar into the title bar** goes one further: the window is drawn
 without a system title bar, and the menus, the window title and the system
@@ -514,7 +590,8 @@ change. The first save of a session also keeps the text the file held before
 it, listed as *Before first save*, so the version you started from is in the
 history too. A save that changes nothing adds no revision, and auto-saves less
 than five minutes apart collapse into one, so a run of them does not push
-earlier revisions out.
+earlier revisions out. [Encrypted files](/docs/encrypted-files) get no
+revisions: their text stays out of the history.
 
 The **Local History** tool window lists the active file's revisions, newest
 first, under day captions. Each row shows its label if it has one, the time,
@@ -648,7 +725,7 @@ Only the wrapper case is gated. Every other build tool (npm, Cargo, Go) launches
 your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
 none of them prompt.
 
-Review or revoke trust in **Settings → Workspace → Trusted Folders**, or from
+Review or revoke trust in **Settings → Advanced → Trusted folders**, or from
 the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
 folder that is still covered by a trusted parent tells you so, rather than
 claiming a revoke that the parent would override.

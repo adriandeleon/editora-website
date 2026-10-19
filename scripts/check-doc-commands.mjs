@@ -29,7 +29,9 @@ if (emacsById.size < 100) {
 }
 const namespaces = new Set([...emacsById.keys()].map((id) => id.split(".")[0]));
 
-const FILE_EXT = /\.(json|md|xml|yml|yaml|toml|properties|java|ts|js|mjs|css|html|txt|log|sh|py|typ|csv|http|env|png|svg|jar|exe|app|d|mod|work|sum|scss|lock)$/i;
+const FILE_EXT = /\.(json|md|xml|yml|yaml|toml|properties|java|ts|js|mjs|css|html|txt|log|sh|py|typ|csv|http|env|png|svg|jar|exe|app|d|mod|work|sum|scss|lock|gpg|pgp|asc|sig|clj|cljs|cljc|edn|bb|scala|sbt|mill|sc)$/i;
+// Dotted names that share a namespace with commands but are not commands (a JavaScript API, a Clojure namespace).
+const NOT_COMMANDS = new Set(["crypto.subtle", "clojure.core"]);
 const ID_SHAPE = /^[a-z][A-Za-z]*(\.[A-Za-z][A-Za-z0-9]*)+$/;
 const CHORD_SHAPE = /^(?:(?:[CMS]|Cmd)-)*[^\s-]+(?: (?:(?:[CMS]|Cmd)-)*[^\s-]+)*$/;
 
@@ -46,7 +48,8 @@ for (const dir of ["src/content/docs", "src/content/features"]) {
       const at = `${rel}:${i + 1}`;
       const ticks = [...line.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
       const ids = ticks.filter(
-        (t) => ID_SHAPE.test(t) && namespaces.has(t.split(".")[0]) && !FILE_EXT.test(t),
+        (t) =>
+          ID_SHAPE.test(t) && namespaces.has(t.split(".")[0]) && !FILE_EXT.test(t) && !NOT_COMMANDS.has(t),
       );
       for (const id of ids) {
         if (!emacsById.has(id)) errors.push(`${at}  unknown command id \`${id}\``);
