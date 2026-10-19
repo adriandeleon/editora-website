@@ -16,6 +16,18 @@ export const roadmap: RoadmapSection[] = [
     ],
   },
   {
+    title: "Plugin system follow-up (review 2026-10-18)",
+    items: [
+      { done: true, text: "Frozen launch set, consent fingerprints, folder-is-id, staged installs, deferred update/removal of a running plugin, one escaped consent dialog, bound <code>activeEditor()</code>, <code>--disable-plugins</code>, Doctor → Plugins. See plugins." },
+      { done: false, text: "Registry index freshness: sign a <code>generated</code>/<code>serial</code> with the index and refuse one older than the last seen (an old signed index verifies for ever)." },
+      { done: false, text: "App-level plugin lifecycle, shared state and buffer events (Scratchpad loses notes across windows, word-count polls); unregister handles for contributions." },
+      { done: false, text: "<code>${file}</code> / <code>${selection}</code> / <code>${projectDir}</code> in declarative commands, output in a console, a cancel." },
+      { done: false, text: "Split the exported API (<code>Plugin</code>, <code>PluginContext</code>, <code>ActiveEditor</code>, <code>ToolWindowSide</code>) from the plugin package internals and add an <code>apiVersion</code> manifest field checked at load." },
+      { done: false, text: "Browse: description under the title, state pills, a refresh key; an \"Updates\" count on the Plugins page." },
+      { done: false, text: "Stream registry downloads to a temp file (one copy in memory, not four); share one registry client per WindowManager." },
+    ],
+  },
+  {
     title: "Controller decomposition",
     items: [
       { done: true, text: "Extract exports, editing, templates, settings, run configurations, navigation, previews, Git actions, chrome, MCP operations, file workflows, sessions, test navigation and install prompts into owners." },
