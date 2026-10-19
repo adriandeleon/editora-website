@@ -22,14 +22,14 @@ running, and the next toggle brings them back.
 
 | Action | Command | Emacs | IntelliJ IDEA | VS Code, CUA, Sublime Text |
 | --- | --- | --- | --- | --- |
-| Show or hide the Terminal | `tool.terminal` | (palette) | Alt+F12 (⌥F12 on macOS) | Ctrl+\` |
+| Show or hide the Terminal | `tool.terminal` | `M-0` | Alt+F12 (⌥F12 on macOS) | Ctrl+\` |
 | Open another terminal | `terminal.new` | (palette) | (palette) | Ctrl+Shift+\` |
 | Close the selected terminal | `terminal.close` | (palette) | (palette) | (palette) |
 | Find in the selected terminal | `terminal.find` | (palette) | (palette) | (palette) |
 
 Ctrl+\` is the Control key on macOS too, as in VS Code. The Emacs keymap binds
-none of the three: run them from `M-x`, which also works from inside a terminal
-(see [Keys](#keys)). The **+** at the right end of the tab strip opens another
+only the first, to `M-0`: run the others from `M-x`, which also works from
+inside a terminal (see [Keys](#keys)). The **+** at the right end of the tab strip opens another
 terminal as well.
 
 Each tab carries a chip saying where its shell runs (**Local**, or the host's,

@@ -91,10 +91,10 @@ change the same setting or entry, the one saved last wins.
 | File | Holds |
 | --- | --- |
 | `settings.json` | Preferences: font, theme, keymap, tab size, view options, auto-save, keybinding overrides |
-| `workspace-state.json` | Session of the no-project window: open files, folds, tool-window layout, window geometry |
+| `workspace-state.json` | Session of the no-project window: open files, folds, tool-window layout, window geometry, and the [Python interpreter](/docs/lsp#the-python-interpreter) picked for loose files |
 | `windows/<id>.json` | Session of each extra no-project window |
 | `recent-files.json` | Recent files list |
-| `projects.json` + `projects/<id>.json` | Project index and each project's session |
+| `projects.json` + `projects/<id>.json` | Project index and each project's session, including the [Python interpreter](/docs/lsp#the-python-interpreter) picked for it |
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
 | `breakpoints.json` | Debugger breakpoints (per project) |

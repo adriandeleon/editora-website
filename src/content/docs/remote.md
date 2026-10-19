@@ -177,7 +177,7 @@ index, the java-debug plugin, and classes compiled for debugging).
 | [GitHub](/docs/github) | The host's own `gh`, signed in there. Links open in your local browser. |
 | [Find in Files](/docs/navigation#find-in-files) | The host's ripgrep searches the folder in one command, when *Use ripgrep when available* is on and the host has `rg`. Otherwise every file is read over SFTP. |
 | [Search Everywhere](/docs/navigation#search-everywhere) files | The host lists the project's files, skipping ignored ones as for a local project. There are no symbols for a remote project. |
-| [Run, builds and tests](/docs/run-debug#running-files) | Run on a file (a shell script under the interpreter its shebang names on the host), a main class, script / make / npm configurations, and Maven, Gradle, npm, Cargo and Go builds and test runs, with output, input and Stop as locally. |
+| [Run, builds and tests](/docs/run-debug#running-on-a-remote-host) | Run on a file (a shell script under the interpreter its shebang names on the host, a Python script under the project's venv on the host), a main class, script / make / npm configurations, and Maven, Gradle, npm, Cargo and Go builds and test runs, with output, input and Stop as locally. |
 | [Language servers](/docs/lsp) | Each server runs on the host: completion, hover, diagnostics, go to definition, rename and the rest. |
 | [Debugging](/docs/run-debug#debugging) | Python (debugpy), JavaScript (vscode-js-debug) and Java (java-debug in the host's `jdtls`). |
 | [Terminal](/docs/terminal#terminals-on-a-host-in-a-container-or-in-wsl) | A real terminal on the host, in the project's folder, with [shell integration](/docs/terminal#shell-integration). Open Terminal Here on a remote folder opens there. A dropped connection keeps the tab's text and offers Reconnect. |
@@ -186,10 +186,15 @@ index, the java-debug plugin, and classes compiled for debugging).
 The tools are the ones the host's own `PATH` finds. When it finds the wrong one,
 or none, set the command for that host in **Settings → Remote → This Host**:
 **Git**, **GitHub CLI**, **ripgrep**, **JDK home**, **Node.js**, **Python for
-debugging**, **JavaScript debugger (vscode-js-debug)**, **java-debug plugin
-jar**, and **Language servers**, one `server = command` line each (for example
+Run and tests**, **Python for debugging**, **JavaScript debugger
+(vscode-js-debug)**, **java-debug plugin jar**, and **Language servers**, one
+`server = command` line each (for example
 `python = basedpyright-langserver --stdio`). Commands and paths are as the host
 knows them; a change applies to the next command or server started there.
+**Python for Run and tests** is used when the project has no venv on the host
+and no interpreter was picked for it; left blank, the host's `python3` usually
+runs Python files (the full order is in
+[Running on a remote host](/docs/run-debug#running-on-a-remote-host)).
 Settings that name programs on this machine, such as your local Git command or
 Default JDK, are never sent to a host.
 

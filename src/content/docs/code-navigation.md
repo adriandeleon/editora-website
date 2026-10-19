@@ -43,6 +43,13 @@ are left out. Text inside a here-document or a quoted string that spans lines is
 skipped, so a generated script or a usage message adds nothing. A script with
 no extension, such as `bin/release`, is indexed by its `#!` line.
 
+In Python it records classes, functions and methods (`async def` too),
+constants written in capitals at the start of a line (`MAX_SIZE = 10`), and type
+aliases (`type Vector = list[float]`, `Json: TypeAlias = dict[str, object]`). A
+method shows the class it is indented under, nested classes included, so
+`Point.norm` and another class's `norm` are told apart. A `def` or `class` inside
+a string or docstring is skipped.
+
 The same index backs the file and symbol halves of
 [Search Everywhere](/docs/navigation#search-everywhere),
 [Go to Related File](#go-to-related-file), and
@@ -98,7 +105,9 @@ running server too.
 
 **Sticky scroll** pins the enclosing scope headers above the viewport, so deep
 in a long method you can still see the class, the method and the block it
-belongs to. Clicking a pinned row jumps to that header.
+belongs to. Clicking a pinned row jumps to that header. The headers are the
+blocks that fold, so in Python they come from indentation and need no language
+server.
 
 Two rules make it stay out of the way:
 

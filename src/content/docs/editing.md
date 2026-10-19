@@ -80,9 +80,11 @@ also follows these shapes:
   the new line with ` * `. Enter right after a new `/**` also adds the closing
   ` */` below.
 
-**Smart backspace** removes a whole indent level in one press. On a blank,
+**Smart backspace** clears a line's indentation in one press. On a blank,
 auto-indented line, a single Backspace jumps back to the end of the previous
-line. The indent unit (tabs or spaces) is inferred from the file, including its
+line. In Python and YAML, where indentation is syntax, Backspace in the
+indentation removes one indent level instead and never joins the line above.
+The indent unit (tabs or spaces) is inferred from the file, including its
 width: a 2-space file gets 2-space Tab, Enter, and Shift-Tab whatever the tab
 size setting says. A tab character is drawn at the configured tab size (the
 setting or `.editorconfig`), 4 columns by default.
@@ -123,6 +125,39 @@ A script with Windows (CRLF) line endings or a byte-order mark gets a notice
 above the editor that converts it. See
 [EditorConfig](/docs/editorconfig#shell-scripts).
 
+### Python
+
+In a Python file, Enter follows Python's own structure, so a block typed line
+by line comes out nested the way Python reads it:
+
+- After a line that ends in `:` the next line goes one level in, measured from
+  the line where the statement starts. The body of a wrapped
+  `if (this_is_one_thing and` / `that_is_another_thing):` goes one level past
+  the `if`, not past the continuation line.
+- After `return`, `pass`, `raise`, `break` or `continue` at the end of a line,
+  Enter steps out one level, since nothing more runs in that block.
+- Typing the `:` of `else`, `elif …`, `except …`, `finally` or `case …` moves
+  the line to the statement it belongs to: the `if`, `for`, `while` or `try` of
+  an `else`, the `try` of an `except`, the previous `case`.
+- Inside an open bracket that ends its line, the next line hangs one level in.
+  When an argument follows the bracket (`result = some_function(arg_one,`), the
+  next line lines up with that argument, as PEP 8 shows. After the closing
+  bracket the next line goes back to the statement's indent.
+- A trailing `\` continues the statement one level in.
+- Inside a docstring or another triple-quoted string, Enter keeps the line's own
+  indent.
+- Backspace in the indentation removes one level.
+
+The indent size is guessed from the lines that start a statement, so the hanging
+indents of wrapped calls and signatures do not make a 4-space file look like an
+8-space one.
+
+Python blocks [fold](/docs/navigation#folding) by indentation, with or without
+a language server. A statement that ends in `:` folds over its body, and a
+statement that spans lines (a wrapped call, a multi-line list or dict, a
+docstring) folds over its own lines. A comment at the block's own level does not
+end it. Sticky scroll pins the same blocks.
+
 ## Brackets and quotes
 
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps
@@ -132,6 +167,11 @@ selection. Backspace inside an empty pair deletes both halves. Quotes aren't
 auto-paired next to a word character, so the apostrophe in `don't` is left
 alone. Whenever the caret sits next to a bracket, it and its match are
 highlighted.
+
+In Python a quote after a string prefix pairs too (`f`, `r`, `b`, `u`, `t`, and
+pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
+`'''` adds the closing triple quote, with the caret between them. A backtick is
+not Python syntax, so it is not paired there.
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
@@ -190,6 +230,10 @@ Two kinds of line in a script are left alone, and the status bar says why:
   into one without its `cat <<EOF` line toggles nothing, because a `#` there
   would end up in the script's output. Selecting the whole statement comments it
   as one block, and uncommenting restores it.
+
+In an INI file such as `setup.cfg`, `tox.ini` or `.flake8`, the comment
+character is the one the file already uses: `#` when most of its comments start
+with `#`, otherwise `;`.
 
 ## Small operations
 
