@@ -3,10 +3,12 @@ title: "Run files & main classes"
 group: "Run & debug"
 order: 1
 beta: false
-summary: "Run a script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations."
+summary: "Run a Java, Python, Node.js or shell script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations."
 ---
 
-A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, a **shell** script (run with the interpreter its shebang names, else `bash`), a **Groovy** script (run with `groovy` on the selected Default JDK), or a **Clojure** file (a namespace's `-main` with `clojure -M -m` or `lein run -m` in its project, a script with `clojure -M`, a Babashka script with `bb`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
+A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script, a **Node.js** script (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, or a `node` shebang), a **shell** script (run with the interpreter its shebang names, else `bash`), a **Groovy** script (run with `groovy` on the selected Default JDK), or a **Clojure** file (a namespace's `-main` with `clojure -M -m` or `lein run -m` in its project, a script with `clojure -M`, a Babashka script with `bb`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
+
+A Node.js script runs under the Node.js set in Settings → Debugging → JavaScript, else the version a project's `.nvmrc` or `.node-version` names (when nvm has it), else `node` on your `PATH`, from its package folder, with source maps and colours on. TypeScript runs on plain Node.js 22.18 or newer. The ▶ of a test file (`*.test.*`, `*.spec.*`, or under `test/` or `__tests__/`) runs `node --test` and fills Test Results.
 
 It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
 

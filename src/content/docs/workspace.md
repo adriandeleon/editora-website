@@ -555,7 +555,8 @@ change. The first save of a session also keeps the text the file held before
 it, listed as *Before first save*, so the version you started from is in the
 history too. A save that changes nothing adds no revision, and auto-saves less
 than five minutes apart collapse into one, so a run of them does not push
-earlier revisions out.
+earlier revisions out. [Encrypted files](/docs/encrypted-files) get no
+revisions: their text stays out of the history.
 
 The **Local History** tool window lists the active file's revisions, newest
 first, under day captions. Each row shows its label if it has one, the time,

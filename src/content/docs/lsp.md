@@ -221,8 +221,8 @@ public String greet(Helper helper, int n, boolean loud = false)
 A line that cannot be read as a method signature is rejected and nothing
 changes.
 
-Three Java commands sit outside the menu: **Organize Imports** sorts and prunes a
-file's imports directly, **Copy Fully Qualified Name** puts the full name of the
+Three commands sit outside the menu: **Organize Imports** sorts and prunes a
+file's imports directly (in Java, JavaScript and TypeScript), **Copy Fully Qualified Name** puts the full name of the
 symbol at the caret on the clipboard, and **Reload Project Configuration** makes
 the server re-read `pom.xml` or `build.gradle` when a dependency change hasn't
 been picked up.
@@ -314,8 +314,8 @@ Twenty-five servers are supported:
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (`kotlin-language-server`), **Groovy** (gvy), **Clojure** (`clojure-lsp`), **Lua**
-  (`lua-language-server`)
+  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
+  **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
@@ -349,7 +349,7 @@ setting when switching between them. See
 Because those commands are programs that run on your machine, they apply only
 to a **trusted folder**. In an untrusted folder the project's server commands
 (and any attempt to re-enable a server you switched off) are ignored until you
-run *LSP: Trust This Project's Server Settings* (`lsp.trustProjectSettings`).
+run *Project: Trust This Project's Settings* (`lsp.trustProjectSettings`).
 
 Settings → LSP shows your own commands. When the project in the window
 overrides a server, that server's card says so: which command the project runs,
@@ -369,8 +369,11 @@ covered through four channels, picked per server:
   Python/Pyright), needing Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
-- **Binary** releases downloaded per OS/architecture (clangd, lemminx, Kotlin,
+- **Binary** releases downloaded per OS/architecture (clangd, lemminx,
   terraform-ls, Lua), extracted into your config folder.
+- A **pinned distribution** for the Kotlin server, checked against its published
+  checksum. It is about 370 MB to download and about 1.2 GB once installed,
+  because it brings its own Java runtime, so Editora asks before it starts.
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
   needs a JDK.
 - A **single jar** for the Groovy server (gvy), pinned to one release and checked
@@ -397,7 +400,8 @@ version in place.
 
 For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
 whether it is hoisted in the workspace or installed alongside the server by
-Editora. A TypeScript SDK inside the project is loaded only from a trusted
+Editora (TypeScript 6, as for the
+[TypeScript / JavaScript server](#typescript-and-javascript)). A TypeScript SDK inside the project is loaded only from a trusted
 folder; otherwise Editora uses the SDK beside the server, or does not start the
 server until you trust the folder. The trust prompt lists the SDK.
 
@@ -417,6 +421,28 @@ A `Jenkinsfile` at a project's root makes [Doctor](/docs/troubleshooting#doctor)
 expect the Groovy server, as an open `.groovy` file does. A `build.gradle` alone
 does not, because most Gradle projects with a Groovy build script are Java
 projects.
+
+## Kotlin
+
+The Kotlin server is JetBrains' Kotlin LSP. Install it from its Settings → LSP
+card, the banner on a `.kt` file, or **Install: Language Server…**; Editora says
+how large the download is and waits for your answer. The installer sets the
+server's command to the downloaded launcher. Left blank, the command is
+`kotlin-lsp --stdio`, the name Homebrew's `kotlin-lsp` gives it. A command you
+set yourself is kept, so fwcd's `kotlin-language-server` still works there.
+
+The server imports the project's Gradle or Maven build, so its root is the
+folder with `settings.gradle.kts` (or `settings.gradle`), else the nearest
+`build.gradle.kts`, `build.gradle` or `pom.xml`: every module of a multi-module
+build shares one server. Once the import ends (a few seconds for a small
+project, longer the first time Gradle fetches its plugins) it reports
+compiler errors and warnings and offers completion, hover, go to definition,
+references, rename, the outline, formatting and code actions.
+
+The server is an alpha. It checks the `.kt` files in the build's source
+folders; a `.kts` script, `build.gradle.kts`, and a `.kt` file outside a build
+get no diagnostics or hover from it. A folder without a build file is not
+imported at all.
 
 ## Clojure
 
@@ -471,6 +497,57 @@ temporary `.java` copy, since jdtls works only on files named `.java`. It gets
 completion, hover, the outline and syntax errors, and an import a completion
 adds goes below the `#!` line. The copy sits outside any project, so type
 errors are not reported. A script in a remote folder is not given a copy.
+
+## TypeScript and JavaScript
+
+JavaScript and TypeScript files use **typescript-language-server**, which runs
+TypeScript's own `tsserver`. **Install…** on its card (or *Install: TypeScript
+/ JavaScript (Node.js) Language Support*, `install.jsSupport`) installs the
+server with **TypeScript 6** beside it. The server runs on the same Node.js as
+[Run](/docs/run-debug#nodejs-scripts).
+
+**Why TypeScript 6.** TypeScript 7 is a new compiler written in Go. It has no
+`tsserver`, so typescript-language-server cannot run on it. npm's newest
+TypeScript is now 7, so Editora asks for TypeScript 6, the last version with a
+`tsserver`. When the only TypeScript found has no `tsserver`, or there is none,
+Editora does not start the server and says why, with the fix:
+`npm install -g typescript@6`, or **Install…** on the card. It does not try
+again each time you open another tab. [Doctor](/docs/troubleshooting#doctor)
+and the card's **TypeScript** line show the version in use, or that it has no
+`tsserver`.
+
+**A folder's own TypeScript runs only once you trust the folder.** Many projects
+have their own `node_modules/typescript`. That is code from the folder, so
+Editora uses it only in a [trusted folder](/docs/workspace#trusted-folders),
+and the trust prompt lists it. Until then, the TypeScript installed beside the
+server is used. When the folder's own copy is the only one, the server waits
+until you run *Project: Trust This Project's Settings*
+(`lsp.trustProjectSettings`). On a remote host, the server still picks its
+TypeScript itself.
+
+**Type definitions are not downloaded.** Left to itself, the server downloads
+`@types` packages from the npm registry for the libraries your JavaScript uses.
+Editora turns that off. To turn it on, use **Download type definitions
+automatically** on the TypeScript / JavaScript card in **Settings → LSP**. When
+a folder has no Node.js types, the status bar suggests
+`npm install --save-dev @types/node`, so hover and completion know Node's APIs.
+
+**What it adds:**
+
+- **Organize Imports** (`lsp.organizeImports`) sorts the imports and removes
+  unused ones. The code-action menu also offers **Fix all**, **Add missing
+  imports** and **Remove unused**, and quick fixes follow the file's own
+  indentation.
+- **Inlay hints** for parameter names, return types and enum values, when
+  [inlay hints](#reading-the-code) are on.
+- **Code lenses**: a references count on each function, when code lenses are
+  on.
+
+**Workspace roots.** Without a project open, a file's server root is the
+nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
+`package.json`, then the Git repository. This gives each package in a monorepo
+its own root. Scripts with none of these above them share one server, wherever
+they are, instead of starting one each.
 
 ## Shell scripts
 
