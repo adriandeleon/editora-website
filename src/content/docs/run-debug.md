@@ -166,6 +166,10 @@ The host's own `java` is used, or the **JDK home** set for that host in
 Settings → Remote. Your local Default JDK and a configuration's JDK override
 are paths on this machine, so they are not sent to the host.
 
+A project on this machine can run on a host too: set a configuration's **Run
+on** to a [deployment](/docs/deployments), and Editora copies what changed in the
+project to a folder on the host before each run, then runs the program there.
+
 ### Running in a container or WSL
 
 A project whose tools [run in a container](/docs/remote#tools-in-a-container)
@@ -219,6 +223,10 @@ variable that is not set earlier in the field is passed to the host as written.
 A relative **Working directory** is relative to the project root.
 Run names a working directory or script that does not exist, and opens the
 configuration at the field to fix.
+
+**Run on** picks where the configuration runs: **This machine**, or one of the
+project's [deployments](/docs/deployments), a folder on an SSH host that the
+project is copied to before the run. **Deployments…** beside it opens the list.
 
 ### What a configuration can launch
 
@@ -724,6 +732,10 @@ Breakpoints of a remote file are kept across reconnects.
 The adapters' locations can be set per host in Settings → Remote (**Python for
 debugging**, **js-debug server**, **Node.js**, **java-debug plugin jar**). Other
 languages cannot be debugged on a host yet.
+
+A Java configuration that runs on a [deployment](/docs/deployments#debugging-on-a-deployment)
+is debugged on its host too: the program starts there and the debugger attaches
+through a tunnel, with breakpoints in the local files.
 
 ### Debugging in a container or WSL
 

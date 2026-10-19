@@ -24,6 +24,10 @@ its files here: in a Docker or Podman container the folder is mounted in (see
 distribution the folder is inside (see
 [Tools in WSL (Windows)](#tools-in-wsl-windows)).
 
+Or the project stays on this machine and only its programs run on a host: a
+[deployment](/docs/deployments) copies what changed to a folder there before
+each run, then runs, builds and debugs the program in that copy.
+
 ## Connecting
 
 | Action | Command |
