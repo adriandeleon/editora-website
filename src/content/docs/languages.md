@@ -19,9 +19,10 @@ Files without a bundled grammar are left unstyled rather than guessed at.
 ### Supported languages
 
 Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
-Kotlin, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, SQL,
-TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML, Mermaid, and the
-HTTP request format. The TypeScript grammar also covers plain JavaScript.
+Kotlin, Scala, Clojure, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML,
+YAML, INI, SQL, TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML,
+Mermaid, and the HTTP request format. The TypeScript grammar also covers plain
+JavaScript.
 
 Astro files use the official Astro TextMate grammar, including mixed
 frontmatter, HTML, and CSS regions. The same language integration supplies
@@ -40,7 +41,9 @@ file) takes it from its own first lines:
 - **A shebang** on the first line: `#!/bin/sh`, `#!/usr/bin/env bash`,
   `#!/usr/bin/env -S bash -e`, `#!/usr/bin/env -u NAME bash`, `#!/bin/busybox sh`,
   and the same for zsh, dash, ksh, mksh, ash and Bats, as well as Python, Node,
-  Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters. A version suffix
+  Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters, and `kotlin`,
+  `scala`, `scala-cli` (`#!/usr/bin/env -S scala-cli shebang`), `clojure`, `clj`
+  and Babashka's `bb`. A version suffix
   is ignored (`python3.12` is Python). A `java` shebang counts when a
   `--source N` follows it (`#!/usr/bin/env -S java --source 25`).
 - **A modeline**, when there is no shebang Editora knows: a vim modeline in the
@@ -69,6 +72,39 @@ reports syntax errors but not type errors, as for any `.java` file outside a
 project. This works for scripts on this machine, not for one in a
 [remote folder](/docs/remote). See [Run & debug](/docs/run-debug) for running
 and debugging one.
+
+### Scala and Clojure
+
+**Scala** files are `.scala`, Scala CLI and Ammonite scripts (`.sc`), sbt builds
+(`.sbt`) and Mill builds (`.mill`). Scala 3's optional braces are understood:
+Enter indents after a line that opens a block (`class Shelf:`, `def f =`,
+`case x =>`, `if … then`, `for … do`, `match`, `else`), and such a block folds
+from its first line to the end of its indentation, through its `end` marker when
+it has one. Brace-style Scala 2 code folds on its braces, and a `'symbol`
+literal is not read as the start of a string.
+
+**Clojure** files are `.clj`, ClojureScript `.cljs`, shared `.cljc` (and the
+older `.cljx`), EDN data (`.edn`, including `deps.edn` and `bb.edn`), Babashka
+scripts (`.bb`) and Leiningen's project.clj.
+
+- Comment toggling uses `;;`.
+- Enter and Tab indent the way Clojure is written: a call's arguments line up
+  under its first argument, the body of a definition or binding form (`defn`,
+  `let`, `when`, `ns`, `with-…` and the like) sits two spaces in, and the
+  elements of a vector or map line up after the bracket. Tab sets a line to that
+  indent exactly, pulling back a line that is too deep.
+- Every form that spans lines folds. Brackets inside strings, comments,
+  character literals (`\(`) and regexes (`#"…"`) are skipped.
+- Typing `'` or a backtick inserts just that character: they are Clojure's
+  quote, not string delimiters.
+- The Structure panel lists the namespace and the top-level `def`, `defn`,
+  `defmacro`, `defmulti`, `deftest`, `defprotocol` and `defrecord` forms, with a
+  function's parameter vector beside its name.
+
+Both languages have snippets, file icons, [Go to Symbol](/docs/code-navigation)
+without a language server, and entries in the Project tree's **New ▸** menu:
+**Scala** and **Clojure** under Languages, **Scala CLI** and **Babashka** under
+Scripts.
 
 ### Shell scripts
 

@@ -61,6 +61,25 @@ into an indented stanza with the closer dropped below. Typing a closer such as
 `)`, `]`, `}`, or a keyword like `end` / `fi` / `done` re-aligns the line to its
 opener.
 
+In brace languages (JavaScript, TypeScript, Java, C, Go and the others), Enter
+also follows these shapes:
+
+- **`case` bodies.** After a `case …:` or `default:` label, the body is
+  indented. A new label typed at the body's level steps back to the level of
+  the label above it.
+- **Headers without braces.** The one statement under a brace-less `if (…)`,
+  `for (…)`, `while (…)` or `else` is indented, and the line after it goes back
+  to the header's level.
+- **Open argument lists.** After `foo(a,` the next argument is indented, and
+  after the line that closes the call (`b);`) the next line goes back to the
+  statement's level.
+- **Call chains.** A line that starts with `.` continues the statement above,
+  such as `.then(…)` under `return fetch(url)`, and the line after the chain
+  ends goes back to the chain's first line.
+- **Doc comments.** Enter inside a `/** … */` comment (JSDoc, Javadoc) starts
+  the new line with ` * `. Enter right after a new `/**` also adds the closing
+  ` */` below.
+
 **Smart backspace** removes a whole indent level in one press. On a blank,
 auto-indented line, a single Backspace jumps back to the end of the previous
 line. The indent unit (tabs or spaces) is inferred from the file, including its
@@ -155,15 +174,18 @@ always-available baseline.
 syntax. A single line toggles a line comment; a multi-line selection toggles a
 block or region comment. It covers `//` and `/* */`, `#`, `<!-- -->`, `--`, and
 the rest, preserving indentation, and toggles back off when the text is already
-commented.
+commented. When several lines are commented, every marker goes in one column,
+at the indent of the least-indented line, so the markers line up.
 
 **Edit: Toggle Comment** (`edit.toggleComment`, also in the Edit menu and as
 **Comment / Uncomment** in the editor's right-click menu) is the same action.
 Two kinds of line in a script are left alone, and the status bar says why:
 
-- A `#!` line at the top of a file in a `#`-comment language (shell, Python,
-  Ruby…) is not a comment, so it is never toggled. A selection that includes it
-  toggles only the lines after it.
+- A `#!` shebang line at the top of a file is not a comment, so it is never
+  toggled, in any language: removing its `#` breaks a shell or Python script,
+  and `// #!/usr/bin/env node` breaks a Node.js script. A selection that
+  includes it toggles only the lines after it. (Rust's `#![…]` is code, and
+  toggles as usual.)
 - The body and delimiter of a here-document are data. A selection that reaches
   into one without its `cat <<EOF` line toggles nothing, because a `#` there
   would end up in the script's output. Selecting the whole statement comments it
