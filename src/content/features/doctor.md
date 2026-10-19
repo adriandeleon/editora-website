@@ -12,16 +12,18 @@ Every integration gets a row, grouped by area:
 
 - **Version control**: `git`, and `gh` for pull requests, issues, and CI runs.
 - **Search**: `ripgrep`, which accelerates Find in Files (the built-in walker is used when it's absent).
+- **Encryption**: GnuPG and its passphrase prompt, for [encrypted files](/docs/encrypted-files).
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, Graphviz and PlantUML (with their versions), and the Typst CLI.
-- **Language servers**: one row per enabled server, showing the resolved path.
-- **Formatting & linting**: the Python formatter (Ruff or Black), and ShellCheck and shfmt, which the Shell server lints and formats with.
+- **Language servers**: one row per enabled server, showing the resolved path (and Pyright's version).
+- **Formatting & linting**: the **Python formatter** (Ruff or Black) that Format Document uses, and ShellCheck and shfmt, which the Shell server lints and formats with.
 - **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
-- **Run**: the JDK used to run a file, the Python interpreter, `bash`, and `make`.
+- **Run**: the JDK used to run a file, the **Python interpreter** that Run, Debug and Pyright share (its version, command and why it was chosen), the Node.js that Run, Debug, npm scripts and the TypeScript server share, `bash`, and `make`.
 - **HTTP Client**: the Node.js that runs response handlers and pre-request scripts.
-- **Build tools**: Maven, npm, Cargo, Go and Gradle, checked by the command set in Settings or the project's own wrapper.
+- **Build tools**: Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka, checked by the command set in Settings or the project's own wrapper.
 - **AI & agents**: the AI provider (is a key set) and the selected agent's command.
 - **Remote & containers**: the container engine, and WSL on Windows.
 - **System**: the installer prerequisites, elevated save, and the browsers available for HTML preview.
+- **Plugins**: how many plugins run, and a row for each one that failed to load or start, or started slowly.
 
 A missing tool is a **problem** only when something in the window needs it: a file of that language is open, the project has the tool's marker file (`pom.xml`, `go.mod`, `Cargo.toml`, `package.json`…), or you set its command. Otherwise the row says **Not installed**, keeps its **Install…** button, and isn't counted, so turning on language servers doesn't paint every language you never use red.
 

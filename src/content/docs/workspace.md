@@ -180,21 +180,39 @@ included, appears in the same picker.
 
 ### Settings a project can commit
 
-A project can carry a `.editora/settings.json` file saying **which language
-server to run for a language, and whether to run it**. It overrides your global
-preferences for anyone who opens that project. This suits the case where one
-repository needs a JDK 17 server and another a JDK 25 one, because nobody has to
-remember to flip a global preference when switching between them.
+A project can carry a `.editora/settings.json` file with values that override
+your own for anyone who opens that project, so they travel with the repository:
+
+- how its files are edited: indent style, tab size, rulers (also by language),
+  wrapping for code and for prose, trimming trailing whitespace and ending
+  files with a newline on save, and the spell-check language;
+- the command each build tool runs, and the program of the Java, Python and
+  JavaScript debuggers;
+- **which language server to run for a language, and whether to run it**, and
+  the Bash server's options such as ShellCheck's arguments and shfmt's style
+  (see [Bash server options](/docs/lsp#bash-server-options)).
+
+One repository can then use two-space indentation and a JDK 17 language
+server while another uses tabs and a JDK 25 one, and nobody has to flip a
+global preference when switching between them.
+
+The values apply only once the folder is trusted: run *Project: Trust This
+Project's Settings* (`lsp.trustProjectSettings`), or use **Trust Folder…** in
+Settings. A file's `.editorconfig` rules still come before the project's
+values.
+
+In a project window, Settings has a **User | Project** switch at the top.
+Choose **Project** to change the project's values on the same rows you use for
+your own; the change is written to `.editora/settings.json`. In **User**, a row
+the project sets says "Overridden by this project", and in **Project** it says
+"Set for this project" and offers **Use my setting**.
 
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
-with an example and opens it.
-
-Only **toolchain** settings can be overridden this way: the language servers,
-and the Bash server's options such as ShellCheck's arguments and shfmt's style
-(see [Bash server options](/docs/lsp#bash-server-options)). Appearance, keymap and
-fonts stay personal, because checking out a repository should not rearrange
-somebody else's editor. Run configurations have their own shared file,
-described in [Run & debug](/docs/run-debug).
+with an example and opens it. Appearance, keymap and fonts stay personal,
+because checking out a repository should not rearrange somebody else's editor.
+The whole list, the file's keys and the trust rules are in
+[Configuration](/docs/configuration#inside-a-project). Run configurations have
+their own shared file, described in [Run & debug](/docs/run-debug).
 
 ## Multiple windows
 
@@ -472,6 +490,23 @@ Page) with their shortcuts.
   what the editor can do, and people new to the editor need that most. The
   Simple UI mode toggle stays in the reduced View menu, so anyone who entered
   the mode from there can leave it the same way.
+
+  The right-click menus are trimmed the same way:
+
+  - **Tab:** Save, Save As, Encrypt… (Lock File on an encrypted file), Print,
+    Export to PDF, Close, Close Others, Close All, Reveal in File Manager, Copy
+    Path and Rename. Unpin stays on a tab that was pinned before.
+  - **Editor:** Comment / Uncomment, the spelling suggestions, Cut, Copy,
+    Paste, Undo, Redo, Select All, Print and Export to PDF.
+  - **Project tree:** New (a file or a folder), Rename, Undo Move, Delete and
+    Reveal in File Manager.
+  - **Preview** (Markdown, Typst, Markwhen, diagrams): the copy actions, Go to
+    Source, Enlarge, Export to PDF and Print. Copy HTML and the other export
+    formats are hidden.
+
+  Git, Local History, the compare actions, Open Terminal, Pin, bookmarks and
+  notes, External Tools and plugin items, and the Run, Debug, language-server,
+  build, AI, Markdown and Typst submenus are left out. Turning Simple mode off brings every entry back.
 
 ## Window chrome
 

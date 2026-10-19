@@ -38,6 +38,7 @@ Where there is no `editora` command, substitute the launcher in the examples.
 | `--zen` | Start in Zen mode (session-only) |
 | `--expert` | Start in Expert mode, a lighter focus mode (session-only) |
 | `--simple` | Start in Simple UI mode (session-only) |
+| `--disable-plugins` | Start with no plugin loaded (session-only) |
 | `--single-window[=project]` | Open just one window, not the whole saved set (session-only) |
 | `--no-session` | Open only the files given here; don't restore the saved session |
 | `--new-instance` | Start a separate editor process instead of handing the launch to the one already running on the same config folder |
@@ -55,6 +56,12 @@ where restoring the last session only costs time: every restored file is a
 buffer to load and, once shown, a file to highlight and a language server to
 run, for files you didn't ask to see. It is also session-only, so your saved tabs are
 left as they were and are not replaced by the files you opened.
+
+`--disable-plugins` loads no plugin at all for the session, whatever Settings
+→ Plugins says, and saves nothing: it is the way out of a plugin that hangs or
+breaks Editora at startup. Settings → Plugins and the Doctor say when it is on.
+Switch the plugin off or remove it there; **Restart Now** starts Editora again
+without the flag. See [Plugins](/docs/plugins#if-a-plugin-breaks-startup).
 
 ## Opening files
 
@@ -101,11 +108,12 @@ clicking a file pays a full cold start and leaves a second editor resident.
 macOS does not have the problem, because Finder delivers an event to the running
 app, and the handoff routes into that same code path.
 
-Three kinds of launch always start their own process:
+Four kinds of launch always start their own process:
 
 - anything passing **`--new-instance`**
 - `--new-file`
 - `--diff-ui`, a standalone comparison window
+- `--disable-plugins`, since the running editor has its plugins loaded
 
 An instance is scoped to its **config directory**. `--dev` and `--config-dir`
 do not opt out of the handoff; they choose which folder, and so which running

@@ -47,6 +47,11 @@ theme rather than being fixed values that only suit one background:
 | Olive / violet | Git's untracked / renamed |
 | Periwinkle | A keybinding, and only ever a keybinding |
 
+Keyboard chips (in the command palette, the Welcome page, menus, and the
+Settings window's Keymaps page and shortcut fields) take their colours from the
+app theme, whatever the editor theme, so they stay readable on every bundled
+theme.
+
 The Markdown preview can be themed independently of the app with its own
 light/dark toggle (a sun/moon button on the preview's zoom control), so you can
 read a GitHub-style light page inside a dark editor.

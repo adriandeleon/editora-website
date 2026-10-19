@@ -113,8 +113,10 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 **Diagnostics** appear as inline squiggles, in the **Problems** tool window
 (`M-8`), and as marks on the minimap and scrollbar. A hint (ShellCheck's
 "style" level, for example) is drawn as a faint dotted line rather than a full
-squiggle, and code the server marks as unused, such as a variable nothing
-reads, is drawn faded. **Completion** is merged into
+squiggle, code the server marks as unused, such as a variable nothing reads,
+is drawn faded, and a call the server marks as deprecated is struck through.
+Those unused and deprecated marks are not listed in the Problems window.
+**Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures. A server that lists its symbols
@@ -169,6 +171,12 @@ arrive back over `workspace/applyEdit`. Edits land as normal undoable edits, one
 undo step per file, and a multi-file fix opens the untouched files in background
 tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
+
+**Organize Imports** works the way the file's server does it: jdtls's own
+request, Pyright's organize-imports command, or the server's organize-imports
+code action. If the server has none of these, the status bar says so. On a
+Python file **Format Document** uses Ruff or Black; see
+[Formatting Python](#formatting-python).
 
 A multi-file edit is applied **completely or not at all**. An action that would
 delete a folder or replace an existing file asks first and names the paths, and
@@ -297,9 +305,21 @@ check) drive the status-bar loading bar and show what they are doing, with a
 title and percentage, in the echo area. Each message starts with the name of the
 server it comes from, for example `bash-language-server: …`.
 
+Startup ends with a line that says it is done, such as
+`jdtls: Loaded and ready`. It appears once the server is ready and has had no work outstanding for
+a moment; for jdtls that is after the project import, not at its own earlier
+"Ready". After that, background work (diagnostics after an edit, a search) is
+shown only when it is still running after that moment, and work that was shown
+ends with another ready line, so the last line never reads as a job left
+unfinished. A line that repeats the one just shown is skipped.
+
 External file changes are forwarded to the running servers, so a server's
 project model stays current after a `git checkout`, a branch switch, a CLI build
-or an edit in an external editor. A server that dies mid-session (a crash, an
+or an edit in an external editor. In a window without a project, and for a
+server whose folder is outside the project, Editora watches the server's folder
+itself (hidden folders, `node_modules`, `__pycache__` and virtual environments
+aside), so a module created by `git` or a terminal resolves without a restart.
+A server that dies mid-session (a crash, an
 OOM-kill, a failed handshake) is announced in the status bar, has its stale
 diagnostics cleared, and is restarted for the affected files, with a cap so a
 server that keeps crashing is not relaunched forever.
@@ -343,8 +363,10 @@ a language and whether to run it**, which overrides your global preference for
 anyone who opens that project. It can also set the
 [Bash server's options](#bash-server-options). This covers one repository needing a
 JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
-setting when switching between them. See
-[projects](/docs/workspace#settings-a-project-can-commit).
+setting when switching between them. The same file can also set indentation,
+rulers, build commands and debugger programs; see
+[projects](/docs/workspace#settings-a-project-can-commit) and the full list in
+[Configuration](/docs/configuration#inside-a-project).
 
 Because those commands are programs that run on your machine, they apply only
 to a **trusted folder**. In an untrusted folder the project's server commands
@@ -363,7 +385,7 @@ for a host in Settings → Remote instead (see
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
-covered through four channels, picked per server:
+covered through one of these channels, picked per server:
 
 - **npm** packages (Astro, JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
   Python/Pyright), needing Node.
@@ -371,6 +393,9 @@ covered through four channels, picked per server:
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
 - **Binary** releases downloaded per OS/architecture (clangd, lemminx,
   terraform-ls, Lua), extracted into your config folder.
+- A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
+  into your config folder. A server installed earlier keeps its version until
+  you install it again.
 - A **pinned distribution** for the Kotlin server, checked against its published
   checksum. It is about 370 MB to download and about 1.2 GB once installed,
   because it brings its own Java runtime, so Editora asks before it starts.
@@ -501,7 +526,7 @@ question went unanswered.
 A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
-single server.
+single server. Python looks for its own markers first; see [Python](#python).
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -671,6 +696,97 @@ path. Put shared settings in the root
 `# shellcheck` directives) in the script itself for anything that applies to
 one folder or file.
 
+## Python
+
+Python files use **Pyright** (`pyright-langserver --stdio`). Language servers
+are off by default, so the first Python file a window opens asks **Turn on
+Python code intelligence?** with **Turn on** and **Not now**. The offer comes
+once per window and follows the same switch as the install banners
+(`view.toggleInstallPrompts`).
+
+### The Python interpreter
+
+Pyright analyses your code with a Python interpreter, and it can only resolve
+the packages installed in that interpreter. Editora picks one interpreter per
+file and uses it for Run, Debug, the tests, Pyright and Format Document alike.
+The first match wins:
+
+1. the **Interpreter** field of a [run configuration](/docs/run-debug), for that
+   configuration;
+2. the interpreter picked for this project (see below);
+3. the environment Editora was started from (`$VIRTUAL_ENV`, then
+   `$CONDA_PREFIX`), so activating a virtual environment before starting
+   Editora works;
+4. a virtual environment in the project: a `.venv`, `venv`, `env` or `.env`
+   folder with a `pyvenv.cfg`, looked for from the file's folder up to the
+   project root;
+5. **Settings → Debugging → Python interpreter (fallback for Run, Debug and code
+   intelligence)**;
+6. the system Python on `PATH` (`python3`, then `python`; on Windows `py -3`,
+   then `python`, never the Microsoft Store stub).
+
+A status-bar item on Python files shows the result and why, for example
+`Python 3.13.5 (.venv)`, `Python 3.12.4 (PATH)` or `Python 3.13.5 (picked)`.
+Hover it for the full command. Click it, or run **Python: Select Interpreter**
+(`python.selectInterpreter`), to choose another one: **Detect automatically**
+(the order above), the one in use, the project's environments, every Python on
+`PATH`, or **Browse…** for any file. The pick is kept per project; inside the
+project folder it is stored as a relative path. In a window without a project
+it applies to every loose Python file in that window.
+
+Pyright is told the interpreter, so the packages in a project's `.venv` resolve
+with no `pyrightconfig.json`. A changed pick reaches the running server at once.
+A `pyrightconfig.json` or a `[tool.pyright]` section with `venvPath` and `venv`
+still wins inside Pyright, and settings such as `pythonVersion` or
+`typeCheckingMode` belong there too.
+[Doctor](/docs/troubleshooting#doctor) shows the same interpreter in its
+**Python interpreter** row.
+
+### What Pyright adds
+
+- **Unused names are faded** (an import or a variable nothing reads) and
+  **calls to a deprecated function are struck through**. These marks are drawn
+  in the editor but not listed in the Problems window, where they would bury
+  the real errors.
+- **Organize Imports** (`lsp.organizeImports`) sorts and groups the imports
+  with Pyright's own command. It leaves unused ones in place; they are the
+  faded ones.
+- **Go to Definition** into the standard library, site-packages or Pyright's
+  bundled stubs opens that file in View mode, on the project's server, and
+  without the library's own type errors. **Enable Editing** in the View mode
+  bar makes it editable.
+- An **untitled** buffer set to Python is analysed too. In a project window it
+  sees the project's modules. Once you save it, its file takes over.
+- A Python file keeps its server up to **50,000 lines**, even above the
+  **Disable minimap & LSP above** limit (10,000 lines by default), which then
+  turns off only the minimap.
+
+The Python server's root is the nearest folder with a `pyproject.toml`,
+`setup.py` or `setup.cfg`, else the repository (`.git`), else the nearest
+`requirements.txt` or `Pipfile`. A `docs/requirements.txt` therefore does not
+split the documentation off from the package it documents. In a project window
+the project root is the root.
+
+To use another server, set the Python command in **Settings → LSP**, for example
+`basedpyright-langserver --stdio`. If that command is not found, the banner
+names it and offers **Settings…**, rather than installing Pyright.
+
+### Formatting Python
+
+Pyright does not format. **LSP: Format Document** (`lsp.formatDocument`) on a
+Python file runs **Ruff** (`ruff format`) or, failing that, **Black**, giving
+them the editor's text with the file's name so they read the project's
+`pyproject.toml`. Each is looked for first in the interpreter's environment
+(the project's `.venv`), then on `PATH`, in this order: the environment's Ruff,
+the environment's Black, Ruff on `PATH`, Black on `PATH`. The result is one
+undoable edit, and the status bar names the tool, for example
+`Formatted with ruff`. It works with language servers off too.
+
+If neither is installed, the status bar says so; install one into the project's
+environment (`pip install ruff`). A Python server that formats by itself, such
+as `ruff server`, keeps the job. Doctor's **Python formatter** row shows which
+tool Format Document will use.
+
 ## Language servers on a remote host
 
 A file in a [remote folder](/docs/remote) is served by a language server running
@@ -687,6 +803,11 @@ than a path on this machine.
   outside the project folder, such as a library source reached by Go to
   Definition.
 - Renames and other cross-file edits create, move and delete files on the host.
+- **Python**: Pyright on the host is told the project's virtual environment as
+  the host names it, found there the way [Run](/docs/run-debug) finds it, else
+  the host's own `python` tool. The status-bar item names it, for example
+  `python (.venv)`, without running it on this machine. If the connection
+  drops, the host's own `python3` is used.
 - **Java** works too: jdtls runs on the host with the host's JDKs and keeps its
   index in `~/.cache/editora` there.
   *LSP: Clear Java Index Caches* clears only the indexes on this machine.
@@ -708,6 +829,8 @@ set in Settings → LSP is used there only when it is a bare program name.
   `~/.cache/editora` inside, so it is kept across restarts of Editora for as long
   as the container lasts. *LSP: Clear Java Index Caches* clears only the indexes
   on this machine.
+- **Python**: Pyright inside is told the project's virtual environment by the
+  name it has inside, as on a remote host.
 - The Astro server does not run in a container or distribution yet.
 
 ## Finding the server's binary

@@ -83,6 +83,60 @@ Toggle Snippet Expansion on Tab**, `view.toggleSnippetTabExpansion`) turns Tab
 expansion off altogether. Snippets then come from the completion popup and
 **Snippet: Insert…** only.
 
+### Python snippets
+
+The bundled Python snippets cover the usual statements: `def` and `defs` (a
+method with `self`), `deft` and `defst` (with a return type), `class`, `classd`
+(with a base class) and `classi` (with a docstring and an `__init__`), `if`,
+`elif`, `else`, `ifelse`, `ifmain` (the `if __name__ == "__main__":` guard),
+`for`, `forr` (over a `range`), `while`, `with`, `try`, `trya`, `tryf` and
+`tryef` (with `else` and `finally` blocks), `except`, `exceptas`, `match`,
+`case`, `casew` (the `case _:` wildcard), `lambda`, `property`, `import` and
+`fromim`. The `except` bodies re-raise with a bare `raise`, which keeps the
+original traceback. `#env` writes a `#!/usr/bin/env python3` line, and `#cell`
+and `#mark` write `# %%` cell markers.
+
+Several of these are named after a keyword (`try`, `if`, `for`). When the
+popup lists a snippet that only repeats the word you typed, Enter ends the line
+as usual; press Tab to expand the snippet.
+
+### Java snippets
+
+The bundled Java snippets cover:
+
+- **Declarations:** `class`, `interface`, `record` and `enum` named after the
+  file, `sealed` (a sealed interface with two record implementations),
+  `package` (the package of the folder under `src/main/java` or
+  `src/test/java`), `import`, `ctor` (a constructor for the file's class),
+  `main` (also `psvm`) and `cmain` (the `void main()` of a compact source
+  file).
+- **Methods and fields:** `method`, `static_method` and `field` (each with a
+  choice of access modifier), `private_method`, `public_method`,
+  `protected_method`, `private_static_method`, `public_static_method`,
+  `private_field`, `protected_field`, `public_field`, `const` (also `psf`, a
+  `static final` constant) and `new`.
+- **Output and logging:** `sysout` (also `sout`), `soutv` (a value with its
+  name), `souf` (also `printf`), `syserr` (also `serr`), `ioprintln` (also
+  `iop`) and `ioreadln` for JDK 25's IO class, `logger` (a `System.Logger`
+  field, with no dependency) and `slf4j` (an SLF4J logger field with its
+  imports).
+- **Statements:** `if`, `ifelse`, `ifnull` (also `ifn`), `ifnotnull` (also
+  `inn`), `instanceof` (also `inst`, with a pattern variable), `switch` (with
+  arrow cases), `switchexpr` (also `sw`), `fori`, `forr` (counting down),
+  `foreach` (also `iter`), `formap` (over a map's entries), `while`,
+  `dowhile`, `try_catch`, `try_finally`, `try_resources` (also `twr`), `throw`
+  (also `thr`) and `synchronized`.
+- **Expressions and threads:** `lambda`, `stream` (a filter, map and toList
+  pipeline), `textblock` (also `tb`), `vthread` (starts a virtual thread) and
+  `vexecutor` (a virtual-thread-per-task executor, closed when done).
+- **JUnit 5:** `test`, `ptest` (a parameterized test), `beforeeach`,
+  `aftereach` and `assertthrows`.
+
+The Java language server offers templates of its own under some of the same
+names (`sysout`, `fori`, `try_catch` and others). A server template named like
+one of your snippets, bundled or your own, is left out of the completion list,
+so the popup shows a single row for the trigger: the snippet that Tab expands.
+
 ### Snippet variables
 
 A variable is written `$NAME` or `${NAME}`, and `${NAME:default}` supplies a
@@ -305,6 +359,15 @@ already exists and is not empty is refused. The name you enter is
 `${projectName}` and, in a form valid for a package (`my-app` becomes `my_app`),
 the default for `${packageName}`.
 
+The **Python Project** template writes a `src` layout: `src/<package>/` with
+`__init__.py` and `main.py`, a `tests/test_main.py` that runs with `unittest` or
+pytest, a `pyproject.toml` with a console command for `main()` and the pytest
+settings that find `src/`, a `.gitignore`, and a README. The README's commands
+work on the fresh project: create a virtual environment with
+`python3 -m venv .venv`, install the package into it with `pip install -e .`,
+then run it with `python -m <package>.main` (or the installed command) and test
+it with `python -m unittest discover -s tests` or `pytest`.
+
 ## New files by type
 
 **File: New File of Type…** (`file.newFileOfType`, also **New** in the Project
@@ -321,6 +384,10 @@ YAML, and so on) in the current folder. It asks only for a name.
   `setopt errexit nounset pipefail` (the same preamble as the Zsh Script
   template). The caret waits after a blank line. Both are created executable,
   and like templates they follow `.editorconfig`.
+- A Python file starts like the Python Script template: a
+  `#!/usr/bin/env python3` line, a docstring, a `main()` function and an
+  `if __name__ == "__main__":` guard, with the caret in `main()`. It is created
+  executable too.
 - A name that cannot work is refused with the reason: a name Windows reserves
   (`CON`, `NUL`, `COM1`), one of the characters `< > : " | ? *`, a trailing dot
   or space, or a name that starts with `~`. For Java types, a keyword or a name
