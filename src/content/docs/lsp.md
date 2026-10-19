@@ -314,7 +314,7 @@ Twenty-four servers are supported:
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (`kotlin-language-server`), **Groovy** (gvy), **Lua** (`lua-language-server`)
+  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
   (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
@@ -368,8 +368,11 @@ covered through four channels, picked per server:
   Python/Pyright), needing Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
-- **Binary** releases downloaded per OS/architecture (clangd, lemminx, Kotlin,
+- **Binary** releases downloaded per OS/architecture (clangd, lemminx,
   terraform-ls, Lua), extracted into your config folder.
+- A **pinned distribution** for the Kotlin server, checked against its published
+  checksum. It is about 370 MB to download and about 1.2 GB once installed,
+  because it brings its own Java runtime, so Editora asks before it starts.
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
   needs a JDK.
 - A **single jar** for the Groovy server (gvy), pinned to one release and checked
@@ -415,6 +418,28 @@ A `Jenkinsfile` at a project's root makes [Doctor](/docs/troubleshooting#doctor)
 expect the Groovy server, as an open `.groovy` file does. A `build.gradle` alone
 does not, because most Gradle projects with a Groovy build script are Java
 projects.
+
+## Kotlin
+
+The Kotlin server is JetBrains' Kotlin LSP. Install it from its Settings → LSP
+card, the banner on a `.kt` file, or **Install: Language Server…**; Editora says
+how large the download is and waits for your answer. The installer sets the
+server's command to the downloaded launcher. Left blank, the command is
+`kotlin-lsp --stdio`, the name Homebrew's `kotlin-lsp` gives it. A command you
+set yourself is kept, so fwcd's `kotlin-language-server` still works there.
+
+The server imports the project's Gradle or Maven build, so its root is the
+folder with `settings.gradle.kts` (or `settings.gradle`), else the nearest
+`build.gradle.kts`, `build.gradle` or `pom.xml`: every module of a multi-module
+build shares one server. Once the import ends (a few seconds for a small
+project, longer the first time Gradle fetches its plugins) it reports
+compiler errors and warnings and offers completion, hover, go to definition,
+references, rename, the outline, formatting and code actions.
+
+The server is an alpha. It checks the `.kt` files in the build's source
+folders; a `.kts` script, `build.gradle.kts`, and a `.kt` file outside a build
+get no diagnostics or hover from it. A folder without a build file is not
+imported at all.
 
 ## Workspace roots and lifetime
 
