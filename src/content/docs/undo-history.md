@@ -66,6 +66,8 @@ A copy is written within a second or two of a pause in typing, and at least
 every ten seconds while you keep typing; very large documents are copied less
 often. It is removed when you save the file, revert it, edit it back to its
 saved text, or close the tab. A normal quit leaves none behind.
+[Encrypted files](/docs/encrypted-files) get no recovery copy, so their text
+never reaches the disk unencrypted.
 
 ### After an abnormal exit
 
