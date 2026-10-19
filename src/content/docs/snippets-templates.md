@@ -27,7 +27,7 @@ Type a trigger and press **Tab**, or pick from the **Snippet: Insert…** list
 
 Bodies use the standard syntax: `$1`, `${1:default}`, mirrors (a repeated
 number), `${1|a,b|}` choices, and [variables](#snippet-variables). Snippets ship
-for 30 languages, plus a global set that applies to every file. The TypeScript
+for 32 languages, plus a global set that applies to every file. The TypeScript
 set also applies to JSX and TSX files.
 
 ### Expanding with Tab
@@ -152,12 +152,12 @@ template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
 
-Editora ships 32 templates:
+Editora ships 33 templates:
 
 - **Code:** a Java class, a Java compact source file, a JUnit 5 test, a Java
   shebang script (an extensionless file the `java` launcher runs directly), a
-  Python script, a pytest test module, shell and Zsh scripts, an HTML page, and
-  an HTML page with a stylesheet.
+  Python script, a pytest test module, a Node.js script, shell and Zsh scripts,
+  an HTML page, and an HTML page with a stylesheet.
 - **Files Editora previews or runs:** a Markdown document, a Typst document
   (on its own, or with its page setup in a reusable `template.typ`), a Mermaid
   diagram, a Markwhen timeline, and HTTP requests with `@assert` and `@capture`
@@ -169,7 +169,8 @@ Editora ships 32 templates:
   the Apache 2.0 license, `.gitignore` files for Java, Python and Node, an
   `.editorconfig`, GitHub issue and pull request templates, and a multi-stage
   Java Dockerfile, on its own or with a `compose.yaml` and `.dockerignore`.
-- **Projects:** a Python project and a Node.js TypeScript project.
+- **Projects:** a Python project and a Node.js TypeScript project (which installs
+  TypeScript 6; see [why](/docs/lsp#typescript-and-javascript)).
 
 Every field the wizard shows starts filled in, so pressing **Create** without
 changing anything gives a working file.
@@ -224,8 +225,15 @@ levels, and each level becomes a tab or the configured number of spaces. A
 shell script is the exception for line endings: it is always written with LF,
 because bash cannot run a script with CRLF line endings.
 
-A file that starts with `#!`, such as the shell and Zsh scripts, is created
-executable on Linux and macOS. On a file system without that permission
+The **Node.js Script** template writes a `.js` file with a `#!/usr/bin/env node`
+shebang and an `async function main(args)`. An error thrown from `main` is
+printed and sets a non-zero exit code. It runs from its gutter ▶ (see
+[Node.js scripts](/docs/run-debug#nodejs-scripts)). **New ▸ Scripts ▸
+Node.js** in the Project tree's right-click menu creates the same kind of file
+without the wizard.
+
+A file that starts with `#!`, such as the shell, Zsh and Node.js scripts, is
+created executable on Linux and macOS. On a file system without that permission
 (Windows, FAT, some network drives) the status bar says so: run the script with
 its interpreter (`bash tool.sh`), and mark it executable in Git with
 `git update-index --chmod=+x tool.sh`.

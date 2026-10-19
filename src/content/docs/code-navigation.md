@@ -21,11 +21,18 @@ carries its own declaration scanner, so the command works on a first run and in
 every language that ships a grammar but has no server. A project in a
 [remote folder](/docs/remote) has no symbols.
 
-Sixteen language ids are covered: Java, Kotlin, C#, Python, JavaScript,
-JSX, TypeScript, TSX, Go, Rust, C, C++, Ruby, PHP, shell and Lua. It records
+Nineteen language ids are covered: Java, Kotlin, Groovy, Scala, Clojure, C#,
+Python, JavaScript, JSX, TypeScript, TSX, Go, Rust, C, C++, Ruby, PHP, shell and
+Lua. It records
 the kinds of symbol a pattern can identify reliably: type, interface, enum,
 method, function, field, variable and module. LSP has twenty-six kinds, and most
 of them need real type resolution to tell apart.
+
+In Clojure it records the namespace and the definitions written in the first
+column (`def`, `defonce`, `defn`, `defn-`, `defmacro`, `defmulti`, `deftest`,
+`defprotocol`, `definterface`, `defrecord`, `deftype`), so a form inside a
+`(comment …)` block is left out. In Groovy, `task foo(…)` and the other calls of
+a Gradle build are not taken for methods.
 
 In shell scripts it records functions in every common form (`name()`,
 `function name`, `name ()` with the brace on the next line), including names
@@ -56,6 +63,8 @@ once, for example), the index is marked stale and the next query walks the
 project again. **Rebuild Symbol Index** (`index.rebuild`) forces that walk.
 
 It honours your `.gitignore` the same way Find in Files and the project tree do,
+skips `node_modules` even without a `.gitignore` (see
+[Find in files](/docs/navigation#find-in-files)),
 skips files over 2 MB, and is bounded at 20,000 files and 400,000 symbols so
 that it cannot grow without limit in the background.
 

@@ -216,6 +216,17 @@ in-memory text of open buffers, so unsaved edits are included. Results are
 grouped by file; Enter or double-click jumps to a match. Case, regex, and
 whole-word apply here too.
 
+While **Exclude .gitignore files and folders from search** is on (Settings →
+Search, on by default), Find in Files skips what the project's `.gitignore`
+excludes. It also skips every `node_modules` folder, even in a project with no
+`.gitignore` yet, because a `node_modules` often holds tens of thousands of
+files. The symbol index, Go to File, Search Everywhere, the TODO window and the
+Project tree's filter skip it the same way. To search inside it, add
+`!node_modules/` to the `.gitignore`, or name it in an include glob such as
+`node_modules/react/**`.
+
+Find in Files stops at 5,000 matches, and says so when it stops there.
+
 **Replace in files** rewrites matches across the project after a confirmation:
 open buffers are edited in-memory (undoable) and closed files are rewritten on
 disk, preserving their line endings. The search re-runs afterward to refresh the
