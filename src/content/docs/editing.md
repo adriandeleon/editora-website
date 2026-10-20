@@ -384,11 +384,30 @@ through older marks and around to where you started, and marks follow their text
 as you edit above them.
 
 **Narrowing** restricts the buffer itself and is more than a display filter:
-search, replace, macros and Select All see only the region. An amber **Narrowed** badge in
-the status bar shows the state and widens on click. Saving always writes the
-whole file. Language-server support is suspended while narrowed, bookmarks, notes
-and breakpoints stop persisting until you widen, and undo history is dropped at
-the narrowing boundary (edits made while narrowed undo normally).
+search, replace, macros and Select All see only the region. The editor says so
+where you are looking: an amber banner above the text names the accessible
+lines (*Narrowed to lines 32–36 of 81*) and has a **Widen** button, and the
+gutter keeps the file's line numbers while narrowed, so the region's first row
+still reads 32, not 1. The status bar's **Ln** and the Structure window's row
+numbers count the same way. The amber **Narrowed** badge in the status bar
+shows the state too and widens on click. Saving always writes the whole file.
+Language-server support is suspended while narrowed, bookmarks, notes and
+breakpoints stop persisting until you widen, and undo history is dropped at the
+narrowing boundary (edits made while narrowed undo normally).
+
+The **Structure** tool window (`tool.structure`) narrows by symbol. Three
+segments sit at the end of its search box: **Widen**, **Defun** and **Fold
+region**. Defun narrows the editor to the selected symbol's definition, as
+`edit.narrowToDefun` does at the caret, and Fold region to its foldable block;
+with no row selected, the caret's line is used. A defun is a column-0
+definition, as in Emacs, so on an indented method Defun gives you the enclosing
+class and Fold region the method itself. While Defun or Fold region is on,
+picking another symbol in the outline narrows to it instead of only scrolling
+there, so you can walk a file one function at a time; Widen shows the whole
+file and ends that. The lit segment mirrors the buffer: Defun or Fold region
+while the window narrowed it, none while a chord such as `C-x n n` did, and
+Widen while the file is whole. Widening by any means — the badge, the banner,
+`C-x n w` — ends the mode.
 
 **Rectangles** act on the columns between point and mark, and each command is one
 undo step. They are character columns, so a tab counts as one, and the rectangle
