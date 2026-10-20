@@ -122,7 +122,11 @@ tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures. A server that lists its symbols
 flat, as bash-language-server does, has them nested under the function that
 contains them, and a variable assigned several times in one scope is listed
-once.
+once. In a `pom.xml` the outline names what the XML server lists only by
+element: a `dependency`, `plugin`, `exclusion` or `extension` by its
+`groupId:artifactId`, and a `profile`, `execution`, `repository` or
+`pluginRepository` by its `id`, so five "dependency" rows become a list you can
+pick from.
 
 Each row in the Problems window ends with the rule's code when the server gives
 one, for example `[SC2086]`. Right-click a row for **Open Rule Documentation**,
@@ -350,9 +354,25 @@ Twenty-six servers are supported:
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
 
 There is also a **Maven-aware `pom.xml` server** (JVM lemminx plus the
-lemminx-maven extension). It is routed by file name, so a `pom.xml` gets
-dependency, plugin and GAV completion while every other XML file keeps the fast
-native lemminx.
+lemminx-maven extension), shown as **lemminx-maven** in Settings, Doctor and
+the status bar where the XML server is **lemminx**. It is routed by file name,
+so a `pom.xml` gets dependency, plugin and GAV completion while every other XML
+file keeps the fast native lemminx. It runs on the **Default JDK** chosen
+under Settings → Languages & Tools → Build Tools (else the `java` on your
+`PATH`), for Install… as well as for the server itself. Its root is the
+outermost pom of a contiguous chain, so a multi-module reactor is served by one
+JVM, also when it is opened without a project. The status bar says *Loaded and
+ready* only once the server reports its own Maven initialization done, since it
+answers the handshake long before it can answer a request. Its diagnostics are
+named after the server, the schema's "resource is downloading" notice is shown
+as information rather than an error, and `${…}` property items are left out of
+an artifact completion unless you typed `$`.
+
+Completion lists the artifacts in your local repository (`~/.m2`) only.
+**Use the Maven Central index for pom.xml completion**, on the server's card
+under Settings → LSP and off by default, lets lemminx-maven download Maven
+Central's index, a large one-time download it then keeps up to date; changing
+the setting restarts the server.
 
 Its **Install…** downloads lemminx-maven's bundle and the three libraries the
 bundle leaves out (Guava, Commons Lang and jsoup, pinned by version and

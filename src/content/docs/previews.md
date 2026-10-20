@@ -30,23 +30,44 @@ the active file previews as, so there's nothing per-type to remember. A floating
 ## Maven poms
 
 A `pom.xml` previews as a **summary** rather than as the generic XML tree, which
-spreads every dependency over four nested rows. You get coordinates and parent,
-then modules, properties, dependencies, managed dependencies, plugins, managed
-plugins, and each profile's own set. The artifact name and its version are in
-aligned columns, so the versions can be read down a column.
+spreads every dependency over four nested rows. You get coordinates, parent,
+URL and SCM, then modules, dependencies, managed dependencies, plugins, managed
+plugins, reporting plugins, repositories, properties, and each profile's own
+set. The artifact name and its version are in aligned columns, so the versions
+can be read down a column, and a name is never broken inside a word in a narrow
+split. A repository row is tagged *plugin repository* where it is one, and
+*not Maven Central* where its URL is somewhere else. A profile's row says when
+Maven activates it (*activates when: jdk [17,), property env.CI*) beside its
+*active by default* mark.
 
-The summary resolves the two indirections that otherwise send you back up the file:
+The summary resolves the indirections that otherwise send you back up the file:
 
 - A **`${property}` version is resolved**, with the reference kept beside it
   (`5.10.2  ${junit.version}`), including properties defined in terms of other
   properties and the `project.*` built-ins.
 - A **blank version is filled in** from the file's own `<dependencyManagement>`
   or `<pluginManagement>` and tagged *managed* (`2.0.17  managed`).
+- For a local file, the **parent chain beside it** is read too, through
+  `<relativePath>` (Maven's default `../pom.xml`) or, when that misses, the
+  parent's pom in your local repository, and so are the **BOMs** the file
+  imports, looked up in the local repository. A version they manage shows its
+  number with its source: *from reactor-parent 2.0.0*, *from junit-bom 5.11.0
+  (import)*. The parent line names the files it read.
 
-Where the file alone cannot answer, the summary says so. **No parent pom is
-read**, so a version inherited from a parent reads *inherited* rather than a
-guessed number, and an unresolvable `${…}` is reported as unresolved. The
-summary reads one file and is not an effective pom.
+Where the files cannot answer, the summary says so: a blank version under a
+declared `<parent>` that was not found reads *inherited*, a dangling `${…}`
+reads *unresolved*, and a version a BOM probably manages but which the summary
+cannot pin reads *probably from* that BOM. A remote (SFTP) file keeps the
+one-file reading. The summary is still not an effective pom: profiles, BOMs
+imported by a parent and `<relativePath>` rewrites through settings are not
+followed.
+
+The summary is a place to work from, not only to read. A row takes you to its
+element in the editor, a section title collapses its rows (**Properties**
+starts collapsed on a pom with more than twelve), and a **Filter rows…** field
+at the top narrows every section to the rows that mention the text. A pom that
+does not parse names the line and column of the error, and the message is a
+link to it.
 
 Any file named `pom.xml` or `*.pom` qualifies, plus anything that sniffs as a
 pom, so a `pom-template.xml` or an `effective-pom.xml` gets the same view.
