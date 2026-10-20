@@ -37,7 +37,7 @@ Registers last for the session, one set per window. Number, rectangle and window
 
 ## Narrowing
 
-**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. Search, replace, Select All and macros all see only the narrowed region. Writing the file still writes the whole file.
+**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. Search, replace, Select All and macros all see only the narrowed region. Writing the file still writes the whole file. A narrowed editor says so where you are looking: an amber banner names the accessible lines and offers Widen, and the gutter keeps the file's line numbers. The Structure tool window narrows by symbol too, with **Widen**, **Defun** and **Fold region** segments beside its search box; while one of the latter is on, picking a symbol narrows to it.
 
 ## Search, replace, and motion
 
