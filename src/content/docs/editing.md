@@ -395,31 +395,27 @@ Language-server support is suspended while narrowed, bookmarks, notes and
 breakpoints stop persisting until you widen, and undo history is dropped at the
 narrowing boundary (edits made while narrowed undo normally).
 
-The **Structure** tool window (`tool.structure`) narrows by symbol. Three
-segments sit at the end of its sort row: **Widen**, **Defun** and **Fold
-region**. Defun narrows the editor to the picked symbol's top-level definition,
-as `edit.narrowToDefun` does at the caret, and Fold region to the symbol's own
-block. A defun is a column-0 definition, as in Emacs, so on an indented method
-Defun gives you the enclosing class and Fold region the method itself; with no
-row picked, the caret's line is used. While Defun or Fold region is on, a click
-on another symbol, or Enter on it, narrows to that one instead of only
-scrolling there, so you can walk a file one function at a time. Only an
-activation narrows: the arrow keys, the filter field and a right-click select
-a row and move the caret within the region, nothing more. The outline stays
-the whole file's while narrowed, with the file's line numbers; rows outside
-the region are muted, and with no mode on, Enter on one widens and goes there.
-Widen shows the whole file and ends the mode. Defun is not offered where a
-definition means nothing (Markdown, Typst, HTTP and CSV files); Fold region
-still narrows a heading to its section. The segments are disabled for a file
-that cannot be narrowed and hidden in Simple UI mode. From the keyboard, `d`,
-`f` and `w` act while the outline has focus, and the commands
-`structure.narrowDefun`, `structure.narrowFold` and `structure.widen` can be
-bound in any keymap. The lit segment mirrors the buffer: Defun or Fold region
-while the window narrowed it, an amber border while a chord such as `C-x n n`
-did, and Widen while the file is whole. Widening by any means — the badge, the
-banner, `C-x n w` — ends the mode. `C-x n d` and `C-x n f` look for their
-definition and block in the whole document, as Emacs does, so a narrowed buffer
-can be narrowed to the definition around it.
+The **Structure** tool window (`tool.structure`) narrows by symbol with one
+toggle at the end of its sort row: **Narrow to fold region**. A click narrows
+the editor to the picked symbol's own block — on an indented method, the method
+itself — and turns the mode on; with no row picked, the block around the
+caret's line is used. A second click shows the whole file again and ends the
+mode. While it is on, a click on another symbol, or Enter on it, narrows to
+that one instead of only scrolling there, so you can walk a file one function
+at a time. Only an activation narrows: the arrow keys, the filter field and a
+right-click select a row and move the caret within the region, nothing more.
+The outline stays the whole file's while narrowed, with the file's line
+numbers; rows outside the region are muted, and with the mode off, Enter on one
+widens and goes there. In Markdown, the toggle narrows a heading to its
+section. It is disabled for a file that cannot be narrowed and hidden in Simple
+UI mode. From the keyboard, `f` flips it while the outline has focus, and the
+command `structure.narrowFold` can be bound in any keymap. The toggle mirrors
+the buffer: lit amber while the window narrowed it, unlit with an amber border
+while a chord such as `C-x n n` did (a click then narrows to the block
+instead). Widening by any means — the badge, the banner, `C-x n w` — ends the
+mode. `C-x n d` and `C-x n f` look for their definition and block in the whole
+document, as Emacs does, so a narrowed buffer can be narrowed to the
+definition around it.
 
 **Rectangles** act on the columns between point and mark, and each command is one
 undo step. They are character columns, so a tab counts as one, and the rectangle
