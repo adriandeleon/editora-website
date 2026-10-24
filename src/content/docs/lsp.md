@@ -324,6 +324,15 @@ OOM-kill, a failed handshake) is announced in the status bar, has its stale
 diagnostics cleared, and is restarted for the affected files, with a cap so a
 server that keeps crashing is not relaunched forever.
 
+A server that *answers* a request with an internal error is not mistaken for
+one with nothing to say. The error is logged with the server's own detail, and
+the first failure of each request kind is announced in the status bar, such as
+`lemminx-maven: internal error on hover — see the log`. Hover then says
+*Hover failed: …* with the reason instead of "No documentation at the caret".
+Three failures in a row with no good answer between them stop the server: the
+status bar says so, Doctor shows the server as a warning with the reason, and
+*LSP: Restart Language Servers* (`lsp.restartServers`) tries it again.
+
 ## Servers are auto-detected, never bundled
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
@@ -344,6 +353,19 @@ There is also a **Maven-aware `pom.xml` server** (JVM lemminx plus the
 lemminx-maven extension). It is routed by file name, so a `pom.xml` gets
 dependency, plugin and GAV completion while every other XML file keeps the fast
 native lemminx.
+
+Its **Install…** downloads lemminx-maven's bundle and the three libraries the
+bundle leaves out (Guava, Commons Lang and jsoup, pinned by version and
+checksum, from Maven Central) into one folder, then starts the server and asks
+it one hover request before keeping the install. A server that cannot answer is
+refused with the reason, and the previous install stays in place. A folder that
+lacks any of the jars (an install made with an earlier release, or a wiped
+folder) does not count as installed: `pom.xml` falls back to the XML server,
+the Settings → LSP card reads *lemminx-maven: incomplete — Install… repairs
+it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars beside
+an **Install…** button. If you installed this server with an earlier release,
+click **Install…** once: that bundle lacked the three libraries and could not
+answer a request.
 
 Each server has a card on the **Settings → LSP** page: its enable switch, its
 command field with **Browse…**, and a **Detected** line such as *jdtls: found
@@ -400,7 +422,9 @@ covered through one of these channels, picked per server:
   checksum. It is about 370 MB to download and about 1.2 GB once installed,
   because it brings its own Java runtime, so Editora asks before it starts.
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
-  needs a JDK.
+  needs a JDK, plus three jars from Maven Central that the zip leaves out, each
+  checked against its published checksum. The server is started and asked one
+  request before the install is kept.
 - A **single jar** for the Groovy server (gvy), pinned to one release and checked
   against its published checksum. It runs on the JDK chosen for builds and runs
   (Java 17 or later).

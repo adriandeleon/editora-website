@@ -98,6 +98,12 @@ the line shows that it is not found. Below it, **Project** says whether the
 active file's project uses the tool. The command row is greyed while that tool
 is turned off.
 
+The same page has **Build before Run and Debug** (on): in a Maven or Gradle
+project, Run and Debug on a main class first compile with the build tool, as
+described under
+[Running a project's main class](/docs/run-debug#running-a-projects-main-class).
+Turn it off to launch whatever `target/classes` holds.
+
 ## Clojure
 
 A `deps.edn` gets a **Clojure CLI** tasks window. An alias with `:main-opts` is
@@ -146,15 +152,66 @@ nothing. Results are cached, since detection re-runs on every save and tab
 switch. A goal belonging to a plugin declared only inside a profile is not
 listed, even when that profile is checked.
 
+### Building a module from its reactor root
+
+In a multi-module project, the Maven tool window of a module starts with a
+**Reactor** section holding one toggle, *Build from \<root\> (-pl \<module\> -am)*.
+With it on, every task runs from the reactor root as
+`mvn -f <root>/pom.xml -pl <module> -am <task>`, so `compile` or `test` in a
+module that depends on a sibling no longer fails with "Could not find artifact"
+until the sibling is installed. The toggle is offered only when the root pom
+lists the module and the root is inside the open project; a top-level project
+has no Reactor section.
+
 ### The Maven submenu
 
 A **Maven** submenu appears wherever there's a pom in hand: on a `pom.xml` in the
 editor's right-click menu, and on a folder or a `pom.xml` row in the Project
-tree. It carries Update Versions, Actions, Run…, Re-run, and Stop.
+tree. It carries **Update Versions**, **Show Actions** and **Run custom…**, and
+each acts on the pom it was opened on: right-click `moduleB/pom.xml` (or its
+folder) and they read, list and run that module, not the one the active editor
+tab is in. When that folder is not the active tab's, the status line names it.
+*Rerun Last* and *Stop* are window-wide, so they are not in the submenu; the
+palette and the tool window keep them.
 
 One builder serves all three surfaces, so they always offer the same actions.
 It offers nothing when Maven is off, when there's no pom above the folder, or on
 a file that isn't itself a `pom.xml`.
+
+### New Maven Project
+
+**Maven: New Project…** (`maven.newProject`) creates a project from an
+archetype and opens it in its own window. It is in the File menu, in the
+Project tree's **New ▸** submenu on a folder, and in the palette, where
+**Maven: New Project in Folder…** (`maven.newProjectHere`) asks for the parent
+folder first. It runs your own Maven (the command override, else `mvn` on your
+`PATH`), never a wrapper found in the target folder, and says so before the
+wizard opens when there is none.
+
+The archetype picker starts with a **curated list of eight** that generate and
+build on a current JDK: Apache's `maven-archetype-quickstart`, `-webapp`,
+`-simple`, `-site` and `-plugin` (1.5), OpenJFX's `javafx-archetype-simple` and
+`javafx-archetype-fxml`, and Apache Camel's `camel-archetype-java`. Below them,
+**Custom archetype…** takes a `groupId:artifactId:version`, and **Load full
+catalog…** fetches Maven Central's catalog. That file is about 18 MB and lists
+every published version of every archetype; Editora streams it into one row per
+archetype at its newest version (about 3,800 rows) and caches the result under
+`~/.editora/cache/archetype-catalog.json` for a day, after which the next load
+asks Central whether the file changed before downloading it again. A fetch that
+fails falls back to the cached rows, or to the curated list, with the error
+shown. Every row reads `groupId:artifactId:version — description`, typing
+filters on both, and where the catalog lists a curated archetype the curated
+pin wins. A curated archetype runs at once; one you typed or loaded is
+third-party code, so the wizard asks before Maven downloads and runs it.
+**Maven: Set Archetype Catalog URL…** (`maven.setArchetypeCatalogUrl`) points
+*Load full catalog…* elsewhere (`https` only).
+
+The form then takes the coordinates, with a collapsed **Advanced** section for
+the project `<url>`, the Java release and the **Update dependencies and plugins
+to the latest versions** option described below. The generated project gets a
+run configuration for its main class whose
+[before-launch step](/docs/run-debug#a-step-before-the-launch) is
+`maven:compile`, so the first Run builds before it launches.
 
 ### Update the versions in an existing project
 
@@ -173,18 +230,27 @@ It has three limits:
   non-snapshot published", which for `maven-surefire-plugin` was a milestone for
   years; the full version list is filtered for stability instead.
 - A version is **never walked backwards**, which an unguarded set-to-latest
-  would do to a pom pinned on purpose.
-- A **property-driven version** (`${junit.version}`) is skipped. Rewriting the
-  reference would replace the indirection you chose, and rewriting the property
-  is a different edit that can reach other artifacts.
+  would do to a pom pinned on purpose. Versions are ordered by Maven's own
+  rules (a port of its `ComparableVersion`), not as semver, so a number beats a
+  qualifier and `guava 33.0.0-jre` is never "updated" to `r09`; a candidate whose
+  leading number is below the current one is never offered either.
+- A **property-driven version** (`${junit.version}`) is skipped, for a
+  dependency and for a plugin alike, and so are a range (`[2.0,3.0)`) and
+  `LATEST` or `RELEASE`. Rewriting the reference would replace the indirection
+  you chose, and rewriting the property is a different edit that can reach
+  other artifacts.
 
 Each artifact is resolved independently and best-effort, so one unreachable
 coordinate leaves that version alone rather than failing the rest. A plugin with
 no `<version>` is left alone too, because its version comes from a parent and
 writing one would change how the plugin is resolved.
 
-The same option is offered up front when [generating a new
-project](/features/starting-a-project).
+The same option is offered up front when
+[generating a new project](#new-maven-project): the wizard's **Update
+dependencies and plugins to the latest versions** resolves both through this
+same Maven Central path and stability filter, so a brand-new project never
+starts on a milestone or beta, and the status reports both counts (*Versions
+updated: 3 dependencies, 2 plugins*).
 
 ## npm and other package managers
 
@@ -282,7 +348,17 @@ nested classes is marked the same way.
 **Debug Test at Caret** (`test.debugAtCaret`) and the test-results context menu
 launch the selected JUnit method or class through Maven or Gradle with its JVM
 suspended, then attach Editora's Java debugger automatically. This needs the
-same Java debug adapter as ordinary Java debugging. In a Node.js test file,
+same Java debug adapter as ordinary Java debugging. On Maven, Editora picks a
+free loopback port before the launch, passes it in `-Dmaven.surefire.debug`,
+and attaches as soon as the forked JVM listens on it, because Surefire 3 prints
+the JDWP "Listening for transport" banner only after the test has run. While it
+waits, the Test Results header reads *Debug: waiting for the test JVM to open
+port N…*, and **Debug ▸ Stop** ends the Maven run before a session exists. After
+60 s with no listener the status says so and points at the Output window. A
+further fork of the same run (several forks, reruns) is attached after the
+first has finished; forks are debugged one at a time. The test JVM prints one
+"Debugger failed to attach: handshake failed" line in the Output console: that
+is Editora's port check, not an error. Gradle keeps its own banner. In a Node.js test file,
 Debug Test at Caret debugs the `node:test` test at the caret (see
 [Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)).
 

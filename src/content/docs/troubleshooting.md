@@ -74,7 +74,11 @@ The status bar shows an **LSP: \<server\>** segment and a loading bar while a
 server initializes. If it never settles, restart servers with *LSP: Restart
 Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls` process from a
 previous run can hold its workspace lock; the loading bar clearing is the sign
-the handshake completed.
+the handshake completed. A server that starts but then fails its requests is
+announced in the status bar (`lemminx-maven: internal error on hover — see the
+log`), stopped after three failures in a row, and shown as a warning in Doctor;
+the Maven `pom.xml` server whose folder is missing jars is reported as
+*incomplete* in Settings → LSP and Doctor, and its **Install…** repairs it.
 
 ## Python imports show as errors
 
