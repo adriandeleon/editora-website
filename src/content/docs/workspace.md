@@ -238,7 +238,9 @@ you want a separate one; see the [command line](/docs/cli).
 Tabs are draggable to reorder and can be **pinned**. The tab strip, the
 switcher, and the Open Files picker all show the same unsaved-file marker. Close
 the last tab and the editor is left empty (it doesn't recreate an Untitled
-buffer).
+buffer). Two open files with the same name show their folder in the tab
+(`pom.xml · core`, `pom.xml · web`); the suffix appears when the second opens
+and goes when it closes.
 
 A file you're only *glancing* at, for example while arrowing through a picker
 or following a definition, lands in a single reusable **preview tab**, shown in italic, so
@@ -706,29 +708,38 @@ because Windows cannot watch the `\\wsl.localhost` share.
 
 ## Trusted folders
 
-A repository can ship its own build wrapper, `./mvnw` or `./gradlew`, and those
-scripts live in the repository rather than on your machine. Triggering a Maven
-or Gradle build runs one with your privileges, so a repository you merely cloned
-and opened could execute its own code on the first build.
+A Maven or Gradle build runs code that lives in the repository rather than on
+your machine: a shipped wrapper (`./mvnw`, `./gradlew`), the pom's plugins and
+extensions, the files under `.mvn/`, every Gradle build script. A repository
+you merely cloned and opened could execute its own code on the first build,
+with your privileges, whether or not it ships a wrapper.
 
-Editora asks first. The first time you build in a folder it hasn't been told to
-trust, it shows what would run and waits. Trust is remembered **per folder and
-inherited by subfolders**, so a multi-module repository asks once, and the
-default is always untrusted, including when the trust file can't be read.
+Editora asks first. The **first build of any kind** in a folder it hasn't
+been told to trust shows what would run and waits: the wrapper, the pom's
+plugin coordinates, the `.mvn/` files, the Gradle scripts, and a
+`.editora/project.json` build-command override. Trust is remembered for the
+folder that ships the wrapper, else the project you opened, and **inherited by
+subfolders**, so a multi-module repository asks once and a module never
+silently covers a script one level up. The default is always untrusted,
+including when the trust file can't be read. The same question fronts
+Gradle's *Load all tasks…*, the build before Run and Debug, and Maven's
+classpath fallback.
 
 Declining means **no build** runs at all. Editora does not fall back to the
 `mvn` or `gradle` on your `PATH`, because that would not be safer: a hostile `pom.xml` or
 `build.gradle` executes code through those too, since build plugins and Gradle
 scripts run in-process.
 
-Only the wrapper case is gated. Every other build tool (npm, Cargo, Go) launches
+Only Maven and Gradle are gated. Every other build tool (npm, Cargo, Go) launches
 your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
 none of them prompt.
 
-Review or revoke trust in **Settings → Advanced → Trusted folders**, or from
-the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
-folder that is still covered by a trusted parent tells you so, rather than
-claiming a revoke that the parent would override.
+Review or revoke trust in **Settings → Workspace → Trusted folders**, with the
+**Revoke** button in the Maven or Gradle window's header (which shows
+*Trusted* or *Not trusted yet*), or from the palette with
+`workspace.manageTrust` and `workspace.revokeTrust`. Revoking a folder that is
+still covered by a trusted parent tells you so, rather than claiming a revoke
+that the parent would override.
 
 A folder on a [remote host](/docs/remote) is trusted on its own: trusting
 `/srv/app` on a server does not trust a local `/srv/app`, or the other way round.
