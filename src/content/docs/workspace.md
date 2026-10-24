@@ -52,13 +52,22 @@ or Personal Note directly, with compact indicators showing both annotations.
 
 ### Project Map
 
-Use the **Tree / Map** switch at the top of the Project tool window, or
-*Project: Toggle Tree / Map View* (`project.toggleMapView`), to replace
-the file tree with a spatial canvas. The map shows the project as
-Miller-style columns: selecting a folder reveals its children in the next
-column, so the path to the current file stays visible without mixing unrelated
-expanded branches together. The choice of Tree or Map is remembered per
-workspace.
+The Project Map shows the project on a spatial canvas, in a **window of its
+own**. Click **Map** beside the Project tool window's search field, or run
+*Project: Open / Close Project Map Window* (`project.toggleMapView`), to open
+it; if it is open already it comes forward. The command works even with the
+Project tool window closed, and closes the Map window when that is the window
+in use. The Project tool window keeps showing the tree.
+
+The map shows the project as Miller-style columns: selecting a folder reveals
+its children in the next column, so the path to the current file stays visible
+without mixing unrelated expanded branches together.
+
+The Map window is resizable and can sit beside the editor window or on another
+screen. It does not stay above the editor window: opening a file from the Map
+brings the editor window forward. It closes with its editor window or project.
+Whether the window was open, and where, is remembered per workspace, so a
+workspace that last had the Map open reopens it.
 
 - **Click a file** to open it in an editor tab. **Click a folder** to select it
   and show its column; clicking a folder that is already open selects it and
@@ -83,7 +92,9 @@ workspace.
 - A Personal Notes badge opens an independent editable note card for a file or
   folder. Note cards can coexist with code previews.
 - Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
-  Local History, and Git actions available in the tree.
+  Local History, and Git actions available in the tree. Rename, New Folder,
+  Delete, Undo Move and Reveal stay in the Map window and ask there; the other
+  actions bring the editor window forward.
 - The **?** button lists the mouse and keyboard controls in a popover.
 
 The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
@@ -103,9 +114,10 @@ notes together; opening a ninth replaces the one used least recently. Preview
 and note cards keep a live connector to their source row while the map pans or
 zooms and while a card is moved or resized.
 
-The Project tool window's search field searches the map too. A search reveals
-all the ancestor columns needed to reach its matches and selects the first one,
-and clearing the query restores the folders you had open.
+The Map window has its own search field at the top (the Project tool window's
+field filters the tree only). A search reveals all the ancestor columns needed
+to reach its matches and selects the first one, and clearing the query restores
+the folders you had open.
 
 #### Large folders
 
@@ -133,7 +145,7 @@ The canvas is fully keyboard-navigable.
 | `F2` | Rename the selected file or folder |
 | `Delete` | Delete the selection, as in the tree |
 | Menu key or `Shift-F10` | Open the selected row's context menu |
-| `Escape` | Close open cards, then clear the search, then return to the editor |
+| `Escape` | Close open cards, then clear the search, then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
 chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`.
@@ -201,8 +213,9 @@ Project's Settings* (`lsp.trustProjectSettings`), or use **Trust Folder…** in
 Settings. A file's `.editorconfig` rules still come before the project's
 values.
 
-In a project window, Settings has a **User | Project** switch at the top.
-Choose **Project** to change the project's values on the same rows you use for
+In a project window, Settings has a **User | Project** switch at the top, and
+its Project side names the project. Choose **Project** (the window's title then
+names the project too) to change the project's values on the same rows you use for
 your own; the change is written to `.editora/settings.json`. In **User**, a row
 the project sets says "Overridden by this project", and in **Project** it says
 "Set for this project" and offers **Use my setting**.

@@ -62,6 +62,9 @@ When you **Run** a configuration that runs on a deployment, Editora:
 3. Runs the configuration's [step before the launch](/docs/run-debug#a-step-before-the-launch),
    then the program, on the host, in the copy.
 
+Another Run while any of these steps is under way is refused, and leaves the
+deploy and the launch as they are: Stop still cancels them.
+
 The program runs as it would in a [remote project](/docs/run-debug#running-on-a-remote-host):
 with the host's interpreters, JDK, tools and login environment, and with output,
 input and Stop over the same connection. A script, a working directory or

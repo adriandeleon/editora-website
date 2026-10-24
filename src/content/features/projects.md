@@ -3,7 +3,7 @@ title: "Project Map navigation"
 group: "Workspace & files"
 order: 1
 beta: false
-summary: "Explore a project as a file tree or a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards."
+summary: "Explore a project as a file tree or, in a window of its own, a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards."
 ---
 
 Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window, and everything in a window acts on its own project. A folder on a remote host over SFTP is a project too, with its own window, tabs and trust (a server folder is trusted separately from a local one with the same path); reopening it asks to connect.
@@ -12,13 +12,13 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 ## Navigate on a canvas
 
-The Project tool window switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
+Beside the familiar file tree, the **Map** button opens a **visual Project Map** in a window of its own, which you can place beside the editor window or on another screen; the Project tool window keeps the tree. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
 Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** options preserve the scale and center each newly opened column; either can be turned off, and the choice is remembered per workspace. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and "Show hidden" checkbox. A large folder loads 300 rows at a time, with a "+N more…" row for the next chunk. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
 
 Click a file to open it in an editor tab, or use the row's eye icon for a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 
-The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away, or one command: **Project: Toggle Tree / Map View**. Print… and PDF… output the whole map, split across pages when it is large. The map is another view of the same project and does not replace the tree.
+The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. Opening a file from the map brings the editor window forward; **Project: Open / Close Project Map Window** opens or closes the map from the palette, and a workspace that last had it open reopens it. Print… and PDF… output the whole map, split across pages when it is large. The map is another view of the same project and does not replace the tree.
 
 ## Start from a template
 
