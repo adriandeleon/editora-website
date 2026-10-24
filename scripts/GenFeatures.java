@@ -151,7 +151,7 @@ Registers last for the session, one set per window. Number, rectangle and window
 
 ## Narrowing
 
-**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. Search, replace, Select All and macros all see only the narrowed region. Writing the file still writes the whole file.
+**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. Search, replace, Select All and macros all see only the narrowed region. Writing the file still writes the whole file. A narrowed editor says so where you are looking: an amber banner names the accessible lines and offers Widen, and the gutter keeps the file's line numbers. The Structure tool window narrows by symbol too: its **Narrow to fold region** toggle narrows to the picked symbol's block, and while it is on, picking another symbol narrows to that one.
 
 ## Search, replace, and motion
 
@@ -663,7 +663,7 @@ On by default. Toggle it and choose the browser under Settings → Web → HTML 
 """),
     new Feature("projects", WF, 1, false,
         "Project Map navigation",
-        "Explore a project as a file tree or a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards.",
+        "Explore a project as a file tree or, in a window of its own, a <strong>spatial canvas</strong>: focused columns, pan and zoom, live filters, and connected code and Personal Notes cards.",
         """
 Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window, and everything in a window acts on its own project. A folder on a remote host over SFTP is a project too, with its own window, tabs and trust (a server folder is trusted separately from a local one with the same path); reopening it asks to connect.
 
@@ -671,13 +671,13 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 ## Navigate on a canvas
 
-The Project tool window switches between the familiar file tree and a **visual Project Map**. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
+Beside the familiar file tree, the **Map** button opens a **visual Project Map** in a window of its own, which you can place beside the editor window or on another screen; the Project tool window keeps the tree. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
 Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** options preserve the scale and center each newly opened column; either can be turned off, and the choice is remembered per workspace. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and "Show hidden" checkbox. A large folder loads 300 rows at a time, with a "+N more…" row for the next chunk. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
 
 Click a file to open it in an editor tab, or use the row's eye icon for a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 
-The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. The traditional tree remains one click away, or one command: **Project: Toggle Tree / Map View**. Print… and PDF… output the whole map, split across pages when it is large. The map is another view of the same project and does not replace the tree.
+The whole map is keyboard-navigable: arrows follow the selected flow and move among siblings, `Ctrl-N` / `Ctrl-P` step through a column, `Backspace` goes to the parent, `Alt-Left` / `Alt-Right` traverse selection history, `/` focuses the column filter, and `Home` returns to the project root. Opening a file from the map brings the editor window forward; **Project: Open / Close Project Map Window** opens or closes the map from the palette, and a workspace that last had it open reopens it. Print… and PDF… output the whole map, split across pages when it is large. The map is another view of the same project and does not replace the tree.
 
 ## Start from a template
 
@@ -699,9 +699,9 @@ Editora can create a project as well as open one: from a Maven archetype, or fro
 
 A wizard where you pick an archetype and fill in the coordinates, and the generated project is registered and opened in its own window. Reachable from the File menu, the Project tree's **New ▸** submenu, and the palette.
 
-Archetypes come from a curated list that ships with the editor, with **Load full catalog…** to pull Maven Central's when you need something unusual. Where both list the same archetype the curated pin wins, because the published catalog is often years out of date. The package name is derived the way IntelliJ does it, so `my-app` becomes `my_app` and `2048` becomes `_2048`.
+Archetypes come from a curated list of eight that ships with the editor, with **Load full catalog…** to stream Maven Central's catalog (one row per archetype at its newest version, cached for a day) when you need something unusual. Where both list the same archetype the curated pin wins, because the published catalog is often years out of date. The package name is derived the way IntelliJ does it, so `my-app` becomes `my_app` and `2048` becomes `_2048`.
 
-The project arrives ready to run: a run configuration is seeded for its main class with `mvn -q compile` as its before-launch step, and that class is opened, so [Run](/features/run-files) works on the first press instead of failing on an empty `target/classes`. Generation shells out to `mvn archetype:generate` rather than writing a pom by hand, so Maven has to be on your `PATH`, which is checked before the wizard opens rather than after five fields have been typed.
+The project arrives ready to run: a run configuration is seeded for its main class with `maven:compile` as its before-launch step (the project's own Maven, resolved at run time), and that class is opened, so [Run](/features/run-files) works on the first press instead of failing on an empty `target/classes`. Generation shells out to `mvn archetype:generate` rather than writing a pom by hand, so Maven has to be on your `PATH`, which is checked before the wizard opens rather than after five fields have been typed.
 
 A collapsed **Advanced** section carries the project `<url>`, the Java release (a combo of the JDK majors you have installed, still editable), and an **update to latest versions** checkbox that brings the generated pom's dependencies and plugins up to date on the way out. Empty means "keep what the archetype wrote", so the fields are not prefilled with the archetype's own values. None of the three can be an archetype property, because `archetype:generate` ignores them and quickstart bakes its own into the pom template. They are applied afterwards as a format-preserving edit to the generated pom, which leaves its indentation and its `<!-- FIXME -->` comments where they are.
 

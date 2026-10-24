@@ -32,7 +32,7 @@ the compile step before the first test reports.
 
 | Tool | Marker | Actions |
 | --- | --- | --- |
-| Maven | `pom.xml` | Lifecycle phases, declared profiles (checkable, composing via `-P`), each plugin's bound goals and its full goal list, and *Run custom…* |
+| Maven | `pom.xml` | Lifecycle phases, profiles (three-state: off, `-P`, `-P!id`, with the condition that activates each), each plugin's bound goals and its full goal list, a *Reactor* toggle in a module, a *Projects* section when the build files sit below the root, and *Run custom…* |
 | npm (the **Package Scripts** window) | `package.json` | One entry per `scripts` name, plus `install` / `ci` |
 | Cargo | `Cargo.toml` | Standard subcommands, `[[bin]]` / `[[example]]` targets, and a `--release` toggle |
 | Go | `go.mod` / `go.work` | Standard subcommands over the whole module |
@@ -54,13 +54,22 @@ while the first time. A `package.json` project uses its own package manager
 (npm, pnpm, yarn or bun); see
 [npm and other package managers](#npm-and-other-package-managers).
 
-A wrapper is a script the repository ships, and it runs with your privileges.
-The first time a task (or Gradle's *Load all tasks…*) would run one, Editora
-shows a **Workspace Trust** notice naming the script and waits for your answer.
-Trust is remembered for the folder that ships the wrapper and the folders
-inside it. Declining cancels the run; it does not fall back to the `mvn` or
-`gradle` on your `PATH`. A project without a wrapper is not asked. Review or
-revoke trust under [Trusted folders](/docs/workspace#trusted-folders).
+A Maven or Gradle build runs code the repository supplies, with your
+privileges: a shipped `./mvnw` or `./gradlew`, the pom's plugins, the files
+under `.mvn/`, every Gradle build script. So the **first build of any kind** in
+a folder you have not trusted asks once, wrapper or not, also when it would run
+the `mvn` on your `PATH`. The **Workspace Trust** prompt lists what it found:
+the wrapper script, the pom's plugin coordinates (the first eight, then "and
+*n* more"), the `.mvn/` files, the Gradle build scripts, and a
+`.editora/project.json` that replaces the build command. Trust is remembered
+for the folder that ships the wrapper, else the open project, and for the
+folders inside it; a module never silently covers a script one level up. The
+tasks window's header shows **Trusted** or **Not trusted yet** with a
+**Revoke** button. The same question fronts Gradle's *Load all tasks…*, the
+build before Run and Debug, and Maven's classpath fallback. Declining cancels
+the run; nothing quieter runs instead. Review or revoke trust under
+[Trusted folders](/docs/workspace#trusted-folders). npm, Cargo, Go and the
+other tools launch your own toolchain and are not asked.
 
 Choose the JDK used for Maven under **Settings → Languages & Tools → Build
 Tools → Default JDK**. The selector finds installed JDKs in standard platform
@@ -68,17 +77,24 @@ locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 **System default** keeps using `JAVA_HOME` / `PATH`. The choice supplies both
 `JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
 resolution, Java Run and Debug, and before-launch commands, and the same JDK
-runs sbt, Mill, Scala CLI and Scala's Run and Debug. A saved run
-configuration can override it for one project or launch.
+runs sbt, Mill, Scala CLI and Scala's Run and Debug, the
+[New Maven Project](#new-maven-project) wizard's Maven, and the
+[Maven `pom.xml` server](/docs/lsp#servers-are-auto-detected-never-bundled).
+A saved run configuration can override it for one project or launch. With
+**System default** and no `JAVA_HOME`, the program a Maven Run launches uses the
+`java` on your `PATH`, which may not be the version Maven compiled with.
 A Java run configuration's before-launch command runs in the project root,
 whatever the configuration's working directory, so a `mvn compile` or
 `gradle classes` step finds the build file.
 
 In a [remote project](/docs/remote#allowing-a-host-to-run-commands), Maven,
 Gradle, npm, Cargo and Go builds and test runs start on the host, over the same
-SSH connection, with output, input and Stop as for a local build. The wrappers
-are looked for on the host, and Java is the host's own (or the **JDK home** set
-for that host in Settings → Remote), never the local Default JDK.
+SSH connection, with output and Stop as for a local build (the Output console
+takes no input: a build is not interactive). The wrappers are looked for on the
+host, and Java is the host's own (or the **JDK home** set for that host in
+Settings → Remote), never the local Default JDK. A **Maven** command can be set
+per host there too, beside the JDK home, for a host whose `PATH` finds the
+wrong `mvn` or none.
 
 A project whose tools [run in a container](/docs/remote#tools-in-a-container)
 or, on Windows, [in a WSL distribution](/docs/remote#tools-in-wsl-windows) runs
@@ -95,8 +111,16 @@ Each tool's card there has a **Command override** field with **Browse…** and a
 the override, or else the tool's own command. For example *mvn: found
 (/usr/bin/mvn)* or *gradle: not found*. A misspelled override is still saved;
 the line shows that it is not found. Below it, **Project** says whether the
-active file's project uses the tool. The command row is greyed while that tool
-is turned off.
+active file's project uses the tool and, for Maven and Gradle, which program a
+build of it really runs: *./mvnw (trusted)*, *./mvnw (not trusted yet)*, *mvn
+on PATH*, or the override. [Doctor](/docs/troubleshooting#doctor)'s Build Tools
+section says the same. The command row is greyed while that tool is turned off.
+
+The same page has **Build before Run and Debug** (on): in a Maven or Gradle
+project, Run and Debug on a main class first compile with the build tool, as
+described under
+[Running a project's main class](/docs/run-debug#running-a-projects-main-class).
+Turn it off to launch whatever `target/classes` holds.
 
 ## Clojure
 
@@ -123,6 +147,51 @@ debugging a single Clojure file is covered in
 
 ## Maven
 
+### What the tree reads
+
+The tree is built from the nearest `pom.xml` **merged with the `<parent>`
+chain found beside it on disk**, followed through `<relativePath>` (Maven's
+default `../pom.xml`) while the file is inside the open project and its
+coordinates are the ones the child names. In the usual multi-module layout the
+profiles, plugins and `<pluginManagement>` are declared once in the parent, so
+a module read on its own offered no profile toggles and no `spring-boot:run`
+row. Now a module's tree carries its parent's profiles and plugins, a
+`pluginManagement` entry gets a goal group titled *(managed)*, and a plugin
+version written as `${property}` is resolved through the merged properties, so
+the goal list is read from the version the build runs. It is still not an
+effective pom: nothing is read from a repository, and a parent that is not on
+disk under the project contributes nothing.
+
+A bound execution with an id of its own runs as `prefix:goal@id`, so a plugin
+bound twice runs the execution you picked, not both. A pom that does not parse
+keeps the **Lifecycle** section, so `clean` or `compile` still run, and shows
+the parse error under the tree with an **Open pom.xml** link. **Run** in the
+mini toolbar is greyed until a task row is selected and while a build runs.
+In [Simple UI mode](/docs/workspace#focus-modes) the build tools are off, and
+a build command says so.
+
+### Profiles
+
+Each `<profile>` is a **three-state** toggle. The first click turns it on
+(`-Pid`); the second turns it off even if Maven would activate it on its own
+(`-P!id`); the third leaves it as the pom says. A profile's row notes why Maven
+would activate it without `-P`: *active unless another profile is*
+(`activeByDefault`), or its `<activation>` condition (`jdk [17,)`, `os linux`,
+`property env.CI`, `file exists src/main/native`). A profile that your
+`~/.m2/settings.xml` lists under `<activeProfiles>` is shown checked and
+locked: it is on whatever the command line says. The tree and the
+*Show Actions* popup share one set of checked profiles per build root, and
+every task of that root carries them.
+
+### Projects below the root
+
+A project whose build files sit one or two folders below the root (a `java/`
+subfolder, a repository holding several small builds) lists them in a
+**Projects** section at the top of the tree. Picking one makes it the build
+root until you switch to a file of another; the current one is marked
+*(current)*. Detection never walks above the folder you opened, so a project
+opened inside a module never builds the pom above it.
+
 ### Every goal a plugin offers
 
 A literal reading of `pom.xml` can show only a goal written inside an explicit
@@ -132,9 +201,12 @@ javafx-maven-plugin, spring-boot-maven-plugin or exec-maven-plugin, carries only
 `javafx:run` would be reachable only by typing it into *Run custom…*.
 
 Each plugin therefore gets a **collapsed section listing every goal it offers**,
-read from the plugin's own descriptor, with each goal's description as its
-tooltip. Because the goals come from the descriptor and not from a built-in
-table of well-known goals, the section covers whatever plugins are in your pom.
+read from the plugin's own descriptor, with each goal's description (its
+Javadoc markup stripped) as its tooltip. Because the goals come from the
+descriptor and not from a built-in table of well-known goals, the section
+covers whatever plugins are in your pom. The group's tooltip names the version
+it read; when the pom pins no version Editora can read, it says the goals are
+those of the newest installed version and the build may run another.
 
 The flat *Plugins* section and these per-plugin groups overlap by design and
 answer different questions: the flat one is *what this build runs* (with the
@@ -146,22 +218,145 @@ nothing. Results are cached, since detection re-runs on every save and tab
 switch. A goal belonging to a plugin declared only inside a profile is not
 listed, even when that profile is checked.
 
+### Building a module from its reactor root
+
+In a multi-module project, the Maven tool window of a module starts with a
+**Reactor** section holding one toggle, *Build from \<root\> (-pl \<module\> -am)*.
+With it on, every task runs from the reactor root as
+`mvn -f <root>/pom.xml -pl <module> -am <task>`, so `compile` or `test` in a
+module that depends on a sibling no longer fails with "Could not find artifact"
+until the sibling is installed. The toggle is offered only when the root pom
+lists the module and the root is inside the open project; a top-level project
+has no Reactor section.
+
+### Run custom… and Rerun Last
+
+**Run custom…** (`maven.runCustom`) takes a free-form goal string. The prompt
+starts with the last string you ran, quotes group an argument (`"a b"` is
+one), and it says which checked toggles (profiles, the reactor switch) it will
+*not* add, so you type them when you want them. Each project keeps a
+**history** of the strings it ran, shown as **Recent** rows at the top of the
+*Show Actions* popup. **Rerun Last** (`maven.rerunLast`) repeats the last
+invocation with the same root, task and toggles, and the status line names
+the folder it runs in when that is not the active file's.
+
+### The Build menu and keys
+
+The **Run ▸ Build** submenu holds *Show Actions*, *Run Custom Goal(s)…*,
+*Rerun Last*, *Stop* and *Refresh pom.xml*, then the Maven and Output tool
+windows, so the stripe icon and the palette are no longer the only ways in.
+The IntelliJ keymap binds **Rerun Last** to `Ctrl+Shift+F10` (`⌃⇧R` on macOS)
+and the Output window to `Alt+Shift+B` (`⌥⇧B`), as IntelliJ IDEA does; the
+other keymaps bind nothing by default, and any `maven.*` command can be bound
+in [Keymaps](/docs/keymaps).
+
+### The Output console
+
+The Maven tab of the Output console colours `[ERROR]`, `[WARNING]`, `BUILD
+SUCCESS` and `BUILD FAILURE` lines under every editor theme, and a compiler
+location such as `App.java:[5,18]` is a link that opens the file at that line
+and column, as stack-trace lines already were. Its header has four controls
+beside Stop and Clear:
+
+- **Find** (the magnifier, or the editor's Find chord while the console has
+  focus) opens a find bar over the output.
+- **Previous run** keeps the run before this one behind a toggle, so a failure
+  can be compared with the build before it without re-running; Clear drops it.
+- **Save output…** writes the console to a file (`maven-output.txt` is
+  suggested).
+- **Stop** ends the build, and the console header, the status bar and Test
+  Results then read **Stopped**, not an exit code or "Run failed".
+
+Starting a task while another runs asks **Stop and run**: the new task starts
+once the stopped build has exited. The console keeps the newest 200,000
+characters and says at the top when it dropped older output.
+
 ### The Maven submenu
 
 A **Maven** submenu appears wherever there's a pom in hand: on a `pom.xml` in the
 editor's right-click menu, and on a folder or a `pom.xml` row in the Project
-tree. It carries Update Versions, Actions, Run…, Re-run, and Stop.
+tree. It carries **Update Versions**, **Show Actions** and **Run custom…**, and
+each acts on the pom it was opened on: right-click `moduleB/pom.xml` (or its
+folder) and they read, list and run that module, not the one the active editor
+tab is in. When that folder is not the active tab's, the status line names it.
+*Rerun Last* and *Stop* are window-wide, so they are not in the submenu; the
+palette and the tool window keep them. Inside the submenu the entries drop
+their "Maven:" prefix, since the submenu already says it.
 
 One builder serves all three surfaces, so they always offer the same actions.
 It offers nothing when Maven is off, when there's no pom above the folder, or on
 a file that isn't itself a `pom.xml`.
 
+### New Maven Project
+
+**Maven: New Project…** (`maven.newProject`) creates a project from an
+archetype and opens it in its own window. It is in the File menu, in the
+Project tree's **New ▸** submenu on a folder, and in the palette, where
+**Maven: New Project in Folder…** (`maven.newProjectHere`) asks for the parent
+folder first. It runs your own Maven (the command override, else `mvn` on your
+`PATH`), never a wrapper found in the target folder, and says so before the
+wizard opens when there is none. That Maven runs on the **Default JDK** chosen
+under Build Tools, and while it generates the Output window opens on a **New
+Project** tab and a background task shows in the status bar.
+
+The archetype picker starts with a **curated list of eight** that generate and
+build on a current JDK: Apache's `maven-archetype-quickstart`, `-webapp`,
+`-simple`, `-site` and `-plugin` (1.5), OpenJFX's `javafx-archetype-simple` and
+`javafx-archetype-fxml`, and Apache Camel's `camel-archetype-java`. Below them,
+**Custom archetype…** takes a `groupId:artifactId:version`, and **Load full
+catalog…** fetches Maven Central's catalog. That file is about 18 MB and lists
+every published version of every archetype; Editora streams it into one row per
+archetype at its newest version (about 3,800 rows) and caches the result under
+`~/.editora/cache/archetype-catalog.json` for a day, after which the next load
+asks Central whether the file changed before downloading it again. A fetch that
+fails falls back to the cached rows, or to the curated list, with the error
+shown. Every row reads `groupId:artifactId:version — description`, typing
+filters on both, and where the catalog lists a curated archetype the curated
+pin wins. A curated archetype runs at once; one you typed or loaded is
+third-party code, so the wizard asks before Maven downloads and runs it. The
+question names the archetype's repository; **Generate** allows it once,
+**Trust and Generate** also skips the question for that archetype until
+Editora is closed, and **Cancel** returns to the form with your fields kept.
+**Maven: Set Archetype Catalog URL…** (`maven.setArchetypeCatalogUrl`) points
+*Load full catalog…* elsewhere (`https` only).
+
+The form then takes the name, location and coordinates. The package is
+derived from the group and artifact ids in lower case, the way IntelliJ does it
+(`my-app` becomes `my_app`). The status line under the form says which field
+still blocks **Create**, and once the form is complete it says *Will create
+<folder>*, with a relative or `~` location resolved to the folder it means.
+The folder may exist if it is empty; a folder with files in it is refused. A
+collapsed **Advanced** section takes the project `<url>`, the Java release
+(for the quickstart archetype it is passed as the archetype's own
+`javaCompilerVersion`) and the **Update dependencies and plugins to the latest
+versions** option described below. Once the archetype is in your local
+repository, an **Archetype properties** section lists the properties the
+archetype declares (a JavaFX or JUnit version, say) with their defaults; a
+value you leave empty keeps what the archetype writes.
+
+The generated `pom.xml` opens in the new project's window, and the project
+gets a run configuration for its main class whose
+[before-launch step](/docs/run-debug#a-step-before-the-launch) is
+`maven:compile` and whose working directory is blank (the project root), so
+the first Run builds before it launches. A JavaFX archetype gets no run
+configuration, because its main class cannot be launched as a plain classpath
+program; the status line says to run it with `javafx:run`. A project generated
+inside an open aggregator is added to that aggregator's `<modules>` and stays a
+module of it, rather than opening as a second project.
+
 ### Update the versions in an existing project
 
 **`maven.updateVersions`** checks the nearest `pom.xml`'s dependencies and
 plugins against Maven Central and **shows what would change before writing
-anything**. A dialog lists a row per artifact, current → latest, and you can
-decline it. Nothing is written until you accept.
+anything**. The lookups run in parallel under a background task; they stop at
+the first connection failure (*Maven Central could not be reached*), and
+running the command again while a check is in flight cancels the first. The
+dialog lists a **checkbox per row**, current → latest, grouped under
+**Dependencies**, **BOM imports**, **Plugins**, **Parent** and **Properties**;
+a jump of the leading number (JUnit 5 → 6) carries a **major** tag, and a BOM
+import has its own group because its bump re-versions everything it manages.
+Untick the rows you do not want, or decline the whole dialog. Nothing is
+written until you accept.
 
 The update is applied **through the open buffer as a single edit**, so one
 `C-z` takes the whole thing back and the buffer is left dirty for you to save.
@@ -173,18 +368,34 @@ It has three limits:
   non-snapshot published", which for `maven-surefire-plugin` was a milestone for
   years; the full version list is filtered for stability instead.
 - A version is **never walked backwards**, which an unguarded set-to-latest
-  would do to a pom pinned on purpose.
-- A **property-driven version** (`${junit.version}`) is skipped. Rewriting the
-  reference would replace the indirection you chose, and rewriting the property
-  is a different edit that can reach other artifacts.
+  would do to a pom pinned on purpose. Versions are ordered by Maven's own
+  rules (a port of its `ComparableVersion`), not as semver, so a number beats a
+  qualifier and `guava 33.0.0-jre` is never "updated" to `r09`; a candidate whose
+  leading number is below the current one is never offered either.
+- A **property-driven version** (`${junit.version}`) is never rewritten in
+  place, and neither is a range (`[2.0,3.0)`) or `LATEST` / `RELEASE`. When the
+  property is declared in this pom and referenced **only from `<version>`
+  elements**, the dialog offers the property itself under **Properties**, so
+  the modern way of pinning is covered. A property also used elsewhere (a
+  plugin configuration, a resource filter) is left alone, and so is a name the
+  pom's own `<properties>` do not declare, such as `${project.version}`.
 
-Each artifact is resolved independently and best-effort, so one unreachable
-coordinate leaves that version alone rather than failing the rest. A plugin with
-no `<version>` is left alone too, because its version comes from a parent and
-writing one would change how the plugin is resolved.
+The dialog's footer counts what was not checked and why: *3 versions were not
+checked: 2 property-driven, 1 inherited*. A dependency or plugin with no
+`<version>` of its own is *inherited*: its version comes from a parent or a
+BOM, and writing one would change how it is resolved. In a module, the dialog
+offers the **parent's version** as a row and a **Check the Parent pom.xml**
+button that runs the same check on the parent found through `<relativePath>`.
+A pom that pins nothing of its own says so with the same two counts. Each
+artifact is resolved independently, so one coordinate missing from Central
+leaves that version alone rather than failing the rest.
 
-The same option is offered up front when [generating a new
-project](/features/starting-a-project).
+The same option is offered up front when
+[generating a new project](#new-maven-project): the wizard's **Update
+dependencies and plugins to the latest versions** resolves both through this
+same Maven Central path and stability filter, so a brand-new project never
+starts on a milestone or beta, and the status reports both counts (*Versions
+updated: 3 dependencies, 2 plugins*).
 
 ## npm and other package managers
 
@@ -248,8 +459,9 @@ kept up to 200,000 characters; past that the start and the end are shown, with
 a line between them saying how much was left out.
 
 Results are parsed per tool: Maven and Gradle read the JUnit XML reports as they
-are written, Go uses `go test -json`, npm reads TAP when the reporter emits it,
-and Cargo parses libtest output. For `node --test`, Test Results also reads
+are written (a Surefire or Failsafe `<reportsDirectory>` of the pom's own, or
+of its parent's, is read too), Go uses `go test -json`, npm reads TAP when the
+reporter emits it, and Cargo parses libtest output. For `node --test`, Test Results also reads
 node:test's own default output, so `"test": "node --test"` fills the tree with no
 reporter flag. In TAP output a `describe` block is a group, not a failed test,
 and a failure shows its error and stack. sbt, Mill and Scala CLI tests are not
@@ -261,6 +473,12 @@ For an unfiltered JVM run, Editora scans the project's test sources up front and
 red as results land, so a long run reads like a progress bar rather than classes
 appearing already finished. Parameterized and dynamic tests are left out of the
 seed, since their case ids are generated at runtime.
+
+A test that Surefire re-ran (`rerunFailingTestsCount`) shows its retries: a
+test that passed on a retry is marked **flaky ×n**, one that failed every try
+**retried ×n**, and the detail pane holds the trace of each try. A filter that
+matches nothing, such as a hand-typed `-Dtest=` in *Run custom…*, reads
+*No test matched the filter — nothing was run* rather than a failed build.
 
 JUnit test classes and methods also get a **run icon in the gutter** (with a
 tooltip naming what it runs), and a test file's right-click menu offers **Run
@@ -282,7 +500,17 @@ nested classes is marked the same way.
 **Debug Test at Caret** (`test.debugAtCaret`) and the test-results context menu
 launch the selected JUnit method or class through Maven or Gradle with its JVM
 suspended, then attach Editora's Java debugger automatically. This needs the
-same Java debug adapter as ordinary Java debugging. In a Node.js test file,
+same Java debug adapter as ordinary Java debugging. On Maven, Editora picks a
+free loopback port before the launch, passes it in `-Dmaven.surefire.debug`,
+and attaches as soon as the forked JVM listens on it, because Surefire 3 prints
+the JDWP "Listening for transport" banner only after the test has run. While it
+waits, the Test Results header reads *Debug: waiting for the test JVM to open
+port N…*, and **Debug ▸ Stop** ends the Maven run before a session exists. After
+60 s with no listener the status says so and points at the Output window. A
+further fork of the same run (several forks, reruns) is attached after the
+first has finished; forks are debugged one at a time. The test JVM prints one
+"Debugger failed to attach: handshake failed" line in the Output console: that
+is Editora's port check, not an error. Gradle keeps its own banner. In a Node.js test file,
 Debug Test at Caret debugs the `node:test` test at the caret (see
 [Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)).
 

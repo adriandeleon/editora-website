@@ -122,7 +122,11 @@ tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures. A server that lists its symbols
 flat, as bash-language-server does, has them nested under the function that
 contains them, and a variable assigned several times in one scope is listed
-once.
+once. In a `pom.xml` the outline names what the XML server lists only by
+element: a `dependency`, `plugin`, `exclusion` or `extension` by its
+`groupId:artifactId`, and a `profile`, `execution`, `repository` or
+`pluginRepository` by its `id`, so five "dependency" rows become a list you can
+pick from.
 
 Each row in the Problems window ends with the rule's code when the server gives
 one, for example `[SC2086]`. Right-click a row for **Open Rule Documentation**,
@@ -324,6 +328,15 @@ OOM-kill, a failed handshake) is announced in the status bar, has its stale
 diagnostics cleared, and is restarted for the affected files, with a cap so a
 server that keeps crashing is not relaunched forever.
 
+A server that *answers* a request with an internal error is not mistaken for
+one with nothing to say. The error is logged with the server's own detail, and
+the first failure of each request kind is announced in the status bar, such as
+`lemminx-maven: internal error on hover — see the log`. Hover then says
+*Hover failed: …* with the reason instead of "No documentation at the caret".
+Three failures in a row with no good answer between them stop the server: the
+status bar says so, Doctor shows the server as a warning with the reason, and
+*LSP: Restart Language Servers* (`lsp.restartServers`) tries it again.
+
 ## Servers are auto-detected, never bundled
 
 Editora doesn't ship language servers. It looks for each one on your `PATH` (a
@@ -341,9 +354,38 @@ Twenty-six servers are supported:
   (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
 
 There is also a **Maven-aware `pom.xml` server** (JVM lemminx plus the
-lemminx-maven extension). It is routed by file name, so a `pom.xml` gets
-dependency, plugin and GAV completion while every other XML file keeps the fast
-native lemminx.
+lemminx-maven extension), shown as **lemminx-maven** in Settings, Doctor and
+the status bar where the XML server is **lemminx**. It is routed by file name,
+so a `pom.xml` gets dependency, plugin and GAV completion while every other XML
+file keeps the fast native lemminx. It runs on the **Default JDK** chosen
+under Settings → Languages & Tools → Build Tools (else the `java` on your
+`PATH`), for Install… as well as for the server itself. Its root is the
+outermost pom of a contiguous chain, so a multi-module reactor is served by one
+JVM, also when it is opened without a project. The status bar says *Loaded and
+ready* only once the server reports its own Maven initialization done, since it
+answers the handshake long before it can answer a request. Its diagnostics are
+named after the server, the schema's "resource is downloading" notice is shown
+as information rather than an error, and `${…}` property items are left out of
+an artifact completion unless you typed `$`.
+
+Completion lists the artifacts in your local repository (`~/.m2`) only.
+**Use the Maven Central index for pom.xml completion**, on the server's card
+under Settings → LSP and off by default, lets lemminx-maven download Maven
+Central's index, a large one-time download it then keeps up to date; changing
+the setting restarts the server.
+
+Its **Install…** downloads lemminx-maven's bundle and the three libraries the
+bundle leaves out (Guava, Commons Lang and jsoup, pinned by version and
+checksum, from Maven Central) into one folder, then starts the server and asks
+it one hover request before keeping the install. A server that cannot answer is
+refused with the reason, and the previous install stays in place. A folder that
+lacks any of the jars (an install made with an earlier release, or a wiped
+folder) does not count as installed: `pom.xml` falls back to the XML server,
+the Settings → LSP card reads *lemminx-maven: incomplete — Install… repairs
+it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars beside
+an **Install…** button. If you installed this server with an earlier release,
+click **Install…** once: that bundle lacked the three libraries and could not
+answer a request.
 
 Each server has a card on the **Settings → LSP** page: its enable switch, its
 command field with **Browse…**, and a **Detected** line such as *jdtls: found
@@ -400,7 +442,9 @@ covered through one of these channels, picked per server:
   checksum. It is about 370 MB to download and about 1.2 GB once installed,
   because it brings its own Java runtime, so Editora asks before it starts.
 - A **JVM zip with its dependencies** for the Maven-aware `pom.xml` server, which
-  needs a JDK.
+  needs a JDK, plus three jars from Maven Central that the zip leaves out, each
+  checked against its published checksum. The server is started and asked one
+  request before the install is kept.
 - A **single jar** for the Groovy server (gvy), pinned to one release and checked
   against its published checksum. It runs on the JDK chosen for builds and runs
   (Java 17 or later).

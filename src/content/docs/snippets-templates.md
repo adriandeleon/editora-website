@@ -137,6 +137,19 @@ names (`sysout`, `fori`, `try_catch` and others). A server template named like
 one of your snippets, bundled or your own, is left out of the completion list,
 so the popup shows a single row for the trigger: the snippet that Tab expands.
 
+### Maven pom snippets
+
+A `pom.xml` (or any file that
+[previews as a pom](/docs/previews#maven-poms)) gets its own snippets on top of
+the XML ones: `dep` (a dependency with group, artifact and version), `depm` (a
+dependency without a version, managed by a parent or BOM), `dept` (a
+test-scoped dependency), `bom` (a BOM import for `<dependencyManagement>`),
+`plugin` (a plugin with a `<configuration>` block), `exec` (an `<execution>`
+binding a goal to a phase), `profile` (a profile activated by a property),
+`prop` (a `<properties>` entry whose name is mirrored in the closing tag),
+`module` and `repo`. They live in `maven-pom.json`, so your own go in
+`snippets/maven-pom.json`.
+
 ### Snippet variables
 
 A variable is written `$NAME` or `${NAME}`, and `${NAME:default}` supplies a
@@ -206,12 +219,13 @@ template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
 
-Editora ships 33 templates:
+Editora ships 34 templates:
 
 - **Code:** a Java class, a Java compact source file, a JUnit 5 test, a Java
   shebang script (an extensionless file the `java` launcher runs directly), a
-  Python script, a pytest test module, a Node.js script, shell and Zsh scripts,
-  an HTML page, and an HTML page with a stylesheet.
+  Maven `pom.xml` (quickstart-shaped: Java 21, JUnit 5 through its BOM,
+  Surefire 3), a Python script, a pytest test module, a Node.js script, shell
+  and Zsh scripts, an HTML page, and an HTML page with a stylesheet.
 - **Files Editora previews or runs:** a Markdown document, a Typst document
   (on its own, or with its page setup in a reusable `template.typ`), a Mermaid
   diagram, a Markwhen timeline, and HTTP requests with `@assert` and `@capture`

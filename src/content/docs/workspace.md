@@ -52,13 +52,22 @@ or Personal Note directly, with compact indicators showing both annotations.
 
 ### Project Map
 
-Use the **Tree / Map** switch at the top of the Project tool window, or
-*Project: Toggle Tree / Map View* (`project.toggleMapView`), to replace
-the file tree with a spatial canvas. The map shows the project as
-Miller-style columns: selecting a folder reveals its children in the next
-column, so the path to the current file stays visible without mixing unrelated
-expanded branches together. The choice of Tree or Map is remembered per
-workspace.
+The Project Map shows the project on a spatial canvas, in a **window of its
+own**. Click **Map** beside the Project tool window's search field, or run
+*Project: Open / Close Project Map Window* (`project.toggleMapView`), to open
+it; if it is open already it comes forward. The command works even with the
+Project tool window closed, and closes the Map window when that is the window
+in use. The Project tool window keeps showing the tree.
+
+The map shows the project as Miller-style columns: selecting a folder reveals
+its children in the next column, so the path to the current file stays visible
+without mixing unrelated expanded branches together.
+
+The Map window is resizable and can sit beside the editor window or on another
+screen. It does not stay above the editor window: opening a file from the Map
+brings the editor window forward. It closes with its editor window or project.
+Whether the window was open, and where, is remembered per workspace, so a
+workspace that last had the Map open reopens it.
 
 - **Click a file** to open it in an editor tab. **Click a folder** to select it
   and show its column; clicking a folder that is already open selects it and
@@ -83,7 +92,9 @@ workspace.
 - A Personal Notes badge opens an independent editable note card for a file or
   folder. Note cards can coexist with code previews.
 - Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
-  Local History, and Git actions available in the tree.
+  Local History, and Git actions available in the tree. Rename, New Folder,
+  Delete, Undo Move and Reveal stay in the Map window and ask there; the other
+  actions bring the editor window forward.
 - The **?** button lists the mouse and keyboard controls in a popover.
 
 The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
@@ -103,9 +114,10 @@ notes together; opening a ninth replaces the one used least recently. Preview
 and note cards keep a live connector to their source row while the map pans or
 zooms and while a card is moved or resized.
 
-The Project tool window's search field searches the map too. A search reveals
-all the ancestor columns needed to reach its matches and selects the first one,
-and clearing the query restores the folders you had open.
+The Map window has its own search field at the top (the Project tool window's
+field filters the tree only). A search reveals all the ancestor columns needed
+to reach its matches and selects the first one, and clearing the query restores
+the folders you had open.
 
 #### Large folders
 
@@ -133,7 +145,7 @@ The canvas is fully keyboard-navigable.
 | `F2` | Rename the selected file or folder |
 | `Delete` | Delete the selection, as in the tree |
 | Menu key or `Shift-F10` | Open the selected row's context menu |
-| `Escape` | Close open cards, then clear the search, then return to the editor |
+| `Escape` | Close open cards, then clear the search, then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
 chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`.
@@ -201,8 +213,9 @@ Project's Settings* (`lsp.trustProjectSettings`), or use **Trust Folder…** in
 Settings. A file's `.editorconfig` rules still come before the project's
 values.
 
-In a project window, Settings has a **User | Project** switch at the top.
-Choose **Project** to change the project's values on the same rows you use for
+In a project window, Settings has a **User | Project** switch at the top, and
+its Project side names the project. Choose **Project** (the window's title then
+names the project too) to change the project's values on the same rows you use for
 your own; the change is written to `.editora/settings.json`. In **User**, a row
 the project sets says "Overridden by this project", and in **Project** it says
 "Set for this project" and offers **Use my setting**.
@@ -238,7 +251,9 @@ you want a separate one; see the [command line](/docs/cli).
 Tabs are draggable to reorder and can be **pinned**. The tab strip, the
 switcher, and the Open Files picker all show the same unsaved-file marker. Close
 the last tab and the editor is left empty (it doesn't recreate an Untitled
-buffer).
+buffer). Two open files with the same name show their folder in the tab
+(`pom.xml · core`, `pom.xml · web`); the suffix appears when the second opens
+and goes when it closes.
 
 A file you're only *glancing* at, for example while arrowing through a picker
 or following a definition, lands in a single reusable **preview tab**, shown in italic, so
@@ -706,29 +721,38 @@ because Windows cannot watch the `\\wsl.localhost` share.
 
 ## Trusted folders
 
-A repository can ship its own build wrapper, `./mvnw` or `./gradlew`, and those
-scripts live in the repository rather than on your machine. Triggering a Maven
-or Gradle build runs one with your privileges, so a repository you merely cloned
-and opened could execute its own code on the first build.
+A Maven or Gradle build runs code that lives in the repository rather than on
+your machine: a shipped wrapper (`./mvnw`, `./gradlew`), the pom's plugins and
+extensions, the files under `.mvn/`, every Gradle build script. A repository
+you merely cloned and opened could execute its own code on the first build,
+with your privileges, whether or not it ships a wrapper.
 
-Editora asks first. The first time you build in a folder it hasn't been told to
-trust, it shows what would run and waits. Trust is remembered **per folder and
-inherited by subfolders**, so a multi-module repository asks once, and the
-default is always untrusted, including when the trust file can't be read.
+Editora asks first. The **first build of any kind** in a folder it hasn't
+been told to trust shows what would run and waits: the wrapper, the pom's
+plugin coordinates, the `.mvn/` files, the Gradle scripts, and a
+`.editora/project.json` build-command override. Trust is remembered for the
+folder that ships the wrapper, else the project you opened, and **inherited by
+subfolders**, so a multi-module repository asks once and a module never
+silently covers a script one level up. The default is always untrusted,
+including when the trust file can't be read. The same question fronts
+Gradle's *Load all tasks…*, the build before Run and Debug, and Maven's
+classpath fallback.
 
 Declining means **no build** runs at all. Editora does not fall back to the
 `mvn` or `gradle` on your `PATH`, because that would not be safer: a hostile `pom.xml` or
 `build.gradle` executes code through those too, since build plugins and Gradle
 scripts run in-process.
 
-Only the wrapper case is gated. Every other build tool (npm, Cargo, Go) launches
+Only Maven and Gradle are gated. Every other build tool (npm, Cargo, Go) launches
 your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
 none of them prompt.
 
-Review or revoke trust in **Settings → Advanced → Trusted folders**, or from
-the palette with `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a
-folder that is still covered by a trusted parent tells you so, rather than
-claiming a revoke that the parent would override.
+Review or revoke trust in **Settings → Workspace → Trusted folders**, with the
+**Revoke** button in the Maven or Gradle window's header (which shows
+*Trusted* or *Not trusted yet*), or from the palette with
+`workspace.manageTrust` and `workspace.revokeTrust`. Revoking a folder that is
+still covered by a trusted parent tells you so, rather than claiming a revoke
+that the parent would override.
 
 A folder on a [remote host](/docs/remote) is trusted on its own: trusting
 `/srv/app` on a server does not trust a local `/srv/app`, or the other way round.

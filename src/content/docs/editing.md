@@ -384,11 +384,38 @@ through older marks and around to where you started, and marks follow their text
 as you edit above them.
 
 **Narrowing** restricts the buffer itself and is more than a display filter:
-search, replace, macros and Select All see only the region. An amber **Narrowed** badge in
-the status bar shows the state and widens on click. Saving always writes the
-whole file. Language-server support is suspended while narrowed, bookmarks, notes
-and breakpoints stop persisting until you widen, and undo history is dropped at
-the narrowing boundary (edits made while narrowed undo normally).
+search, replace, macros and Select All see only the region. The editor says so
+where you are looking: an amber banner above the text names the accessible
+lines (*Narrowed to lines 32–36 of 81*) and has a **Widen** button, and the
+gutter keeps the file's line numbers while narrowed, so the region's first row
+still reads 32, not 1. The status bar's **Ln** and the Structure window's row
+numbers count the same way. The amber **Narrowed · Widen** badge in the status
+bar shows the state too and widens on click. Saving always writes the whole file.
+Language-server support is suspended while narrowed, bookmarks, notes and
+breakpoints stop persisting until you widen, and undo history is dropped at the
+narrowing boundary (edits made while narrowed undo normally).
+
+The **Structure** tool window (`tool.structure`) narrows by symbol with one
+toggle at the end of its sort row: **Narrow to fold region**. A click narrows
+the editor to the picked symbol's own block — on an indented method, the method
+itself — and turns the mode on; with no row picked, the block around the
+caret's line is used. A second click shows the whole file again and ends the
+mode. While it is on, a click on another symbol, or Enter on it, narrows to
+that one instead of only scrolling there, so you can walk a file one function
+at a time. Only an activation narrows: the arrow keys, the filter field and a
+right-click select a row and move the caret within the region, nothing more.
+The outline stays the whole file's while narrowed, with the file's line
+numbers; rows outside the region are muted, and with the mode off, Enter on one
+widens and goes there. In Markdown, the toggle narrows a heading to its
+section. It is disabled for a file that cannot be narrowed and hidden in Simple
+UI mode. From the keyboard, `f` flips it while the outline has focus, and the
+command `structure.narrowFold` can be bound in any keymap. The toggle mirrors
+the buffer: lit amber while the window narrowed it, unlit with an amber border
+while a chord such as `C-x n n` did (a click then narrows to the block
+instead). Widening by any means — the badge, the banner, `C-x n w` — ends the
+mode. `C-x n d` and `C-x n f` look for their definition and block in the whole
+document, as Emacs does, so a narrowed buffer can be narrowed to the
+definition around it.
 
 **Rectangles** act on the columns between point and mark, and each command is one
 undo step. They are character columns, so a tab counts as one, and the rectangle

@@ -189,11 +189,13 @@ server or the key needs it, as `ssh` asks at the terminal:
   unless the server says it may be shown.
 
 An answer that is not accepted is asked for again, and the dialog says **That
-was not accepted. Try again.** A password and each key's passphrase get three
+was not accepted. Try again.** Only the same question asked again counts as a
+retry: a server that asks in rounds (a password, then a code) shows the code's
+question as a new one. A password and each key's passphrase get three
 tries. Cancelling a passphrase skips that key and the login goes on with the next way
 in. Cancelling a password or a server's question ends the login, and only the
 status bar says so. A question left unanswered for two minutes counts as
-cancelled. A server that asks for a new password because the old one expired
+cancelled, and its dialog closes; the host-key question does the same. A server that asks for a new password because the old one expired
 is not supported: the login fails.
 
 The time you spend answering, the host-key question and a security key's touch
@@ -299,7 +301,7 @@ index, the java-debug plugin, and classes compiled for debugging).
 | [GitHub](/docs/github) | The host's own `gh`, signed in there. Links open in your local browser. |
 | [Find in Files](/docs/navigation#find-in-files) | The host's ripgrep searches the folder in one command, when *Use ripgrep when available* is on and the host has `rg`. Otherwise every file is read over SFTP. |
 | [Search Everywhere](/docs/navigation#search-everywhere) files | The host lists the project's files, skipping ignored ones as for a local project. There are no symbols for a remote project. |
-| [Run, builds and tests](/docs/run-debug#running-on-a-remote-host) | Run on a file (a shell script under the interpreter its shebang names on the host, a Python script under the project's venv on the host), a main class, script / make / npm configurations, and Maven, Gradle, npm, Cargo and Go builds and test runs, with output, input and Stop as locally. |
+| [Run, builds and tests](/docs/run-debug#running-on-a-remote-host) | Run on a file (a shell script under the interpreter its shebang names on the host, a Python script under the project's venv on the host), a main class, script / make / npm configurations, with output, input and Stop as locally; and Maven, Gradle, npm, Cargo and Go builds and test runs, with output and Stop (the Output console takes no input). A main class's Maven build runs on the host and streams into the Run console. |
 | [Language servers](/docs/lsp) | Each server runs on the host: completion, hover, diagnostics, go to definition, rename and the rest. |
 | [Debugging](/docs/run-debug#debugging) | Python (debugpy), JavaScript (vscode-js-debug) and Java (java-debug in the host's `jdtls`). |
 | [Terminal](/docs/terminal#terminals-on-a-host-in-a-container-or-in-wsl) | A real terminal on the host, in the project's folder, with [shell integration](/docs/terminal#shell-integration). Open Terminal Here on a remote folder opens there. A dropped connection keeps the tab's text and offers Reconnect. |
@@ -307,12 +309,15 @@ index, the java-debug plugin, and classes compiled for debugging).
 
 The tools are the ones the host's own `PATH` finds. When it finds the wrong one,
 or none, set the command for that host in **Settings → Remote → This Host**:
-**Git**, **GitHub CLI**, **ripgrep**, **JDK home**, **Node.js**, **Python for
-Run and tests**, **Python for debugging**, **JavaScript debugger
+**Git**, **GitHub CLI**, **ripgrep**, **JDK home**, **Maven**, **Node.js**,
+**Python for Run and tests**, **Python for debugging**, **JavaScript debugger
 (vscode-js-debug)**, **java-debug plugin jar**, and **Language servers**, one
 `server = command` line each (for example
 `python = basedpyright-langserver --stdio`). Commands and paths are as the host
 knows them; a change applies to the next command or server started there.
+**Maven** is the `mvn` a Maven build on that host runs when the project has no
+wrapper; Run's classpath resolution and the build before a launch use it too,
+and write the classpath they resolve to a file in the host's `/tmp`.
 **Python for Run and tests** is used when the project has no venv on the host
 and no interpreter was picked for it; left blank, the host's `python3` usually
 runs Python files (the full order is in
@@ -447,7 +452,7 @@ project's tools run on this machine, as for any local folder.
 | --- | --- |
 | [Git](/docs/git) | Everything Git does, by the container's `git` with the container's configuration and credentials. Blame's ignore-revs settings work as on an SSH host. |
 | [GitHub](/docs/github) | The container's own `gh`, signed in there. |
-| [Run, builds and tests](/docs/run-debug#running-in-a-container-or-wsl) | Run on a file, a main class, run configurations, and Maven, Gradle, npm, Cargo and Go builds and test runs, with output, input and Stop as locally. Java is the container's own. |
+| [Run, builds and tests](/docs/run-debug#running-in-a-container-or-wsl) | Run on a file, a main class, run configurations, with output, input and Stop as locally; and Maven, Gradle, npm, Cargo and Go builds and test runs, with output and Stop (the Output console takes no input). Java is the container's own. |
 | [Language servers](/docs/lsp#language-servers-in-a-container-or-wsl) | Each server runs in the container, the one its `PATH` finds. Java's jdtls keeps its index in the container. |
 | [Debugging](/docs/run-debug#debugging-in-a-container-or-wsl) | Python (debugpy), JavaScript (vscode-js-debug) and Java (java-debug in the container's jdtls), as on an SSH host. |
 
