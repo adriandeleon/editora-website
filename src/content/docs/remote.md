@@ -189,11 +189,13 @@ server or the key needs it, as `ssh` asks at the terminal:
   unless the server says it may be shown.
 
 An answer that is not accepted is asked for again, and the dialog says **That
-was not accepted. Try again.** A password and each key's passphrase get three
+was not accepted. Try again.** Only the same question asked again counts as a
+retry: a server that asks in rounds (a password, then a code) shows the code's
+question as a new one. A password and each key's passphrase get three
 tries. Cancelling a passphrase skips that key and the login goes on with the next way
 in. Cancelling a password or a server's question ends the login, and only the
 status bar says so. A question left unanswered for two minutes counts as
-cancelled. A server that asks for a new password because the old one expired
+cancelled, and its dialog closes; the host-key question does the same. A server that asks for a new password because the old one expired
 is not supported: the login fails.
 
 The time you spend answering, the host-key question and a security key's touch

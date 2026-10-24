@@ -822,7 +822,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Project: New Project From Template…", id: "project.newFromTemplate", desc: "Ask for a name and a location, create that folder from a multi-file template, and open it as a project in its own window." },
       { title: "Project: Open Folder…", id: "project.open", keys: "C-x C-p", bindings: { "emacs": "C-x C-p" }, desc: "Open a folder as a project." },
       { title: "Project: Switch…", id: "project.switch", keys: "C-x p", bindings: { "emacs": "C-x p" }, desc: "Switch to another project." },
-      { title: "Project: Toggle Tree / Map View", id: "project.toggleMapView", desc: "Switch the Project tool window between the file tree and the Project Map, opening it if needed." },
+      { title: "Project: Open / Close Project Map Window", id: "project.toggleMapView", desc: "Open the Project Map in its own window, or close it when it is the window in use." },
     ],
   },
   {

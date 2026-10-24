@@ -12,8 +12,9 @@ edit by hand.
 ## The Settings window
 
 Open it with **View: Settings** (`view.settings`, `Ctrl+,` in the CUA, Sublime
-and VS Code keymaps). The sidebar groups the pages; a page whose feature is
-still in beta (AI, AI Agent, AI Actions, LSP, Debugging, Remote, Sync, MCP
+and VS Code keymaps). The sidebar groups the pages, each with an icon before
+its name (pages with an icon elsewhere in Editora, such as Git or Terminal,
+use the same one); a page whose feature is still in beta (AI, AI Agent, AI Actions, LSP, Debugging, Remote, Sync, MCP
 Server) carries a **Beta** pill in the sidebar and beside its title. Every
 page title has a **?** link that opens that page's documentation for the
 version of Editora you are running. The window fits its 900 px minimum width in
@@ -223,7 +224,11 @@ the final newline exist only per project: on your own they are left to
 - **`.editorconfig` wins** where it says something: the project's values take
   the place of yours, and a file's `.editorconfig` rules still come first.
 - **In Settings.** In a project window, Settings has a **User | Project**
-  switch at the top. In **User**, every row edits your own settings, and a row
+  switch at the top; the Project side names the project (*Project: name*, the
+  name the window's title shows, with the folder in its tooltip). While
+  **Project** is chosen the bar is tinted, the window is titled *Settings —
+  Project: name*, and the note under the bar names the project and the
+  `.editora/settings.json` the changes go to. In **User**, every row edits your own settings, and a row
   the project sets says "Overridden by this project". In **Project**, only the
   rows listed above can be changed; each shows the project's value, or yours
   as a starting point, and a change is written to the project's file, keeping
