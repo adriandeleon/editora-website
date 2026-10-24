@@ -89,6 +89,8 @@ workspace that last had the Map open reopens it.
 - Click a file's **eye** for a movable, resizable, syntax-highlighted read-only
   preview card. The preview uses unsaved buffer text when available and follows
   later edits; **Open** promotes it to a normal editor tab.
+- Click a file's **Structure icon**, just before the eye, to open a column of
+  its classes, methods or headings. See [File structure](#file-structure).
 - A Personal Notes badge opens an independent editable note card for a file or
   folder. Note cards can coexist with code previews.
 - Right-click a node for the same New, Maven, rename, delete, reveal, terminal,
@@ -119,6 +121,39 @@ field filters the tree only). A search reveals all the ancestor columns needed
 to reach its matches and selects the first one, and clearing the query restores
 the folders you had open.
 
+#### File structure
+
+A file whose language the **Structure** tool window can outline (Java, Python,
+JavaScript and TypeScript, Kotlin, Markdown headings, Typst, `.http` requests,
+Clojure, Maven poms and more) has a **Structure icon**, three stepped lines,
+just before its eye. Click it to open a **structure column** next to the file:
+its declarations, in the order they are written, as the Structure tool window
+lists them. A declaration that holds others, such as a class's members or a
+heading's subsections, has its own chevron and opens a further column, like a
+folder. A file with a single top-level class opens that class's members right
+away. Click the icon again, or the column's **×**, to close it.
+
+**Click a declaration** to open a preview card of **only its lines**: its block,
+with the doc comment and annotations written above it. Its line numbers are the
+file's own, in the amber the editor uses for a narrowed file, and the card
+title names the declaration, for example *App.java › add()*. In the card:
+
+- **Open** opens the file at the declaration.
+- **Open Narrowed**, in the card's right-click menu, opens the file narrowed
+  to the declaration's block, as the Structure tool window's
+  [Narrow to fold region](/docs/editing#the-emacs-editing-model) toggle does.
+
+A declaration row's own right-click menu has **Preview**, **Open at
+Declaration** and **Open Narrowed**.
+
+Several declarations of one file can be open side by side, within the
+eight-card limit. The columns and cards follow your edits. A file that is open
+in a tab is read from its unsaved text, using the language server's symbols
+when the Structure tool window has them. A closed file is read again when it
+changes on disk. A card whose declaration was removed keeps its last lines and
+says so. Structure columns are included when the map is printed, and they are
+not remembered when Editora restarts.
+
 #### Large folders
 
 A column shows up to **300 rows** of a folder and ends in a **+N more…** row
@@ -133,10 +168,10 @@ The canvas is fully keyboard-navigable.
 
 | Key | Result |
 | --- | --- |
-| Arrow keys | Move along the flow (into a folder, back to the parent) and among siblings |
+| Arrow keys | Move along the flow (into a folder, a file's structure or a declaration; back to the parent) and among siblings |
 | `Ctrl-N` / `Ctrl-P` | Select the next or previous sibling |
 | `Page Down` / `Page Up` | Move ten rows, stopping at the end of the column |
-| `Enter` or `Space` | Open the selected file, or expand or collapse the selected folder |
+| `Enter` or `Space` | Open the selected file or a declaration's card, or expand or collapse the selected folder |
 | `Backspace` | Select the parent |
 | `Home` | Select the project root |
 | `Alt-Left` / `Alt-Right` | Go back or forward through earlier selections |
