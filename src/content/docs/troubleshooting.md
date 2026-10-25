@@ -38,6 +38,38 @@ installed, is it the version I think, and is Editora looking at the right one" i
 one pass. **Copy Report** puts the whole report on the clipboard, ready to paste
 into a bug report.
 
+### Update… for servers older than Editora's
+
+Editora installs some servers and tools at the exact release it is tested with:
+jdtls (Java), the JavaScript debugger (js-debug), the Maven `pom.xml` server
+(lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
+ShellCheck and shfmt. A newer Editora can move to a newer release of one of
+them. When the copy you have is older than the one this Editora is tested with,
+its Doctor row is a warning that names both versions, and its **Install…**
+button reads **Update…**.
+
+**Update…** downloads the release Editora is tested with, replaces the old copy,
+and restarts the server on it. If the download fails, the server starts again on
+the old copy. Install… in Settings also replaces Editora's own copy when it is
+known to be older.
+
+What the warning says depends on whose copy it is:
+
+- **Editora installed it.** For example *Editora installed 0.10.0; this release
+  of Editora is tested with 0.11.0.* Update replaces it.
+- **Installed by an earlier Editora.** Editora now records the version of each
+  copy it installs. For a copy from before that, Doctor reads the version from
+  its files, or from what the program prints, where it can. Where it can't tell
+  (a Kotlin server from an earlier Editora, for example), the row says the copy
+  may be older and offers Update, which installs the tested release.
+- **Your own copy is older.** A language server you installed yourself, or a
+  ShellCheck or shfmt found on your `PATH`: Update installs Editora's own copy
+  and uses it instead, and your copy stays where it is. Doctor warns about your
+  own copy only when it can tell its version; otherwise the row stays OK.
+- **A ShellCheck or shfmt path set in Settings.** You get the warning but no
+  Update, since Settings names that copy on purpose. Update that copy yourself,
+  or clear the path in **Settings → LSP** to use Editora's own.
+
 ## A launcher is blocked on first run
 
 Installers are currently unsigned, so the operating system stops the first

@@ -415,8 +415,9 @@ Imports and Format.
 ### The Java server and your project
 
 - **Which jdtls.** Install fetches jdtls **1.63.0**. [Doctor](/docs/troubleshooting#doctor)
-  names the installed version and warns when it is older, and Install then
-  replaces an outdated copy of Editora's own.
+  names the installed version and warns when it is older, with an
+  [Update…](/docs/troubleshooting#update-for-servers-older-than-editoras)
+  button that installs 1.63.0 and restarts the server on it.
 - **Which JDK.** jdtls itself needs Java 21 or newer, and is given one Editora
   finds even when `JAVA_HOME` is older; when there is none, it says so. The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
