@@ -103,6 +103,7 @@ The **IntelliJ IDEA** keymap uses IntelliJ's chords for the Java tools:
 | F6 / Ctrl+F6 | Move / change signature |
 | Ctrl+Alt+Shift+T | Refactor This |
 | Ctrl+Alt+T | Insert snippet (Surround With) |
+| Ctrl+Shift+Enter | Complete statement |
 | Ctrl+Alt+Left / Right | Back / forward |
 
 So in that keymap F2 is no longer Rename and Alt+Insert no longer New File, which
