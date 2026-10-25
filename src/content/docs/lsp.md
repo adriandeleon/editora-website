@@ -797,7 +797,8 @@ Editora does not start the server and says why, with the fix:
 `npm install -g typescript@6`, or **Install…** on the card. It does not try
 again each time you open another tab. [Doctor](/docs/troubleshooting#doctor)
 and the card's **TypeScript** line show the version in use, or that it has no
-`tsserver`.
+`tsserver`. In that case the Doctor row is a warning with an **Update…** button,
+which installs typescript-language-server again with TypeScript 6 beside it.
 
 **A folder's own TypeScript runs only once you trust the folder.** Many projects
 have their own `node_modules/typescript`. That is code from the folder, so
