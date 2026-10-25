@@ -721,9 +721,17 @@ diagnostics, completion and navigation.
 
 Servers start **per tab, as you visit it**, rather than all at once while a
 session restores, and they **shut down when their last file closes**, after a
-three-minute grace period so reopening a file keeps the server warm. Each window
-gets its own jdtls workspace directory, so two windows on the same Java project
-can't contend for one Eclipse workspace lock.
+three-minute grace period so reopening a file keeps the server warm.
+
+**Two windows on one Java project share one Java server.** The second window
+joins the jdtls the first one runs, so the project isn't imported twice and the
+second window costs no extra memory (a jdtls takes about 1.5 GB). Both windows
+show its diagnostics. A question the server asks, such as which class to import,
+goes to the window you are working in. Closing one window leaves the server to
+the other, and it stops when the last window closes. **Restart Language
+Servers** in either window restarts it for both, and the other window reopens
+its files on the new server. Projects on a remote host, in a container or in
+WSL, and other language servers, still get one server per window.
 
 jdtls keeps an index for every Java folder you have opened, under
 `jdtls-workspaces` in your config folder: about 40 MB each, and often far more.
