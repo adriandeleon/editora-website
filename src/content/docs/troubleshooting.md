@@ -70,6 +70,33 @@ What the warning says depends on whose copy it is:
   Update, since Settings names that copy on purpose. Update that copy yourself,
   or clear the path in **Settings → LSP** to use Editora's own.
 
+### Check for Newer Versions
+
+Many other servers and tools Editora installs at their latest release, so there
+is no tested version to compare with. **Check for Newer Versions**, in Doctor's
+header, asks where each one is published (npm, the Go module proxy, GitHub and
+HashiCorp) for its latest release. It covers Pyright,
+typescript-language-server, the JSON, HTML, CSS, Bash, YAML, Dockerfile, TOML
+and Astro servers, gopls, clangd, lua-language-server, tinymist, terraform-ls
+and the Mermaid CLI (`mmdc`), and only the ones that are installed and working.
+
+Nothing is looked up until you click the button: opening Doctor or clicking
+**Refresh** never asks for newer versions. The status bar then says what the
+check found: newer releases for some of your language servers and tools, that
+they are all on their latest releases, or that some could not be checked (when
+you are offline, for example).
+
+A row with a newer release moves to **Updates available**, below **Needs
+attention**, and the summary links to it. The row stays OK, says which version
+is installed and which is the latest release, and has an **Update…** button
+that installs the latest release. Editora keeps what the check found until you
+close the window, so a Refresh still shows the group.
+
+The pinned servers and tools [above](#update-for-servers-older-than-editoras)
+are never looked up: a new Editora release brings their newer versions, and
+**Update…** on their rows installs them. Servers that a toolchain keeps up to
+date, such as rust-analyzer through rustup, are not looked up either.
+
 ## A launcher is blocked on first run
 
 Installers are currently unsigned, so the operating system stops the first
