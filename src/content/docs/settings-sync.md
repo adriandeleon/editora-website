@@ -1,12 +1,12 @@
 ---
 title: Settings sync
-description: Keep snippets, abbreviations, templates, and your personal dictionary the same on every computer, through a private Git repository you own.
+description: Keep snippets, abbreviations, templates, your personal dictionary, and your shortcuts the same on every computer, through a private Git repository you own.
 category: Customization
 order: 8
 beta: true
 ---
 
-Settings sync keeps four kinds of personal data the same on every computer you
+Settings sync keeps five kinds of personal data the same on every computer you
 use Editora on. The data travels through a **Git repository you own**; there is
 no Editora account and no Editora server. It is **off by default**.
 
@@ -18,13 +18,30 @@ no Editora account and no Editora server. It is **off by default**.
 | Abbreviations | `abbreviations.json` |
 | Templates | `templates/<id>.json` |
 | Personal dictionary | `dictionary.txt` |
+| Shortcuts | part of `settings.json`; `keybindings.json` in the repository |
 
-Each of the four has its own switch under **What to sync**, so you can leave
+Each of the five has its own switch under **What to sync**, so you can leave
 one out.
 
-Nothing else is synced. Preferences (`settings.json`), keymaps and key
-rebinds, macros, themes, plugins, and session state stay on the computer they
-were made on. The **What to sync** card says so too.
+Nothing else is synced. Your other preferences in `settings.json` (including
+which keymap you use), macros, themes, plugins, and session state stay on the
+computer they were made on. The **What to sync** card says so too.
+
+### Shortcuts
+
+**Shortcuts** syncs the key bindings you changed on the
+[Keymaps page](/docs/keymaps#rebinding-commands): every rebind, every shortcut
+you removed, and every reset. It covers the changes you made in **every
+keymap**, for Windows and Linux and for macOS, because Editora keeps them per
+keymap and per platform.
+
+Which keymap a computer uses is its own choice and is not synced. A computer
+that uses another keymap keeps your changes to the Emacs keymap, say, and uses
+them when you switch it to Emacs.
+
+A shortcut for a macro, an external tool, or a run configuration is synced
+like any other, but the macro, tool, or run configuration itself is not. On a
+computer that does not have it, the shortcut does nothing.
 
 ## Setting it up
 
@@ -67,7 +84,7 @@ With **Sync automatically** on, Editora syncs:
 
 - a few seconds after startup,
 - about half a minute after you change a snippet, an abbreviation, a template,
-  or the dictionary, and
+  the dictionary, or a shortcut (a rebind, a reset, or a keymap switch), and
 - at the interval set on the page (15 minutes by default), while an Editora
   window has the focus.
 
@@ -99,8 +116,10 @@ restart.
 ## How changes merge
 
 Changes merge **entry by entry**, not file by file: one snippet, one
-abbreviation, one dictionary word. Two computers that each added a snippet to
-the same language both end up with both. A template is merged as a whole file.
+abbreviation, one dictionary word, one shortcut. Two computers that each added a
+snippet to the same language both end up with both, and two computers that each
+rebound a different command both keep both rebinds. A template is merged as a
+whole file.
 
 When the **same entry** was changed on two computers, the computer that syncs
 keeps its own version. The other version is not lost: it stays in the
@@ -116,7 +135,8 @@ damaged file on one computer from emptying the others.
 ## Backups
 
 Before a sync replaces or deletes a file in your config folder, it copies that
-file to `sync/backups/<timestamp>/` in the config folder. The last ten sets are
+file to `sync/backups/<timestamp>/` in the config folder. Shortcuts it replaces
+are saved there as `keybindings.json`. The last ten sets are
 kept. **Open Sync Folder** on the Sync page opens the folder.
 
 ## Credentials and failures
@@ -169,5 +189,6 @@ When two Editora processes share one config folder (see
 
 - [Snippets & templates](/docs/snippets-templates) and
   [Configuration](/docs/configuration) describe the files that are synced.
+- [Keymaps & keybindings](/docs/keymaps) describes rebinding a command.
 - **Export Configuration…** makes a one-off archive of the whole config
   folder; see [Export and reset](/docs/configuration#export-and-reset).

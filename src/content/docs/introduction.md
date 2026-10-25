@@ -80,7 +80,7 @@ Workspace and customization:
 - **[Themes & fonts](/docs/themes-fonts)**: appearance and zoom.
 - **[External tools](/docs/external-tools)**: run your own CLI commands.
 - **[Settings sync](/docs/settings-sync)**: the same snippets, abbreviations,
-  templates, and dictionary on every computer.
+  templates, dictionary, and shortcuts on every computer.
 - **[AI assistance](/docs/ai)**: AI actions and an embedded coding agent.
 - **[Plugins](/docs/plugins)**: install and write extensions.
 - **[MCP server](/docs/mcp)**: let an LLM agent observe and drive the editor.
