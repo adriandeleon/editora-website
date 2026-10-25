@@ -64,6 +64,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Edit: Swap Case", id: "edit.case.swap", desc: "Invert the case of every letter in the selection or the identifier at the caret." },
       { title: "Edit: Clear Rectangle", id: "edit.clearRectangle", keys: "C-x r c", bindings: { "emacs": "C-x r c" }, desc: "Replace the columns between point and mark with spaces." },
       { title: "Edit: Collapse to Single Caret", id: "edit.collapseCarets", desc: "Collapse multiple carets back to a single caret." },
+      { title: "Edit: Complete Statement", id: "edit.completeStatement", bindings: { "intellij": "C-S-enter" }, desc: "Finish the statement at the caret: close its strings and brackets, add the ; or the { } block it needs, and put the caret where the next line goes." },
       { title: "Edit: Trigger Autocomplete", id: "edit.completion", keys: "C-M-i", bindings: { "emacs": "C-M-i", "sublime": "C-space", "vscode": "C-space", "intellij": "C-space" }, desc: "Manually trigger autocomplete at the caret." },
       { title: "Edit: Toggle Completion Documentation", id: "edit.completionDoc", desc: "Show or hide the documentation popup beside the completion list." },
       { title: "Edit: Copy", id: "edit.copy", keys: "M-w", bindings: { "emacs": "M-w", "cua": "C-c", "sublime": "C-c", "vscode": "C-c", "intellij": "C-c" }, desc: "Copy the selection to the clipboard." },

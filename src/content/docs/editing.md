@@ -245,6 +245,7 @@ with `#`, otherwise `;`.
 | Duplicate line | `edit.duplicateLine` | (keymap-specific) |
 | Move line up / down | `edit.moveLineUp` / `Down` | (keymap-specific) |
 | Insert line below / above | `edit.insertLineBelow` / `Above` | (keymap-specific) |
+| Complete statement | `edit.completeStatement` | (keymap-specific) |
 | Delete line | `edit.deleteLine` | (keymap-specific) |
 | Select line | `edit.selectLine` | (keymap-specific) |
 | Indent / outdent lines | `edit.indentLines` / `edit.outdentLines` | (keymap-specific) |
@@ -278,6 +279,22 @@ too.
   Enter at the end of the line would be (a level deeper after `{`). It doesn't
   continue a Markdown or Typst list. **Insert Line Above** opens one above, with
   the current line's indentation.
+- **Complete Statement** (Code → Complete Statement) is IntelliJ's Complete
+  Current Statement. It finishes the statement on the caret's line wherever the
+  caret is: it closes an open string and the brackets the statement left open,
+  including ones opened on lines above it, and adds what the statement needs.
+  - A call or assignment gets its `;`: `println("done` becomes
+    `println("done");`.
+  - A control header, a type or a method gets a `{ }` block with the caret on
+    its empty line: `if (ready` becomes `if (ready) {`, a body line and `}`.
+    The same goes for `else`, `try`, `catch (…)`, `class Foo` and `void run(`.
+  - An `abstract` method, or one in an interface, gets `;` instead.
+  - A line ending in `{` or `{}` opens its body.
+  - A statement that is already finished, an annotation or a `case` label
+    gets a new line below.
+
+  It works in Java, C, C++, C#, JavaScript, TypeScript, PHP and Kotlin (where it
+  adds no `;`). Other languages get Insert Line Below.
 - **Delete Line** deletes the line, or every line a selection touches, and the
   caret keeps its column on the line that moves up. It doesn't touch the
   clipboard or the kill ring; Emacs' *Kill Whole Line* (`C-S-backspace`) still
@@ -291,13 +308,15 @@ too.
 | --- | --- | --- | --- |
 | Insert Line Below | `Ctrl+Enter` | `Ctrl+Enter` | `Shift+Enter` |
 | Insert Line Above | `Ctrl+Shift+Enter` | `Ctrl+Shift+Enter` | `Ctrl+Alt+Enter` |
+| Complete Statement | (palette) | (palette) | `Ctrl+Shift+Enter` |
 | Delete Line | `Ctrl+Shift+K` | `Ctrl+Shift+K` | `Ctrl+Y` |
 | Select Line | `Ctrl+L` | (palette) | (palette) |
 | Indent / Outdent Lines | `Ctrl+]` / `Ctrl+[` | (palette) | (palette) |
 
 On macOS, `Cmd` takes the place of `Ctrl` in the VS Code, Sublime and CUA
 keymaps, except Sublime's Delete Line, which stays `Ctrl+Shift+K`. The macOS
-IntelliJ keymap uses `Shift+Enter`, `Option+Cmd+Enter` and `Cmd+Backspace`. CUA
+IntelliJ keymap uses `Shift+Enter`, `Option+Cmd+Enter`, `Cmd+Shift+Enter` and
+`Cmd+Backspace`. CUA
 leaves Select Line unbound because `Cmd+L` is Go to Line on macOS. The Emacs
 keymap leaves the line commands to the palette.
 
