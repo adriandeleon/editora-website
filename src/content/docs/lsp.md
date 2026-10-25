@@ -175,6 +175,24 @@ help. Auto-imports can safely follow continued typing and remain grouped with
 the completion for undo and redo; an answer that can no longer be rebased is
 dropped instead of touching newer text.
 
+**Smart Type completion** (Edit → Smart Type Completion; Ctrl+Shift+Space in the
+IntelliJ keymaps) opens the list with only what fits the type the code expects
+at the caret, and the status bar names that type. Editora reads the type from:
+
+- a declaration (`String s = `);
+- an assignment, using the type the name was declared with;
+- `return`, using the method's return type;
+- a condition (`if (`, `while (`, after `&&`, `||` or `!`), which expects
+  `boolean`;
+- a call's argument, using the parameter that signature help shows.
+
+The list keeps the fields, variables and methods of a fitting type, `null` for
+an object, and `true` and `false` for a boolean. After `new`, it keeps the
+classes that implement the type (`ArrayList` for a `List`). A class of your own
+that implements or extends the expected type stays too, because jdtls ranks it
+as a match. Where the code expects no particular type, the full list opens and
+the status bar says so.
+
 The Problems window has an **Open files / Whole project** selector
 (`lsp.toggleProjectProblems`), plus a **Build Project** command
 (`lsp.buildWorkspace`) that recompiles the Java project and fills it; it says
@@ -201,6 +219,7 @@ scope.
 | Format Document (or the selection) | `lsp.formatDocument` | `C-c l f` |
 | Organize imports | `lsp.organizeImports` | `C-c l o` |
 | Clean Up File (Java) | `lsp.cleanUp` | (palette) |
+| Smart Type completion (Java) | `lsp.smartTypeCompletion` | (palette) |
 | Copy fully qualified name | `lsp.copyQualifiedName` | (palette) |
 | Reload project configuration | `lsp.reloadProject` | (palette) |
 | Re-indent as you type | `view.toggleOnTypeFormatting` | (palette) |

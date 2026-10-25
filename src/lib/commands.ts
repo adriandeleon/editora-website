@@ -555,6 +555,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "LSP: Set Inlay Hint Filter", id: "lsp.setInlayHintMode", desc: "Choose whether parameter-name hints appear only on literal arguments or on all of them" },
       { title: "LSP: Set Server Command…", id: "lsp.setServerCommand", desc: "Set the command or path for an individual language server." },
       { title: "LSP: Signature Help", id: "lsp.signatureHelp", keys: "C-c l s", bindings: { "emacs": "C-c l s", "intellij": "C-p" }, desc: "Show the overloads and the active parameter for the call at the caret (also pops up automatically when typing a call)" },
+      { title: "LSP: Smart Type Completion", id: "lsp.smartTypeCompletion", bindings: { "intellij": "C-S-space" }, desc: "Java: open the completion list with only what fits the type expected at the caret (a declaration, assignment, return value, condition or argument)." },
       { title: "LSP: Toggle Project-Wide Problems", id: "lsp.toggleProjectProblems", desc: "Switch the Problems window between open files and the whole project." },
       { title: "LSP: Toggle Server…", id: "lsp.toggleServer", desc: "Enable or disable an individual language server." },
       { title: "Project: Trust This Project’s Settings", id: "lsp.trustProjectSettings", desc: "Trust the current project folder so the values in its .editora/settings.json are used: language servers, editor settings, build commands and debuggers." },
