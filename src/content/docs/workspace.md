@@ -110,11 +110,15 @@ Hidden (dot) files follow **Settings → Workspace → Show hidden files in the
 project tree**. A column's **Show hidden** checkbox overrides the setting for
 that folder only.
 
-Image previews support common bitmap formats. Text and image cards keep
-independent zoom levels. At most **eight cards** are open at once, previews and
-notes together; opening a ninth replaces the one used least recently. Preview
-and note cards keep a live connector to their source row while the map pans or
-zooms and while a card is moved or resized.
+Preview and note cards sit on the map like columns: panning carries them along,
+zooming scales them with the columns around them, and you can drag a card past
+the edge of the window and pan back to it later. A card's resize corner stays
+under the pointer at any zoom. Each card also keeps a live connector to its
+source row. Image previews support common bitmap formats. A text or image card's
+own **−** and **+** buttons size its content on top of the map's zoom, so a card
+can stay readable when the map is zoomed out. At most **eight cards** are open
+at once, previews and notes together; opening a ninth replaces the one used
+least recently.
 
 The Map window has its own search field at the top (the Project tool window's
 field filters the tree only). A search reveals all the ancestor columns needed
