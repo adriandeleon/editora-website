@@ -138,8 +138,10 @@ The bundled Java snippets cover:
 block's body, re-indented to fit. **Code ▸ Surround With…**
 (`snippets.surround`; Ctrl+Alt+T, ⌥⌘T on macOS, in the IntelliJ keymap) lists
 only the snippets that wrap a selection; with nothing selected it wraps the
-current line. **Snippet: Insert…** offers the same snippets among all the others,
-and with nothing selected they expand as before. Any snippet that uses `$TM_SELECTED_TEXT` works the same way, since a
+current line, and a selection over several lines wraps the whole lines it
+touches. Esc gives back the caret and selection you had. **Snippet: Insert…**
+(Ctrl+J, ⌘J on macOS, in the IntelliJ keymap) offers the same snippets among all
+the others, and with nothing selected they expand as before. Any snippet that uses `$TM_SELECTED_TEXT` works the same way, since a
 multi-line variable value now takes the indentation of the line it sits on.
 
 The Java language server offers templates of its own under some of the same

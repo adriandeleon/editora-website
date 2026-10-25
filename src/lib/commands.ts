@@ -821,7 +821,7 @@ export const commandGroups: CmdGroup[] = [
     commands: [
       { title: "Snippet: Edit User Snippets…", id: "snippets.editUser", desc: "Edit your user snippet files." },
       { title: "Snippet: Leave Tab Stops", id: "snippets.endSession", desc: "Stop moving between the tab stops of the current snippet and leave the text as it is." },
-      { title: "Snippet: Insert…", id: "snippets.insert", keys: "C-c i", bindings: { "emacs": "C-c i" }, desc: "Insert a snippet by name." },
+      { title: "Snippet: Insert…", id: "snippets.insert", keys: "C-c i", bindings: { "emacs": "C-c i", "intellij": "C-j" }, desc: "Insert a snippet by name." },
       { title: "Snippet: Manage…", id: "snippets.manage", desc: "Open Settings to add, edit, or remove your user snippets." },
       { title: "Snippet: Reload Snippets", id: "snippets.reload", desc: "Reload snippets from disk." },
       { title: "Snippet: Surround With…", id: "snippets.surround", bindings: { "intellij": "C-M-t" }, desc: "Wrap the selection, or the caret's line, in a snippet that takes it: if, for, while, try and the like." },

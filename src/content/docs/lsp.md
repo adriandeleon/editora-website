@@ -262,7 +262,7 @@ is interrupted in the middle of an edit that moves or deletes files, the next
 time the project is opened an **Interrupted Refactoring** dialog offers to put
 the files back.
 
-**Java code generation** has its own list, **LSP: Generate…** (`lsp.generate`,
+**Java code generation** has its own list, **Generate…** (`lsp.generate`,
 Alt+Insert in the IntelliJ keymap): **Generate toString()**, **Generate
 hashCode() and equals()**, **Generate Constructors**, **Generate Getters and
 Setters**, **Generate Delegate Methods** and **Override/Implement Methods**
@@ -332,10 +332,11 @@ left alone.
 
 **A refactoring is one change across files.** Every file a refactoring renames,
 moves or creates is saved, so the project compiles straight away, and a file it
-opened only to edit is saved and its tab closed. Renaming or moving a `.java`
-file in the Project tree is such a refactoring too: the class is renamed with its
-file and the files that use it are updated. **Undo** in one of those files
-offers to undo the refactoring in all of them, and **LSP: Undo Last
+opened only to edit is saved and its tab closed. Renaming a `.java` file in the
+Project tree, or dragging it (or a package folder) into another package, is such a
+refactoring too: the class is renamed or its package line changed with it, and
+the files that use it are updated; **Undo Move** moves it back the same way. **Undo** in one of those files
+offers to undo the refactoring in all of them, and **Undo Last
 Refactoring** (`lsp.undoRefactoring`) does that from anywhere, moving renamed
 files back and removing created ones. A rename onto a name that is already taken
 is reported after it lands, with the way back.
@@ -435,7 +436,10 @@ Imports and Format.
   Language Servers**.
 - **A failed import says why.** When jdtls cannot import the project (a Gradle
   build that does not run, say), the status bar names the reason it logged and
-  Problems lists the build file's own errors.
+  Problems lists the build file's own errors. Fix the build file and run
+  **Reload Project Configuration**: after a failed import it starts the server
+  over to import again. A project that imports with build problems (a Maven
+  dependency that cannot be found) is loaded, and Problems lists them.
 - **Your project folder stays clean.** jdtls keeps Eclipse's `.project`,
   `.classpath` and `.settings/` in its own workspace, not in your project.
 - **Build files sync on save.** A change to `pom.xml` or `build.gradle` reaches
