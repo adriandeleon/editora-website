@@ -168,7 +168,8 @@ something else. A file with unsaved changes is never reused either.
 **Go: Related File** (`nav.relatedFile`) pairs a file with its counterpart: a
 test and the class it tests, a header and its implementation, a component and its
 stylesheet. It works in both directions, and from a test the class under test is
-offered first.
+offered first. It is in the **Navigate** menu, on `C-c S-t` in the Emacs keymap
+and Ctrl+Shift+T in the IntelliJ keymap.
 
 | From | Offers |
 | --- | --- |
@@ -191,6 +192,10 @@ finds the rest.
 
 One match opens. Several offer a picker, since `Foo.css` and `Foo.scss` can both
 exist and only you know which was meant.
+
+A Java class under `src/main/java` with no test is offered one: Editora asks to
+create a JUnit 5 test in the same package under `src/test/java`, the folder
+Maven and Gradle look in, and opens it.
 
 ## Keeping your place
 
