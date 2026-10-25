@@ -200,6 +200,7 @@ scope.
 | Rename symbol | `lsp.rename` | `C-c l r` |
 | Format Document (or the selection) | `lsp.formatDocument` | `C-c l f` |
 | Organize imports | `lsp.organizeImports` | `C-c l o` |
+| Clean Up File (Java) | `lsp.cleanUp` | (palette) |
 | Copy fully qualified name | `lsp.copyQualifiedName` | (palette) |
 | Reload project configuration | `lsp.reloadProject` | (palette) |
 | Re-indent as you type | `view.toggleOnTypeFormatting` | (palette) |
@@ -382,6 +383,15 @@ features tidy a Java file after you save it, and save it again when that changed
 it, as IntelliJ's Actions on Save do. Both are off by default. Autosave never
 runs them, since organizing imports while you type would remove one you have
 just added, and an ambiguous import is left out rather than asked about.
+
+**Clean-ups.** **Code → Clean Up File** applies the jdtls clean-ups you tick
+under **Java clean-ups → Choose…** on the same Settings page: add `@Override`
+and `@Deprecated`, remove redundant modifiers and `super()` calls, qualify
+members, add `final`, use pattern-matching `instanceof`, switch expressions,
+lambdas, try-with-resources and text blocks, and more (19 in all). The first
+four are on by default; the others rewrite code, so they are yours to pick.
+**Clean up on save (Java)** runs them after an explicit save, before Organize
+Imports and Format.
 
 ### The Java server and your project
 
