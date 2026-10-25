@@ -38,6 +38,10 @@ fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
 and the spelling suggestions near the top of the menu, and labels entries such
 as "Go to Definition" as coming from the language server.
 
+When an implementation lives in the JDK or a dependency, Go to Implementation
+lists every implementation in a picker, each with its package, and opens the
+one you choose as read-only source.
+
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and
 preview; a single result jumps straight there. When the file has an open tab,
@@ -103,7 +107,7 @@ popup no taller than part of the window.
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
 overload counter, and the signature's documentation (for Java, the method's
-Javadoc). It follows your typing as
+Javadoc, led by the current parameter's own `@param` text). It follows your typing as
 arguments are entered, stays open across multiline calls, and lets you move
 between overloads with `lsp.nextSignature` and `lsp.previousSignature`. It
 closes when the caret leaves the call, on Escape, or on scroll. Finished
@@ -113,7 +117,8 @@ popup.
 **Inlay hints** are the server's parameter-name and inferred-type annotations,
 drawn in grey italics inline, at the position they describe. They are **off by
 default**; turn them on in the **Language server features** card of Settings →
-Code Completion or with `Toggle Inlay Hints`. By default a parameter-name hint
+Code Completion or with `Toggle Inlay Hints`. A hint keeps the space the server
+asks for, so a lambda's type reads `String s ->`. By default a parameter-name hint
 appears only where the argument is a literal; **LSP: Set Inlay Hint Filter**
 (`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered; in Java
 they show the inferred type of a `var` and of a lambda's parameters. Arguments
@@ -162,7 +167,9 @@ which opens the rule's page (ShellCheck links every code to its wiki), and
 
 Java completion reacts immediately after member access and begins identifier
 completion after a short pause. Its documentation popup shows the item's Javadoc;
-JDK internals (`sun.*`, `com.sun.*`, `jdk.*`) are not offered; JUnit and Mockito
+the **Excluded types** in the Language server features card (vscode-java's list,
+`sun.*`, `com.sun.*`, `jdk.*` and the like, plus `java.awt.*` by default) are not
+offered, imported or listed by Go to Symbol and Search Everywhere; JUnit and Mockito
 statics such as `assertEquals` and `mock` are offered without an import, which
 is then added; and in an argument or assignment it also offers a call chain that
 gives the expected type, such as `Collectors.toList()` inside `collect(`. The
@@ -230,15 +237,15 @@ scope.
 fixes for the diagnostics there, assists, and extract and inline refactorings.
 The list **opens at the caret**, where you are looking, with the fixes first,
 then assists, refactorings and source actions, each row labelled **Fix**,
-**Refactor** or **Generate** in words, and a title the server offers twice listed
+**Assist**, **Refactor** or **Generate** in words, and a title the server offers twice listed
 once. The fixes for a line's problem are offered from anywhere on that line, not
 only on the squiggle. Typing narrows the list to titles containing what you type
 (Backspace widens it again) instead of editing the code behind it; arrow keys or
 `C-n` / `C-p` move, Enter applies, Escape or `C-g` dismisses. Every action shape is supported, including a server-side command whose
 edits
-arrive back over `workspace/applyEdit`. Edits land as normal undoable edits, one
-undo step per file, and a multi-file fix opens the untouched files in background
-tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
+arrive back over `workspace/applyEdit`. An edit to the open file is one undo
+step; one that changes other files is applied and saved as one
+[refactoring](#java-refactorings-that-ask-a-question), undone together. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
 
 **Organize Imports** works the way the file's server does it: jdtls's own
@@ -325,7 +332,9 @@ left alone.
 
 **A refactoring is one change across files.** Every file a refactoring renames,
 moves or creates is saved, so the project compiles straight away, and a file it
-opened only to edit is saved and its tab closed. **Undo** in one of those files
+opened only to edit is saved and its tab closed. Renaming or moving a `.java`
+file in the Project tree is such a refactoring too: the class is renamed with its
+file and the files that use it are updated. **Undo** in one of those files
 offers to undo the refactoring in all of them, and **LSP: Undo Last
 Refactoring** (`lsp.undoRefactoring`) does that from anywhere, moving renamed
 files back and removing created ones. A rename onto a name that is already taken
@@ -421,7 +430,12 @@ Imports and Format.
 - **Which JDK.** jdtls itself needs Java 21 or newer, and is given one Editora
   finds even when `JAVA_HOME` is older; when there is none, it says so. The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
-  Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed.
+  Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
+  jdtls keeps the JDK it started with, so changing it says to run **Restart
+  Language Servers**.
+- **A failed import says why.** When jdtls cannot import the project (a Gradle
+  build that does not run, say), the status bar names the reason it logged and
+  Problems lists the build file's own errors.
 - **Your project folder stays clean.** jdtls keeps Eclipse's `.project`,
   `.classpath` and `.settings/` in its own workspace, not in your project.
 - **Build files sync on save.** A change to `pom.xml` or `build.gradle` reaches
