@@ -416,8 +416,8 @@ copy back, provided the file left in its place still holds only defaults.
 - Keymaps and rebinding: [Keymaps & keybindings](/docs/keymaps).
 - Themes, fonts, and zoom: [Themes & fonts](/docs/themes-fonts).
 - Snippets and templates: [Snippets & templates](/docs/snippets-templates).
-- The same snippets, abbreviations, templates, and dictionary on every
-  computer: [Settings sync](/docs/settings-sync).
+- The same snippets, abbreviations, templates, dictionary, and shortcuts on
+  every computer: [Settings sync](/docs/settings-sync).
 
 Full internals live in the
 [README](https://github.com/adriandeleon/Editora/blob/master/README.md).

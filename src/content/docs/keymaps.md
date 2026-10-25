@@ -156,6 +156,9 @@ chord would clash with one of its chords, the shortcut stays with the keymap it
 was made in and comes back when you switch back. Overrides are also stored **per platform**, since a chord is
 modifier-specific (⌘ on macOS, Ctrl elsewhere), so a config synced between a Mac
 and a Windows or Linux machine binds each OS's own chord instead of both.
+[Settings sync](/docs/settings-sync#shortcuts) can carry your overrides, for
+every keymap, to your other computers; which keymap each one uses stays its
+own.
 
 ## The reference pages
 
