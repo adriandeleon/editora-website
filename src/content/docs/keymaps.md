@@ -90,7 +90,7 @@ The **IntelliJ IDEA** keymap uses IntelliJ's chords for the Java tools:
 | Shift+F6 | Rename |
 | F2 / Shift+F2 | Next / previous problem |
 | Ctrl+F1 | Show problem at caret |
-| Alt+Insert | Generate |
+| Alt+Insert | Generate (New in the Project tree) |
 | Ctrl+O | Override/Implement Methods |
 | Ctrl+Alt+L / Ctrl+Alt+O | Format / organize imports |
 | Ctrl+N, Ctrl+Alt+Shift+N | Go to Symbol in Workspace |
@@ -102,13 +102,15 @@ The **IntelliJ IDEA** keymap uses IntelliJ's chords for the Java tools:
 | Ctrl+Alt+V / C / F / M / P / N | Extract variable / constant / field / method, introduce parameter, inline |
 | F6 / Ctrl+F6 | Move / change signature |
 | Ctrl+Alt+Shift+T | Refactor This |
-| Ctrl+Alt+T | Insert snippet (Surround With) |
+| Ctrl+Alt+T | Surround With |
 | Ctrl+Shift+Enter | Complete statement |
 | Ctrl+Shift+Space | Smart Type completion |
 | Ctrl+Alt+Left / Right | Back / forward |
 
-So in that keymap F2 is no longer Rename and Alt+Insert no longer New File, which
-moved to Ctrl+Alt+Insert. The default **Emacs** keymap gathers the language-server
+So in that keymap F2 is no longer Rename, and Alt+Insert is New only in the
+Project tree; New File elsewhere is Ctrl+Alt+Insert. On macOS the keymap follows
+IntelliJ's: ⌘N is Generate in the editor and New in the Project tree, New File
+is ⌃⌘N, ⌃I is Override/Implement Methods, and ⌘[ / ⌘] go back and forward. The default **Emacs** keymap gathers the language-server
 commands under a `C-c l` prefix (`C-c l a` code actions, `C-c l g` generate,
 `C-c l t` refactor this, `C-c l r` rename, `C-c l f` format, `C-c l o` organize
 imports, `C-c l e` problem at caret, `C-c l u` undo last refactoring, and

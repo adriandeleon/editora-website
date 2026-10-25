@@ -208,6 +208,8 @@ Three things work together here, and each is documented where it lives:
 - [**Bookmarks**](/docs/bookmarks-notes) mark places you want to return to
   deliberately, and a **mnemonic** turns one into a single chord.
 
-Bookmarks have default chords. Back, Forward and Recent Locations do not, and
-neither do Go to Symbol in Project, Peek Definition, Go to Definition in Split
-and Related File. Bind the ones you use from **Settings → Keymaps**.
+Bookmarks have default chords, and every keymap binds Back and Forward. Go to
+Symbol in Project, Peek Definition and Related File are bound in the
+[IntelliJ keymap](/docs/keymaps#java-chords), and Related File also in Emacs
+(`C-c S-t`). Recent Locations and Go to Definition in Split have no default
+chord. Bind the ones you use from **Settings → Keymaps**.
