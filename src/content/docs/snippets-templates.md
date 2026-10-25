@@ -132,6 +132,14 @@ The bundled Java snippets cover:
 - **JUnit 5:** `test`, `ptest` (a parameterized test), `beforeeach`,
   `aftereach` and `assertthrows`.
 
+**Surround With.** Select whole lines and insert `if`, `ifelse`, `ifnull`,
+`ifnotnull`, `fori`, `forr`, `foreach`, `while`, `dowhile`, `try_catch`,
+`try_finally`, `try_resources` or `synchronized` with **Snippet: Insert…**, and
+the lines become the block's body, re-indented to fit; Ctrl+Alt+T (⌥⌘T on macOS)
+opens the list in the IntelliJ keymap. With nothing selected they expand as
+before. Any snippet that uses `$TM_SELECTED_TEXT` works the same way, since a
+multi-line variable value now takes the indentation of the line it sits on.
+
 The Java language server offers templates of its own under some of the same
 names (`sysout`, `fori`, `try_catch` and others). A server template named like
 one of your snippets, bundled or your own, is left out of the completion list,
