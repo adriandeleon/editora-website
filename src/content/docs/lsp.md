@@ -33,12 +33,16 @@ while a server is active, under a single **LSP** submenu, and you can
 and **Go to Type Definition** join that menu only when the server
 supports them, so it never offers a dead entry. **Go to Super Method** (Navigate
 menu, and this submenu for Java) jumps from anywhere in a method, its `@Override`
-and Javadoc included, to the method it overrides or implements, found up the type
-hierarchy, so an interface's default method and a method two interfaces declare
-both have somewhere to go. In a lambda it goes to the functional interface's
-method, in a constructor to the super constructor it calls, and from a class to
-its supertypes, the superclass first and each named by its type. Several targets
-open a picker, and it works the same in a library source tab.
+and Javadoc included, to the method it overrides or implements. That includes an
+anonymous class's method, wherever the class is written: in a method, a field, an
+initializer or an enum constant. The type hierarchy fills in what the server
+misses, so an interface's default method and a method two interfaces declare both
+have somewhere to go; of two where one overrides the other, the nearer one is
+offered. A static or private method, or another overload, has no super method. In
+a lambda it goes to the functional interface's method, in a constructor to the
+super constructor it calls (through `this(...)` too), and from a class to its
+supertypes, the superclass first and each named by its type. Several targets open
+a picker, and it works the same in a library source tab.
 
 The submenu does not change which actions a server contributes. A
 fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
@@ -241,7 +245,8 @@ from files you have open, so a compile error in a file you haven't touched is
 not listed. Open files is the default, so the window lists more only when you ask
 for it. With **Whole project** selected, saving a Java file runs a quiet
 incremental build, so an error in a closed file clears once its cause is fixed.
-With Open files, the same build runs when another file of the project is open, so
+With Open files, the same build runs when another file of the project is open, in
+this window or another one on the same project, so
 a file calling a method you just renamed elsewhere shows the error at once.
 
 Problems of the project rather than of a file, such as a JDK version the build
