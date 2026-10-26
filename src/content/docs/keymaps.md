@@ -107,7 +107,9 @@ The **IntelliJ IDEA** keymap uses IntelliJ's chords for the Java tools:
 | Ctrl+Shift+Enter | Complete statement |
 | Ctrl+Shift+Space | Smart Type completion |
 | Ctrl+Alt+Left / Right | Back / forward |
-| Ctrl+Shift+F10 | Run context at caret: the test at the caret, else the file |
+| Ctrl+Shift+F10 | Run context at caret: the test at the caret, else the class's `main`, else the file |
+| Ctrl+Alt+Shift+C | Copy fully qualified name (IntelliJ's Copy Reference) |
+| Ctrl+Alt+F7 | Find usages |
 | Ctrl+Shift+= / Ctrl+Shift+- | Expand all / collapse all folds |
 
 So in that keymap F2 is no longer Rename, and Alt+Insert is New only in the
@@ -117,7 +119,8 @@ is ⌃⌘N, ⌃I is Override/Implement Methods, ⌘J is Insert snippet, ⌃⇧R 
 context at caret, ⌘⇧= / ⌘⇧- expand and collapse all folds, and ⌘[ / ⌘] go back
 and forward. Text zoom keeps Ctrl+= / Ctrl+- (⌘= / ⌘-). The command palette also
 finds commands by IntelliJ's and VS Code's names for them: **Optimize Imports**,
-**Show Context Actions**, **Reformat Code**, **Find Usages** and others. The
+**Show Context Actions**, **Reformat Code**, **Find Usages**, **Go to Test**,
+**Copy Reference**, **Show Call Hierarchy**, **Find Action** and others. The
 **VS Code** keymap binds Ctrl+F12 Go to Implementation, Alt+F12 Peek Definition
 and Ctrl+T Go to Symbol in Workspace (⌘F12, ⌥F12 and ⌘T on macOS). The default **Emacs** keymap gathers the language-server
 commands under a `C-c l` prefix (`C-c l a` code actions, `C-c l g` generate,
