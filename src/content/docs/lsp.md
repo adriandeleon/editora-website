@@ -32,8 +32,9 @@ while a server is active, under a single **LSP** submenu, and you can
 **Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**
 and **Go to Type Definition** join that menu only when the server
 supports them, so it never offers a dead entry. **Go to Super Method** (Navigate
-menu) jumps from a method to the one it overrides or implements, and from a class
-to the one it extends.
+menu, and this submenu for Java) jumps from anywhere in a method to the method it
+overrides or implements, and from a class to its supertypes, with a picker when
+there are several.
 
 The submenu does not change which actions a server contributes. A
 fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
@@ -163,8 +164,8 @@ gutter; an amber one marks other quick actions, a warning's fixes included.
 Click it for the list **Code Actions** (Alt+Enter) shows, for its own line.
 Refactorings, source actions and Add Javadoc, which a server offers almost
 everywhere, light no bulb, and the bulb goes as soon as you edit its line. In a
-split it shows only in the view you are typing in, and its colours come from the
-editor theme. Both
+split it shows only in the view you are typing in; a tab you come back to keeps
+it; and its colours come from the editor theme. Both
 can be turned off in Settings → Code Completion → Language server features.
 **Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
@@ -365,7 +366,8 @@ the files that use it are updated; **Undo Move** moves it back the same way.
 Dragging several files is one refactoring: **Undo Move** and **Undo Last
 Refactoring** each take all of them back, and either one ends the other. Dragging
 only files jdtls has nothing to change for, such as a text file, is no
-refactoring, so the one before stays undoable. While jdtls is still loading, or
+refactoring, so the one before stays undoable. One drag runs at a time: a drop
+while one is under way says to drop again when it is done. While jdtls is still loading, or
 does not answer, Editora asks once before it moves Java files without updating
 their package lines. **Undo** in one of those files
 offers to undo the refactoring in all of them, and **Undo Last
@@ -382,7 +384,9 @@ needed. In Java, Organize Imports asks which class an ambiguous name such as
 `Date` or `List` means, and so does the **Add all missing imports** quick fix.
 The question waits for you: it does not time out while it is open, and goes
 away when the server stops (a restart). A second Organize Imports while it is
-open says to answer it first.
+open says to answer it first, and a save does not organize the file under it.
+If the file changes while the question is open, the answer no longer applies and
+the status says to run Organize Imports again.
 After a failed Gradle import, saving the fixed build file imports the project
 again, as **Reload Project Configuration** does from any of its tabs.
 
