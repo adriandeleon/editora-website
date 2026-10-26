@@ -191,7 +191,14 @@ at the caret, and the status bar names that type. Editora reads the type from:
 - `return`, using the method's return type;
 - a condition (`if (`, `while (`, after `&&`, `||` or `!`), which expects
   `boolean`;
-- a call's argument, using the parameter that signature help shows.
+- a call's argument, using the parameter that signature help shows, in every
+  overload the call could be: `System.out.println(` offers an `int` as well as a
+  `char[]`, and the status bar names the other types.
+
+A generic method's type variable takes the type the line declares, matched
+against the method's return type: `List<String> l = List.of(` expects a `String`,
+and `String[] a = names.toArray(` a `String[]`. Inside another call's argument
+(`names.contains(requireNonNull(`) it is left open.
 
 The list keeps the fields, variables and methods of a fitting type, `null` for
 an object, and `true` and `false` for a boolean. After `new`, it keeps the
@@ -302,8 +309,8 @@ so each one asks before it runs. They need the Java language server.
 | A static member | another class |
 | An instance method | one of its parameters or fields |
 
-Moving a class lists the main source folders' packages before the test ones, and
-ends with **New package…**: type a package that does not exist yet and its folder
+Moving a class lists the packages of its own source folders (a class in main
+code: the main packages only), and ends with **New package…**: type a package that does not exist yet and its folder
 is created under the current source folder. A Move Instance Method that jdtls
 finds problems with shows them first and moves only if you continue.
 
@@ -335,7 +342,11 @@ moves or creates is saved, so the project compiles straight away, and a file it
 opened only to edit is saved and its tab closed. Renaming a `.java` file in the
 Project tree, or dragging it (or a package folder) into another package, is such a
 refactoring too: the class is renamed or its package line changed with it, and
-the files that use it are updated; **Undo Move** moves it back the same way. **Undo** in one of those files
+the files that use it are updated; **Undo Move** moves it back the same way.
+Dragging several files is one refactoring: **Undo Move** and **Undo Last
+Refactoring** each take all of them back, and either one ends the other. While
+jdtls is still loading, or does not answer, Editora asks before it moves a Java
+file without updating its package line. **Undo** in one of those files
 offers to undo the refactoring in all of them, and **Undo Last
 Refactoring** (`lsp.undoRefactoring`) does that from anywhere, moving renamed
 files back and removing created ones. A rename onto a name that is already taken
@@ -347,7 +358,9 @@ symbol at the caret on the clipboard, and **Reload Project Configuration** makes
 the server re-read `pom.xml` or `build.gradle`, also from the `pom.xml` tab
 itself. A build file you save is picked up on its own, so Reload is rarely
 needed. In Java, Organize Imports asks which class an ambiguous name such as
-`Date` or `List` means.
+`Date` or `List` means, and so does the **Add all missing imports** quick fix.
+After a failed Gradle import, saving the fixed build file imports the project
+again, as **Reload Project Configuration** does from any of its tabs.
 
 **Rename symbol** renames across the whole workspace. The prompt comes pre-filled
 with the current name, and the server validates the spot first, so you are told
@@ -429,7 +442,10 @@ Imports and Format.
   [Update…](/docs/troubleshooting#update-for-servers-older-than-editoras)
   button that installs 1.63.0 and restarts the server on it.
 - **Which JDK.** jdtls itself needs Java 21 or newer, and is given one Editora
-  finds even when `JAVA_HOME` is older; when there is none, it says so. The
+  finds even when `JAVA_HOME` is older; when there is none, it says so, and
+  Doctor's jdtls row names the Java it runs on. Of two JDKs of one version, a
+  project gets the one with its sources, so JDK parameter names and docs show;
+  one without them is given the online API docs. The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
   Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
   jdtls keeps the JDK it started with, so changing it says to run **Restart
@@ -455,6 +471,8 @@ Imports and Format.
   imports become `*`. The Eclipse formatter profile your build formats with
   (Spotless's `<eclipse><file>` or `eclipse().configFile(…)`, else
   `eclipse-formatter.xml` at the project root) is what Format Document uses.
+  Editing the profile, or removing it, applies without restarting the server,
+  also for a profile kept in Eclipse's `.settings` folder.
 - **Lombok.** For a project whose build declares Lombok, jdtls runs with it as
   its agent, using the newest Lombok jar already in your local Maven or Gradle
   cache, so the members Lombok generates are seen. When none has been downloaded
