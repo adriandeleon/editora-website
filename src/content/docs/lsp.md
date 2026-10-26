@@ -32,9 +32,13 @@ while a server is active, under a single **LSP** submenu, and you can
 **Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**
 and **Go to Type Definition** join that menu only when the server
 supports them, so it never offers a dead entry. **Go to Super Method** (Navigate
-menu, and this submenu for Java) jumps from anywhere in a method to the method it
-overrides or implements, and from a class to its supertypes, with a picker when
-there are several.
+menu, and this submenu for Java) jumps from anywhere in a method, its `@Override`
+and Javadoc included, to the method it overrides or implements, found up the type
+hierarchy, so an interface's default method and a method two interfaces declare
+both have somewhere to go. In a lambda it goes to the functional interface's
+method, in a constructor to the super constructor it calls, and from a class to
+its supertypes, the superclass first and each named by its type. Several targets
+open a picker, and it works the same in a library source tab.
 
 The submenu does not change which actions a server contributes. A
 fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
@@ -165,7 +169,9 @@ Click it for the list **Code Actions** (Alt+Enter) shows, for its own line.
 Refactorings, source actions and Add Javadoc, which a server offers almost
 everywhere, light no bulb, and the bulb goes as soon as you edit its line. In a
 split it shows only in the view you are typing in; a tab you come back to keeps
-it; and its colours come from the editor theme. Both
+it; and its colours come from the editor theme (in Summer Dark, Navy Dark, Fall
+Dark and Blacky, whose accent is the bookmark's yellow, the quick-action bulb takes
+the text colour). Both
 can be turned off in Settings → Code Completion → Language server features.
 **Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
@@ -235,6 +241,8 @@ from files you have open, so a compile error in a file you haven't touched is
 not listed. Open files is the default, so the window lists more only when you ask
 for it. With **Whole project** selected, saving a Java file runs a quiet
 incremental build, so an error in a closed file clears once its cause is fixed.
+With Open files, the same build runs when another file of the project is open, so
+a file calling a method you just renamed elsewhere shows the error at once.
 
 Problems of the project rather than of a file, such as a JDK version the build
 expects and the machine does not have, are reported after a Maven or Gradle
@@ -367,7 +375,8 @@ Dragging several files is one refactoring: **Undo Move** and **Undo Last
 Refactoring** each take all of them back, and either one ends the other. Dragging
 only files jdtls has nothing to change for, such as a text file, is no
 refactoring, so the one before stays undoable. One drag runs at a time: a drop
-while one is under way says to drop again when it is done. While jdtls is still loading, or
+while one is under way says to drop again when it is done, and Undo Move says to
+undo it when it is done. While jdtls is still loading, or
 does not answer, Editora asks once before it moves Java files without updating
 their package lines. **Undo** in one of those files
 offers to undo the refactoring in all of them, and **Undo Last
@@ -452,7 +461,9 @@ splits the comment as usual.
 features tidy a Java file after you save it, and save it again when that changed
 it, as IntelliJ's Actions on Save do. Both are off by default. Autosave never
 runs them, since organizing imports while you type would remove one you have
-just added, and an ambiguous import is left out rather than asked about.
+just added, and an ambiguous import is left out rather than asked about. While
+Organize Imports is asking you which class to import, a save runs none of them,
+so your answer still applies.
 
 **Clean-ups.** **Code → Clean Up File** applies the jdtls clean-ups you tick
 under **Java clean-ups → Choose…** on the same Settings page: add `@Override`
@@ -815,7 +826,9 @@ three-minute grace period so reopening a file keeps the server warm.
 **Two windows on one Java project share one Java server.** The second window
 joins the jdtls the first one runs, so the project isn't imported twice and the
 second window costs no extra memory (a jdtls takes about 1.5 GB). Both windows
-show its diagnostics. A question the server asks, such as which class to import,
+show its diagnostics; a window that opens while jdtls is still importing the
+project waits for it to finish before it says the project is ready. A question
+the server asks, such as which class to import,
 goes to the window you are working in. Closing one window leaves the server to
 the other, and it stops when the last window closes. **Restart Language
 Servers** in either window restarts it for both, and the other window reopens
