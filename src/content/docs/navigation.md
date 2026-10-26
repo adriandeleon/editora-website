@@ -286,7 +286,9 @@ them for the file.
 those. The marker families recognized are `//#region`, `//region`, `#region`,
 `# region`, `#pragma region`, `<!-- #region -->` and `--region`; Markdown and
 Markwhen are excluded, since `# region` there is a legal heading.
-**Fold All Except Caret** collapses everything but the block you are in.
+**Fold All Except Caret** collapses everything but the block you are in. Fold
+All, Unfold All and the others keep the caret where it was, or put it on the
+fold that now hides it.
 
 All of these **merge** with the folds Editora detects, and with any a language
 server reports, rather than replacing them.

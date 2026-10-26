@@ -522,7 +522,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "LSP: Clean Up File", id: "lsp.cleanUp", desc: "Run the Java clean-ups chosen in Settings on this file: add missing @Override, drop redundant modifiers and the like." },
       { title: "LSP: Clear Java Index Caches", id: "lsp.clearJavaIndexCaches", desc: "Delete the Java language server’s saved project indexes that no running server is using, to free disk space." },
       { title: "LSP: Code Actions", id: "lsp.codeActions", keys: "C-c l a", bindings: { "emacs": "C-c l a", "sublime": "C-.", "vscode": "C-.", "intellij": "C-." }, desc: "Show the quick fixes and refactorings the language server offers at the caret or selection, and apply the chosen one; in a .http file, the environments that define an unresolved variable" },
-      { title: "LSP: Copy Fully Qualified Name", id: "lsp.copyQualifiedName", desc: "Copy the fully qualified name of the symbol at the caret to the clipboard." },
+      { title: "LSP: Copy Fully Qualified Name", id: "lsp.copyQualifiedName", bindings: { "intellij": "C-M-S-c" }, desc: "Copy the fully qualified name of the symbol at the caret to the clipboard." },
       { title: "LSP: Extract Constant", id: "lsp.extractConstant", bindings: { "intellij": "C-M-c" }, desc: "Extract the expression at the caret or the selection into a constant." },
       { title: "LSP: Extract Field", id: "lsp.extractField", bindings: { "intellij": "C-M-f" }, desc: "Extract the expression at the caret or the selection into a field." },
       { title: "LSP: Extract Method", id: "lsp.extractMethod", bindings: { "intellij": "C-M-m" }, desc: "Extract the selected statements or the expression at the caret into a method." },

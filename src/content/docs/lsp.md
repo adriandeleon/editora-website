@@ -39,8 +39,9 @@ and the spelling suggestions near the top of the menu, and labels entries such
 as "Go to Definition" as coming from the language server.
 
 When an implementation lives in the JDK or a dependency, Go to Implementation
-lists every implementation in a picker, each with its package, and opens the
-one you choose as read-only source.
+lists every implementation in a picker, each with its package and a nested
+class by its own name (`AbstractList.SubList`), and opens the one you choose as
+read-only source.
 
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and
@@ -59,7 +60,7 @@ references".
 project, methods included, with JDK and library types after the project's own,
 labelled with their module or jar. With a Java server running,
 [Search Everywhere](/docs/navigation#search-everywhere) lists those library
-classes too. Where no server is running, Editora's own
+classes too, in the same order. Where no server is running, Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project) answers the
 same question.
 
@@ -149,13 +150,17 @@ is drawn faded, and a call the server marks as deprecated is struck through.
 Those unused and deprecated marks are not listed in the Problems window.
 
 The **problem counter** at the top right of the editor shows the file's errors
-and warnings, or a green check when the server found none. Its arrows go to the
-previous and next problem, and clicking the counts opens Problems. When the
-caret rests on a line where the server has a **quick fix**, a red **lightbulb**
-appears in the gutter; an amber one marks other quick actions. Click it for the
-list **Code Actions** (Alt+Enter) shows. Refactorings and source actions, which
-a server offers almost everywhere, light no bulb. Both can be turned off in
-Settings → Code Completion → Language server features.
+and warnings, or a green check when the server found none. Until the server has
+checked the file it says **Analyzing…**, and **Not checked** when the file's
+project did not import. Its arrows go to the previous and next problem in that
+file, and clicking the counts shows or hides Problems. It hides when the code
+pane is narrower than 520 pixels. When the caret rests on a line where the
+server can **fix an error**, a red **lightbulb** with a `!` appears in the
+gutter; an amber one marks other quick actions, a warning's fixes included.
+Click it for the list **Code Actions** (Alt+Enter) shows, for its own line.
+Refactorings, source actions and Add Javadoc, which a server offers almost
+everywhere, light no bulb, and the bulb goes as soon as you edit its line. Both
+can be turned off in Settings → Code Completion → Language server features.
 **Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
@@ -368,6 +373,7 @@ the server re-read `pom.xml` or `build.gradle`, also from the `pom.xml` tab
 itself. A build file you save is picked up on its own, so Reload is rarely
 needed. In Java, Organize Imports asks which class an ambiguous name such as
 `Date` or `List` means, and so does the **Add all missing imports** quick fix.
+The question waits for you: it does not time out while it is open.
 After a failed Gradle import, saving the fixed build file imports the project
 again, as **Reload Project Configuration** does from any of its tabs.
 
@@ -481,7 +487,11 @@ Imports and Format.
   (Spotless's `<eclipse><file>` or `eclipse().configFile(…)`, else
   `eclipse-formatter.xml` at the project root) is what Format Document uses.
   Editing the profile, or removing it, applies without restarting the server,
-  also for a profile kept in Eclipse's `.settings` folder.
+  also for a profile kept in Eclipse's `.settings` or a `config` folder, and a
+  profile removed while Editora was closed no longer formats the old way. A
+  project that already has an Eclipse `.settings` folder gets jdtls's compiler
+  settings written into it (a committed `org.eclipse.jdt.core.prefs` changes);
+  a project without one gets none.
 - **Lombok.** For a project whose build declares Lombok, jdtls runs with it as
   its agent, using the newest Lombok jar already in your local Maven or Gradle
   cache, so the members Lombok generates are seen. When none has been downloaded
@@ -795,7 +805,8 @@ show its diagnostics. A question the server asks, such as which class to import,
 goes to the window you are working in. Closing one window leaves the server to
 the other, and it stops when the last window closes. **Restart Language
 Servers** in either window restarts it for both, and the other window reopens
-its files on the new server. Projects on a remote host, in a container or in
+its files on the new server. It restarts only the current project's jdtls: a
+second project open in the same window keeps its server and its problems. Projects on a remote host, in a container or in
 WSL, and other language servers, still get one server per window.
 
 jdtls keeps an index for every Java folder you have opened, under
