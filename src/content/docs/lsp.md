@@ -147,6 +147,15 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 squiggle, code the server marks as unused, such as a variable nothing reads,
 is drawn faded, and a call the server marks as deprecated is struck through.
 Those unused and deprecated marks are not listed in the Problems window.
+
+The **problem counter** at the top right of the editor shows the file's errors
+and warnings, or a green check when the server found none. Its arrows go to the
+previous and next problem, and clicking the counts opens Problems. When the
+caret rests on a line where the server has a **quick fix**, a red **lightbulb**
+appears in the gutter; an amber one marks other quick actions. Click it for the
+list **Code Actions** (Alt+Enter) shows. Refactorings and source actions, which
+a server offers almost everywhere, light no bulb. Both can be turned off in
+Settings → Code Completion → Language server features.
 **Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
