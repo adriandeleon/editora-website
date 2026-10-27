@@ -19,7 +19,10 @@ There are two exceptions:
 
 - **The update check.** Once a day at startup Editora asks GitHub whether a
   newer release exists. It sends nothing about you or your files, and it's a
-  checkbox in **Settings → Workspace** if you'd rather it didn't.
+  checkbox in **Settings → Workspace** if you'd rather it didn't. **About
+  Editora** shows the answer under the version ("You are up to date." or the
+  release available), when the last check answered, and a **Check now** link
+  that asks again.
 - **The AI features**, which are off by default. If you turn them on, the text
   you act on is sent to whichever endpoint you configure (a local model, or a
   provider you supply a key for). That is how the feature works, and it is the

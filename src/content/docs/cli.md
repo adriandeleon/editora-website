@@ -43,6 +43,7 @@ Where there is no `editora` command, substitute the launcher in the examples.
 | `--no-session` | Open only the files given here; don't restore the saved session |
 | `--new-instance` | Start a separate editor process instead of handing the launch to the one already running on the same config folder |
 | `--diff-ui LEFT RIGHT` | Open files or folders in an isolated comparison workspace |
+| `--report` | Write a redacted problem report (system details and the last two session logs) to the current folder and open a GitHub issue for it, without starting the editor (see [Reporting a problem](/docs/troubleshooting#reporting-a-problem)) |
 
 `--single-window` opens exactly one window instead of restoring every window
 that was open at last quit: bare, it opens the no-project window; with a name
