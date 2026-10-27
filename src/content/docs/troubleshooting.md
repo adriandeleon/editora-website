@@ -40,9 +40,15 @@ into a bug report.
 
 Under the XML language server, the **XML schema cache** row shows how much the
 server has downloaded (the schemas and DTDs XML files name) and where it keeps
-it, `cache/lemminx` in Editora's config folder, with a **Clear** button. A
-language server that exits as soon as it starts shows what it printed, rather
-than *OK*; for lemminx on a Linux older than glibc 2.34, see
+it, `cache/lemminx` in Editora's config folder, with a **Clear** button. With
+the XML server off, the row sits under the Maven `pom.xml` server instead, and
+either way it follows its server into **Needs attention**. Under the Maven
+server, the **lemminx-maven artifact store** row shows the size of
+`~/.m2/.lemminx-maven`, where lemminx-maven keeps what it resolves, with
+**Clear**, and **Reveal in File Manager** in its right-click menu. A language
+server that keeps crashing, or fails its requests, is a warning with an
+**Install…** button that installs it again. A language server that exits as
+soon as it starts shows what it printed, rather than *OK*; for lemminx on a Linux older than glibc 2.34, see
 [Installing lemminx](/docs/lsp#installing-lemminx).
 
 ### Update… for servers older than Editora's
@@ -142,7 +148,8 @@ Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls`
 previous run can hold its workspace lock; the loading bar clearing is the sign
 the handshake completed. A server that starts but then fails its requests is
 announced in the status bar (`lemminx-maven: internal error on hover — see the
-log`), stopped after three failures in a row, and shown as a warning in Doctor;
+log`), stopped after three failures in a row, and shown as a warning in Doctor,
+with **Install…** for a server Editora installs;
 the Maven `pom.xml` server whose folder is missing jars is reported as
 *incomplete* in Settings → LSP and Doctor, and its **Install…** repairs it.
 

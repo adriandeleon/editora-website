@@ -786,6 +786,18 @@ Only Maven and Gradle are gated. Every other build tool (npm, Cargo, Go) launche
 your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
 none of them prompt.
 
+The same trust covers two language-server features. The
+[Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server) resolves the
+parents, plugins and repositories a pom names and can run their code, so a
+`pom.xml` in an untrusted folder is edited with the plain XML server until you
+trust it. With [Download schemas](/docs/lsp#xml-settings) left at *Only in
+trusted folders*, the XML server fetches the schemas a file names only in a
+trusted folder. In both cases the file offers **Trust Folder**, and
+**Workspace: Trust This Folder** in the palette trusts the active file's folder:
+the open project when the file is in it, else a pom's own Maven project. It
+asks first, with Cancel as the default, and covers builds too. Revoking the
+folder turns both off again.
+
 Review or revoke trust in **Settings → Workspace → Trusted folders**, with the
 **Revoke** button in the Maven or Gradle window's header (which shows
 *Trusted* or *Not trusted yet*), or from the palette with
