@@ -679,8 +679,11 @@ covered through one of these channels, picked per server:
   Python/Pyright), needing Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
-- **Binary** releases downloaded per OS/architecture (clangd, lemminx,
-  terraform-ls, Lua), extracted into your config folder.
+- **Binary** releases downloaded per OS/architecture (clangd, terraform-ls,
+  Lua), extracted into your config folder.
+- A **pinned native binary** for lemminx, the XML server, from one vscode-xml
+  release, with both the zip and the program checked against the release's
+  SHA-256 (see [Installing lemminx](#installing-lemminx)).
 - A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
   into your config folder. A server installed earlier keeps its version until
   you install it again.
@@ -703,7 +706,8 @@ covered through one of these channels, picked per server:
 
 There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
-off with `view.toggleInstallPrompts`), and the **Install: Language Server…**
+off with `view.toggleInstallPrompts`; its **Not now** lasts for every file of
+that kind in the window), and the **Install: Language Server…**
 picker (`install.languageServer`). After installing, the server is auto-detected
 and activates without a restart. Editora never installs the underlying runtimes
 (Node, Python, Go, …); if one is missing it tells you which to install first.
@@ -1088,6 +1092,158 @@ If neither is installed, the status bar says so; install one into the project's
 environment (`pip install ruff`). A Python server that formats by itself, such
 as `ruff server`, keeps the job. Doctor's **Python formatter** row shows which
 tool Format Document will use.
+
+## XML
+
+XML files use **lemminx**, Red Hat's XML language server. Editora installs a
+fixed release of it (see [Installing lemminx](#installing-lemminx)), and a
+`pom.xml` gets the [Maven-aware server](#servers-are-auto-detected-never-bundled)
+instead. Language servers are off by default, so the first XML file a window
+opens asks whether to turn them on, once per window.
+
+Besides `.xml`, `.xsd`, `.xsl` and the other usual extensions, these XML
+dialects open as XML, with highlighting, folding, comments and the language
+server: DTDs and their entity and module files (`.dtd`, `.ent`, `.mod`),
+RELAX NG (`.rng`), XSL-FO (`.fo`), XSpec, Schematron (`.sch`), MSBuild and
+NuGet files (`.csproj`, `.vbproj`, `.fsproj`, `.props`, `.targets`, `.nuspec`),
+`.resx`, XAML, XLIFF (`.xlf`, `.xliff`), property lists (`.plist`), XUL, KML,
+GPX, JSP tag libraries (`.tld`), Java Web Start (`.jnlp`), XMI and DITA
+(`.dita`, `.ditamap`). A file whose name gives no language and that starts with
+`<?xml` (an `AndroidManifest`, say) is XML too; see
+[When the file name says nothing](/docs/languages#when-the-file-name-says-nothing).
+
+The project's XML files share one server, and every XML file outside the
+project shares **one more per window**, whatever folder or Maven module it is
+in, rather than one server per folder. An XML file keeps the server up to
+**100,000 lines**, even above the **Disable minimap & LSP above** limit (10,000
+lines by default), which then turns off only the minimap.
+
+### What the XML server adds
+
+- **Validation** against the file's XSD, DTD or RELAX NG grammar. A file that
+  names no grammar gets no "No grammar constraints" problem; see
+  [Files without a grammar](#xml-settings).
+- **Completion** of the schema's elements, attributes and enumeration values.
+  They come first after `<` and inside an element; *Insert Comment* and *Insert
+  CDATA* are listed last.
+- **Go to Definition** and Ctrl/Cmd-click on a `schemaLocation`, a DOCTYPE
+  system id, an `xml-model` href or an `xsl:include` opens that schema, DTD or
+  stylesheet. On an element or attribute bound to an XSD, it goes to the
+  declaration in the XSD.
+- **Show Documentation** and **Show Problem at Caret** show the whole problem
+  at the caret above any documentation, including lemminx's list of the
+  elements or values allowed there.
+- **Tab** re-indents the current line the way the server would format it. When
+  the server gives no answer, Tab indents as it does without a server.
+- **Quick fixes.** On a file without a grammar, lemminx's *Generate … and
+  bind* fixes (XSD, DTD or RelaxNG) write the grammar file next to the document
+  and bind the document to it with `xsi:noNamespaceSchemaLocation`, a DOCTYPE
+  or `xml-model`. *Bind to existing
+  grammar/schema* does what **XML: Bind to Grammar…** does. A fix that cannot be
+  applied closes any tab it opened. Generated grammars and fixes are indented
+  like the file. *Minify XML* is not offered as the fix for a problem; it is
+  under Generate, and in Code Actions on a line without a problem.
+- **Rename** says it cannot rename where the server declines, rather than
+  opening a dialog that does nothing.
+- **Code lenses** on XSD and DTD declarations count their references, when
+  Code Lens is on.
+
+Three palette commands go with it:
+
+| Command | What it does |
+| --- | --- |
+| **XML: Revalidate File** | Validates the file again, after its schema or DTD changed on disk. |
+| **XML: Revalidate All Open Files** | Forgets the cached grammars and validates every open XML file again. |
+| **XML: Bind to Grammar…** | Picks an XSD, DTD or RELAX NG file, then binds the document to it with a schema location (`xsi:noNamespaceSchemaLocation` or `xsi:schemaLocation`), a DOCTYPE, or an `<?xml-model?>` instruction. Local files only. |
+
+A schema, DTD or RELAX NG file changed outside Editora (edited elsewhere or
+regenerated by a build) revalidates the open XML files that use it, also when
+its folder is collapsed in the Project tree.
+
+### XML settings
+
+The **XML** card in **Settings → LSP** holds the server's settings. Editora
+sends them when the server starts, and a change reaches the running server
+without a restart.
+
+| Setting | Choices | Default |
+| --- | --- | --- |
+| **Download schemas** | Never · Only in trusted folders · Always | Only in trusted folders |
+| **Files without a grammar** | Nothing · Hint · Warning | Nothing |
+| **XML catalogs** | OASIS catalog files, separated by semicolons | none |
+| **Schema associations** | `pattern=schema` entries, separated by semicolons | none |
+| **Wrap long text when formatting** | on · off | off |
+| **Attributes when formatting** | Keep as written · One per line · One per line, aligned with the first | Keep as written |
+| **Empty elements when formatting** | Keep as written · Collapse to `<a/>` · Expand to `<a></a>` | Keep as written |
+| **Space before />** | on (`<a />`) · off (`<a/>`) | on |
+| **Structure element limit** | a number | 5,000 |
+
+- **Download schemas** decides whether lemminx may fetch the XSDs, DTDs and
+  RELAX NG grammars a file names (`xsi:schemaLocation`, DOCTYPE, `xml-model`)
+  from the internet, plain http included. With *Only in trusted folders*, a
+  file in a [trusted folder](/docs/workspace#trusted-folders) gets its
+  schemas, and trusting a folder turns downloads on for it. Files outside the
+  open project are never in a trusted folder. When a schema was not downloaded,
+  the file says so and the status line says where to change it. External
+  entities are never resolved.
+- **XML catalogs** map schema and DTD addresses to local copies, so they work
+  without downloads. A relative path is looked for in each project's root
+  folder.
+- **Schema associations** bind files to a grammar by name, for example
+  `*.myconf.xml=schemas/myconf.xsd`. A pattern without a folder matches the
+  file name in any folder, and a relative schema path is under the project's
+  root folder.
+- **Wrap long text** wraps text and long tags at the editor's fill column
+  (the column Fill Paragraph wraps at). Off, the text on each line is left as it
+  is. Indentation always follows the file's own.
+- **Structure element limit** caps how many elements Structure and folding list
+  for one file. When a file reaches it, the status line names this setting.
+  Reopen the file for a new limit to apply.
+
+The schemas lemminx downloads are kept in `cache/lemminx` under Editora's
+config folder, not in `~/.lemminx`, and settings export leaves them out.
+[Doctor](/docs/troubleshooting#doctor)'s **XML schema cache** row shows their
+size and folder, with **Clear**.
+
+### Without the XML server
+
+- **Format Document** still works on XML: a built-in formatter puts one element
+  per line, in the file's own indentation. Text, CDATA and
+  `xml:space="preserve"` content are kept exactly as written, and a file whose
+  tags do not nest is left alone, with a "not well-formed" message. This
+  formatter ignores the formatting settings above, which apply through lemminx
+  only.
+- **Structure** lists every element, leaves included, named by its qualified
+  name and its `name`, `id`, `match` or `ref` attribute, for example
+  `xs:element name="note"` or `xsl:template match="/"`. With the server, the
+  outline shows the document only, without lemminx's *Grammars* rows.
+- **Auto-close HTML/XML tags**: typing the close tag by habit after the one
+  Editora inserted (`x</from>`) steps over it instead of writing a second one.
+
+### Installing lemminx
+
+**Install…** on the XML card, the banner on an XML file, or **Install: Language
+Server…** installs **lemminx 0.31.2**, the native build from Red Hat's
+vscode-xml 0.29.3 release on GitHub (about 17 MB). Both the download and the
+program inside it are checked against the SHA-256 the release publishes. The
+installed server is asked one request before it is kept. Settings and
+[Doctor](/docs/troubleshooting#doctor) show which lemminx runs, and Doctor
+offers **Update…** when a later Editora moves to a newer one.
+
+The install leaves the XML command in Settings blank, and a blank command runs
+Editora's own copy before anything on your `PATH`. **Reset to default**, or
+settings imported from another computer, therefore keep it connected.
+
+The banner is not offered while the XML server is switched off. When the XML
+command you set points at a program that is missing, it opens Settings rather
+than installing over it.
+
+lemminx's native build needs **glibc 2.34** or later on Linux. On an older
+system Install says so and installs nothing; if the
+[Maven `pom.xml` server](#servers-are-auto-detected-never-bundled) is
+installed, XML files run its Java lemminx instead. A server that exits as soon
+as it starts shows its own error message in the status line, Settings and
+Doctor, rather than *found* and *OK*.
 
 ## Language servers on a remote host
 
