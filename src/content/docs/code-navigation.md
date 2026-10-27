@@ -199,6 +199,10 @@ Maven and Gradle look in, and opens it.
 
 ## Keeping your place
 
+A jump (Go to Definition, a Structure click, a search result) scrolls sideways
+to the target's column as well as to its line, so the line is never shown with
+its start cut off and a target far along a long line is on screen.
+
 Three things work together here, and each is documented where it lives:
 
 - [**Back and forward**](/docs/navigation#back-and-forward) steps through the

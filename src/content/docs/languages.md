@@ -24,6 +24,13 @@ YAML, INI, SQL, TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML,
 Mermaid, and the HTTP request format. The TypeScript grammar also covers plain
 JavaScript.
 
+XML covers its dialects too: DTDs (`.dtd`, `.ent`, `.mod`), RELAX NG,
+XSL-FO, Schematron, MSBuild and NuGet project files, `.resx`, XAML, XLIFF,
+property lists, KML, GPX, DITA and others open as XML (the full list is under
+[XML](/docs/lsp#xml)). DTD declarations (`<!ELEMENT>`, `<!ATTLIST>`,
+`<!NOTATION>`, like `<!ENTITY>`) are highlighted in a DOCTYPE and in a DTD
+file. A `go.mod` stays plain text, and `.xhtml` is HTML.
+
 Astro files use the official Astro TextMate grammar, including mixed
 frontmatter, HTML, and CSS regions. The same language integration supplies
 Structure symbols and can connect to `astro-ls` for code intelligence.
@@ -53,6 +60,9 @@ file) takes it from its own first lines:
   first or last five lines (`# vim: ft=sh`, `# vim: set filetype=bash :`), or an
   emacs line on the first line, or the second after a shebang
   (`# -*- mode: sh -*-`, `# -*- sh -*-`).
+- **An XML declaration**, when neither of those names a language: a file that
+  starts with `<?xml` (an `AndroidManifest`, say) is XML. A `.txt` or `.text`
+  file is never read as XML this way.
 
 A shebang typed into a new or extension-less file switches the language once you
 stop typing. An extension or name that gives a language always wins over both.

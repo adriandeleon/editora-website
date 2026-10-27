@@ -38,11 +38,18 @@ installed, is it the version I think, and is Editora looking at the right one" i
 one pass. **Copy Report** puts the whole report on the clipboard, ready to paste
 into a bug report.
 
+Under the XML language server, the **XML schema cache** row shows how much the
+server has downloaded (the schemas and DTDs XML files name) and where it keeps
+it, `cache/lemminx` in Editora's config folder, with a **Clear** button. A
+language server that exits as soon as it starts shows what it printed, rather
+than *OK*; for lemminx on a Linux older than glibc 2.34, see
+[Installing lemminx](/docs/lsp#installing-lemminx).
+
 ### Update… for servers older than Editora's
 
 Editora installs some servers and tools at the exact release it is tested with:
-jdtls (Java), the JavaScript debugger (js-debug), the Maven `pom.xml` server
-(lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
+jdtls (Java), the JavaScript debugger (js-debug), lemminx (XML), the Maven
+`pom.xml` server (lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
 ShellCheck and shfmt. A newer Editora can move to a newer release of one of
 them. When the copy you have is older than the one this Editora is tested with,
 its Doctor row is a warning that names both versions, and its **Install…**
@@ -306,7 +313,10 @@ choice for that file. See [File encodings](/docs/workspace#file-encodings).
 ## Performance
 
 Editora aims to stay responsive on large files. Highlighting and the minimap
-turn off automatically at about 5 MB, and files of about 50 MB open read-only
+turn off automatically at about 5 MB; the status line then lists everything a
+large file opens without (highlighting, folding, Structure, spell check, the
+minimap, undo and the language server), and the Structure window says why it is
+empty. Files of about 50 MB open read-only
 with a capped load. A file of 5 MB or more that would not fit in the memory that
 is left (typically a second or third very large file) opens the same way, as a
 read-only slice of its first part; close other large tabs and reopen it to edit

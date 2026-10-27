@@ -123,8 +123,9 @@ finds commands by IntelliJ's and VS Code's names for them: **Optimize Imports**,
 **Show Context Actions**, **Reformat Code**, **Find Usages**, **Go to Test**,
 **Copy Reference**, **Show Call Hierarchy**, **Find Action**, **Super Method** and others; typed
 in full, such a name comes first. Menus in this keymap show Alt+Enter for Code Actions. The
-**VS Code** keymap binds Ctrl+F12 Go to Implementation, Alt+F12 Peek Definition
-and Ctrl+T Go to Symbol in Workspace (⌘F12, ⌥F12 and ⌘T on macOS). The default **Emacs** keymap gathers the language-server
+**VS Code** keymap binds Ctrl+F12 Go to Implementation, Alt+F12 Peek Definition,
+Ctrl+T Go to Symbol in Workspace and Shift+Alt+F Format Document (⌘F12, ⌥F12,
+⌘T and ⇧⌥F on macOS). The default **Emacs** keymap gathers the language-server
 commands under a `C-c l` prefix (`C-c l a` code actions, `C-c l g` generate,
 `C-c l t` refactor this, `C-c l r` rename, `C-c l f` format, `C-c l o` organize
 imports, `C-c l e` problem at caret, `C-c l u` undo last refactoring, and
