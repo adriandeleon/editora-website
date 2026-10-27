@@ -17,33 +17,61 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Go to definition | `lsp.gotoDefinition` | `M-.` |
 | Peek definition | `lsp.peekDefinition` | (palette) |
 | Go to definition in a split | `lsp.gotoDefinitionInSplit` | (palette) |
-| Go to implementation | `lsp.gotoImplementation` | (palette) |
-| Go to type definition | `lsp.gotoTypeDefinition` | (palette) |
+| Go to implementation | `lsp.gotoImplementation` | `C-c l i` |
+| Go to type definition | `lsp.gotoTypeDefinition` | `C-c l d` |
 | Go to declaration | `lsp.gotoDeclaration` | (palette) |
 | Find references | `lsp.findReferences` | `M-S-/` |
 | Go to Symbol in Workspace | `lsp.gotoSymbol` | (palette) |
-| Call hierarchy | `lsp.callHierarchy` | (palette) |
-| Type hierarchy | `lsp.typeHierarchy` | (palette) |
+| Call hierarchy | `lsp.callHierarchy` | `C-c l c` |
+| Type hierarchy | `lsp.typeHierarchy` | `C-c l h` |
+| Next / previous problem | `lsp.nextProblem`, `lsp.previousProblem` | `M-g M-n`, `M-g M-p` |
+| Show problem at caret | `lsp.problemAtCaret` | `C-c l e` |
 
 The goto, references and hover commands are also in the editor right-click menu
 while a server is active, under a single **LSP** submenu, and you can
 **Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**
 and **Go to Type Definition** join that menu only when the server
-supports them, so it never offers a dead entry.
+supports them, so it never offers a dead entry. **Go to Super Method** (Navigate
+menu, and this submenu for Java) jumps from anywhere in a method, its `@Override`
+and Javadoc included, to the method it overrides or implements. That includes an
+anonymous class's method, wherever the class is written: in a method, a field, an
+initializer or an enum constant. The type hierarchy fills in what the server
+misses, so an interface's default method and a method two interfaces declare both
+have somewhere to go; of two where one overrides the other, the nearer one is
+offered. A static or private method, or another overload, has no super method. In
+a lambda it goes to the functional interface's method, in a constructor to the
+super constructor it calls (through `this(...)` too), and from a class to its
+supertypes, the superclass first and each named by its type. Several targets open
+a picker, and it works the same in a library source tab.
 
 The submenu does not change which actions a server contributes. A
 fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
 and the spelling suggestions near the top of the menu, and labels entries such
 as "Go to Definition" as coming from the language server.
 
+When an implementation lives in the JDK or a dependency, Go to Implementation
+lists every implementation in a picker, each with its package and a nested
+class by its own name (`AbstractList.SubList`), and opens the one you choose as
+read-only source.
+
 **Find references** and Go to Implementation list multiple results in a browsable
 **References** tool window (`tool.references`), grouped by file with a line and
 preview; a single result jumps straight there. When the file has an open tab,
 the preview is the reference's line with the editor's syntax highlighting, in
-the active editor color theme; a reference in a file with no open tab shows its
-position only. **Go to Symbol in Workspace**
-opens a live search over every symbol in the project. Where no server is
-running, Editora's own
+the active editor color theme; for a file with no tab the line is read from disk
+in the background and filled in a moment later. Each file's header names its
+folder, so two `Main.java` in different packages can be told apart, the summary
+names what was searched ("5 references to area in 4 files"), and a reference
+that writes the symbol (an assignment, `+=`, `++`) is marked **(write)**. The
+declaration itself is not listed, so Find References on an unused symbol says
+there are none. A request that fails or times out says so instead of "No
+references".
+
+**Go to Symbol in Workspace** opens a live search over every symbol in the
+project, methods included, with JDK and library types after the project's own,
+labelled with their module or jar. With a Java server running,
+[Search Everywhere](/docs/navigation#search-everywhere) lists those library
+classes too, in the same order. Where no server is running, Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project) answers the
 same question.
 
@@ -55,21 +83,32 @@ a new editor group beside the code that referenced it. Both are covered in
 
 **Definitions inside libraries work too.** A Java definition that lives in the
 JDK or a dependency is fetched from the server and opened in a read-only,
-highlighted tab at the right line, and `M-.` keeps working *from inside* that
-tab, either onward into another library class or back into your own code.
+highlighted tab on the declaration, not the start of its Javadoc. Inside that
+tab the language server keeps working: Go to Definition, hover, Find References
+(which finds your project's calls), Go to Implementation, Type Definition and
+Declaration, Peek Definition and both hierarchies, onward into another library
+class or back into your own code. Peek Definition on a library member shows its
+source in the peek window rather than opening a tab.
 
 **Call and type hierarchy** open in a **Hierarchy** tool window. Call hierarchy
 shows who calls the method under the caret, or what it calls (flip with the
-Callers / Callees toggle); type hierarchy shows a type's supertypes and
-subtypes. Each level is fetched from the server as you expand it, and Enter or a
-double-click jumps to any entry.
+Callers / Callees toggle); a member called more than once is one row with its
+count, as in `append(String) ×2`. Type hierarchy shows a type's supertypes and
+subtypes, and on an interface it opens on the subtypes, its implementations.
+Each level is fetched from the server as you expand it, and Enter or a
+double-click jumps to any entry, a JDK or library one included.
+
+**Next Problem** and **Previous Problem** move the caret to the file's next or
+previous error, wrapping at the end (its warnings when it has no errors), and say
+what it is; **Show Problem at Caret** says the problem under the caret, or the
+worst one on its line.
 
 ## Reading the code
 
 | Feature | Command | Default key |
 | --- | --- | --- |
 | Hover docs | `lsp.hover` | `C-c h` |
-| Signature help | `lsp.signatureHelp` | (palette, automatic) |
+| Signature help | `lsp.signatureHelp` | `C-c l s` (also automatic) |
 | Toggle inlay hints | `view.toggleInlayHints` | (palette) |
 | Toggle code lenses | `view.toggleCodeLens` | (palette) |
 
@@ -79,7 +118,8 @@ popup no taller than part of the window.
 
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
-overload counter, and the signature's documentation. It follows your typing as
+overload counter, and the signature's documentation (for Java, the method's
+Javadoc, led by the current parameter's own `@param` text). It follows your typing as
 arguments are entered, stays open across multiline calls, and lets you move
 between overloads with `lsp.nextSignature` and `lsp.previousSignature`. It
 closes when the caret leaves the call, on Escape, or on scroll. Finished
@@ -89,10 +129,13 @@ popup.
 **Inlay hints** are the server's parameter-name and inferred-type annotations,
 drawn in grey italics inline, at the position they describe. They are **off by
 default**; turn them on in the **Language server features** card of Settings →
-Code Completion or with `Toggle Inlay Hints`. By default a parameter-name hint
+Code Completion or with `Toggle Inlay Hints`. A hint keeps the space the server
+asks for, so a lambda's type reads `String s ->`. By default a parameter-name hint
 appears only where the argument is a literal; **LSP: Set Inlay Hint Filter**
-(`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered. They
-cost nothing while off.
+(`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered; in Java
+they show the inferred type of a `var` and of a lambda's parameters. Arguments
+named only by number (`List.of(e1: 1, e2: 2)`) get no hint. They cost nothing
+while off.
 
 **Code lenses** are the server's reference and implementation counts, drawn
 after a declaration (`3 references`, `2 implementations`). A lens lights up
@@ -116,6 +159,24 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 squiggle, code the server marks as unused, such as a variable nothing reads,
 is drawn faded, and a call the server marks as deprecated is struck through.
 Those unused and deprecated marks are not listed in the Problems window.
+
+The **problem counter** at the top right of the editor shows the file's errors
+and warnings, or a green check when the server found none. Until the server has
+checked the file it says **Analyzing…** (for Java, until the project has loaded,
+and again after a restart), and **Not checked** when the file's project did not
+import. Its arrows go to the previous and next problem in that
+file, and clicking the counts shows or hides Problems. It hides when the code
+pane is narrower than 520 pixels. When the caret rests on a line where the
+server can **fix an error**, a red **lightbulb** with a `!` appears in the
+gutter; an amber one marks other quick actions, a warning's fixes included.
+Click it for the list **Code Actions** (Alt+Enter) shows, for its own line.
+Refactorings, source actions and Add Javadoc, which a server offers almost
+everywhere, light no bulb, and the bulb goes as soon as you edit its line. In a
+split it shows only in the view you are typing in; a tab you come back to keeps
+it; and its colours come from the editor theme (in Summer Dark, Navy Dark, Fall
+Dark and Blacky, whose accent is the bookmark's yellow, the quick-action bulb takes
+the text colour). Both
+can be turned off in Settings → Code Completion → Language server features.
 **Completion** is merged into
 the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
 tool window builds its outline from the server's document symbols, with real
@@ -129,12 +190,20 @@ element: a `dependency`, `plugin`, `exclusion` or `extension` by its
 pick from.
 
 Each row in the Problems window ends with the rule's code when the server gives
-one, for example `[SC2086]`. Right-click a row for **Open Rule Documentation**,
+one, for example `[SC2086]` (but not jdtls's numeric problem ids, which link
+nowhere). Right-click a row for **Open Rule Documentation**,
 which opens the rule's page (ShellCheck links every code to its wiki), and
 **Copy Code**, which puts the code on the clipboard.
 
 Java completion reacts immediately after member access and begins identifier
-completion after a short pause. Enter and Tab accept the selected item without
+completion after a short pause. Its documentation popup shows the item's Javadoc;
+the **Excluded types** in the Language server features card (vscode-java's list,
+`sun.*`, `com.sun.*`, `jdk.*` and the like, plus `java.awt.*` by default) are not
+offered, imported or listed by Go to Symbol and Search Everywhere; JUnit and Mockito
+statics such as `assertEquals` and `mock` are offered without an import, which
+is then added; and in an argument or assignment it also offers a call chain that
+gives the expected type, such as `Collectors.toList()` inside `collect(`. The
+list matches what you type against the name, not the parameter list. Enter and Tab accept the selected item without
 also inserting a newline or indentation; complete result lists filter locally,
 and obsolete requests are cancelled as you continue typing. Overloads remain
 distinct, commit characters and server ranges are honored, and method
@@ -143,21 +212,61 @@ help. Auto-imports can safely follow continued typing and remain grouped with
 the completion for undo and redo; an answer that can no longer be rebased is
 dropped instead of touching newer text.
 
+**Smart Type completion** (Edit → Smart Type Completion; Ctrl+Shift+Space in the
+IntelliJ keymaps) opens the list with only what fits the type the code expects
+at the caret, and the status bar names that type. Editora reads the type from:
+
+- a declaration (`String s = `);
+- an assignment, using the type the name was declared with;
+- `return`, using the method's return type;
+- a condition (`if (`, `while (`, after `&&`, `||` or `!`), which expects
+  `boolean`;
+- a call's argument, using the parameter that signature help shows, in every
+  overload the call could be: `System.out.println(` offers an `int` as well as a
+  `char[]`, and the status bar names the other types.
+
+A generic method's type variable takes the type the line declares, matched
+against the method's return type: `List<String> l = List.of(` expects a `String`,
+and `String[] a = names.toArray(` a `String[]`. Inside another call's argument
+(`names.contains(requireNonNull(`) it is left open.
+
+The list keeps the fields, variables and methods of a fitting type, `null` for
+an object, and `true` and `false` for a boolean. After `new`, it keeps the
+classes that implement the type (`ArrayList` for a `List`). A class of your own
+that implements or extends the expected type stays too, because jdtls ranks it
+as a match. Where the code expects no particular type, the full list opens and
+the status bar says so.
+
 The Problems window has an **Open files / Whole project** selector
 (`lsp.toggleProjectProblems`), plus a **Build Project** command
-(`lsp.buildWorkspace`) that recompiles the Java project and fills it. With
-**Open files** selected, problems come only from files you have open, so a
-compile error in a file you haven't touched is not listed. Open files is the
-default, so the window lists more only when you ask for it.
+(`lsp.buildWorkspace`) that recompiles the Java project and fills it; it says
+when the build found errors. With **Open files** selected, problems come only
+from files you have open, so a compile error in a file you haven't touched is
+not listed. Open files is the default, so the window lists more only when you ask
+for it. With **Whole project** selected, saving a Java file runs a quiet
+incremental build, so an error in a closed file clears once its cause is fixed.
+With Open files, the same build runs when another file of the project is open, in
+this window or another one on the same project, so
+a file calling a method you just renamed elsewhere shows the error at once.
+
+Problems of the project rather than of a file, such as a JDK version the build
+expects and the machine does not have, are reported after a Maven or Gradle
+project is imported: said in the status line, and listed in Problems in either
+scope.
 
 ## Changing the code
 
 | Feature | Command | Default key |
 | --- | --- | --- |
-| Code actions / quick fixes | `lsp.codeActions` | (palette) |
-| Rename symbol | `lsp.rename` | (palette) |
-| Format Document | `lsp.formatDocument` | (palette) |
-| Organize imports | `lsp.organizeImports` | (palette) |
+| Code actions / quick fixes | `lsp.codeActions` | `C-c l a` |
+| Generate (Java) | `lsp.generate` | `C-c l g` |
+| Refactor This (Java) | `lsp.refactorThis` | `C-c l t` |
+| Undo Last Refactoring | `lsp.undoRefactoring` | `C-c l u` |
+| Rename symbol | `lsp.rename` | `C-c l r` |
+| Format Document (or the selection) | `lsp.formatDocument` | `C-c l f` |
+| Organize imports | `lsp.organizeImports` | `C-c l o` |
+| Clean Up File (Java) | `lsp.cleanUp` | (palette) |
+| Smart Type completion (Java) | `lsp.smartTypeCompletion` | (palette) |
 | Copy fully qualified name | `lsp.copyQualifiedName` | (palette) |
 | Reload project configuration | `lsp.reloadProject` | (palette) |
 | Re-indent as you type | `view.toggleOnTypeFormatting` | (palette) |
@@ -165,15 +274,18 @@ default, so the window lists more only when you ask for it.
 | Smart semicolon placement | `view.toggleSmartSemicolon` | (palette) |
 
 **Code actions** ask the server what it can do at the caret or selection: quick
-fixes for the diagnostics there, organize imports, generate methods, extract and
-inline refactorings. The list **opens at the caret**, where you are looking,
-with the server's preferred fix preselected so Enter usually does the right
-thing; arrow keys or `C-n` / `C-p` move, Enter applies, Escape or `C-g`
-dismisses. Every action shape is supported, including a server-side command whose
+fixes for the diagnostics there, assists, and extract and inline refactorings.
+The list **opens at the caret**, where you are looking, with the fixes first,
+then assists, refactorings and source actions, each row labelled **Fix**,
+**Assist**, **Refactor** or **Generate** in words, and a title the server offers twice listed
+once. The fixes for a line's problem are offered from anywhere on that line, not
+only on the squiggle. Typing narrows the list to titles containing what you type
+(Backspace widens it again) instead of editing the code behind it; arrow keys or
+`C-n` / `C-p` move, Enter applies, Escape or `C-g` dismisses. Every action shape is supported, including a server-side command whose
 edits
-arrive back over `workspace/applyEdit`. Edits land as normal undoable edits, one
-undo step per file, and a multi-file fix opens the untouched files in background
-tabs. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
+arrive back over `workspace/applyEdit`. An edit to the open file is one undo
+step; one that changes other files is applied and saved as one
+[refactoring](#java-refactorings-that-ask-a-question), undone together. `Ctrl-.` / `Cmd-.` is bound in the VS Code, Sublime and IntelliJ keymaps;
 the command is in the palette and the right-click menu in every keymap.
 
 **Organize Imports** works the way the file's server does it: jdtls's own
@@ -190,13 +302,31 @@ is interrupted in the middle of an edit that moves or deletes files, the next
 time the project is opened an **Interrupted Refactoring** dialog offers to put
 the files back.
 
-**Java code generation** is in that same menu: **Generate toString()**, **Generate
+**Java code generation** has its own list, **Generate…** (`lsp.generate`,
+Alt+Insert in the IntelliJ keymap): **Generate toString()**, **Generate
 hashCode() and equals()**, **Generate Constructors**, **Generate Getters and
-Setters**, **Generate Delegate Methods** and **Override/Implement Methods**. Each
-opens a checkbox list so you choose which fields or methods to include, with
-Space to toggle and Enter to generate. Delegate Methods asks for the field to
-delegate to first, then lists that field's methods. The server offers these
-only when the editor declares that it can drive the picker, and Editora does.
+Setters**, **Generate Delegate Methods** and **Override/Implement Methods**
+(`lsp.overrideMethods`, Ctrl+O in the IntelliJ keymap). For Java they are not
+repeated in the quick-fix list. Each opens a checkbox list so you choose which
+fields or methods to include, with Space to toggle and Enter to generate;
+hashCode() and equals() starts with every field ticked, and Enter with nothing
+ticked says so. Delegate Methods asks for the field to delegate to first, then
+lists that field's methods. The server offers these only when the editor
+declares that it can drive the picker, and Editora does.
+
+**Refactorings have commands of their own**, in the **Code ▸ Refactor** submenu
+and the palette: **Refactor This…** (`lsp.refactorThis`) lists the ones at the
+caret, and **Extract Variable**, **Extract Constant**, **Extract Field**,
+**Extract Method**, **Introduce Parameter**, **Inline**, **Move…** and **Change
+Signature…** (`lsp.extractVariable`, `lsp.extractConstant`, `lsp.extractField`,
+`lsp.extractMethod`, `lsp.introduceParameter`, `lsp.inline`, `lsp.move`,
+`lsp.changeSignature`) each run the one jdtls offers there.
+
+The extract refactorings work **at a bare caret**: with nothing selected Editora
+asks the server which expressions are there and lets you pick one when there are
+several. Extract to Field and Convert Local to Field ask where to initialize the
+field when there is a choice. After an extraction, **Rename opens on the name the
+server picked** (`d`, `getTotal`), so you can name it at once.
 
 ### Java refactorings that ask a question
 
@@ -211,6 +341,11 @@ so each one asks before it runs. They need the Java language server.
 | A nested class | its own new file, or another class |
 | A static member | another class |
 | An instance method | one of its parameters or fields |
+
+Moving a class lists the packages of its own source folders (a class in main
+code: the main packages only), and ends with **New package…**: type a package that does not exist yet and its folder
+is created under the current source folder. A Move Instance Method that jdtls
+finds problems with shows them first and moves only if you continue.
 
 **Extract Interface** shows the class's methods as a checkbox list, then asks
 for the interface's name and its package.
@@ -231,22 +366,54 @@ public String greet(Helper helper, int n, boolean loud = false)
 ```
 
 A line that cannot be read as a method signature is rejected and nothing
-changes.
+changes. When Change Signature or Move changes other files, they are listed
+first, ticked, the way a [rename](#rename-preview) is, and a file you untick is
+left alone.
+
+**A refactoring is one change across files.** Every file a refactoring renames,
+moves or creates is saved, so the project compiles straight away, and a file it
+opened only to edit is saved and its tab closed. Renaming a `.java` file in the
+Project tree, or dragging it (or a package folder) into another package, is such a
+refactoring too: the class is renamed or its package line changed with it, and
+the files that use it are updated; **Undo Move** moves it back the same way.
+Dragging several files is one refactoring: **Undo Move** and **Undo Last
+Refactoring** each take all of them back, and either one ends the other. Dragging
+only files jdtls has nothing to change for, such as a text file, is no
+refactoring, so the one before stays undoable. One drag runs at a time: a drop
+while one is under way says to drop again when it is done, and Undo Move says to
+undo it when it is done. While jdtls is still loading, or
+does not answer, Editora asks once before it moves Java files without updating
+their package lines. **Undo** in one of those files
+offers to undo the refactoring in all of them, and **Undo Last
+Refactoring** (`lsp.undoRefactoring`) does that from anywhere, moving renamed
+files back and removing created ones. A rename onto a name that is already taken
+is reported after it lands, with the way back.
 
 Three commands sit outside the menu: **Organize Imports** sorts and prunes a
 file's imports directly (in Java, JavaScript and TypeScript), **Copy Fully Qualified Name** puts the full name of the
 symbol at the caret on the clipboard, and **Reload Project Configuration** makes
-the server re-read `pom.xml` or `build.gradle` when a dependency change hasn't
-been picked up.
+the server re-read `pom.xml` or `build.gradle`, also from the `pom.xml` tab
+itself. A build file you save is picked up on its own, so Reload is rarely
+needed. In Java, Organize Imports asks which class an ambiguous name such as
+`Date` or `List` means, and so does the **Add all missing imports** quick fix.
+The question waits for you: it does not time out while it is open, and goes
+away when the server stops (a restart). A second Organize Imports while it is
+open says to answer it first, and a save does not organize the file under it.
+If the file changes while the question is open, the answer no longer applies and
+the status says to run Organize Imports again.
+After a failed Gradle import, saving the fixed build file imports the project
+again, as **Reload Project Configuration** does from any of its tabs.
 
 **Rename symbol** renames across the whole workspace. The prompt comes pre-filled
 with the current name, and the server validates the spot first, so you are told
 up front when something cannot be renamed. Renaming a public Java class also
 **moves its `.java` file**, and the tab, session state and language server all
-follow to the new path. `F2` is bound in the VS Code, Sublime and IntelliJ
-keymaps.
+follow to the new path. Renaming a `.java` file or a package folder in the
+**Project** tree renames the class or package too, so references, `package`
+lines and imports follow. `F2` is bound in the VS Code and Sublime keymaps, and
+`Shift+F6` in the IntelliJ keymap.
 
-A rename that reaches **beyond the file you're looking at** shows you what it
+<a id="rename-preview"></a>A rename that reaches **beyond the file you're looking at** shows you what it
 will do first: every affected file, its change count, and where it moves to, with
 a tick beside each one so you can leave a file out. The preview also lists any
 file or folder the rename **would delete** and any existing file it **would
@@ -255,16 +422,17 @@ straight away, because the result is on screen and one undo away.
 
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
-`.html`. It tells the server the file's own indentation: the `indent_style` and
+`.html`. With a selection it formats only the selected lines. It tells the server the file's own indentation: the `indent_style` and
 `indent_size` from [EditorConfig](/docs/editorconfig) when there are any, else
 what the file already uses, not the global tab size. A two-space script stays
 two-space. In a language whose server supports range formatting, **Tab** also snaps
 the current line's indentation to the server's convention.
 
-### Two Java-only assists
+### Java-only assists
 
 **Pasted code imports itself.** Paste a snippet into a Java file and the server
-is asked which imports the pasted text needs; they are added for you. Only the
+is asked which imports the pasted text needs; they are added for you, and only
+for names the pasted text uses. Only the
 language server can do this, because it needs the type resolver. An answer that
 lost a race with your typing is dropped rather than applied to text it wasn't
 computed for.
@@ -287,6 +455,84 @@ only, never a reformat of the line under you, and the local auto-indent still
 acts first, so nothing feels slower and the server only corrects the cases the
 heuristic gets wrong. Off by default: turn it on in Settings → Code Completion or
 with `view.toggleOnTypeFormatting`.
+
+**A Javadoc for the declaration below.** Typing `/**` above a method or class
+closes the comment and offers the server's **Javadoc comment** template, with
+`@param`, `@return` and `@throws` for that declaration. Pressing Enter instead
+splits the comment as usual.
+
+**Organize imports and format on save.** **Organize imports on save (Java)** and
+**Format on save (Java)** in Settings → Code Completion → Language server
+features tidy a Java file after you save it, and save it again when that changed
+it, as IntelliJ's Actions on Save do. Both are off by default. Autosave never
+runs them, since organizing imports while you type would remove one you have
+just added, and an ambiguous import is left out rather than asked about. While
+Organize Imports is asking you which class to import, a save runs none of them,
+so your answer still applies.
+
+**Clean-ups.** **Code → Clean Up File** applies the jdtls clean-ups you tick
+under **Java clean-ups → Choose…** on the same Settings page: add `@Override`
+and `@Deprecated`, remove redundant modifiers and `super()` calls, qualify
+members, add `final`, use pattern-matching `instanceof`, switch expressions,
+lambdas, try-with-resources and text blocks, and more (19 in all). The first
+four are on by default; the others rewrite code, so they are yours to pick.
+**Clean up on save (Java)** runs them after an explicit save, before Organize
+Imports and Format.
+
+### The Java server and your project
+
+- **Which jdtls.** Install fetches jdtls **1.63.0**. [Doctor](/docs/troubleshooting#doctor)
+  names the installed version and warns when it is older, with an
+  [Update…](/docs/troubleshooting#update-for-servers-older-than-editoras)
+  button that installs 1.63.0 and restarts the server on it.
+- **Which JDK.** jdtls itself needs a recent Java (25 for jdtls 1.63, read from
+  the installed jdtls), and is given one Editora finds even when `JAVA_HOME` is
+  older; when there is none, it says so, and Doctor's jdtls row names the Java
+  it runs on and its version. Of two JDKs of one version, a project gets the one
+  with its sources, so JDK parameter names and docs show; when no JDK of that
+  version has them, Doctor says which package adds them. The
+  default JDK for your projects, which Gradle also runs on, is Settings → Build
+  Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
+  jdtls keeps the JDK it started with, so changing it says to run **Restart
+  Language Servers**.
+- **A failed import says why.** When jdtls cannot import the project (a Gradle
+  build that does not run, say), the status bar names the reason it logged and
+  Problems lists the build file's own errors. Fix the build file and run
+  **Reload Project Configuration**: after a failed import it starts the server
+  over to import again. A project that imports with build problems (a Maven
+  dependency that cannot be found) is loaded, and Problems lists them.
+- **Your project folder stays clean.** jdtls keeps Eclipse's `.project`,
+  `.classpath` and `.settings/` in its own workspace, not in your project.
+- **Build files sync on save.** A change to `pom.xml` or `build.gradle` reaches
+  the classpath when you save it.
+- **One server per build.** Files of the modules of one Maven reactor or Gradle
+  build share a server even without a project open. A plain folder of `.java`
+  files with packages, and no build file, gets the right source folder as soon as
+  a file opens. Java files keep their server up to 50,000 lines.
+- **The project's own code style.** IntelliJ's import settings in the project's
+  `.editorconfig` (`ij_java_imports_layout`,
+  `ij_java_class_count_to_use_import_on_demand`,
+  `ij_java_names_count_to_use_import_on_demand`) set the import order and when
+  imports become `*`. The Eclipse formatter profile your build formats with
+  (Spotless's `<eclipse><file>` or `eclipse().configFile(…)`, else
+  `eclipse-formatter.xml` at the project root) is what Format Document uses.
+  Editing the profile, or removing it, applies without restarting the server,
+  also for a profile kept in Eclipse's `.settings` or a `config` folder, and a
+  profile removed while Editora was closed no longer formats the old way. A
+  project that already has an Eclipse `.settings` folder gets jdtls's compiler
+  settings written into it (a committed `org.eclipse.jdt.core.prefs` changes);
+  a project without one gets none.
+- **Lombok.** For a project whose build declares Lombok, jdtls runs with it as
+  its agent, using the newest Lombok jar already in your local Maven or Gradle
+  cache, so the members Lombok generates are seen. When none has been downloaded
+  yet, Editora offers to download Lombok from Maven Central and restarts the
+  server with it.
+- **Null analysis.** In a project with JSpecify, `javax.annotation`, Spring or
+  Eclipse null annotations, jdtls checks `@Nullable` and `@NonNull` use.
+- **A fresh start.** **LSP: Clean Java Workspace and Restart**
+  (`lsp.cleanJavaWorkspace`) deletes the project's jdtls index and the
+  classpath it worked out, then imports the project again: the cure for a stale
+  or corrupt index.
 
 ## Folding and selection
 
@@ -580,9 +826,20 @@ diagnostics, completion and navigation.
 
 Servers start **per tab, as you visit it**, rather than all at once while a
 session restores, and they **shut down when their last file closes**, after a
-three-minute grace period so reopening a file keeps the server warm. Each window
-gets its own jdtls workspace directory, so two windows on the same Java project
-can't contend for one Eclipse workspace lock.
+three-minute grace period so reopening a file keeps the server warm.
+
+**Two windows on one Java project share one Java server.** The second window
+joins the jdtls the first one runs, so the project isn't imported twice and the
+second window costs no extra memory (a jdtls takes about 1.5 GB). Both windows
+show its diagnostics; a window that opens while jdtls is still importing the
+project waits for it to finish before it says the project is ready. A question
+the server asks, such as which class to import,
+goes to the window you are working in. Closing one window leaves the server to
+the other, and it stops when the last window closes. **Restart Language
+Servers** in either window restarts it for both, and the other window reopens
+its files on the new server. It restarts only the current project's jdtls: a
+second project open in the same window keeps its server and its problems. Projects on a remote host, in a container or in
+WSL, and other language servers, still get one server per window.
 
 jdtls keeps an index for every Java folder you have opened, under
 `jdtls-workspaces` in your config folder: about 40 MB each, and often far more.
@@ -614,7 +871,8 @@ Editora does not start the server and says why, with the fix:
 `npm install -g typescript@6`, or **Install…** on the card. It does not try
 again each time you open another tab. [Doctor](/docs/troubleshooting#doctor)
 and the card's **TypeScript** line show the version in use, or that it has no
-`tsserver`.
+`tsserver`. In that case the Doctor row is a warning with an **Update…** button,
+which installs typescript-language-server again with TypeScript 6 beside it.
 
 **A folder's own TypeScript runs only once you trust the folder.** Many projects
 have their own `node_modules/typescript`. That is code from the folder, so
@@ -893,7 +1151,8 @@ a periodic full resync as a divergence safety net, and semantic highlighting
 transfers only what changed on servers that support token deltas. Diagnostics for
 files that aren't open are dropped by default, to keep the Problems window
 focused on what you're editing, and the whole-project selector above lifts that
-when you want it. Still deferred: format-on-save.
+when you want it. Java can [organize imports and format on
+save](#java-only-assists); other languages cannot yet.
 
 The protocol library is **LSP 3.18 / DAP 1.70**. Two fields it widened affect
 Editora. A diagnostic's message may be markup rather than plain text;

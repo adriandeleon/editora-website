@@ -431,6 +431,11 @@ it with breakpoints. A green ▶ also appears in the gutter next to every
 `public static void main`, and the editor right-click menu offers
 *Run '….main()'* and *Debug '….main()'*.
 
+**Run: Run Context at Caret** (`run.context`; Ctrl+Shift+F10, or ⌃⇧R on
+macOS, in the IntelliJ keymaps) runs whatever the caret is in: the test at the
+caret (the whole test class when the caret is above its declaration), else the
+class's `main` as its ▶ does, else the file. A Java class with neither says so.
+
 There are two paths under that, picked automatically:
 
 - With the **Java language server** set up, Editora asks it for the project's

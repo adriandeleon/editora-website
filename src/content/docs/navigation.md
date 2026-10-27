@@ -43,6 +43,10 @@ project files and symbols**, so you can type the *name* of the thing instead of
 first deciding which of Editora's five pickers, each behind its own chord, it
 lives in.
 
+With a Java language server running, the symbols include the JDK's and your
+dependencies' classes (`List`, `Assertions`), listed after the project's own and
+opened as read-only library source.
+
 A leading sigil restricts it to a single source when you already know:
 
 | Prefix | Searches |
@@ -282,7 +286,9 @@ them for the file.
 those. The marker families recognized are `//#region`, `//region`, `#region`,
 `# region`, `#pragma region`, `<!-- #region -->` and `--region`; Markdown and
 Markwhen are excluded, since `# region` there is a legal heading.
-**Fold All Except Caret** collapses everything but the block you are in.
+**Fold All Except Caret** collapses everything but the block you are in. Fold
+All, Unfold All and the others keep the caret where it was, or put it on the
+fold that now hides it.
 
 All of these **merge** with the folds Editora detects, and with any a language
 server reports, rather than replacing them.

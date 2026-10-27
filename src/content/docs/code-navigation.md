@@ -168,7 +168,8 @@ something else. A file with unsaved changes is never reused either.
 **Go: Related File** (`nav.relatedFile`) pairs a file with its counterpart: a
 test and the class it tests, a header and its implementation, a component and its
 stylesheet. It works in both directions, and from a test the class under test is
-offered first.
+offered first. It is in the **Navigate** menu, on `C-c S-t` in the Emacs keymap
+and Ctrl+Shift+T in the IntelliJ keymap.
 
 | From | Offers |
 | --- | --- |
@@ -192,6 +193,10 @@ finds the rest.
 One match opens. Several offer a picker, since `Foo.css` and `Foo.scss` can both
 exist and only you know which was meant.
 
+A Java class under `src/main/java` with no test is offered one: Editora asks to
+create a JUnit 5 test in the same package under `src/test/java`, the folder
+Maven and Gradle look in, and opens it.
+
 ## Keeping your place
 
 Three things work together here, and each is documented where it lives:
@@ -203,6 +208,8 @@ Three things work together here, and each is documented where it lives:
 - [**Bookmarks**](/docs/bookmarks-notes) mark places you want to return to
   deliberately, and a **mnemonic** turns one into a single chord.
 
-Bookmarks have default chords. Back, Forward and Recent Locations do not, and
-neither do Go to Symbol in Project, Peek Definition, Go to Definition in Split
-and Related File. Bind the ones you use from **Settings → Keymaps**.
+Bookmarks have default chords, and every keymap binds Back and Forward. Go to
+Symbol in Project, Peek Definition and Related File are bound in the
+[IntelliJ keymap](/docs/keymaps#java-chords), and Related File also in Emacs
+(`C-c S-t`). Recent Locations and Go to Definition in Split have no default
+chord. Bind the ones you use from **Settings → Keymaps**.

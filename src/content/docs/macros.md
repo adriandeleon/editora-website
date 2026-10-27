@@ -102,5 +102,6 @@ key bindings are kept.
 ## Notes
 
 The recording hooks are inert when you're not recording, so there's no idle
-cost. Macros and their key bindings are not part of
-[settings sync](/docs/settings-sync).
+cost. Macros are not part of [settings sync](/docs/settings-sync). Their key
+bindings are synced with your other shortcuts, but on a computer that does not
+have the macro the shortcut does nothing.

@@ -80,6 +80,58 @@ Enter unfolds a row or loads the next page, Shift+Enter adds the row to
 Watches, Ctrl+C (⌘C on macOS) copies its value and Esc closes the popup. See
 [Inspecting values](/docs/run-debug#inspecting-values).
 
+## Java chords
+
+The **IntelliJ IDEA** keymap uses IntelliJ's chords for the Java tools:
+
+| Chord | Command |
+| --- | --- |
+| Alt+Enter | Quick fixes |
+| Shift+F6 | Rename |
+| F2 / Shift+F2 | Next / previous problem |
+| Ctrl+F1 | Show problem at caret |
+| Alt+Insert | Generate (New in the Project tree) |
+| Ctrl+O / Ctrl+I | Override / Implement Methods |
+| Ctrl+Alt+L / Ctrl+Alt+O | Format / organize imports |
+| Ctrl+N, Ctrl+Alt+Shift+N | Go to Symbol in Workspace |
+| Ctrl+Alt+B / Ctrl+Shift+B | Go to implementation / type definition |
+| Ctrl+H / Ctrl+Alt+H | Type / call hierarchy |
+| Ctrl+P | Parameter info |
+| Ctrl+Shift+I | Peek definition |
+| Ctrl+Shift+T | Related file (test ⇄ class) |
+| Ctrl+Alt+V / C / F / M / P / N | Extract variable / constant / field / method, introduce parameter, inline |
+| F6 / Ctrl+F6 | Move / change signature |
+| Ctrl+Alt+Shift+T | Refactor This |
+| Ctrl+Alt+T | Surround With |
+| Ctrl+J | Insert snippet |
+| Ctrl+Shift+Enter | Complete statement |
+| Ctrl+Shift+Space | Smart Type completion |
+| Ctrl+Alt+Left / Right | Back / forward |
+| Ctrl+Shift+F10 | Run context at caret: the test at the caret (the class above its declaration), else the class's `main`, else the file |
+| Ctrl+U | Go to super method |
+| Ctrl+Alt+Shift+C | Copy fully qualified name (IntelliJ's Copy Reference) |
+| Ctrl+Alt+F7 | Find usages |
+| Ctrl+Shift+= / Ctrl+Shift+- (also on the numpad) | Expand all / collapse all folds |
+
+So in that keymap F2 is no longer Rename, and Alt+Insert is New only in the
+Project tree; New File elsewhere is Ctrl+Alt+Insert. On macOS the keymap follows
+IntelliJ's: ⌘N is Generate in the editor and New in the Project tree, New File
+is ⌃⌘N, ⌃I is Override/Implement Methods, ⌘J is Insert snippet, ⌃⇧R runs the
+context at caret, ⌘U goes to the super method, ⌘⇧= / ⌘⇧- expand and collapse all folds, and ⌘[ / ⌘] go back
+and forward. Text zoom keeps Ctrl+= / Ctrl+- (⌘= / ⌘-). The command palette also
+finds commands by IntelliJ's and VS Code's names for them: **Optimize Imports**,
+**Show Context Actions**, **Reformat Code**, **Find Usages**, **Go to Test**,
+**Copy Reference**, **Show Call Hierarchy**, **Find Action**, **Super Method** and others; typed
+in full, such a name comes first. Menus in this keymap show Alt+Enter for Code Actions. The
+**VS Code** keymap binds Ctrl+F12 Go to Implementation, Alt+F12 Peek Definition
+and Ctrl+T Go to Symbol in Workspace (⌘F12, ⌥F12 and ⌘T on macOS). The default **Emacs** keymap gathers the language-server
+commands under a `C-c l` prefix (`C-c l a` code actions, `C-c l g` generate,
+`C-c l t` refactor this, `C-c l r` rename, `C-c l f` format, `C-c l o` organize
+imports, `C-c l e` problem at caret, `C-c l u` undo last refactoring, and
+others), with `M-g M-n` / `M-g M-p` for the next and previous problem and `M-,` /
+`C-M-,` for back and forward. Every keymap now binds Back and Forward. The
+[Keybindings](/keybindings) page lists them all.
+
 ## Rebinding commands
 
 The **Settings → Keymaps** page lists every command with its current chord.
@@ -118,6 +170,9 @@ chord would clash with one of its chords, the shortcut stays with the keymap it
 was made in and comes back when you switch back. Overrides are also stored **per platform**, since a chord is
 modifier-specific (⌘ on macOS, Ctrl elsewhere), so a config synced between a Mac
 and a Windows or Linux machine binds each OS's own chord instead of both.
+[Settings sync](/docs/settings-sync#shortcuts) can carry your overrides, for
+every keymap, to your other computers; which keymap each one uses stays its
+own.
 
 ## The reference pages
 

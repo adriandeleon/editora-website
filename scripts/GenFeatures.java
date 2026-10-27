@@ -1026,9 +1026,9 @@ Every tool you define becomes its own palette command (and is bindable to a key)
 """),
     new Feature("settings-sync", CE, 11, true,
         "Settings sync",
-        "Keeps your snippets, abbreviations, templates and personal dictionary the same on every computer, through a private Git repository you own. Off by default.",
+        "Keeps your snippets, abbreviations, templates, personal dictionary and shortcuts the same on every computer, through a private Git repository you own. Off by default.",
         """
-Settings sync keeps your **snippets**, **abbreviations**, **templates** and **personal dictionary** the same on every computer. It works through a private Git repository you own, signing in with your own Git credential helper or SSH key; a repository URL with a password or token in it is refused, and there is no Editora account or server.
+Settings sync keeps your **snippets**, **abbreviations**, **templates**, **personal dictionary** and **shortcuts** the same on every computer. It works through a private Git repository you own, signing in with your own Git credential helper or SSH key; a repository URL with a password or token in it is refused, and there is no Editora account or server.
 
 - Set it up in **Settings → Sync**: paste the repository URL, or use **Create on GitHub…** when `gh` is signed in. Connect first shows what the repository would bring.
 - It syncs after startup, shortly after you change something, and every 15 minutes (the interval is set on the Sync page). If Connect is refused, the Sync page says why. `Settings Sync: Sync Now` does it on demand, and a running sync can be cancelled until it starts writing files on this computer.
@@ -1037,7 +1037,7 @@ Settings sync keeps your **snippets**, **abbreviations**, **templates** and **pe
 - Files a sync replaces are first copied to a backups folder in the config directory.
 - Automatic syncs never prompt. A failing sync shows as "Sync ⚠" in the status bar, and Settings → Sync shows a Connected / Not connected / Sync failing pill.
 
-Preferences (`settings.json`), keymaps, macros and themes are **not** synced. See the [Settings sync guide](/docs/settings-sync).
+Shortcuts you changed are synced for every keymap, but which keymap each computer uses is not. Other preferences (`settings.json`), macros and themes are **not** synced. See the [Settings sync guide](/docs/settings-sync).
 """),
     new Feature("doctor", CE, 10, false,
         "Doctor",
@@ -1066,7 +1066,7 @@ A missing tool is a **problem** only when something in the window needs it: a fi
 
 Problems and warnings (amber: found but not usable yet, like a `gh` that isn't signed in or a JDK too old to run a file) are gathered under **Needs attention** at the top. A section where everything is OK folds to one line, and the not-installed tools of a section fold together; **Show** opens them. The summary counts link to the attention group.
 
-Each row has the fix it needs: **Install…** where Editora can fetch the tool, **Turn on** for a feature that is switched off, **How to install** where it can't, and **Settings…** for the page that configures it. Right-click a row to copy it or its path, or to reveal the path in the file manager. **Copy Report** puts the whole report, with the Editora version, OS and Java, on the clipboard for a bug report.
+Each row has the fix it needs: **Install…** where Editora can fetch the tool, **Turn on** for a feature that is switched off, **How to install** where it can't, and **Settings…** for the page that configures it. A server or tool Editora installs at the exact release it is tested with (jdtls, js-debug, the Maven `pom.xml` server, gls, Metals, the Kotlin server, clojure-lsp, ShellCheck and shfmt) gets an **Update…** button when the copy you have is older, or was installed by an earlier Editora that didn't record its version: it installs the tested release and restarts the server on it. See [Update… for servers older than Editora's](/docs/troubleshooting#update-for-servers-older-than-editoras). For the ones Editora installs at their latest release (Pyright, typescript-language-server, gopls, clangd and more), **Check for Newer Versions** in the header asks npm, the Go module proxy, GitHub and HashiCorp for the latest release, only when you click it; rows with a newer one move to **Updates available** with **Update…**. See [Check for Newer Versions](/docs/troubleshooting#check-for-newer-versions). Right-click a row to copy it or its path, or to reveal the path in the file manager. **Copy Report** puts the whole report, with the Editora version, OS and Java, on the clipboard for a bug report.
 
 Probes run fresh each time, off the UI thread, so Doctor reflects the machine as it is now rather than a cached answer from startup. **Refresh** and installs keep the last results on screen while checking again, and the header says when the check ran. In a project on an SSH host, in WSL or in a container, the header says that the rows describe this computer.
 """)

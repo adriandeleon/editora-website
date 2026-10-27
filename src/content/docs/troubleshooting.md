@@ -38,6 +38,65 @@ installed, is it the version I think, and is Editora looking at the right one" i
 one pass. **Copy Report** puts the whole report on the clipboard, ready to paste
 into a bug report.
 
+### Update… for servers older than Editora's
+
+Editora installs some servers and tools at the exact release it is tested with:
+jdtls (Java), the JavaScript debugger (js-debug), the Maven `pom.xml` server
+(lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
+ShellCheck and shfmt. A newer Editora can move to a newer release of one of
+them. When the copy you have is older than the one this Editora is tested with,
+its Doctor row is a warning that names both versions, and its **Install…**
+button reads **Update…**.
+
+**Update…** downloads the release Editora is tested with, replaces the old copy,
+and restarts the server on it. If the download fails, the server starts again on
+the old copy. Install… in Settings also replaces Editora's own copy when it is
+known to be older.
+
+What the warning says depends on whose copy it is:
+
+- **Editora installed it.** For example *Editora installed 0.10.0; this release
+  of Editora is tested with 0.11.0.* Update replaces it.
+- **Installed by an earlier Editora.** Editora now records the version of each
+  copy it installs. For a copy from before that, Doctor reads the version from
+  its files, or from what the program prints, where it can. Where it can't tell
+  (a Kotlin server from an earlier Editora, for example), the row says the copy
+  may be older and offers Update, which installs the tested release.
+- **Your own copy is older.** A language server you installed yourself, or a
+  ShellCheck or shfmt found on your `PATH`: Update installs Editora's own copy
+  and uses it instead, and your copy stays where it is. Doctor warns about your
+  own copy only when it can tell its version; otherwise the row stays OK.
+- **A ShellCheck or shfmt path set in Settings.** You get the warning but no
+  Update, since Settings names that copy on purpose. Update that copy yourself,
+  or clear the path in **Settings → LSP** to use Editora's own.
+
+### Check for Newer Versions
+
+Many other servers and tools Editora installs at their latest release, so there
+is no tested version to compare with. **Check for Newer Versions**, in Doctor's
+header, asks where each one is published (npm, the Go module proxy, GitHub and
+HashiCorp) for its latest release. It covers Pyright,
+typescript-language-server, the JSON, HTML, CSS, Bash, YAML, Dockerfile, TOML
+and Astro servers, gopls, clangd, lua-language-server, tinymist, terraform-ls
+and the Mermaid CLI (`mmdc`), and only the ones that are installed and working.
+
+Nothing is looked up until you click the button: opening Doctor or clicking
+**Refresh** never asks for newer versions. The status bar then says what the
+check found: newer releases for some of your language servers and tools, that
+they are all on their latest releases, or that some could not be checked (when
+you are offline, for example).
+
+A row with a newer release moves to **Updates available**, below **Needs
+attention**, and the summary links to it. The row stays OK, says which version
+is installed and which is the latest release, and has an **Update…** button
+that installs the latest release. Editora keeps what the check found until you
+close the window, so a Refresh still shows the group.
+
+The pinned servers and tools [above](#update-for-servers-older-than-editoras)
+are never looked up: a new Editora release brings their newer versions, and
+**Update…** on their rows installs them. Servers that a toolchain keeps up to
+date, such as rust-analyzer through rustup, are not looked up either.
+
 ## A launcher is blocked on first run
 
 Installers are currently unsigned, so the operating system stops the first
@@ -158,10 +217,38 @@ exceptions into a **Debug Log**:
 
 - Open it with **Settings → Advanced → Show Debug Log…** or `view.debugLog`.
 - It also mirrors to `editora-session.log` in your config folder, so it survives
-  a crash for a bug report.
+  a crash for a bug report. The session before keeps its file as
+  `editora-session.prev.log`, so reopening Editora after a crash does not erase
+  the log that recorded it. Neither file goes into a configuration export.
 
 The **message log** (click the status-bar message, or `view.messageLog`) keeps a
 session history of the transient status-bar messages.
+
+## Reporting a problem
+
+**Help → Report a Problem…** (`help.reportProblem`, also a button in the Debug
+Log window) prepares a bug report from the Debug Log of this session and the one
+before. It also lists Editora's version, the Java it runs on, your operating
+system and your plugins. Before you see it, Editora replaces what looks private:
+paths in your home folder, your user name, e-mail addresses, credentials in URLs,
+authentication headers and values shaped like tokens. The window says how many it
+replaced.
+
+The report is shown, and you can edit it, before anything leaves your computer.
+Editora sends nothing by itself:
+
+- **Open GitHub Issue** copies the report and opens a new issue in your browser
+  with it filled in. A report too long for the link is left on your clipboard
+  instead, for you to paste into the issue's *Problem report* box. Describe what
+  happened, then submit the issue yourself.
+- **Copy** and **Save…** are there for any other way of sending it.
+
+The issue is public, so read the report first and delete anything you would
+rather not share.
+
+When Editora will not start, run `editora --report` instead (see
+[command-line flags](/docs/cli#flags)). It writes the same report to the current
+folder, prints its path and the link of a new issue, and opens both.
 
 ## After a crash or an interrupted save
 
@@ -263,5 +350,5 @@ fraction of a second into startup, intermittently, on any CPU without AVX-512
 Zen 4). It is fixed in 0.13.1, and there is no workaround worth applying on the
 old build.
 
-If you are still stuck, [open an issue](https://github.com/adriandeleon/Editora/issues) and
-attach the Debug Log.
+If you are still stuck, [report a problem](#reporting-a-problem): the report
+carries the Debug Log, redacted.
