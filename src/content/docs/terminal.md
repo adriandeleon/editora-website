@@ -305,7 +305,7 @@ Selecting text:
   moves windows with Alt+drag, as GNOME and KDE do, use **Ctrl+Alt+drag**.
 - Typing doesn't clear the selection, so you can type a command under a
   selection of the output above it. The selection goes when the text under it
-  is redrawn.
+  is redrawn, and stays on its text when you resize the terminal.
 - **Settings → Terminal → Copy on select** copies a selection to the clipboard
   as soon as you make it.
 
@@ -449,10 +449,11 @@ terminal's size on its own; 0 keeps the editor's size. Either way the
 terminal follows the editor's text zoom.
 
 The icons tools such as `eza`, `lsd` and powerline prompts print are drawn in a
-[Nerd Font](https://www.nerdfonts.com) installed on your computer: the Nerd
-Font version of the editor's font when you have it, else Symbols Nerd Font,
-else any other. Without one installed, they are whatever your system's fallback
-fonts show.
+[Nerd Font](https://www.nerdfonts.com): the Nerd Font version of the editor's
+font when you have it installed, else Symbols Nerd Font, which comes with
+Editora, so the icons show without installing anything. Its icons are drawn a
+little wider than a character, as Nerd Font versions of text fonts draw them;
+powerline separators stay at text size.
 
 ## Closing a busy terminal
 
