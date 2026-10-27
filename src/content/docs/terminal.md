@@ -10,7 +10,8 @@ bottom of the window: on your computer, or where a project's commands run,
 on a [remote host](#terminals-on-a-host-in-a-container-or-in-wsl), in a dev
 container or in a WSL distribution. A focused terminal owns the keyboard, so
 Ctrl+C, Escape, and your shell's own shortcuts work as they do in any terminal.
-Its colors follow the editor theme and its font is the editor's, and a
+Its colors follow the editor theme unless you
+[pick a terminal theme](#colors-and-font), its font is the editor's, and a
 Ctrl+click (⌘-click on macOS) on a file name in the output opens that file in
 the editor.
 
@@ -362,6 +363,27 @@ terminal's red, its number color the blue, and so on, with the editor's
 background and text colors behind and in front. Switching themes recolors
 open terminals at once.
 
+To give the terminal colors of its own, pick a scheme in **Settings →
+Terminal → Theme**. **Editor theme**, the default, is the behavior above. The
+other choices are fixed terminal color schemes, listed under **Light** and
+**Dark** headings:
+
+- **Editora Dark** and **Editora Light**: the flagship editor themes' terminal
+  colors, kept whatever the editor shows
+- **Solarized Dark** and **Solarized Light**
+- **Dracula**
+- **Nord**
+- **Gruvbox Dark** and **Gruvbox Light**
+- **One Half Dark** and **One Half Light**
+- **Tango Dark** and **Tango Light**
+- **Campbell**, the Windows Terminal default
+
+A scheme uses the sixteen colors its authors publish, so a shell looks as it
+does in other terminals with that scheme. It stays the same when you switch
+editor themes, so a light editor can sit beside a dark terminal. Picking a
+scheme recolors open terminals at once. Text too faint against a scheme's
+background is darkened or lightened just enough to stay readable.
+
 The font is always the editor's. **Settings → Terminal → Text size** sets the
 terminal's size on its own; 0 keeps the editor's size. Either way the
 terminal follows the editor's text zoom.
@@ -390,6 +412,7 @@ a program**.
 | Shell integration | On | Start bash and zsh with Editora's [shell integration](#shell-integration). |
 | Type-ahead | On | Show typing before a slow shell echoes it; see [Typing over a slow connection](#typing-over-a-slow-connection). |
 | Open Terminal Here uses the system terminal | Off | Off: [Open Terminal Here](#open-terminal-here) opens a tab in the Terminal tool window. On: it starts your system's terminal application. |
+| Theme | Editor theme | The terminal's colors. Editor theme follows the editor theme; any other choice is a fixed color scheme. See [Colors and font](#colors-and-font). |
 | Text size | 0 | The terminal's text size, 6 to 72. 0 uses the editor's size. |
 | Cursor | Block | Block, Underline, or Bar. |
 | Flash on the bell character | On | Flash the terminal when a program rings the bell, and mark its tab when it is out of sight. |
@@ -399,7 +422,7 @@ a program**.
 | Confirm a paste of several lines | On | Ask before pasting several lines into a program that would run each at once; see [Copy and paste](#copy-and-paste). |
 | Ask before closing a terminal that is running a program | On | See [Closing a busy terminal](#closing-a-busy-terminal). |
 
-Text size, cursor, bell, type-ahead, the command list, the Option key, the
+Theme, text size, cursor, bell, type-ahead, the command list, the Option key, the
 paste question and the close question apply to open terminals. Shell, shell
 integration, and scrollback apply from the next terminal you open.
 
@@ -409,7 +432,8 @@ integration, and scrollback apply from the next terminal you open.
   prompt themes, such as Oh My Bash's *agnoster*, draw text in the default
   color on a black segment, which is dark on dark under a light editor theme.
   No terminal palette fixes that; use a prompt theme that suits light
-  backgrounds, or a dark editor theme.
+  backgrounds, a dark editor theme, or a dark
+  [terminal theme](#colors-and-font).
 - Without [shell integration](#shell-integration) (another shell, or the
   setting off), Editora reads a shell's current folder on Linux and macOS only.
   On Windows, tab titles then don't follow the folder, and only absolute paths
