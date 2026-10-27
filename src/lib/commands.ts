@@ -1027,6 +1027,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "About Editora", id: "help.about", desc: "Show version, license, and links for Editora." },
       { title: "Check for Updates", id: "help.checkForUpdates", desc: "Check GitHub now for a newer version of Editora." },
       { title: "Documentation", id: "help.documentation", desc: "Open the Editora documentation site for this version in your browser." },
+      { title: "Report a Problem…", id: "help.reportProblem", desc: "Prepare a redacted problem report from the debug log and open a GitHub issue for it." },
       { title: "Local History: Put Label…", id: "history.putLabel", desc: "Record a named snapshot of the current file in Local History." },
       { title: "Local History: Recent Changes…", id: "history.recentChanges", desc: "Browse the most recent file revisions across the project." },
       { title: "Local History: Set Max Age (Days)…", id: "history.setMaxAgeDays", desc: "Discard Local History revisions older than this many days; 0 means no age limit." },

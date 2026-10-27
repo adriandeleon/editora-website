@@ -217,10 +217,38 @@ exceptions into a **Debug Log**:
 
 - Open it with **Settings → Advanced → Show Debug Log…** or `view.debugLog`.
 - It also mirrors to `editora-session.log` in your config folder, so it survives
-  a crash for a bug report.
+  a crash for a bug report. The session before keeps its file as
+  `editora-session.prev.log`, so reopening Editora after a crash does not erase
+  the log that recorded it. Neither file goes into a configuration export.
 
 The **message log** (click the status-bar message, or `view.messageLog`) keeps a
 session history of the transient status-bar messages.
+
+## Reporting a problem
+
+**Help → Report a Problem…** (`help.reportProblem`, also a button in the Debug
+Log window) prepares a bug report from the Debug Log of this session and the one
+before. It also lists Editora's version, the Java it runs on, your operating
+system and your plugins. Before you see it, Editora replaces what looks private:
+paths in your home folder, your user name, e-mail addresses, credentials in URLs,
+authentication headers and values shaped like tokens. The window says how many it
+replaced.
+
+The report is shown, and you can edit it, before anything leaves your computer.
+Editora sends nothing by itself:
+
+- **Open GitHub Issue** copies the report and opens a new issue in your browser
+  with it filled in. A report too long for the link is left on your clipboard
+  instead, for you to paste into the issue's *Problem report* box. Describe what
+  happened, then submit the issue yourself.
+- **Copy** and **Save…** are there for any other way of sending it.
+
+The issue is public, so read the report first and delete anything you would
+rather not share.
+
+When Editora will not start, run `editora --report` instead (see
+[command-line flags](/docs/cli#flags)). It writes the same report to the current
+folder, prints its path and the link of a new issue, and opens both.
 
 ## After a crash or an interrupted save
 
@@ -322,5 +350,5 @@ fraction of a second into startup, intermittently, on any CPU without AVX-512
 Zen 4). It is fixed in 0.13.1, and there is no workaround worth applying on the
 old build.
 
-If you are still stuck, [open an issue](https://github.com/adriandeleon/Editora/issues) and
-attach the Debug Log.
+If you are still stuck, [report a problem](#reporting-a-problem): the report
+carries the Debug Log, redacted.
