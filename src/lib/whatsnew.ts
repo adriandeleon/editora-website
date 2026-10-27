@@ -5,10 +5,10 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Maven, reworked", detail: "Parent chains and profiles in the tree, builds from the reactor root, Run and Debug that build first, Debug Test that attaches, and Update Versions that compares versions as Maven does." },
-  { title: "Narrow from the Structure window", detail: "One toggle narrows the editor to a symbol's block, and a narrowed editor shows an amber banner with Widen and keeps the file's line numbers." },
-  { title: "The Project Map in its own window", detail: "The Map opens in a separate, resizable window beside the editor or on another screen, with its own search, while the tool window keeps the tree." },
-  { title: "A pom.xml server that answers", detail: "The Maven-aware lemminx-maven install now fetches the libraries it was missing and is tested before it is kept." },
-  { title: "Settings icons and project names", detail: "Every Settings page has an icon, and the project scope names the project it edits." },
-  { title: "Null checking in the build", detail: "Every package is checked for nulls when Editora is built, which found and fixed about ten crashes." },
+  { title: "Java refactorings with commands", detail: "Generate, Refactor This, a command per refactoring, and Undo Last Refactoring that takes a rename or move back in every file it changed." },
+  { title: "Completion that knows the type", detail: "Smart Type completion, chain completion, Go to Super Method, and Lombok, null analysis and your formatter profile reaching the Java server." },
+  { title: "A lightbulb and a problem counter", detail: "A gutter bulb when the line has a fix or quick action, and the file's errors and warnings at the top right of the editor." },
+  { title: "Doctor update checks", detail: "Check for Newer Versions asks each server Editora installs whether a newer release is out, and About says whether Editora is up to date." },
+  { title: "Report a Problem", detail: "A redacted bug report from the Debug Log, shown and editable before it goes into a GitHub issue you submit; editora --report when it will not start." },
+  { title: "Shortcuts in Settings sync", detail: "Key bindings you changed sync across your computers, in every keymap, merged chord by chord." },
 ];
