@@ -83,7 +83,8 @@ workspace that last had the Map open reopens it.
   movement. Columns size themselves to the longest loaded name.
 - Filter globally by open, modified, Git-changed, bookmarked, or Personal Notes
   state and by file type. Matches and the folders that contain them stay
-  prominent while everything else fades.
+  prominent while everything else fades, or drops out with **Hide unmatched**
+  (below). **Clear** turns the filters off.
   Every non-root column also has a fuzzy name filter and a **Show hidden**
   checkbox.
 - Click a file's **eye** for a movable, resizable, syntax-highlighted read-only
@@ -98,6 +99,16 @@ workspace that last had the Map open reopens it.
   Delete, Undo Move and Reveal stay in the Map window and ask there; the other
   actions bring the editor window forward.
 - The **?** button lists the mouse and keyboard controls in a popover.
+
+**Hide unmatched**, a checkbox in the filter row, takes the rows a filter
+doesn't match off the map instead of fading them, so only the matches and the
+folders that lead to them stay. With no filter active it does nothing. Hidden
+rows are always counted: an amber **N rows hidden** badge appears beside the
+checkbox, each column's header count reads *shown/total* (for example `1/5`),
+and an italic *N hidden* line sits under the column's rows, or on its empty row
+when nothing in the column is left. **+N more…** and **Empty folder** rows stay,
+and a hidden folder's open columns disappear with it. Uncheck the box to bring
+the faded rows back. The choice is remembered per workspace.
 
 The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
 **Hide all open Personal Notes**, **Print…** and **PDF…**. Keep current zoom and
