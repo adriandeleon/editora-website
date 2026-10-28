@@ -425,7 +425,10 @@ formatting (undoable, palette or right-click menu), including `.json`, `.css` an
 `.html`. With a selection it formats only the selected lines. It tells the server the file's own indentation: the `indent_style` and
 `indent_size` from [EditorConfig](/docs/editorconfig) when there are any, else
 what the file already uses, not the global tab size. A two-space script stays
-two-space. In a language whose server supports range formatting, **Tab** also snaps
+two-space. It also passes the file's `trim_trailing_whitespace` and
+`insert_final_newline` (or the project's save rules), so the formatted file
+already looks the way saving writes it; the XML server adds the final newline
+only when asked. In a language whose server supports range formatting, **Tab** also snaps
 the current line's indentation to the server's convention.
 
 ### Java-only assists
@@ -1113,7 +1116,10 @@ every file opens without its language server (see
 - **Go to Definition** and Ctrl/Cmd-click on a `schemaLocation`, a DOCTYPE
   system id or an `xml-model` href opens that schema or DTD, and on the `href`
   of an `xsl:include` or `xsl:import` (or an XInclude `xi:include`) it opens
-  that file, resolved against the document's folder. On an element or
+  that file, resolved against the document's folder. A percent-encoded href
+  (`sub%20dir/lib.xsl`), a `file:` URI and an XInclude in the default namespace
+  work too; when the file is missing, the status line says *lib.xsl does not
+  exist*. On an element or
   attribute bound to an XSD, it goes to the declaration in the XSD.
 - **Show Documentation** and **Show Problem at Caret** show the whole problem
   at the caret above any documentation, including lemminx's list of the
@@ -1152,8 +1158,8 @@ Four palette commands go with it:
 | --- | --- |
 | **XML: Revalidate File** | Validates the file again, after its schema or DTD changed on disk. Works on a `pom.xml` on the Maven server too. |
 | **XML: Revalidate All Open Files** | Forgets the cached grammars and validates every open XML file again. |
-| **XML: Bind to Grammar…** | Picks an XSD, DTD or RELAX NG file, then binds the document to it with a schema location (`xsi:noNamespaceSchemaLocation` or `xsi:schemaLocation`), a DOCTYPE, or an `<?xml-model?>` instruction. Local files only. |
-| **XML: Generate Grammar…** | Asks the server for a grammar made from the file (an XSD, a DTD or RELAX NG, bound by a schema location, a DOCTYPE or `xml-model`), lets you pick one, then writes it next to the file and binds the file to it. Local files with a root element only. |
+| **XML: Bind to Grammar…** | Picks an XSD, DTD or RELAX NG file, then binds the document to it with a schema location (`xsi:noNamespaceSchemaLocation` or `xsi:schemaLocation`), a DOCTYPE, or an `<?xml-model?>` instruction. Local files only. A Schematron `xml-model` holds rules, not a grammar, so it does not count as a binding. |
+| **XML: Generate Grammar…** | Asks the server for a grammar made from the file (an XSD, a DTD or RELAX NG, bound by a schema location, a DOCTYPE or `xml-model`), lets you pick one, then writes it next to the file and binds the file to it. Local files with a root element only. An XSD can be generated in any folder, trusted or not: Editora ships the W3C schema lemminx needs for it. A file that already has a DOCTYPE is not offered a second one. |
 
 Both binding commands leave a file that is already bound alone: the status
 line says what it is bound to and by what (an external DOCTYPE, an
@@ -1195,6 +1201,8 @@ change reaches the running server without a restart.
   because the file's folder is not trusted, the file says so with a
   **Trust Folder** button, and the status line names **Workspace: Trust This
   Folder** and this setting. Trusting turns the download on without a restart.
+  The status line names only what would help: the setting when it is *Never*,
+  and opening the folder as a project for a file outside it.
   External entities are never resolved.
 - **Files without a grammar**: a hint is listed in the Problems window as well
   as a warning.
@@ -1237,8 +1245,10 @@ size and folder, with **Clear**.
   not nest is left alone, with a "not well-formed" message. It formats in the
   background, so a large file does not freeze the window; if you edit the file
   or switch tabs meanwhile, nothing is changed and the status line says to run
-  it again. This formatter ignores the formatting settings above, which apply
-  through lemminx only.
+  it again. A second Format Document while one runs says so and waits for
+  the first. In large-file mode it asks before a format that would more than
+  double the line count. This formatter ignores the formatting settings above,
+  which apply through lemminx only.
 - **Structure** lists every element, leaves included, named by its qualified
   name and its `name`, `id`, `match` or `ref` attribute, for example
   `xs:element name="note"` or `xsl:template match="/"`. With the server, the
@@ -1252,7 +1262,9 @@ size and folder, with **Clear**.
   but only when it is the end tag of the element you are closing. Typing
   `</b>` inside `<p>Hello <b>world|</p>` writes `</b>` before the `</p>`, and a
   typo such as `</itme>` becomes a tag of its own instead of renaming the end
-  tag after it. The same holds in HTML.
+  tag after it. While it steps over the end tag, Backspace takes back only what
+  you typed, a space before `>` is fine, and moving the caret ends the step-over.
+  The same holds in HTML, where tag names match in any case.
 
 ### Installing lemminx
 
@@ -1275,7 +1287,10 @@ than installing over it.
 lemminx's native build needs **glibc 2.34** or later on Linux. On an older
 system Install says so and installs nothing; if the
 [Maven `pom.xml` server](#pomxml-and-the-maven-server) is
-installed, XML files run its Java lemminx instead. A server that exits as soon
+installed, XML files run its Java lemminx instead. That fallback is plain XML:
+it never loads the Maven extension, so a pom in an untrusted folder stays
+schema-only. An XML command of your own that would load lemminx-maven is not
+started, and the status bar says why. A server that exits as soon
 as it starts shows its own error message in the status line, Settings and
 Doctor, rather than *found* and *OK*.
 
@@ -1313,10 +1328,13 @@ schema, and its tab says *Maven-aware editing is off until you trust this
 folder* with **Trust Folder** and **Not now**. **Trust Folder**, or
 **Workspace: Trust This Folder** from the palette, asks first (Cancel is the
 default) and then trusts the open project when the file is in it, else the
-pom's own reactor. In every window, the folder's poms then move to the Maven
-server at once (or offer to install it). Revoking that trust (Settings →
-Workspace → Trusted folders) stops the Maven server on the folder and moves its
-poms back to the XML server.
+pom's own reactor. For any other file outside the project it trusts nothing:
+open that file's folder as a project first. In every window, the folder's open
+poms, background tabs included, then move to the Maven server at once. Revoking
+that trust (Settings → Workspace → Trusted folders) stops the Maven server on
+the folder and moves its poms back to the XML server, with their diagnostics.
+While the Maven server is not installed, a pom in an untrusted folder instead
+offers to install it, saying it runs only in folders you trust.
 
 **Bundled POM schemas.** Editora ships the Maven POM 4.0.0 and 4.1.0 schemas
 and hands both XML servers on this machine a catalog for them, ahead of your
@@ -1330,8 +1348,10 @@ Maven Central when completing pom.xml coordinates**, on the server's card under
 Settings → LSP and off by default, also asks search.maven.org as you type, so
 what you type is sent to it; nothing is downloaded up front. Changing the
 setting restarts the server. lemminx-maven keeps what it resolves in
-`~/.m2/.lemminx-maven`, which [Doctor](/docs/troubleshooting#doctor) lists as
-the **lemminx-maven artifact store** with **Clear**.
+`.lemminx-maven` beside your local Maven repository: `~/.m2/.lemminx-maven` by
+default, or next to the folder `<localRepository>` names in
+`~/.m2/settings.xml`. [Doctor](/docs/troubleshooting#doctor) lists it as the
+**lemminx-maven artifact store** with **Clear**.
 
 **Installing it.** While the Maven server is not installed, a `pom.xml` in a
 trusted folder offers it in a banner that says what it adds, with **Install**
@@ -1365,9 +1385,18 @@ could not answer a request.
 - ***Extract as new property in parent*** works with the parent pom open or
   closed. If the parent has unsaved changes, or changed on disk since the
   request, the edit is refused with a reason; save it and try again.
-- When a **malformed pom** in the reactor (one that is not well-formed XML)
-  stops dependency completion, so that only *Insert Comment* and *Insert CDATA*
-  are offered, the status bar names the file and the line to fix.
+- A **malformed pom** (one that is not well-formed XML on disk) would stop
+  lemminx-maven's dependency completion everywhere, offering only *Insert
+  Comment* and *Insert CDATA*. Editora takes such a pom out of the Maven
+  server's workspace instead, so groupId, artifactId and version completion
+  keeps working, and the status bar names it: *Left out broken/pom.xml (not
+  well-formed XML, line 11)…*. It looks at the files the Maven server reads:
+  `pom*.xml`, `*pom.xml` and `*.pom` up to ten folders deep, `node_modules` and
+  `build` included, but not hidden folders or `target`. An empty answer with
+  nothing malformed on disk changes nothing.
+- Once that pom is well-formed again (saved in Editora, or fixed by a checkout
+  or another editor), Editora restarts the Maven server for that project only,
+  and its open poms move to the new server at once.
 - **XML: Revalidate File** validates the pom again.
 
 ## Language servers on a remote host
