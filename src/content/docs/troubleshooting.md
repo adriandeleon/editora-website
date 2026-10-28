@@ -47,8 +47,12 @@ server, the **lemminx-maven artifact store** row shows the size of
 `~/.m2/.lemminx-maven`, where lemminx-maven keeps what it resolves, with
 **Clear**, and **Reveal in File Manager** in its right-click menu. A language
 server that keeps crashing, or fails its requests, is a warning with an
-**Install…** button that installs it again. A language server that exits as
-soon as it starts shows what it printed, rather than *OK*; for lemminx on a Linux older than glibc 2.34, see
+**Install…** button that installs it again and a **Restart Language Servers**
+button; the same goes for a server this window stopped restarting after it
+kept crashing, and for a Node.js server (bash-language-server, Pyright, the
+JSON, YAML and other npm servers) when no `node` is found. The rows of
+npm-installed servers show the installed package version. A language server
+that exits as soon as it starts shows what it printed, rather than *OK*; for lemminx on a Linux older than glibc 2.34, see
 [Installing lemminx](/docs/lsp#installing-lemminx).
 
 ### Update… for servers older than Editora's
@@ -56,7 +60,7 @@ soon as it starts shows what it printed, rather than *OK*; for lemminx on a Linu
 Editora installs some servers and tools at the exact release it is tested with:
 jdtls (Java), the JavaScript debugger (js-debug), lemminx (XML), the Maven
 `pom.xml` server (lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
-ShellCheck and shfmt. A newer Editora can move to a newer release of one of
+bash-language-server, ShellCheck and shfmt. A newer Editora can move to a newer release of one of
 them. When the copy you have is older than the one this Editora is tested with,
 its Doctor row is a warning that names both versions, and its **Install…**
 button reads **Update…**.
@@ -83,13 +87,17 @@ What the warning says depends on whose copy it is:
   Update, since Settings names that copy on purpose. Update that copy yourself,
   or clear the path in **Settings → LSP** to use Editora's own.
 
+bash-language-server is a global npm package, not a copy in Editora's folder.
+Its row warns when it is older than 5.7, the oldest release that works well
+with Editora, and Update installs the tested 5.8.1.
+
 ### Check for Newer Versions
 
 Many other servers and tools Editora installs at their latest release, so there
 is no tested version to compare with. **Check for Newer Versions**, in Doctor's
 header, asks where each one is published (npm, the Go module proxy, GitHub and
 HashiCorp) for its latest release. It covers Pyright,
-typescript-language-server, the JSON, HTML, CSS, Bash, YAML, Dockerfile, TOML
+typescript-language-server, the JSON, HTML, CSS, YAML, Dockerfile, TOML
 and Astro servers, gopls, clangd, lua-language-server, tinymist, terraform-ls
 and the Mermaid CLI (`mmdc`), and only the ones that are installed and working.
 
@@ -211,15 +219,20 @@ rather than within a few seconds. See
 
 The Bash language server needs two helper programs: **ShellCheck** for
 diagnostics and **shfmt** for Format Document. Without them a script looks
-clean and Format Document changes nothing. The status bar says so when you open
-a script or format one, and the **Bash / Shell** card in **Settings → LSP**
-and the Doctor show whether each is found. Install them with the Install…
-buttons there, or with **Install: ShellCheck and shfmt** (`install.shellTools`)
-in the palette. See [ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
+clean and Format Document changes nothing. A banner above the script says so,
+with **Install**, and the **Bash / Shell** card in **Settings → LSP** and the
+Doctor show whether each is found. Install them with the Install… buttons
+there, or with **Install: ShellCheck and shfmt** (`install.shellTools`) in the
+palette. If you turned **Lint with ShellCheck** or **Format with shfmt** off on
+the Bash / Shell card, turn it back on. See [ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
 
 If ShellCheck runs but ignores a `.shellcheckrc`, the file is probably in a
 subfolder of the project; ShellCheck reads it only from the project folder or
 above. See [Where ShellCheck finds .shellcheckrc](/docs/lsp#where-shellcheck-finds-shellcheckrc).
+
+A script whose ShellCheck problems seem to be missing, while others show
+theirs, may be a zsh script: ShellCheck cannot check zsh, and the problem
+counter says **Not checked**. A `PKGBUILD` shows no SC2034 or SC2154 by design.
 
 The server's own warnings, such as a helper it could not find, are in the
 Debug Log (below).

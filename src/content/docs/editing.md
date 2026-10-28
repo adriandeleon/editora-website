@@ -114,6 +114,15 @@ opens nothing.
   bash only ends `<<EOF` at an unindented delimiter (`<<-EOF` keeps tabs). The
   next line goes back to the level of the `cat <<EOF` line.
 - **Tab** in a line's leading whitespace follows the same rules.
+- **Tab** or **Indent Lines** over a selection shifts its lines but leaves the
+  shebang, the text of a here-document and its delimiter where they are (a
+  `<<-` here-document moves by tabs only), since moving them would change what
+  the script does.
+
+With the language server off, completion in a shell script offers the script's
+own function and variable names after the snippets, and only variables after
+`$` or `${`. With the [Bash server](/docs/lsp#shell-scripts) on, completion
+comes from the server, and Editora's shell snippets stay in the list.
 
 Shell blocks also [fold](/docs/navigation#folding): functions (from the line
 with their name), `{ }` groups, `if … fi`, loops, `case … esac` and each case

@@ -125,11 +125,15 @@ finds commands by IntelliJ's and VS Code's names for them: **Optimize Imports**,
 in full, such a name comes first. Menus in this keymap show Alt+Enter for Code Actions. The
 **VS Code** keymap binds Ctrl+F12 Go to Implementation, Alt+F12 Peek Definition,
 Ctrl+T Go to Symbol in Workspace and Shift+Alt+F Format Document (⌘F12, ⌥F12,
-⌘T and ⇧⌥F on macOS). The default **Emacs** keymap gathers the language-server
+⌘T and ⇧⌥F on macOS). The **CUA** keymap has the same language-server keys
+as VS Code: F2 Rename, F12 Go to Definition, Shift+F12 Find References, Ctrl+.
+Code Actions (⌘. on macOS) and Shift+Alt+F Format Document. **Sublime Text**
+adds Ctrl+Shift+R Go to Symbol in Workspace (⌘⇧R) and Shift+Alt+F Format
+Document. The default **Emacs** keymap gathers the language-server
 commands under a `C-c l` prefix (`C-c l a` code actions, `C-c l g` generate,
 `C-c l t` refactor this, `C-c l r` rename, `C-c l f` format, `C-c l o` organize
 imports, `C-c l e` problem at caret, `C-c l u` undo last refactoring, and
-others), with `M-g M-n` / `M-g M-p` for the next and previous problem and `M-,` /
+others), `M-g s` for Go to Symbol in Workspace, with `M-g M-n` / `M-g M-p` for the next and previous problem and `M-,` /
 `C-M-,` for back and forward. Every keymap now binds Back and Forward. The
 [Keybindings](/keybindings) page lists them all.
 

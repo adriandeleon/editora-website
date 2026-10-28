@@ -140,7 +140,9 @@ These open as shell scripts (bash, zsh, ksh and POSIX sh share one grammar):
 - **Other names:** the `mvnw` and `gradlew` build wrappers, `PKGBUILD` and
   `APKBUILD` package recipes, and bash-completion scripts (anything in a
   `bash-completion/completions` or `bash_completion.d` folder).
-- Any file with a shell shebang or modeline, as above.
+- Any file with a shell shebang or modeline, as above, or a
+  `# shellcheck shell=bash` (or `sh`, `dash`, `ksh`, `zsh`) line in its first
+  20 lines, such as a sourced `.inc` file.
 
 The shell grammar is the one VS Code uses, with Editora's own fixes. Commands,
 keywords, variables, quoted strings, here-doc text and comments are coloured; a
