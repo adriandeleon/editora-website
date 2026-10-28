@@ -43,8 +43,10 @@ server has downloaded (the schemas and DTDs XML files name) and where it keeps
 it, `cache/lemminx` in Editora's config folder, with a **Clear** button. With
 the XML server off, the row sits under the Maven `pom.xml` server instead, and
 either way it follows its server into **Needs attention**. Under the Maven
-server, the **lemminx-maven artifact store** row shows the size of
-`~/.m2/.lemminx-maven`, where lemminx-maven keeps what it resolves, with
+server, the **lemminx-maven artifact store** row shows the size of the
+`.lemminx-maven` folder where lemminx-maven keeps what it resolves (beside your
+local Maven repository: `~/.m2/.lemminx-maven`, or next to the folder
+`<localRepository>` names in `~/.m2/settings.xml`), with
 **Clear**, and **Reveal in File Manager** in its right-click menu. A language
 server that keeps crashing, or fails its requests, is a warning with an
 **Install…** button that installs it again. A language server that exits as
