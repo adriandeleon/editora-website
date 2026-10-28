@@ -29,7 +29,13 @@ XSL-FO, Schematron, MSBuild and NuGet project files, `.resx`, XAML, XLIFF,
 property lists, KML, GPX, DITA and others open as XML (the full list is under
 [XML](/docs/lsp#xml)). DTD declarations (`<!ELEMENT>`, `<!ATTLIST>`,
 `<!NOTATION>`, like `<!ENTITY>`) are highlighted in a DOCTYPE and in a DTD
-file. A `go.mod` stays plain text, and `.xhtml` is HTML.
+file. A `go.mod` stays plain text, and `.xhtml` is HTML. A `.mod`, `.sch`,
+`.props`, `.targets` or `.fo` file is XML only when its text starts with `<`,
+so a Modula-2 module or a KiCad schematic opens as plain text.
+
+The status bar and the Problems window write each language's name as it is
+usually written: XML, JSON, YAML, HTML, CSS, SQL, TOML, C++, C#, GraphQL,
+PowerShell, and Plain Text for a file with no language.
 
 Astro files use the official Astro TextMate grammar, including mixed
 frontmatter, HTML, and CSS regions. The same language integration supplies

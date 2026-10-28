@@ -23,7 +23,10 @@ the active file previews as, so there's nothing per-type to remember. A floating
   tree** of tags, attributes, and text. A `pom.xml` gets [its own
   rendering](#maven-poms) instead. When an XML file cannot be rendered, the
   preview shows the parser's message with a **Line N, column M** link that
-  jumps to the spot (a preview-only view switches to Split to show it).
+  jumps to the spot (a preview-only view switches to Split to show it). A DTD
+  (`.dtd`, `.ent`, `.mod`) is not a document, so it has no preview; its
+  Structure lists its declarations instead (see
+  [Without the XML server](/docs/lsp#without-the-xml-server)).
 - A JSON or YAML file recognized as an **OpenAPI 3 / Swagger 2** spec instead
   renders as browsable **API docs**: endpoints with colored method badges,
   params, responses, and schemas. Toggle between the tree and the docs with

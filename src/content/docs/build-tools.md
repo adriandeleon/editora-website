@@ -79,7 +79,7 @@ locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 resolution, Java Run and Debug, and before-launch commands, and the same JDK
 runs sbt, Mill, Scala CLI and Scala's Run and Debug, the
 [New Maven Project](#new-maven-project) wizard's Maven, and the
-[Maven `pom.xml` server](/docs/lsp#servers-are-auto-detected-never-bundled).
+[Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server).
 A saved run configuration can override it for one project or launch. With
 **System default** and no `JAVA_HOME`, the program a Maven Run launches uses the
 `java` on your `PATH`, which may not be the version Maven compiled with.
