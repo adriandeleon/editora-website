@@ -1,6 +1,6 @@
 ---
 title: Markdown, diagrams & preview
-description: The live Markdown preview, editing and formatting commands, wiki links and backlinks, linting, LaTeX math, Mermaid, HTML preview, and export to PDF, HTML, Word or OpenDocument.
+description: The live Markdown preview, editing and formatting commands, wiki links and backlinks, linting, LaTeX math, Mermaid, and export to PDF, HTML, Word or OpenDocument.
 category: Editing
 order: 3
 ---
@@ -524,17 +524,8 @@ to SVG, PNG, or PDF with `mermaid.export`.
 
 ## HTML live preview
 
-On any `.html` / `.htm` / `.xhtml` file, a floating globe button opens it in a
-detected browser (Safari, Chrome, Firefox, Edge, or the system default), served
-over a tiny loopback-only web server with live reload as you type. Sibling CSS,
-JS, and images load from disk. The server answers only its own browser tab and
-refuses to serve a home directory or a drive root.
-
-It's **on by default**; toggle it in **Settings → Web → HTML Preview** or with
-*View: Toggle HTML Live Preview*. **Open the preview in** on the same card picks
-the browser (the system default until you choose one). The file must be saved so its assets resolve,
-and remote (SFTP) files are excluded. Commands: `htmlPreview.open` and
-`htmlPreview.openIn` (pick a browser).
+The live preview of HTML files, which opens a page in your browser and reloads
+it as you edit, is described on the [HTML](/docs/html#live-preview) page.
 
 ## Export and print
 

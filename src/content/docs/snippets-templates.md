@@ -149,6 +149,24 @@ names (`sysout`, `fori`, `try_catch` and others). A server template named like
 one of your snippets, bundled or your own, is left out of the completion list,
 so the popup shows a single row for the trigger: the snippet that Tab expands.
 
+### HTML snippets
+
+The HTML snippets cover the elements by name (`div`, `ul`, `table`, `form`,
+`video` and the rest), plus `div.`, `div#` and `div.#` (and the same for `p`,
+`ul` and `ol`) for an element with a class, an id or both.
+
+- `!` and `html5` insert a whole page. The first field is the `lang` value
+  (`en`), and the caret ends in the `<body>`. `html5` also links a stylesheet.
+- `doctype` inserts `<!DOCTYPE html>`, and `link` a stylesheet link
+  (`<link rel="stylesheet" href="">`).
+- Obsolete elements (`big`, `command`, `keygen`, `menuitem`) are not offered.
+
+In an HTML page, the snippets offered follow where you are typing: CSS
+snippets inside a `<style>`, JavaScript snippets inside a `<script>`, and none
+inside a tag, so `col` in a stylesheet offers `color` rather than `<col>`. HTML
+templates (Jinja, Twig, ERB…) and Handlebars files get the HTML snippets. There
+is no Emmet; see [HTML](/docs/html#snippets-and-new-files).
+
 ### XML snippets
 
 The 25 XML snippets cover:
@@ -259,7 +277,9 @@ Editora ships 37 templates:
   shebang script (an extensionless file the `java` launcher runs directly), a
   Maven `pom.xml` (quickstart-shaped: Java 21, JUnit 5 through its BOM,
   Surefire 3), a Python script, a pytest test module, a Node.js script, shell
-  and Zsh scripts, an HTML page, and an HTML page with a stylesheet.
+  and Zsh scripts, an HTML page (**HTML Page**), and an HTML page with a
+  stylesheet it links (**HTML Page + CSS**), both with `<!DOCTYPE html>`,
+  `UTF-8` and the viewport meta.
 - **XML:** an XML Schema (XSD) with a target namespace and one element, an XSLT
   stylesheet with the identity template, and an XML document bound to a schema
   (`xsi:noNamespaceSchemaLocation`), so the
@@ -440,6 +460,9 @@ YAML, and so on) in the current folder. It asks only for a name.
   `#!/usr/bin/env python3` line, a docstring, a `main()` function and an
   `if __name__ == "__main__":` guard, with the caret in `main()`. It is created
   executable too.
+- **HTML** starts with an HTML5 page: the doctype, `lang="en"`, the charset
+  and viewport metas, and a `<title>` holding the name you typed, with the caret
+  in the `<body>`.
 - **XML** starts with an XML declaration and a `<root>` element, with the caret
   inside it. **XML Schema** (`.xsd`) starts with an `xs:schema` and one
   element, **XSLT** (`.xsl`) with a stylesheet holding the identity template,

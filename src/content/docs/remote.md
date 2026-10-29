@@ -336,7 +336,9 @@ itself (the prompt, history, `SSH_*`, the display) are left out.
 These work only on files on this machine, whatever a host allows:
 
 - [Local History](/docs/workspace#local-file-history)
-- the [HTTP client](/docs/http-client) and HTML live preview
+- the [HTTP client](/docs/http-client) and the
+  [HTML live preview](/docs/html#live-preview): a remote HTML file has no globe,
+  and the HTML Preview commands say it is on a remote host
 - [external tools](/docs/external-tools)
 - *Reveal in File Manager* and *Save as Administrator*
 - following a growing [log file](/docs/log-viewer)

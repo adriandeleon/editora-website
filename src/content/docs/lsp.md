@@ -1,6 +1,6 @@
 ---
 title: Language servers (LSP)
-description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 23 language servers.
+description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 26 language servers.
 category: Code intelligence
 order: 2
 beta: true
@@ -426,7 +426,9 @@ straight away, because the result is on screen and one undo away.
 
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
-`.html`. With a selection it formats only the selected lines. It tells the server the file's own indentation: the `indent_style` and
+`.html` (for HTML, see [Formatting](/docs/html#formatting) on the HTML page:
+`<pre>` and `<textarea>` are kept as written, and without the server Editora
+formats it itself). With a selection it formats only the selected lines. It tells the server the file's own indentation: the `indent_style` and
 `indent_size` from [EditorConfig](/docs/editorconfig) when there are any, else
 what the file already uses, not the global tab size. A two-space script stays
 two-space. It also passes the file's `trim_trailing_whitespace` and
@@ -602,9 +604,15 @@ Twenty-six servers are supported:
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
   (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
   **Scala** (Metals), **Lua** (`lua-language-server`)
-- **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
-  (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
-  (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
+- **Astro** (`astro-ls`), **HTML** (`vscode-html-language-server`), **CSS**
+  (`vscode-css-language-server`), **JSON** (`vscode-json-language-server`),
+  **YAML**, **XML** (`lemminx`), **Bash** (`bash-language-server`),
+  **Dockerfile**, **SQL** (`sqls`), **Terraform** (`terraform-ls`), **TOML**
+  (`taplo`), **Typst** (`tinymist`)
+
+The HTML, CSS and JSON servers come from one npm package,
+**vscode-langservers-extracted** (the servers taken out of VS Code), so one
+install gives all three; see [HTML, CSS and JSON](#html-css-and-json).
 
 There is also a **Maven-aware `pom.xml` server** (JVM lemminx plus the
 lemminx-maven extension), shown as **lemminx-maven** in Settings, Doctor and
@@ -629,7 +637,8 @@ enabled server in one place.
 A project can commit a `.editora/settings.json` naming **which server to run for
 a language and whether to run it**, which overrides your global preference for
 anyone who opens that project. It can also set the
-[Bash server's options](#bash-server-options). This covers one repository needing a
+[Bash server's options](#bash-server-options) and the
+[HTML server's](/docs/html#settings--lsp--html). This covers one repository needing a
 JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
 setting when switching between them. The same file can also set indentation,
 rulers, build commands and debugger programs; see
@@ -655,8 +664,11 @@ for a host in Settings → Remote instead (see
 If a server isn't installed, Editora can fetch it for you. **Every server** is
 covered through one of these channels, picked per server:
 
-- **npm** packages (Astro, JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
+- **npm** packages (Astro, Bash, YAML, Dockerfile, TOML, TypeScript,
   Python/Pyright), needing Node.
+- A **pinned npm package** for HTML, CSS and JSON, vscode-langservers-extracted
+  4.10.0, installed with npm into Editora's own folder rather than globally
+  (see [HTML, CSS and JSON](#html-css-and-json)). It needs Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
 - **Binary** releases downloaded per OS/architecture (clangd, terraform-ls,
@@ -801,6 +813,10 @@ A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
 single server. Python looks for its own markers first; see [Python](#python).
+An HTML page with no project, `package.json` or `.git` above it is rooted at
+the highest folder above it that holds an `index.html`, stopping below your
+home folder, so the whole static site shares one server and its `/css/…` links
+resolve.
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -890,6 +906,34 @@ nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
 `package.json`, then the Git repository. This gives each package in a monorepo
 its own root. Scripts with none of these above them share one server, wherever
 they are, instead of starting one each.
+
+## HTML, CSS and JSON
+
+HTML, CSS and JSON files use **vscode-html-language-server**,
+**vscode-css-language-server** and **vscode-json-language-server**, the servers
+taken out of VS Code and published together in the npm package
+**vscode-langservers-extracted**. They are Node.js programs, so they need
+**Node.js**. The first HTML or CSS file a window opens asks **Turn on HTML code
+intelligence?** (or CSS), with **Turn on** and **Not now**, like the
+[Python offer](#python).
+
+**Install** on the banner, **Install…** on any of the three cards in Settings →
+LSP, Doctor's **Install…** or **Install: Language Server…** installs
+vscode-langservers-extracted **4.10.0**, the version Editora is tested with,
+with npm into `plugins/lsp/web` under Editora's config folder rather than
+globally. It also links the TypeScript libraries the HTML server needs for the
+DOM and standard library in `<script>`. With the three commands left blank,
+Editora runs that copy first, then one on your `PATH`.
+[Doctor](/docs/troubleshooting#doctor) checks the installed version against
+4.10.0, and warns, with **Update**, about a copy that cannot load the
+TypeScript libraries.
+
+What the HTML server adds, its settings on the HTML card (wrap column,
+attribute wrapping, content kept as written, attribute quotes, checking
+embedded scripts and styles), the `html` object a project can commit, and what
+it does not do (markup validation, Emmet) are on the
+[HTML](/docs/html#the-html-language-server) page. The HTML and CSS servers also
+draw a small swatch before each colour.
 
 ## Shell scripts
 
