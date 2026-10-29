@@ -55,14 +55,32 @@ kept crashing, and for a Node.js server (bash-language-server, Pyright, the
 JSON, YAML and other npm servers) when no `node` is found. The rows of
 npm-installed servers show the installed package version. A language server
 that exits as soon as it starts shows what it printed, rather than *OK*; for lemminx on a Linux older than glibc 2.34, see
-[Installing lemminx](/docs/lsp#installing-lemminx).
+[Installing lemminx](/docs/lsp#installing-lemminx). A server that keeps
+failing while it runs a command you set in Settings gets no **Install…**,
+since installing would not change that command: its tip says to fix the
+command or clear it to use the default, then run **Restart Language Servers**.
+
+The **HTML** row warns when the copy of vscode-langservers-extracted in use
+cannot load TypeScript's libraries, which is the case for any copy installed
+with npm on its own: JavaScript in `<script>` then has no DOM or standard
+library, nothing completes after `document.` and there is no parameter help.
+**Update** installs Editora's own copy, which has them, and a blank HTML
+command uses it. When the HTML command is your own, the tip says to install the
+HTML server and clear the command. See [Installing it](/docs/html#installing-it).
+
+The **Node.js** row counts the open npm-installed servers (HTML, CSS, JSON,
+YAML, Bash, Pyright…) as needing Node.js, not only JavaScript and TypeScript.
+When it is missing and one of them needs it, the tip names that server and
+says to install Node.js or choose one in **Settings → Debugging →
+JavaScript**.
 
 ### Update… for servers older than Editora's
 
 Editora installs some servers and tools at the exact release it is tested with:
 jdtls (Java), the JavaScript debugger (js-debug), lemminx (XML), the Maven
 `pom.xml` server (lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
-bash-language-server, ShellCheck and shfmt. A newer Editora can move to a newer release of one of
+bash-language-server, vscode-langservers-extracted (the HTML, CSS and JSON
+servers), ShellCheck and shfmt. A newer Editora can move to a newer release of one of
 them. When the copy you have is older than the one this Editora is tested with,
 its Doctor row is a warning that names both versions, and its **Install…**
 button reads **Update…**.
@@ -93,13 +111,17 @@ bash-language-server is a global npm package, not a copy in Editora's folder.
 Its row warns when it is older than 5.7, the oldest release that works well
 with Editora, and Update installs the tested 5.8.1.
 
+vscode-langservers-extracted is installed with npm into `plugins/lsp/web` in
+Editora's config folder, at 4.10.0. For a copy of your own, Doctor reads the
+version from its `package.json`.
+
 ### Check for Newer Versions
 
 Many other servers and tools Editora installs at their latest release, so there
 is no tested version to compare with. **Check for Newer Versions**, in Doctor's
 header, asks where each one is published (npm, the Go module proxy, GitHub and
 HashiCorp) for its latest release. It covers Pyright,
-typescript-language-server, the JSON, HTML, CSS, YAML, Dockerfile, TOML
+typescript-language-server, the YAML, Dockerfile, TOML
 and Astro servers, gopls, clangd, lua-language-server, tinymist, terraform-ls
 and the Mermaid CLI (`mmdc`), and only the ones that are installed and working.
 
@@ -162,6 +184,35 @@ log`), stopped after three failures in a row, and shown as a warning in Doctor,
 with **Install…** for a server Editora installs;
 the Maven `pom.xml` server whose folder is missing jars is reported as
 *incomplete* in Settings → LSP and Doctor, and its **Install…** repairs it.
+
+A server whose requests time out twice in a row is reported once, with its
+name: *Not responding: its requests time out. Run “Restart Language Servers” to
+start it again.* When it answers again, the status bar says *Responding again*.
+
+**Format Document** says why it changed nothing. *Already formatted* means the
+server answered with no edits. Otherwise it says *Format failed: the language
+server did not answer in time*, *Format failed: the language server stopped
+before it answered*, or *Format failed:* with the server's own error.
+
+## JavaScript in an HTML page completes nothing
+
+If completion after `document.` in a `<script>` offers nothing and there is no
+parameter help, the HTML server cannot find TypeScript's libraries (its log
+says *Unable to load library*). That happens with a copy of
+vscode-langservers-extracted installed with npm on its own, such as
+`npm install -g`. Doctor's HTML row says so: click **Update**, or **Install…**
+on the HTML card in Settings → LSP, to install Editora's own copy, and leave
+the HTML command blank so it is used. See
+[Installing it](/docs/html#installing-it).
+
+## Language servers run the wrong Node.js
+
+The Node.js chosen in **Settings → Debugging → JavaScript** (the **Node.js**
+row) runs every language server installed with npm, not only TypeScript's: the
+HTML, CSS, JSON, YAML and Bash servers, Pyright and the others. Left blank,
+Editora uses the version a project's `.nvmrc` or `.node-version` names (from
+nvm), else `node` on the `PATH`. A server row that would warn about a missing
+Node.js does not, when that setting names one that exists.
 
 ## Python imports show as errors
 

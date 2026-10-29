@@ -188,6 +188,6 @@ need (`git`, `gh`, `mmdc`, and so on). Run *View: Doctor* to see what was found;
 see [Troubleshooting](/docs/troubleshooting#doctor).
 
 Projects, the **[HTTP client](/docs/http-client)**,
-**[HTML preview](/docs/markdown#html-live-preview)**, and
+**[HTML preview](/docs/html#live-preview)**, and
 **[Personal notes](/docs/bookmarks-notes)** are on from the start and need
 nothing else.
