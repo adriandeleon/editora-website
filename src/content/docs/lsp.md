@@ -21,7 +21,7 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Go to type definition | `lsp.gotoTypeDefinition` | `C-c l d` |
 | Go to declaration | `lsp.gotoDeclaration` | (palette) |
 | Find references | `lsp.findReferences` | `M-S-/` |
-| Go to Symbol in Workspace | `lsp.gotoSymbol` | (palette) |
+| Go to Symbol in Workspace | `lsp.gotoSymbol` | `M-g s` |
 | Call hierarchy | `lsp.callHierarchy` | `C-c l c` |
 | Type hierarchy | `lsp.typeHierarchy` | `C-c l h` |
 | Next / previous problem | `lsp.nextProblem`, `lsp.previousProblem` | `M-g M-n`, `M-g M-p` |
