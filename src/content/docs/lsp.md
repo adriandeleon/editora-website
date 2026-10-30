@@ -499,11 +499,30 @@ Imports and Format.
   older; when there is none, it says so, and Doctor's jdtls row names the Java
   it runs on and its version. Of two JDKs of one version, a project gets the one
   with its sources, so JDK parameter names and docs show; when no JDK of that
-  version has them, Doctor says which package adds them. The
+  version has them, Doctor says which package adds them, reading the JDK the build
+  compiles with (the compiler plugin's `<release>`, a parent pom, a Gradle
+  toolchain or version catalog). The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
   Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
   jdtls keeps the JDK it started with, so changing it says to run **Restart
   Language Servers**.
+- **Library sources.** A Maven library class you open (with Go to Definition,
+  say) gets its sources when a repository has them: the tab shows the real code,
+  with its parameter names and Javadoc. A class that has none is shown
+  decompiled, and its tab says so with two buttons: **Download Sources** looks in
+  your local repository and on Maven Central (whose search it can ask by the
+  jar's checksum), and **Choose Sources…** attaches a `-sources.jar` or
+  zip from disk, for a `lib/` jar or an artifact only installed locally. The
+  palette has both as **LSP: Download Library Sources**
+  (`lsp.downloadLibrarySources`) and **LSP: Choose Library Sources…**
+  (`lsp.attachLibrarySources`). A Gradle library's sources come from its build,
+  and a JDK class without sources is a JDK with no `src.zip` (see Which JDK
+  above). Once a library has its sources, every open tab of it shows them at
+  once. To fetch every dependency's sources up front, turn on Settings → LSP →
+  **Download library sources when a Java project is imported** (off by default;
+  Maven only), or run **View: Toggle Downloading Library Sources at Import**
+  (`view.toggleJavaDownloadSources`). It applies at the next import; **LSP: Clean Java
+  Workspace and Restart** applies it now.
 - **A failed import says why.** When jdtls cannot import the project (a Gradle
   build that does not run, say), the status bar names the reason it logged and
   Problems lists the build file's own errors. Fix the build file and run

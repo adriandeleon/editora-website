@@ -618,7 +618,8 @@ Page) with their shortcuts.
   toolbar groups, the tool-window stripe, the breadcrumb, the gutter, and the
   minimap, and turns off the heavier features (LSP, debugging, Git, multiple
   cursors) for a calm surface. Toggle it from Settings → Interface → Modes, the
-  toolbar, the palette
+  toolbar button at the right end beside Settings (it never moves into the
+  overflow menu), the palette
   (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
   restores everything.
 
