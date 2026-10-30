@@ -24,6 +24,25 @@ YAML, INI, SQL, TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML,
 Mermaid, and the HTTP request format. The TypeScript grammar also covers plain
 JavaScript.
 
+XML covers its dialects too: DTDs (`.dtd`, `.ent`, `.mod`), RELAX NG,
+XSL-FO, Schematron, MSBuild and NuGet project files, `.resx`, XAML, XLIFF,
+property lists, KML, GPX, DITA and others open as XML (the full list is under
+[XML](/docs/lsp#xml)). DTD declarations (`<!ELEMENT>`, `<!ATTLIST>`,
+`<!NOTATION>`, like `<!ENTITY>`) are highlighted in a DOCTYPE and in a DTD
+file. A `go.mod` stays plain text, and `.xhtml` is HTML. A `.mod`, `.sch`,
+`.props`, `.targets` or `.fo` file is XML only when its text starts with `<`,
+so a Modula-2 module or a KiCad schematic opens as plain text.
+
+The status bar and the Problems window write each language's name as it is
+usually written: XML, JSON, YAML, HTML, CSS, SQL, TOML, C++, C#, GraphQL,
+PowerShell, and Plain Text for a file with no language.
+
+HTML templates use the HTML grammar: Jinja, Nunjucks, Twig, Liquid, Mustache,
+ERB and EJS files open as **HTML Template**, and `.hbs` / `.handlebars` files
+as **Handlebars**, with Editora's HTML tag editing, folding and Structure. A
+template named after the file it renders (`nginx.conf.j2`, `config.yml.erb`)
+opens in that file's language. See [HTML](/docs/html#opening-html-files).
+
 Astro files use the official Astro TextMate grammar, including mixed
 frontmatter, HTML, and CSS regions. The same language integration supplies
 Structure symbols and can connect to `astro-ls` for code intelligence.
@@ -53,6 +72,13 @@ file) takes it from its own first lines:
   first or last five lines (`# vim: ft=sh`, `# vim: set filetype=bash :`), or an
   emacs line on the first line, or the second after a shebang
   (`# -*- mode: sh -*-`, `# -*- sh -*-`).
+- **An XML declaration**, when neither of those names a language: a file that
+  starts with `<?xml` (an `AndroidManifest`, say) is XML. A `.txt` or `.text`
+  file is never read as XML this way.
+- **An HTML start**, when none of those names a language: a file that starts
+  with `<!doctype html` or an `<html>` tag, in either case, after any blank
+  lines and `<!-- -->` comments, is HTML (a saved page, CGI output). A `.txt`
+  or `.text` file stays plain text.
 
 A shebang typed into a new or extension-less file switches the language once you
 stop typing. An extension or name that gives a language always wins over both.
@@ -124,7 +150,9 @@ These open as shell scripts (bash, zsh, ksh and POSIX sh share one grammar):
 - **Other names:** the `mvnw` and `gradlew` build wrappers, `PKGBUILD` and
   `APKBUILD` package recipes, and bash-completion scripts (anything in a
   `bash-completion/completions` or `bash_completion.d` folder).
-- Any file with a shell shebang or modeline, as above.
+- Any file with a shell shebang or modeline, as above, or a
+  `# shellcheck shell=bash` (or `sh`, `dash`, `ksh`, `zsh`) line in its first
+  20 lines, such as a sourced `.inc` file.
 
 The shell grammar is the one VS Code uses, with Editora's own fixes. Commands,
 keywords, variables, quoted strings, here-doc text and comments are coloured; a
@@ -214,8 +242,13 @@ What is checked depends on the file type:
   link addresses; in Markdown, fenced code blocks, front matter, link
   definitions, HTML tags and lint directives are skipped too, while link text
   and image alt text are checked.
-- **HTML and Typst** have the document's text checked, plus comments. Tags,
-  attributes, `<script>`, `<style>` and `<pre>` blocks, Typst math and Typst
+- **HTML** (and HTML templates) has the text visitors read checked, plus
+  comments and the `alt`, `title`, `placeholder`, `aria-label` and
+  `aria-description` values. Tags, other attributes and the content of
+  `<script>`, `<style>`, `<pre>`, `<code>`, `<kbd>`, `<samp>` and `<var>` are
+  left alone; the rest of a line that holds an inline `<script>` is still
+  checked. See [HTML](/docs/html#spell-checking).
+- **Typst** has the document's text checked, plus comments. Typst math and
   lines that open with a `#` instruction are left alone.
 - **Source code** has only comments and string literals checked, so identifiers
   aren't flagged. In shell scripts a command's bare arguments and options

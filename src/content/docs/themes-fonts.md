@@ -34,6 +34,10 @@ members of a family next to each other. Your own themes are listed last, under
 **Your themes**. The headings are titles only: the mouse and the arrow keys pass
 over them.
 
+The [terminal](/docs/terminal#colors-and-font) follows the editor theme too,
+unless you give it a color scheme of its own in **Settings → Terminal →
+Theme**.
+
 ### What the colors mean
 
 Colors carry a fixed meaning across the whole interface, and they follow the

@@ -201,6 +201,7 @@ A project's `.editora/settings.json` can set only these:
 | The program of the Java, Python and JavaScript debuggers | `debugTools`, by debugger |
 | Which language server to run for a language, and whether to run it | `lspCommands`, `lspEnabled`, by server |
 | The [Bash server's options](/docs/lsp#bash-server-options) | `bashIde` |
+| The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html` |
 
 ```json
 {
@@ -219,8 +220,9 @@ the final newline exist only per project: on your own they are left to
 - **Trust.** The project's values apply only once you trust the folder
   (*Project: Trust This Project's Settings*, `lsp.trustProjectSettings`, or
   **Trust Folder…** in Settings). Without trust, a project can still turn a
-  language server off, since that only runs less, and set the Bash server's
-  options other than its program paths and explainshell server.
+  language server off, since that only runs less, set the Bash server's
+  options other than its program paths and explainshell server, and set the
+  HTML server's options, none of which runs a program.
 - **`.editorconfig` wins** where it says something: the project's values take
   the place of yours, and a file's `.editorconfig` rules still come first.
 - **In Settings.** In a project window, Settings has a **User | Project**

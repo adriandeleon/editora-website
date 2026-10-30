@@ -1,6 +1,6 @@
 ---
 title: Terminal
-description: Shells in a Terminal tool window, on this machine, a remote host, a container or WSL, with shell integration, find in the scrollback, clickable links, type-ahead over slow connections, and Run and Debug in a terminal tab.
+description: Shells in a Terminal tool window, on this machine, a remote host, a container or WSL, with shell integration, find in the scrollback, clickable links, type-ahead over slow connections, the kitty keyboard protocol, desktop notifications, and Run and Debug in a terminal tab.
 category: Workspace
 order: 8
 ---
@@ -10,7 +10,8 @@ bottom of the window: on your computer, or where a project's commands run,
 on a [remote host](#terminals-on-a-host-in-a-container-or-in-wsl), in a dev
 container or in a WSL distribution. A focused terminal owns the keyboard, so
 Ctrl+C, Escape, and your shell's own shortcuts work as they do in any terminal.
-Its colors follow the editor theme and its font is the editor's, and a
+Its colors follow the editor theme unless you
+[pick a terminal theme](#colors-and-font), its font is the editor's, and a
 Ctrl+click (⌘-click on macOS) on a file name in the output opens that file in
 the editor.
 
@@ -48,9 +49,11 @@ a new shell; it starts without taking the keyboard from the editor.
 
 Each tab carries a chip saying where its shell runs (**Local**, or the host's,
 container's or distribution's name). Its title is the title the shell or its
-program sets, or else the name of its current folder; pointing at the tab
+program sets; else, while the shell is running something, that program's name
+(`vim`, `npm`, `ssh`); else the name of its current folder. Pointing at the tab
 shows the whole folder. Tabs with the same title are numbered: `project`,
-`project (2)`.
+`project (2)`. The program's name is read on this computer, so a tab on a host,
+in a container or in WSL shows its folder instead.
 
 A tab's right-click menu has **Rename Tab…**, **New Terminal**, **Close**,
 **Close Other Tabs**, **Close Tabs to the Right**, **Move Tab Left** and
@@ -59,7 +62,8 @@ renaming it to an empty name gives it back the shell's title. Drag a tab by
 its header to move it.
 
 When a program rings the bell in a tab you can't see, the tab is marked until
-you look at it.
+you look at it. A [notification](#notifications-and-the-clipboard) from a
+program marks it too, in the accent color.
 
 A tab closes when you click its **✕**, run **Terminal: Close Terminal**, or the
 shell exits (`exit`, or Ctrl+D at an empty prompt). When the last shell exits
@@ -250,8 +254,8 @@ shell nor Editora's keymap:
 
 | Action | Linux and Windows | macOS |
 | --- | --- | --- |
-| Copy the selection | Ctrl+Shift+C | ⌘C |
-| Paste | Ctrl+Shift+V | ⌘V |
+| Copy the selection | Ctrl+Shift+C, Ctrl+Insert | ⌘C |
+| Paste | Ctrl+Shift+V, Shift+Insert | ⌘V |
 | [Find](#find-in-the-terminal) | Ctrl+Shift+F | ⌘F |
 | [Jump to the previous or next prompt](#shell-integration) | Ctrl+Shift+Up, Ctrl+Shift+Down | ⌘↑, ⌘↓ |
 | Next or previous terminal tab | Ctrl+PageDown, Ctrl+PageUp | Ctrl+PageDown, Ctrl+PageUp |
@@ -261,6 +265,17 @@ shell nor Editora's keymap:
 
 The history keys scroll the terminal's scrollback. In a full-screen program
 such as vim or less, which has no scrollback, they go to the program.
+
+### Programs that ask for more keys
+
+A terminal normally can't tell some keys apart: Ctrl+I is Tab, Ctrl+M is Enter,
+and Escape is the start of every Alt key. Programs that know the **kitty
+keyboard protocol**, such as Neovim, Helix, fish and nushell, ask the terminal
+for unambiguous keys, and Editora's terminal gives them: Escape on its own,
+Ctrl+I apart from Tab, Shift+Enter as a key of its own, and, when the program
+asks, key repeats and releases. Nothing needs turning on. A program that
+doesn't ask, and your shell at its prompt, get the same keys as before, and a
+full-screen program's request ends with it.
 
 ### Alt and Option
 
@@ -273,10 +288,32 @@ shell's Meta key instead.
 ### Copy and paste
 
 The terminal's own Copy and Paste are **Ctrl+Shift+C** and **Ctrl+Shift+V**
-(**⌘C** and **⌘V** on macOS). Plain Ctrl+C and Ctrl+V belong to the shell.
-Double-click selects a word and triple-click a line. In a program that reads
-the mouse, such as htop, vim or tmux, hold **Shift** to select text instead
-of clicking in the program.
+(**⌘C** and **⌘V** on macOS), and **Ctrl+Insert** and **Shift+Insert** as in
+other terminals. Plain Ctrl+C and Ctrl+V belong to the shell. In a program that
+reads the mouse, such as htop, vim or tmux, hold **Shift** to select text
+instead of clicking in the program.
+
+Selecting text:
+
+- **Drag** to select. The selection ends at the edge between characters
+  nearest the pointer, and what is highlighted is exactly what is copied.
+- **Double-click** selects a word and **triple-click** a line.
+- **Drag past the top or bottom** of the terminal to scroll the history while
+  you select; the further out the pointer is, the faster it scrolls.
+- **Alt+drag** (**Option+drag** on macOS) selects a block of columns, such as
+  one column of `ls -l`; it is copied one row per line. Where your desktop
+  moves windows with Alt+drag, as GNOME and KDE do, use **Ctrl+Alt+drag**.
+- Typing doesn't clear the selection, so you can type a command under a
+  selection of the output above it. The selection goes when the text under it
+  is redrawn, and stays on its text when you resize the terminal.
+- **Settings → Terminal → Copy on select** copies a selection to the clipboard
+  as soon as you make it.
+
+On Linux, a selection is also the *primary selection* other Linux apps paste
+with the middle mouse button, and a **middle-click** in the terminal pastes the
+primary selection. This uses `wl-copy` and `wl-paste` on Wayland, or `xclip` or
+`xsel` on X11; without them, and on macOS and Windows, a middle-click pastes
+the clipboard.
 
 The terminal's right-click menu has Copy, Paste, Select All, Copy Last Command
 Output, Clear Scrollback, New Terminal Here and Find…, and, on a link, Open
@@ -302,7 +339,8 @@ terminal's output: it is underlined when it can be opened. Click to open it:
   `src/Main.java:42:7`), puts the caret on that line and column.
 - **A folder** is revealed in the Project tree.
 - **A URL** (`http`, `https`, `ftp`, `ftps`, or `mailto`) opens in your browser
-  or mail app. A `file://` URL is treated as the path it names.
+  or mail app. A `file://` URL is treated as the path it names, including one
+  that names this computer, as `ls --hyperlink` writes them.
 
 A relative path is read against the shell's current folder, so a bare name from
 `ls` or a path from `grep -n` works as printed. On a host, it is a path on the
@@ -319,6 +357,29 @@ first. Only `http`, `https`, `ftp`, `mailto` and `file` links open.
 
 A plain click never opens a link: it starts a selection, or goes to a program
 such as vim or tmux that reads the mouse.
+
+## Notifications and the clipboard
+
+**Notifications.** A program can ask for a desktop notification, as a long
+build or test run does when it finishes; Editora understands the two common
+forms, OSC 9 and OSC 777. For example:
+
+```sh
+make; printf '\e]777;notify;make;finished\a'
+```
+
+The notification's tab is marked if you can't see it, and the notification
+reaches your desktop unless you are looking at that terminal in the focused
+window. It is shown with `notify-send` on Linux (or straight through the
+desktop's notification service when that tool isn't installed), with
+Notification Center on macOS, and as a toast on Windows. A terminal posts at
+most one notification every two seconds; the rest only mark its tab. Turn the
+desktop part off with **Settings → Terminal → Desktop notifications**.
+
+**The clipboard.** A program can put text on your clipboard (OSC 52), which is
+how tmux and terminal editors copy over SSH. A program can never read the
+clipboard: such a request goes unanswered. Turn writes off with **Settings →
+Terminal → Let programs copy to the clipboard**.
 
 ## Typing over a slow connection
 
@@ -362,9 +423,37 @@ terminal's red, its number color the blue, and so on, with the editor's
 background and text colors behind and in front. Switching themes recolors
 open terminals at once.
 
+To give the terminal colors of its own, pick a scheme in **Settings →
+Terminal → Theme**. **Editor theme**, the default, is the behavior above. The
+other choices are fixed terminal color schemes, listed under **Light** and
+**Dark** headings:
+
+- **Editora Dark** and **Editora Light**: the flagship editor themes' terminal
+  colors, kept whatever the editor shows
+- **Solarized Dark** and **Solarized Light**
+- **Dracula**
+- **Nord**
+- **Gruvbox Dark** and **Gruvbox Light**
+- **One Half Dark** and **One Half Light**
+- **Tango Dark** and **Tango Light**
+- **Campbell**, the Windows Terminal default
+
+A scheme uses the sixteen colors its authors publish, so a shell looks as it
+does in other terminals with that scheme. It stays the same when you switch
+editor themes, so a light editor can sit beside a dark terminal. Picking a
+scheme recolors open terminals at once. Text too faint against a scheme's
+background is darkened or lightened just enough to stay readable.
+
 The font is always the editor's. **Settings → Terminal → Text size** sets the
 terminal's size on its own; 0 keeps the editor's size. Either way the
 terminal follows the editor's text zoom.
+
+The icons tools such as `eza`, `lsd` and powerline prompts print are drawn in a
+[Nerd Font](https://www.nerdfonts.com): the Nerd Font version of the editor's
+font when you have it installed, else Symbols Nerd Font, which comes with
+Editora, so the icons show without installing anything. Its icons are drawn a
+little wider than a character, as Nerd Font versions of text fonts draw them;
+powerline separators stay at text size.
 
 ## Closing a busy terminal
 
@@ -390,6 +479,7 @@ a program**.
 | Shell integration | On | Start bash and zsh with Editora's [shell integration](#shell-integration). |
 | Type-ahead | On | Show typing before a slow shell echoes it; see [Typing over a slow connection](#typing-over-a-slow-connection). |
 | Open Terminal Here uses the system terminal | Off | Off: [Open Terminal Here](#open-terminal-here) opens a tab in the Terminal tool window. On: it starts your system's terminal application. |
+| Theme | Editor theme | The terminal's colors. Editor theme follows the editor theme; any other choice is a fixed color scheme. See [Colors and font](#colors-and-font). |
 | Text size | 0 | The terminal's text size, 6 to 72. 0 uses the editor's size. |
 | Cursor | Block | Block, Underline, or Bar. |
 | Flash on the bell character | On | Flash the terminal when a program rings the bell, and mark its tab when it is out of sight. |
@@ -397,10 +487,14 @@ a program**.
 | Commands that reach Editora | `tool.*, palette.show, search.everywhere, terminal.*` | See [Keys](#keys). |
 | Option key as Meta (macOS) | Off | On: Option+key is the shell's Meta key. Off: Option types your layout's characters. See [Alt and Option](#alt-and-option). |
 | Confirm a paste of several lines | On | Ask before pasting several lines into a program that would run each at once; see [Copy and paste](#copy-and-paste). |
+| Copy on select | Off | Copy a selection to the clipboard as soon as it is made; see [Copy and paste](#copy-and-paste). |
+| Let programs copy to the clipboard | On | Programs may put text on the clipboard (OSC 52); see [Notifications and the clipboard](#notifications-and-the-clipboard). |
+| Desktop notifications | On | A program's notification reaches the desktop as well as marking its tab; see [Notifications and the clipboard](#notifications-and-the-clipboard). |
 | Ask before closing a terminal that is running a program | On | See [Closing a busy terminal](#closing-a-busy-terminal). |
 
-Text size, cursor, bell, type-ahead, the command list, the Option key, the
-paste question and the close question apply to open terminals. Shell, shell
+Theme, text size, cursor, bell, type-ahead, the command list, the Option key, the
+paste question, copy on select, the clipboard and notification switches and the
+close question apply to open terminals. Shell, shell
 integration, and scrollback apply from the next terminal you open.
 
 ## Known limitations
@@ -409,7 +503,8 @@ integration, and scrollback apply from the next terminal you open.
   prompt themes, such as Oh My Bash's *agnoster*, draw text in the default
   color on a black segment, which is dark on dark under a light editor theme.
   No terminal palette fixes that; use a prompt theme that suits light
-  backgrounds, or a dark editor theme.
+  backgrounds, a dark editor theme, or a dark
+  [terminal theme](#colors-and-font).
 - Without [shell integration](#shell-integration) (another shell, or the
   setting off), Editora reads a shell's current folder on Linux and macOS only.
   On Windows, tab titles then don't follow the folder, and only absolute paths

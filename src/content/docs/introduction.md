@@ -37,7 +37,9 @@ Editing and code:
 - **[Snippets & templates](/docs/snippets-templates)**: expand boilerplate and
   scaffold new files.
 - **[Markdown, diagrams & preview](/docs/markdown)**: the live preview, the
-  format bar, Mermaid, HTML preview, and export to PDF.
+  format bar, Mermaid, and export to PDF.
+- **[HTML](/docs/html)**: tag editing, links, markup checks, the HTML language
+  server, and a live preview in your browser.
 - **[Typst](/docs/typst)**: a live preview and export for `.typ` files.
 - **[Diagrams as code](/docs/diagrams)**: DOT and PlantUML preview and export.
 - **[Smart file previews](/docs/previews)**: JSON/YAML/TOML/XML trees, OpenAPI

@@ -38,12 +38,49 @@ installed, is it the version I think, and is Editora looking at the right one" i
 one pass. **Copy Report** puts the whole report on the clipboard, ready to paste
 into a bug report.
 
+Under the XML language server, the **XML schema cache** row shows how much the
+server has downloaded (the schemas and DTDs XML files name) and where it keeps
+it, `cache/lemminx` in Editora's config folder, with a **Clear** button. With
+the XML server off, the row sits under the Maven `pom.xml` server instead, and
+either way it follows its server into **Needs attention**. Under the Maven
+server, the **lemminx-maven artifact store** row shows the size of the
+`.lemminx-maven` folder where lemminx-maven keeps what it resolves (beside your
+local Maven repository: `~/.m2/.lemminx-maven`, or next to the folder
+`<localRepository>` names in `~/.m2/settings.xml`), with
+**Clear**, and **Reveal in File Manager** in its right-click menu. A language
+server that keeps crashing, or fails its requests, is a warning with an
+**Install…** button that installs it again and a **Restart Language Servers**
+button; the same goes for a server this window stopped restarting after it
+kept crashing, and for a Node.js server (bash-language-server, Pyright, the
+JSON, YAML and other npm servers) when no `node` is found. The rows of
+npm-installed servers show the installed package version. A language server
+that exits as soon as it starts shows what it printed, rather than *OK*; for lemminx on a Linux older than glibc 2.34, see
+[Installing lemminx](/docs/lsp#installing-lemminx). A server that keeps
+failing while it runs a command you set in Settings gets no **Install…**,
+since installing would not change that command: its tip says to fix the
+command or clear it to use the default, then run **Restart Language Servers**.
+
+The **HTML** row warns when the copy of vscode-langservers-extracted in use
+cannot load TypeScript's libraries, which is the case for any copy installed
+with npm on its own: JavaScript in `<script>` then has no DOM or standard
+library, nothing completes after `document.` and there is no parameter help.
+**Update** installs Editora's own copy, which has them, and a blank HTML
+command uses it. When the HTML command is your own, the tip says to install the
+HTML server and clear the command. See [Installing it](/docs/html#installing-it).
+
+The **Node.js** row counts the open npm-installed servers (HTML, CSS, JSON,
+YAML, Bash, Pyright…) as needing Node.js, not only JavaScript and TypeScript.
+When it is missing and one of them needs it, the tip names that server and
+says to install Node.js or choose one in **Settings → Debugging →
+JavaScript**.
+
 ### Update… for servers older than Editora's
 
 Editora installs some servers and tools at the exact release it is tested with:
-jdtls (Java), the JavaScript debugger (js-debug), the Maven `pom.xml` server
-(lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
-ShellCheck and shfmt. A newer Editora can move to a newer release of one of
+jdtls (Java), the JavaScript debugger (js-debug), lemminx (XML), the Maven
+`pom.xml` server (lemminx-maven), gls (Groovy), Metals (Scala), the Kotlin server, clojure-lsp,
+bash-language-server, vscode-langservers-extracted (the HTML, CSS and JSON
+servers), ShellCheck and shfmt. A newer Editora can move to a newer release of one of
 them. When the copy you have is older than the one this Editora is tested with,
 its Doctor row is a warning that names both versions, and its **Install…**
 button reads **Update…**.
@@ -70,13 +107,21 @@ What the warning says depends on whose copy it is:
   Update, since Settings names that copy on purpose. Update that copy yourself,
   or clear the path in **Settings → LSP** to use Editora's own.
 
+bash-language-server is a global npm package, not a copy in Editora's folder.
+Its row warns when it is older than 5.7, the oldest release that works well
+with Editora, and Update installs the tested 5.8.1.
+
+vscode-langservers-extracted is installed with npm into `plugins/lsp/web` in
+Editora's config folder, at 4.10.0. For a copy of your own, Doctor reads the
+version from its `package.json`.
+
 ### Check for Newer Versions
 
 Many other servers and tools Editora installs at their latest release, so there
 is no tested version to compare with. **Check for Newer Versions**, in Doctor's
 header, asks where each one is published (npm, the Go module proxy, GitHub and
 HashiCorp) for its latest release. It covers Pyright,
-typescript-language-server, the JSON, HTML, CSS, Bash, YAML, Dockerfile, TOML
+typescript-language-server, the YAML, Dockerfile, TOML
 and Astro servers, gopls, clangd, lua-language-server, tinymist, terraform-ls
 and the Mermaid CLI (`mmdc`), and only the ones that are installed and working.
 
@@ -135,9 +180,39 @@ Language Servers* (`lsp.restartServers`). For Java specifically, a stale `jdtls`
 previous run can hold its workspace lock; the loading bar clearing is the sign
 the handshake completed. A server that starts but then fails its requests is
 announced in the status bar (`lemminx-maven: internal error on hover — see the
-log`), stopped after three failures in a row, and shown as a warning in Doctor;
+log`), stopped after three failures in a row, and shown as a warning in Doctor,
+with **Install…** for a server Editora installs;
 the Maven `pom.xml` server whose folder is missing jars is reported as
 *incomplete* in Settings → LSP and Doctor, and its **Install…** repairs it.
+
+A server whose requests time out twice in a row is reported once, with its
+name: *Not responding: its requests time out. Run “Restart Language Servers” to
+start it again.* When it answers again, the status bar says *Responding again*.
+
+**Format Document** says why it changed nothing. *Already formatted* means the
+server answered with no edits. Otherwise it says *Format failed: the language
+server did not answer in time*, *Format failed: the language server stopped
+before it answered*, or *Format failed:* with the server's own error.
+
+## JavaScript in an HTML page completes nothing
+
+If completion after `document.` in a `<script>` offers nothing and there is no
+parameter help, the HTML server cannot find TypeScript's libraries (its log
+says *Unable to load library*). That happens with a copy of
+vscode-langservers-extracted installed with npm on its own, such as
+`npm install -g`. Doctor's HTML row says so: click **Update**, or **Install…**
+on the HTML card in Settings → LSP, to install Editora's own copy, and leave
+the HTML command blank so it is used. See
+[Installing it](/docs/html#installing-it).
+
+## Language servers run the wrong Node.js
+
+The Node.js chosen in **Settings → Debugging → JavaScript** (the **Node.js**
+row) runs every language server installed with npm, not only TypeScript's: the
+HTML, CSS, JSON, YAML and Bash servers, Pyright and the others. Left blank,
+Editora uses the version a project's `.nvmrc` or `.node-version` names (from
+nvm), else `node` on the `PATH`. A server row that would warn about a missing
+Node.js does not, when that setting names one that exists.
 
 ## Python imports show as errors
 
@@ -197,15 +272,20 @@ rather than within a few seconds. See
 
 The Bash language server needs two helper programs: **ShellCheck** for
 diagnostics and **shfmt** for Format Document. Without them a script looks
-clean and Format Document changes nothing. The status bar says so when you open
-a script or format one, and the **Bash / Shell** card in **Settings → LSP**
-and the Doctor show whether each is found. Install them with the Install…
-buttons there, or with **Install: ShellCheck and shfmt** (`install.shellTools`)
-in the palette. See [ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
+clean and Format Document changes nothing. A banner above the script says so,
+with **Install**, and the **Bash / Shell** card in **Settings → LSP** and the
+Doctor show whether each is found. Install them with the Install… buttons
+there, or with **Install: ShellCheck and shfmt** (`install.shellTools`) in the
+palette. If you turned **Lint with ShellCheck** or **Format with shfmt** off on
+the Bash / Shell card, turn it back on. See [ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
 
 If ShellCheck runs but ignores a `.shellcheckrc`, the file is probably in a
 subfolder of the project; ShellCheck reads it only from the project folder or
 above. See [Where ShellCheck finds .shellcheckrc](/docs/lsp#where-shellcheck-finds-shellcheckrc).
+
+A script whose ShellCheck problems seem to be missing, while others show
+theirs, may be a zsh script: ShellCheck cannot check zsh, and the problem
+counter says **Not checked**. A `PKGBUILD` shows no SC2034 or SC2154 by design.
 
 The server's own warnings, such as a helper it could not find, are in the
 Debug Log (below).
@@ -306,7 +386,10 @@ choice for that file. See [File encodings](/docs/workspace#file-encodings).
 ## Performance
 
 Editora aims to stay responsive on large files. Highlighting and the minimap
-turn off automatically at about 5 MB, and files of about 50 MB open read-only
+turn off automatically at about 5 MB; the status line then lists everything a
+large file opens without (highlighting, folding, Structure, spell check, the
+minimap, undo and the language server), and the Structure window says why it is
+empty. Files of about 50 MB open read-only
 with a capped load. A file of 5 MB or more that would not fit in the memory that
 is left (typically a second or third very large file) opens the same way, as a
 read-only slice of its first part; close other large tabs and reopen it to edit

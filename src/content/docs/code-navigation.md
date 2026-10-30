@@ -101,6 +101,10 @@ This works for the languages the index reads (see the list above). In other
 languages the command still needs a server. Ctrl+click on a name needs a
 running server too.
 
+In an HTML page, Go to Definition and Ctrl/Cmd-click on an `href` or `src`
+open the file the link names, at the element its `#fragment` names, with or
+without a server; see [Following links](/docs/html#following-links).
+
 ## Sticky scroll
 
 **Sticky scroll** pins the enclosing scope headers above the viewport, so deep
@@ -180,7 +184,14 @@ and Ctrl+Shift+T in the IntelliJ keymap.
 | `foo.cpp` | `foo.hpp`, `foo.hxx`, `foo.h` |
 | `Button.tsx` | `Button.css`, `Button.scss` |
 | `app.js` | `app.css`, `app.scss`, `app.html` |
+| `index.html` | the stylesheets and scripts it loads (`<link href>`, `<script src>`) |
+| `site.css`, `main.js`, `main.mjs` | the project's pages that load it, first |
 | `x_test.go`, `x.test.ts`, `x.spec.ts` | `x.go`, `x.ts` |
+
+The two web-page rows come from the pages' links rather than from names. From a
+stylesheet or script, Editora reads up to 500 of the project's indexed pages to
+find the ones that load it, so that direction needs the
+[symbol index](#go-to-symbol-in-project).
 
 These are conventions, so Editora proposes candidate names in preference order
 and offers only the ones that **exist**. A convention that doesn't hold in your
@@ -198,6 +209,10 @@ create a JUnit 5 test in the same package under `src/test/java`, the folder
 Maven and Gradle look in, and opens it.
 
 ## Keeping your place
+
+A jump (Go to Definition, a Structure click, a search result) scrolls sideways
+to the target's column as well as to its line, so the line is never shown with
+its start cut off and a target far along a long line is on screen.
 
 Three things work together here, and each is documented where it lives:
 

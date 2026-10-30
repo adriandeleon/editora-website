@@ -149,6 +149,46 @@ names (`sysout`, `fori`, `try_catch` and others). A server template named like
 one of your snippets, bundled or your own, is left out of the completion list,
 so the popup shows a single row for the trigger: the snippet that Tab expands.
 
+### HTML snippets
+
+The HTML snippets cover the elements by name (`div`, `ul`, `table`, `form`,
+`video` and the rest), plus `div.`, `div#` and `div.#` (and the same for `p`,
+`ul` and `ol`) for an element with a class, an id or both.
+
+- `!` and `html5` insert a whole page. The first field is the `lang` value
+  (`en`), and the caret ends in the `<body>`. `html5` also links a stylesheet.
+- `doctype` inserts `<!DOCTYPE html>`, and `link` a stylesheet link
+  (`<link rel="stylesheet" href="">`).
+- Obsolete elements (`big`, `command`, `keygen`, `menuitem`) are not offered.
+
+In an HTML page, the snippets offered follow where you are typing: CSS
+snippets inside a `<style>`, JavaScript snippets inside a `<script>`, and none
+inside a tag, so `col` in a stylesheet offers `color` rather than `<col>`. HTML
+templates (Jinja, Twig, ERB…) and Handlebars files get the HTML snippets. There
+is no Emmet; see [HTML](/docs/html#snippets-and-new-files).
+
+### XML snippets
+
+The 25 XML snippets cover:
+
+- **Markup:** `?xml` (the XML declaration), `tag` (an element whose name is
+  mirrored in the end tag), `tagc` (self-closing), `taga` (with one attribute),
+  `tagb` (its content on its own indented lines), `attr`, `comment`, `cdata` and
+  `pi` (a processing instruction).
+- **Binding a grammar:** `xsi` (an XSD with no target namespace), `xsins` (an
+  XSD with a target namespace), `xml-model` (a RELAX NG or other schema) and
+  `doctype` (an external DTD).
+- **XSD:** `xsschema`, `xselement`, `xscomplex` (an element with a complex type
+  and a sequence), `xsattribute` and `xssimple` (a simple type restricted to an
+  enumeration).
+- **XSLT:** `xslstylesheet`, `xsltemplate`, `xslvalue`, `xslforeach`, `xslif`,
+  `xslchoose` and `xslapply`.
+
+`tag`, `taga`, `tagb`, `comment`, `cdata`, `xscomplex`, `xsltemplate`,
+`xslforeach`, `xslif` and `xslchoose` wrap the selection, so **Surround With**
+works in XML: select some lines and wrap them in an element, a comment, CDATA or
+an XSLT block.
+
 ### Maven pom snippets
 
 A `pom.xml` (or any file that
@@ -231,13 +271,19 @@ template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
 
-Editora ships 34 templates:
+Editora ships 37 templates:
 
 - **Code:** a Java class, a Java compact source file, a JUnit 5 test, a Java
   shebang script (an extensionless file the `java` launcher runs directly), a
   Maven `pom.xml` (quickstart-shaped: Java 21, JUnit 5 through its BOM,
   Surefire 3), a Python script, a pytest test module, a Node.js script, shell
-  and Zsh scripts, an HTML page, and an HTML page with a stylesheet.
+  and Zsh scripts, an HTML page (**HTML Page**), and an HTML page with a
+  stylesheet it links (**HTML Page + CSS**), both with `<!DOCTYPE html>`,
+  `UTF-8` and the viewport meta.
+- **XML:** an XML Schema (XSD) with a target namespace and one element, an XSLT
+  stylesheet with the identity template, and an XML document bound to a schema
+  (`xsi:noNamespaceSchemaLocation`), so the
+  [XML server](/docs/lsp#xml) validates and completes it from the start.
 - **Files Editora previews or runs:** a Markdown document, a Typst document
   (on its own, or with its page setup in a reusable `template.typ`), a Mermaid
   diagram, a Markwhen timeline, and HTTP requests with `@assert` and `@capture`
@@ -414,6 +460,13 @@ YAML, and so on) in the current folder. It asks only for a name.
   `#!/usr/bin/env python3` line, a docstring, a `main()` function and an
   `if __name__ == "__main__":` guard, with the caret in `main()`. It is created
   executable too.
+- **HTML** starts with an HTML5 page: the doctype, `lang="en"`, the charset
+  and viewport metas, and a `<title>` holding the name you typed, with the caret
+  in the `<body>`.
+- **XML** starts with an XML declaration and a `<root>` element, with the caret
+  inside it. **XML Schema** (`.xsd`) starts with an `xs:schema` and one
+  element, **XSLT** (`.xsl`) with a stylesheet holding the identity template,
+  and **SVG** with an `<svg>` element and its `viewBox`.
 - A name that cannot work is refused with the reason: a name Windows reserves
   (`CON`, `NUL`, `COM1`), one of the characters `< > : " | ? *`, a trailing dot
   or space, or a name that starts with `~`. For Java types, a keyword or a name

@@ -1,6 +1,6 @@
 ---
 title: Language servers (LSP)
-description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 23 language servers.
+description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 26 language servers.
 category: Code intelligence
 order: 2
 beta: true
@@ -21,7 +21,7 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Go to type definition | `lsp.gotoTypeDefinition` | `C-c l d` |
 | Go to declaration | `lsp.gotoDeclaration` | (palette) |
 | Find references | `lsp.findReferences` | `M-S-/` |
-| Go to Symbol in Workspace | `lsp.gotoSymbol` | (palette) |
+| Go to Symbol in Workspace | `lsp.gotoSymbol` | `M-g s` |
 | Call hierarchy | `lsp.callHierarchy` | `C-c l c` |
 | Type hierarchy | `lsp.typeHierarchy` | `C-c l h` |
 | Next / previous problem | `lsp.nextProblem`, `lsp.previousProblem` | `M-g M-n`, `M-g M-p` |
@@ -114,7 +114,9 @@ worst one on its line.
 
 **Hover docs** open in a popup at the caret. Long documentation, such as the
 man page bash-language-server shows for a command like `ls`, scrolls inside a
-popup no taller than part of the window.
+popup no taller than part of the window. **Page Down** and **Page Up** scroll it
+from the keyboard (and `C-v` / `M-v` in the Emacs keymap); Escape closes it. A
+man page gets its full 80 columns.
 
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
@@ -161,11 +163,13 @@ is drawn faded, and a call the server marks as deprecated is struck through.
 Those unused and deprecated marks are not listed in the Problems window.
 
 The **problem counter** at the top right of the editor shows the file's errors
-and warnings, or a green check when the server found none. Until the server has
+and warnings, and a muted count of notes (information and hints, such as
+ShellCheck's quoting advice). The green check means the server found no
+problems at all. Until the server has
 checked the file it says **Analyzing…** (for Java, until the project has loaded,
 and again after a restart), and **Not checked** when the file's project did not
 import. Its arrows go to the previous and next problem in that
-file, and clicking the counts shows or hides Problems. It hides when the code
+file, notes included, and clicking the counts shows or hides Problems. It hides when the code
 pane is narrower than 520 pixels. When the caret rests on a line where the
 server can **fix an error**, a red **lightbulb** with a `!` appears in the
 gutter; an amber one marks other quick actions, a warning's fixes included.
@@ -422,10 +426,15 @@ straight away, because the result is on screen and one undo away.
 
 **Format Document** reformats the whole file through the server when it advertises
 formatting (undoable, palette or right-click menu), including `.json`, `.css` and
-`.html`. With a selection it formats only the selected lines. It tells the server the file's own indentation: the `indent_style` and
+`.html` (for HTML, see [Formatting](/docs/html#formatting) on the HTML page:
+`<pre>` and `<textarea>` are kept as written, and without the server Editora
+formats it itself). With a selection it formats only the selected lines. It tells the server the file's own indentation: the `indent_style` and
 `indent_size` from [EditorConfig](/docs/editorconfig) when there are any, else
 what the file already uses, not the global tab size. A two-space script stays
-two-space. In a language whose server supports range formatting, **Tab** also snaps
+two-space. It also passes the file's `trim_trailing_whitespace` and
+`insert_final_newline` (or the project's save rules), so the formatted file
+already looks the way saving writes it; the XML server adds the final newline
+only when asked. In a language whose server supports range formatting, **Tab** also snaps
 the current line's indentation to the server's convention.
 
 ### Java-only assists
@@ -490,11 +499,30 @@ Imports and Format.
   older; when there is none, it says so, and Doctor's jdtls row names the Java
   it runs on and its version. Of two JDKs of one version, a project gets the one
   with its sources, so JDK parameter names and docs show; when no JDK of that
-  version has them, Doctor says which package adds them. The
+  version has them, Doctor says which package adds them, reading the JDK the build
+  compiles with (the compiler plugin's `<release>`, a parent pom, a Gradle
+  toolchain or version catalog). The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
   Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
   jdtls keeps the JDK it started with, so changing it says to run **Restart
   Language Servers**.
+- **Library sources.** A Maven library class you open (with Go to Definition,
+  say) gets its sources when a repository has them: the tab shows the real code,
+  with its parameter names and Javadoc. A class that has none is shown
+  decompiled, and its tab says so with two buttons: **Download Sources** looks in
+  your local repository and on Maven Central (whose search it can ask by the
+  jar's checksum), and **Choose Sources…** attaches a `-sources.jar` or
+  zip from disk, for a `lib/` jar or an artifact only installed locally. The
+  palette has both as **LSP: Download Library Sources**
+  (`lsp.downloadLibrarySources`) and **LSP: Choose Library Sources…**
+  (`lsp.attachLibrarySources`). A Gradle library's sources come from its build,
+  and a JDK class without sources is a JDK with no `src.zip` (see Which JDK
+  above). Once a library has its sources, every open tab of it shows them at
+  once. To fetch every dependency's sources up front, turn on Settings → LSP →
+  **Download library sources when a Java project is imported** (off by default;
+  Maven only), or run **View: Toggle Downloading Library Sources at Import**
+  (`view.toggleJavaDownloadSources`). It applies at the next import; **LSP: Clean Java
+  Workspace and Restart** applies it now.
 - **A failed import says why.** When jdtls cannot import the project (a Gradle
   build that does not run, say), the status bar names the reason it logged and
   Problems lists the build file's own errors. Fix the build file and run
@@ -595,43 +623,22 @@ Twenty-six servers are supported:
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
   (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
   **Scala** (Metals), **Lua** (`lua-language-server`)
-- **Astro** (`astro-ls`), **HTML**, **CSS**, **JSON**, **YAML**, **XML** (`lemminx`), **Bash**
-  (`bash-language-server`), **Dockerfile**, **SQL** (`sqls`), **Terraform**
-  (`terraform-ls`), **TOML** (`taplo`), **Typst** (`tinymist`)
+- **Astro** (`astro-ls`), **HTML** (`vscode-html-language-server`), **CSS**
+  (`vscode-css-language-server`), **JSON** (`vscode-json-language-server`),
+  **YAML**, **XML** (`lemminx`), **Bash** (`bash-language-server`),
+  **Dockerfile**, **SQL** (`sqls`), **Terraform** (`terraform-ls`), **TOML**
+  (`taplo`), **Typst** (`tinymist`)
+
+The HTML, CSS and JSON servers come from one npm package,
+**vscode-langservers-extracted** (the servers taken out of VS Code), so one
+install gives all three; see [HTML, CSS and JSON](#html-css-and-json).
 
 There is also a **Maven-aware `pom.xml` server** (JVM lemminx plus the
 lemminx-maven extension), shown as **lemminx-maven** in Settings, Doctor and
-the status bar where the XML server is **lemminx**. It is routed by file name,
-so a `pom.xml` gets dependency, plugin and GAV completion while every other XML
-file keeps the fast native lemminx. It runs on the **Default JDK** chosen
-under Settings → Languages & Tools → Build Tools (else the `java` on your
-`PATH`), for Install… as well as for the server itself. Its root is the
-outermost pom of a contiguous chain, so a multi-module reactor is served by one
-JVM, also when it is opened without a project. The status bar says *Loaded and
-ready* only once the server reports its own Maven initialization done, since it
-answers the handshake long before it can answer a request. Its diagnostics are
-named after the server, the schema's "resource is downloading" notice is shown
-as information rather than an error, and `${…}` property items are left out of
-an artifact completion unless you typed `$`.
-
-Completion lists the artifacts in your local repository (`~/.m2`) only.
-**Use the Maven Central index for pom.xml completion**, on the server's card
-under Settings → LSP and off by default, lets lemminx-maven download Maven
-Central's index, a large one-time download it then keeps up to date; changing
-the setting restarts the server.
-
-Its **Install…** downloads lemminx-maven's bundle and the three libraries the
-bundle leaves out (Guava, Commons Lang and jsoup, pinned by version and
-checksum, from Maven Central) into one folder, then starts the server and asks
-it one hover request before keeping the install. A server that cannot answer is
-refused with the reason, and the previous install stays in place. A folder that
-lacks any of the jars (an install made with an earlier release, or a wiped
-folder) does not count as installed: `pom.xml` falls back to the XML server,
-the Settings → LSP card reads *lemminx-maven: incomplete — Install… repairs
-it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars beside
-an **Install…** button. If you installed this server with an earlier release,
-click **Install…** once: that bundle lacked the three libraries and could not
-answer a request.
+the status bar where the XML server is **lemminx**. A `pom.xml` in a trusted
+folder gets dependency, plugin and GAV completion from it while every other XML
+file keeps the fast native lemminx; see
+[pom.xml and the Maven server](#pomxml-and-the-maven-server).
 
 Each server has a card on the **Settings → LSP** page: its enable switch, its
 command field with **Browse…**, and a **Detected** line such as *jdtls: found
@@ -649,7 +656,8 @@ enabled server in one place.
 A project can commit a `.editora/settings.json` naming **which server to run for
 a language and whether to run it**, which overrides your global preference for
 anyone who opens that project. It can also set the
-[Bash server's options](#bash-server-options). This covers one repository needing a
+[Bash server's options](#bash-server-options) and the
+[HTML server's](/docs/html#settings--lsp--html). This covers one repository needing a
 JDK 17 server and another a JDK 25 one, where nobody has to remember to flip a
 setting when switching between them. The same file can also set indentation,
 rulers, build commands and debugger programs; see
@@ -675,12 +683,18 @@ for a host in Settings → Remote instead (see
 If a server isn't installed, Editora can fetch it for you. **Every server** is
 covered through one of these channels, picked per server:
 
-- **npm** packages (Astro, JSON/HTML/CSS, Bash, YAML, Dockerfile, TOML, TypeScript,
+- **npm** packages (Astro, Bash, YAML, Dockerfile, TOML, TypeScript,
   Python/Pyright), needing Node.
+- A **pinned npm package** for HTML, CSS and JSON, vscode-langservers-extracted
+  4.10.0, installed with npm into Editora's own folder rather than globally
+  (see [HTML, CSS and JSON](#html-css-and-json)). It needs Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
   C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
-- **Binary** releases downloaded per OS/architecture (clangd, lemminx,
-  terraform-ls, Lua), extracted into your config folder.
+- **Binary** releases downloaded per OS/architecture (clangd, terraform-ls,
+  Lua), extracted into your config folder.
+- A **pinned native binary** for lemminx, the XML server, from one vscode-xml
+  release, with both the zip and the program checked against the release's
+  SHA-256 (see [Installing lemminx](#installing-lemminx)).
 - A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
   into your config folder. A server installed earlier keeps its version until
   you install it again.
@@ -703,7 +717,8 @@ covered through one of these channels, picked per server:
 
 There are three entry points: an **Install…** button per server in **Settings → LSP**, an
 in-editor **banner** when you open a file whose server is missing (turn the nudge
-off with `view.toggleInstallPrompts`), and the **Install: Language Server…**
+off with `view.toggleInstallPrompts`; its **Not now** lasts for every file of
+that kind in the window), and the **Install: Language Server…**
 picker (`install.languageServer`). After installing, the server is auto-detected
 and activates without a restart. Editora never installs the underlying runtimes
 (Node, Python, Go, …); if one is missing it tells you which to install first.
@@ -817,6 +832,10 @@ A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
 single server. Python looks for its own markers first; see [Python](#python).
+An HTML page with no project, `package.json` or `.git` above it is rooted at
+the highest folder above it that holds an `index.html`, stopping below your
+home folder, so the whole static site shares one server and its `/css/…` links
+resolve.
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -907,17 +926,75 @@ nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
 its own root. Scripts with none of these above them share one server, wherever
 they are, instead of starting one each.
 
+## HTML, CSS and JSON
+
+HTML, CSS and JSON files use **vscode-html-language-server**,
+**vscode-css-language-server** and **vscode-json-language-server**, the servers
+taken out of VS Code and published together in the npm package
+**vscode-langservers-extracted**. They are Node.js programs, so they need
+**Node.js**. The first HTML or CSS file a window opens asks **Turn on HTML code
+intelligence?** (or CSS), with **Turn on** and **Not now**, like the
+[Python offer](#python).
+
+**Install** on the banner, **Install…** on any of the three cards in Settings →
+LSP, Doctor's **Install…** or **Install: Language Server…** installs
+vscode-langservers-extracted **4.10.0**, the version Editora is tested with,
+with npm into `plugins/lsp/web` under Editora's config folder rather than
+globally. It also links the TypeScript libraries the HTML server needs for the
+DOM and standard library in `<script>`. With the three commands left blank,
+Editora runs that copy first, then one on your `PATH`.
+[Doctor](/docs/troubleshooting#doctor) checks the installed version against
+4.10.0, and warns, with **Update**, about a copy that cannot load the
+TypeScript libraries.
+
+What the HTML server adds, its settings on the HTML card (wrap column,
+attribute wrapping, content kept as written, attribute quotes, checking
+embedded scripts and styles), the `html` object a project can commit, and what
+it does not do (markup validation, Emmet) are on the
+[HTML](/docs/html#the-html-language-server) page. The HTML and CSS servers also
+draw a small swatch before each colour.
+
 ## Shell scripts
 
 Shell scripts use **bash-language-server** (`bash-language-server start`).
-It serves `.sh`, `.bash`, `.zsh` and `.ksh` files, shell dotfiles such as
-`.bashrc` and `.profile`, and files whose shebang names a shell.
+It serves `.sh`, `.bash`, `.zsh`, `.ksh`, `.mksh`, `.command` and `.bats`
+files, shell dotfiles such as `.bashrc` and `.profile`, files whose shebang
+names a shell, and any file with a `# shellcheck shell=bash` (or `sh`, `dash`,
+`ksh`) line near the top, such as a sourced `.inc` file. A `PKGBUILD` is a
+shell script too; its `pkgname`, `pkgver` and other makepkg variables are not
+reported as unused (SC2034) or unset (SC2154).
+
+Language servers are off by default, so the first shell script a window opens
+asks **Turn on shell script code intelligence?** with **Turn on** and **Not
+now**, once per window, like the [Python offer](#python).
 
 zsh startup files (`.zshrc`, `.zshenv`, `.zprofile`, `.zlogin`, `.zlogout`)
 are not opened on the Bash server. ShellCheck has no zsh mode and would report
 errors in valid zsh, so these files get highlighting and folding but no
-language server. A `.zsh` script stays on the server, which does not run
-ShellCheck on it.
+language server. A zsh script (a `.zsh` file, a zsh shebang, or a
+`# shellcheck shell=zsh` line) stays on the server for completion, hover and
+symbols, but nothing lints it: ShellCheck's "only supports sh/bash" error is
+hidden, and the problem counter says **Not checked: ShellCheck has no zsh
+mode**.
+
+Scripts outside any Git repository (in `~/bin`, `/etc` or a loose folder)
+share one Bash server per window, which reads no other scripts in the
+background.
+
+### Installing the Bash server
+
+**Install** on the banner, in Settings → LSP or in Doctor installs
+bash-language-server **5.8.1** with npm, the version Editora is tested with,
+together with ShellCheck and shfmt when they are missing. It needs **Node.js
+20 or newer**; with an older Node.js the install stops and says which version
+it found. Doctor's **Bash / Shell** row shows the installed version and warns,
+with **Update**, when it is older than 5.7. A Bash command you set in Settings
+that is not found gets a banner that opens Settings rather than an install.
+
+bash-language-server is a Node.js program. When Editora starts where `node` is
+not on the `PATH` (from a desktop launcher, without nvm's setup), the server
+cannot start: Doctor says the server needs Node.js, and its **Restart Language
+Servers** button tries again once that is fixed.
 
 ### ShellCheck and shfmt
 
@@ -926,12 +1003,15 @@ Without ShellCheck a script gets no diagnostics; without shfmt **Format
 Document** changes nothing. Editora shows whether each one is there:
 
 - The **Bash / Shell** card in **Settings → LSP** has a command field and a
-  Detected line for each, for example *shellcheck: found (/usr/bin/shellcheck)*
+  Detected line for each, for example *ShellCheck: found (/usr/bin/shellcheck)*
   or *shfmt: not found*.
 - [Doctor](/docs/troubleshooting#doctor) has a **ShellCheck** and an **shfmt**
-  row under the Shell server.
-- Opening a script without ShellCheck says so in the status bar, once per
-  window. Format Document without shfmt says that shfmt was not found.
+  row under the Bash / Shell server.
+- Opening a script when the server is installed but ShellCheck or shfmt is not
+  shows a banner that says what is lost (*ShellCheck and shfmt aren't
+  installed — shell scripts get no problems or formatting*) with **Install**
+  and **Not now**. Not now holds for the window. Format Document without shfmt
+  says that shfmt was not found.
 
 To install them, use the **Install…** button beside either line in Settings,
 the Install… button in Doctor, or **Install: ShellCheck and shfmt**
@@ -946,8 +1026,8 @@ folder.
 The **ShellCheck command** and **shfmt command** fields on the Bash card choose
 which copy the server runs. Left empty, they use the copy Editora installed,
 else the program of that name on your `PATH`. A path you enter always wins.
-On a [remote host](#language-servers-on-a-remote-host), ShellCheck and shfmt
-are the ones the host's `PATH` finds.
+On a [remote host](#language-servers-on-a-remote-host), in a container and in
+WSL, ShellCheck and shfmt are the ones that side's `PATH` finds.
 
 ### Bash server options
 
@@ -955,13 +1035,16 @@ The Bash / Shell card also holds the server's own settings:
 
 | Setting | What it does |
 | --- | --- |
-| ShellCheck arguments | Added to every ShellCheck run, for example `-x` to follow sourced files or `--severity=warning` to hide notes and style hints |
+| Lint with ShellCheck | On by default. Off: scripts get no ShellCheck problems and Editora stops saying ShellCheck is missing; completion, hover and navigation keep working |
+| Format with shfmt | On by default. Off: Format Document leaves scripts as they are and Editora stops saying shfmt is missing |
+| ShellCheck arguments | Added to every ShellCheck run, for example `--severity=warning` to hide notes and style hints or `--exclude=SC2034`. Quote an argument that contains spaces. Sourced files are already followed, so `-x` is not needed |
+| Explain source lines the server cannot follow | On by default. A `source` line whose path is computed, such as `source "$(dirname "$0")/lib.sh"` or `source "${BASH_SOURCE%/*}/lib.sh"`, gets a hint. Add `# shellcheck source=lib.sh` above it, and Go to Definition, hover and completion reach that file |
 | shfmt dialect | The shell syntax Format Document reads: Automatic (from the shebang), Bash, POSIX sh, mksh or Bats |
 | Indent case branches, Put && and \|\| at the start of a line, Put a function's opening brace on its own line, Space after redirections, Simplify code when formatting, Keep column alignment | shfmt's style switches, all off by default |
-| Ignore .editorconfig shfmt options | Use only these options, even where an `.editorconfig` sets shfmt properties |
+| Ignore .editorconfig shfmt options | If an `.editorconfig` sets **any** shfmt property (such as `switch_case_indent`), all the options above, the dialect included, are ignored for that file unless this is on |
 | Scripts read in the background | How many workspace scripts the server reads for Go to Symbol and cross-file completion (500 by default; 0 turns it off) |
 | Symbols from every workspace script | Complete, find and rename functions and variables from all scripts, not only from sourced ones |
-| explainshell server | The address of an [explainshell](https://github.com/idank/explainshell) server, for hover help on a command's options. It is sent the command under the caret. Empty (the default) turns it off |
+| explainshell server | The address of an [explainshell](https://github.com/idank/explainshell) server, for hover help on a command's options. Hover sends it the **whole command line** under the caret, including any password or token in it. Use `https://`; plain `http://` is accepted only for this machine (`localhost`). A hover that waits more than 5 seconds gives up with *explainshell did not answer*. Empty (the default) turns it off |
 
 A project can set the same options for everyone who opens it, with a `bashIde`
 object in its `.editora/settings.json` (see
@@ -971,27 +1054,75 @@ names, the same ones VS Code's Bash IDE extension uses:
 ```json
 {
   "bashIde": {
-    "shellcheckArguments": "-x",
+    "shellcheckArguments": ["--severity=warning"],
     "backgroundAnalysisMaxFiles": 2000,
+    "globPattern": "**/*@(.sh|.bash|.inc)",
     "shfmt": { "caseIndent": true, "languageDialect": "bash" }
   }
 }
 ```
 
-The keys are `shellcheckPath`, `shellcheckArguments`, `explainshellEndpoint`,
-`backgroundAnalysisMaxFiles`, `includeAllWorkspaceSymbols`, and a `shfmt`
-object with `path`, `languageDialect`, `simplifyCode`, `binaryNextLine`,
-`caseIndent`, `funcNextLine`, `spaceRedirects`, `keepPadding` and
-`ignoreEditorconfig`. A key the project leaves out keeps your own setting.
-The ShellCheck path, the shfmt path and the explainshell server name a program
-to run or a place to send your code, so they apply only in a trusted folder,
-like a project's server commands; the other keys always apply.
+The keys are `shellcheckPath`, `shellcheckArguments` (a string or a list),
+`explainshellEndpoint`, `backgroundAnalysisMaxFiles`,
+`includeAllWorkspaceSymbols`, `enableSourceErrorDiagnostics`, `globPattern`,
+`logLevel`, `shellcheckExternalSources`, `backgroundAnalysisIgnore`, and a
+`shfmt` object with `path`, `languageDialect`, `simplifyCode`,
+`binaryNextLine`, `caseIndent`, `funcNextLine`, `spaceRedirects`,
+`keepPadding`, `ignoreEditorconfig` and `additionalArguments`.
+`shellcheckExternalSources` and `backgroundAnalysisIgnore` need
+bash-language-server 5.7 or newer. A key the project leaves out keeps your own
+setting, and a value of the wrong type is ignored. `"shellcheckPath": ""` or
+`"shfmt": {"path": ""}` turns that tool off for the project.
+
+A project's `bashIde` applies only to the scripts in that project. A script
+from another folder opened in the same window keeps your own settings. The
+ShellCheck path, the shfmt path, the explainshell server and any key Editora
+does not know name a program to run or a place to send your code, so they
+apply only in a trusted folder, like a project's server commands; the other
+keys always apply. When a project overrides options, the Bash / Shell card
+says which.
+
+### Formatting, renaming and finding references in scripts
+
+- **Format Document** says why shfmt could not format a script, with the line:
+  *Could not format: line 5: `for` statement must end with `done`*. A
+  `#!/bin/sh` script that uses arrays or `[[ ]]` is read as POSIX sh, and the
+  message suggests changing the shebang to bash or setting the shfmt dialect.
+  The server cannot format a selection, so Format Selection formats the whole
+  file and says so.
+- **Rename** works on your functions and variables, across the files that
+  source each other. On a command such as `echo`, `cd` or `ls` it is refused:
+  *echo is a command, not a function or variable defined in your scripts*. The
+  new name must be a valid shell name; a function name may also contain `-`,
+  `.` and `:`.
+- **Find References** on a call lists every call, the one you are on included,
+  and leaves out the definition.
+- **Quick fixes** say what they do: *Fix SC2006: Use $(...) notation instead of
+  legacy backticks*. *Disable SC2086 for this command* adds a
+  `# shellcheck disable=SC2086` line above the command (bash-language-server 5.8
+  also offers it for the whole file); these suppressions are listed under
+  **Suppress**, after the fixes.
+- **Completion** lists keywords and snippets first, then your script's
+  functions and variables, then builtins and commands, each labelled. After `$`
+  or `${` it offers only variables.
+- A library you `source` that changes on disk (a `git pull`, another editor) is
+  read again, so Go to Definition and completion follow it without a restart.
+
+Positions on a line with emoji or other characters outside the Basic
+Multilingual Plane are correct: Editora converts ShellCheck's columns.
+
+bash-language-server cannot follow `source` into a folder whose path contains
+a space or another character that needs escaping in a URL (`My Scripts`,
+`Proyectos 2026`). Cross-file Go to Definition, hover and completion do not
+work for scripts there; diagnostics and everything within one file do.
 
 ### Where ShellCheck finds .shellcheckrc
 
 ShellCheck looks for a `.shellcheckrc` file in the server's workspace root (the
-project or repository folder, or for a loose script the folder it is in) and
-the folders above it. A `.shellcheckrc` in a subfolder of the project is not
+project or repository folder) and the folders above it. Scripts outside any
+repository share one server whose root is in Editora's config folder, so a
+`.shellcheckrc` beside such a script is not read; use `# shellcheck` directives
+in the script, or a `~/.shellcheckrc`. A `.shellcheckrc` in a subfolder of the project is not
 read, because the server hands ShellCheck the script's text rather than its
 path. Put shared settings in the root
 `.shellcheckrc`, and use `# shellcheck disable=SC2086` (or other
@@ -1089,6 +1220,336 @@ environment (`pip install ruff`). A Python server that formats by itself, such
 as `ruff server`, keeps the job. Doctor's **Python formatter** row shows which
 tool Format Document will use.
 
+## XML
+
+XML files use **lemminx**, Red Hat's XML language server. Editora installs a
+fixed release of it (see [Installing lemminx](#installing-lemminx)), and a
+`pom.xml` in a trusted folder gets the
+[Maven-aware server](#pomxml-and-the-maven-server) instead. Language servers
+are off by default, so the first XML file a window opens asks whether to turn
+them on, once per window.
+
+Besides `.xml`, `.xsd`, `.xsl` and the other usual extensions, these XML
+dialects open as XML, with highlighting, folding, comments and the language
+server: DTDs and their entity and module files (`.dtd`, `.ent`, `.mod`),
+RELAX NG (`.rng`), XSL-FO (`.fo`), XSpec, Schematron (`.sch`), MSBuild and
+NuGet files (`.csproj`, `.vbproj`, `.fsproj`, `.props`, `.targets`, `.nuspec`),
+`.resx`, XAML, XLIFF (`.xlf`, `.xliff`), property lists (`.plist`), XUL, KML,
+GPX, JSP tag libraries (`.tld`), Java Web Start (`.jnlp`), XMI and DITA
+(`.dita`, `.ditamap`). A file whose name gives no language and that starts with
+`<?xml` (an `AndroidManifest`, say) is XML too; see
+[When the file name says nothing](/docs/languages#when-the-file-name-says-nothing).
+
+Five of those extensions belong to other formats too, so a `.mod`, `.sch`,
+`.props`, `.targets` or `.fo` file opens as XML only when its text starts with
+`<` (after any blank lines or byte-order mark). A Modula-2 module or a KiCad
+schematic opens as plain text and never reaches the XML server. Typing a `<` at
+the top of such a file makes it XML again; a language you picked yourself or a
+shebang is kept.
+
+The project's XML files share one server, and every XML file outside the
+project shares **one more per window**, whatever folder or Maven module it is
+in, rather than one server per folder; the status line calls that one's
+folder *files outside the project*. An XML file keeps the server up
+to **100,000 lines and 5 MB**, even above the **Disable minimap & LSP above**
+limit (10,000 lines by default), which then turns off only the minimap; at 5 MB
+every file opens without its language server (see
+[Performance](/docs/troubleshooting#performance)).
+
+### What the XML server adds
+
+- **Validation** against the file's XSD, DTD or RELAX NG grammar. A file that
+  names no grammar gets no "No grammar constraints" problem; see
+  [Files without a grammar](#xml-settings).
+- **Completion** of the schema's elements, attributes and enumeration values.
+  They come first after `<` and inside an element; *Insert Comment* and *Insert
+  CDATA* are listed last.
+- **Go to Definition** and Ctrl/Cmd-click on a `schemaLocation`, a DOCTYPE
+  system id or an `xml-model` href opens that schema or DTD, and on the `href`
+  of an `xsl:include` or `xsl:import` (or an XInclude `xi:include`) it opens
+  that file, resolved against the document's folder. A percent-encoded href
+  (`sub%20dir/lib.xsl`), a `file:` URI and an XInclude in the default namespace
+  work too; when the file is missing, the status line says *lib.xsl does not
+  exist*. On an element or
+  attribute bound to an XSD, it goes to the declaration in the XSD.
+- **Show Documentation** and **Show Problem at Caret** show the whole problem
+  at the caret above any documentation, including lemminx's list of the
+  elements or values allowed there.
+- **Format Document** formats through the server, with VS Code's XML
+  defaults under the [settings below](#xml-settings): up to two
+  blank lines in a row are kept, a start tag written over several lines (a
+  pom's `<project>` header, say) keeps its line breaks with its continuation
+  lines indented by two, and comments and CDATA are left as written. Runs of
+  spaces and line breaks inside an element's text are joined, unless the
+  element is under **Keep text as written in** or has
+  `xml:space="preserve"`.
+- **Tab** re-indents the current line the way the server would format it,
+  also with the caret inside an element's start tag. When the server gives no
+  answer, Tab indents as it does without a server.
+- **Quick fixes.** On a file without a grammar, lemminx's *Generate … and
+  bind* fixes (XSD, DTD or RelaxNG) write the grammar file next to the document
+  and bind the document to it with `xsi:noNamespaceSchemaLocation`, a DOCTYPE
+  or `xml-model`. These fixes are offered only while
+  [Files without a grammar](#xml-settings) reports something; **XML: Generate
+  Grammar…** offers them whatever it is set to. *Bind to existing
+  grammar/schema* does what **XML: Bind to Grammar…** does. A fix that cannot be
+  applied closes any tab it opened. Generated grammars and fixes are indented
+  like the file, as it is indented now rather than when it was opened.
+  *Minify XML* is not offered as the fix for a problem; it is under Generate,
+  and in Code Actions on a line without a problem.
+- **Rename** says it cannot rename where the server declines, rather than
+  opening a dialog that does nothing.
+- **Code lenses** on XSD and DTD declarations count their references, when
+  Code Lens is on. They are asked for again when the server says they changed,
+  for example after you change the XML catalogs.
+
+Four palette commands go with it:
+
+| Command | What it does |
+| --- | --- |
+| **XML: Revalidate File** | Validates the file again, after its schema or DTD changed on disk. Works on a `pom.xml` on the Maven server too. |
+| **XML: Revalidate All Open Files** | Forgets the cached grammars and validates every open XML file again. |
+| **XML: Bind to Grammar…** | Picks an XSD, DTD or RELAX NG file, then binds the document to it with a schema location (`xsi:noNamespaceSchemaLocation` or `xsi:schemaLocation`), a DOCTYPE, or an `<?xml-model?>` instruction. Local files only. A Schematron `xml-model` holds rules, not a grammar, so it does not count as a binding. |
+| **XML: Generate Grammar…** | Asks the server for a grammar made from the file (an XSD, a DTD or RELAX NG, bound by a schema location, a DOCTYPE or `xml-model`), lets you pick one, then writes it next to the file and binds the file to it. Local files with a root element only. An XSD can be generated in any folder, trusted or not: Editora ships the W3C schema lemminx needs for it. A file that already has a DOCTYPE is not offered a second one. |
+
+Both binding commands leave a file that is already bound alone: the status
+line says what it is bound to and by what (an external DOCTYPE, an
+`xml-model`, or a schema location on the root), so remove that binding first.
+A DOCTYPE that holds only an internal subset is not a binding; a DTD is then
+bound with `xml-model` rather than a second DOCTYPE.
+
+A schema, DTD or RELAX NG file changed outside Editora (edited elsewhere or
+regenerated by a build) revalidates the open XML files that use it, also when
+its folder is collapsed in the Project tree.
+
+### XML settings
+
+The **XML** card in **Settings → LSP** holds the server's settings, under
+three headings: **Validation**, **Formatting (XML server)** and **Structure**.
+A settings search that matches a row shows its heading too. Editora sends them
+when the server starts (the Maven `pom.xml` server gets them as well), and a
+change reaches the running server without a restart.
+
+| Setting | Choices | Default |
+| --- | --- | --- |
+| **Download schemas** | Never · Only in trusted folders · Always | Only in trusted folders |
+| **Files without a grammar** | Nothing · Hint · Warning | Nothing |
+| **XML catalogs** | OASIS catalog files, separated by semicolons | none |
+| **Schema associations** | `pattern=schema` entries, separated by semicolons | none |
+| **Wrap long text when formatting** | on · off | off |
+| **Keep text as written in** | element names, separated by semicolons | `xsl:text`, `xsl:comment`, `xsl:processing-instruction`, `literallayout`, `programlisting`, `screen`, `synopsis`, `pre`, `xd:pre` |
+| **Attributes when formatting** | Keep as written · One per line · One per line, aligned with the first | Keep as written |
+| **Empty elements when formatting** | Keep as written · Collapse to `<a/>` · Expand to `<a></a>` | Keep as written |
+| **Space before />** | on (`<a />`) · off (`<a/>`) | on |
+| **Structure element limit** | a number | 5,000 |
+
+- **Download schemas** decides whether lemminx may fetch the XSDs, DTDs and
+  RELAX NG grammars a file names (`xsi:schemaLocation`, DOCTYPE, `xml-model`)
+  from the internet, plain http included. With *Only in trusted folders*, a
+  file in a [trusted folder](/docs/workspace#trusted-folders) gets its
+  schemas, and trusting a folder turns downloads on for it. Files outside the
+  open project are never in a trusted folder. When a schema was not downloaded
+  because the file's folder is not trusted, the file says so with a
+  **Trust Folder** button, and the status line names **Workspace: Trust This
+  Folder** and this setting. Trusting turns the download on without a restart.
+  The status line names only what would help: the setting when it is *Never*,
+  and opening the folder as a project for a file outside it.
+  External entities are never resolved.
+- **Files without a grammar**: a hint is listed in the Problems window as well
+  as a warning.
+- **XML catalogs** map schema and DTD addresses to local copies, so they work
+  without downloads. A relative path is looked for in each project's root
+  folder.
+- **Schema associations** bind files to a grammar by name, for example
+  `*.myconf.xml=schemas/myconf.xsd`. A pattern without a folder matches the
+  file name in any folder, and a relative schema path is under the project's
+  root folder. So a relative path applies to files in the open project only;
+  files outside it get the associations whose schema is an absolute path or a
+  URL. The same goes for a relative catalog path.
+- **Wrap long text** wraps text and long tags at the editor's fill column
+  (the column Fill Paragraph wraps at). Off, nothing is wrapped, but runs of
+  spaces and line breaks in an element's text are still joined. Indentation
+  always follows the file's own.
+- **Keep text as written in** names the elements whose text the server never
+  reflows: by default XSLT's `xsl:text` and its siblings, and DocBook and HTML
+  verbatim elements such as `pre` and `programlisting`. An element with
+  `xml:space="preserve"` is always kept as written. An empty list reflows
+  every element's text.
+- The **Attributes**, **Empty elements** and **Space before />** settings,
+  like Wrap, apply through the server only.
+- **Structure element limit** caps how many elements Structure and folding list
+  for one file, with or without the server. When a file reaches it, the status
+  line names this setting. Reopen the file for a new limit to apply.
+
+The schemas lemminx downloads are kept in `cache/lemminx` under Editora's
+config folder, not in `~/.lemminx`, and settings export leaves them out.
+[Doctor](/docs/troubleshooting#doctor)'s **XML schema cache** row shows their
+size and folder, with **Clear**.
+
+### Without the XML server
+
+- **Format Document** still works on XML: a built-in formatter puts one element
+  per line, in the file's own indentation. Text, CDATA and
+  `xml:space="preserve"` content are kept exactly as written, up to two blank
+  lines in a row are kept, a comment on the line of what it follows stays
+  there, and the caret stays on the character it was on. A file whose tags do
+  not nest is left alone, with a "not well-formed" message. It formats in the
+  background, so a large file does not freeze the window; if you edit the file
+  or switch tabs meanwhile, nothing is changed and the status line says to run
+  it again. A second Format Document while one runs says so and waits for
+  the first. In large-file mode it asks before a format that would more than
+  double the line count. This formatter ignores the formatting settings above,
+  which apply through lemminx only.
+- **Structure** lists every element, leaves included, named by its qualified
+  name and its `name`, `id`, `match` or `ref` attribute, for example
+  `xs:element name="note"` or `xsl:template match="/"`. With the server, the
+  outline shows the document only, without lemminx's *Grammars* rows.
+- **A DTD** (`.dtd`, `.ent`, `.mod`) lists its declarations in Structure: each
+  element with its attributes, then its entities (`&name;` and `%name;`) and
+  notations. Comments and `IGNORE` sections are skipped. With the server,
+  lemminx's own outline is used. A DTD has no XML tree preview.
+- **Auto-close HTML/XML tags**: typing the close tag by habit after the one
+  Editora inserted (`x</from>`) steps over it instead of writing a second one,
+  but only when it is the end tag of the element you are closing. Typing
+  `</b>` inside `<p>Hello <b>world|</p>` writes `</b>` before the `</p>`, and a
+  typo such as `</itme>` becomes a tag of its own instead of renaming the end
+  tag after it. While it steps over the end tag, Backspace takes back only what
+  you typed, a space before `>` is fine, and moving the caret ends the step-over.
+  The same holds in HTML, where tag names match in any case.
+
+### Installing lemminx
+
+**Install…** on the XML card, the banner on an XML file, or **Install: Language
+Server…** installs **lemminx 0.31.2**, the native build from Red Hat's
+vscode-xml 0.29.3 release on GitHub (about 17 MB). Both the download and the
+program inside it are checked against the SHA-256 the release publishes. The
+installed server is asked one request before it is kept. Settings and
+[Doctor](/docs/troubleshooting#doctor) show which lemminx runs, and Doctor
+offers **Update…** when a later Editora moves to a newer one.
+
+The install leaves the XML command in Settings blank, and a blank command runs
+Editora's own copy before anything on your `PATH`. **Reset to default**, or
+settings imported from another computer, therefore keep it connected.
+
+The banner is not offered while the XML server is switched off. When the XML
+command you set points at a program that is missing, it opens Settings rather
+than installing over it.
+
+lemminx's native build needs **glibc 2.34** or later on Linux. On an older
+system Install says so and installs nothing; if the
+[Maven `pom.xml` server](#pomxml-and-the-maven-server) is
+installed, XML files run its Java lemminx instead. That fallback is plain XML:
+it never loads the Maven extension, so a pom in an untrusted folder stays
+schema-only. An XML command of your own that would load lemminx-maven is not
+started, and the status bar says why. A server that exits as soon
+as it starts shows its own error message in the status line, Settings and
+Doctor, rather than *found* and *OK*.
+
+### pom.xml and the Maven server
+
+A `pom.xml` gets the **Maven-aware server**: JVM lemminx plus the
+lemminx-maven extension, shown as **lemminx-maven** in Settings, Doctor and the
+status bar. It adds dependency, plugin and GAV completion, completion of
+`<scope>`, `<packaging>`, phases, goals and plugin `<configuration>`
+parameters, hover with a dependency's managed version and where it is managed,
+Go to Definition on parents, properties, modules and plugins, Maven's own
+checks (an artifact that cannot be resolved, a missing or duplicated managed
+version, a missing module), and refactorings such as *Extract as new property*.
+Every other XML file keeps the fast native lemminx, and the
+[XML settings](#xml-settings) apply to both.
+
+It runs on the **Default JDK** chosen under Settings → Languages & Tools →
+Build Tools (else the `java` on your `PATH`), for Install… as well as for the
+server itself. Its root is the outermost pom of a contiguous chain, so a
+multi-module reactor is served by one JVM: in the open project, opened without a
+project, and for a Maven project beside the open one. The status bar says
+*Loaded and ready* only once the server reports its own Maven initialization
+done, since it answers the handshake long before it can answer a request. Its
+diagnostics are named after the server, the schema's "resource is downloading"
+notice is shown as information rather than an error, and `${…}` property items
+are left out of an artifact completion unless you typed `$`.
+
+**Folder trust.** To build a pom's Maven model, lemminx-maven fetches the
+parents, BOMs, plugins and extensions the pom names, from the repositories the
+pom names, and loads plugin code into its JVM. So it only serves a pom in a
+[trusted folder](/docs/workspace#trusted-folders): the folder it would run on
+(the reactor's top) must be trusted. Any other `pom.xml` is edited with the
+plain XML server, which validates and completes it against the bundled POM
+schema, and its tab says *Maven-aware editing is off until you trust this
+folder* with **Trust Folder** and **Not now**. **Trust Folder**, or
+**Workspace: Trust This Folder** from the palette, asks first (Cancel is the
+default) and then trusts the open project when the file is in it, else the
+pom's own reactor. For any other file outside the project it trusts nothing:
+open that file's folder as a project first. In every window, the folder's open
+poms, background tabs included, then move to the Maven server at once. Revoking
+that trust (Settings → Workspace → Trusted folders) stops the Maven server on
+the folder and moves its poms back to the XML server, with their diagnostics.
+While the Maven server is not installed, a pom in an untrusted folder instead
+offers to install it, saying it runs only in folders you trust.
+
+**Bundled POM schemas.** Editora ships the Maven POM 4.0.0 and 4.1.0 schemas
+and hands both XML servers on this machine a catalog for them, ahead of your
+own catalogs. A pom naming `maven-4.0.0.xsd` (over http or https, or the older
+`maven-v4_0_0.xsd`) therefore validates and completes with schema downloads
+off, in an untrusted folder or outside any project. The copies live in `cache/schemas` under
+Editora's config folder; Doctor's **Clear** on the XML schema cache leaves them.
+
+**Completion** lists the artifacts in your local repository (`~/.m2`). **Search
+Maven Central when completing pom.xml coordinates**, on the server's card under
+Settings → LSP and off by default, also asks search.maven.org as you type, so
+what you type is sent to it; nothing is downloaded up front. Changing the
+setting restarts the server. lemminx-maven keeps what it resolves in
+`.lemminx-maven` beside your local Maven repository: `~/.m2/.lemminx-maven` by
+default, or next to the folder `<localRepository>` names in
+`~/.m2/settings.xml`. [Doctor](/docs/troubleshooting#doctor) lists it as the
+**lemminx-maven artifact store** with **Clear**.
+
+**Installing it.** While the Maven server is not installed, a `pom.xml` in a
+trusted folder offers it in a banner that says what it adds, with **Install**
+and **Not now**. Install downloads lemminx-maven 0.12.0 and the three libraries
+its bundle leaves out (Guava, Commons Lang and jsoup), about 16 MB in all, from
+the Eclipse repository and Maven Central, each pinned by version and checksum,
+into one folder. It then starts the server and asks it one hover request before
+keeping the install. A server that cannot answer is refused with the reason,
+and the previous install stays in place. When the command you set for the
+server points at a program that is missing, the banner offers **Settings…**
+instead. The install leaves the command in Settings blank, and a blank command
+runs Editora's own copy, so **Reset to default** keeps it.
+
+A folder that lacks any of the jars (an install made with an earlier release,
+or a wiped folder) does not count as installed: `pom.xml` falls back to the XML
+server, the Settings → LSP card reads *lemminx-maven: incomplete — Install…
+repairs it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars
+beside an **Install…** button. If you installed this server with an earlier
+release, click **Install…** once: that bundle lacked the three libraries and
+could not answer a request.
+
+**While you edit a pom:**
+
+- **Structure** names a `dependency`, `plugin`, `exclusion` or `extension` by
+  its `groupId:artifactId`, and a `profile`, `execution`, `repository` or
+  `pluginRepository` by its `id`, on the Maven server as on the XML server.
+- **Hover** on a plugin or dependency links to the pom it is managed in;
+  following the link opens that pom at the managing line. Any `file:` link
+  ending in `#L28` or `#L28,22` opens the file at that line and column, unless
+  a Markdown heading answers to the same name.
+- ***Extract as new property in parent*** works with the parent pom open or
+  closed. If the parent has unsaved changes, or changed on disk since the
+  request, the edit is refused with a reason; save it and try again.
+- A **malformed pom** (one that is not well-formed XML on disk) would stop
+  lemminx-maven's dependency completion everywhere, offering only *Insert
+  Comment* and *Insert CDATA*. Editora takes such a pom out of the Maven
+  server's workspace instead, so groupId, artifactId and version completion
+  keeps working, and the status bar names it: *Left out broken/pom.xml (not
+  well-formed XML, line 11)…*. It looks at the files the Maven server reads:
+  `pom*.xml`, `*pom.xml` and `*.pom` up to ten folders deep, `node_modules` and
+  `build` included, but not hidden folders or `target`. An empty answer with
+  nothing malformed on disk changes nothing.
+- Once that pom is well-formed again (saved in Editora, or fixed by a checkout
+  or another editor), Editora restarts the Maven server for that project only,
+  and its open poms move to the new server at once.
+- **XML: Revalidate File** validates the pom again.
+
 ## Language servers on a remote host
 
 A file in a [remote folder](/docs/remote) is served by a language server running
@@ -1105,6 +1566,10 @@ than a path on this machine.
   outside the project folder, such as a library source reached by Go to
   Definition.
 - Renames and other cross-file edits create, move and delete files on the host.
+- **`pom.xml`** uses the host's plain XML server, unless a `maven-pom = command`
+  line for the host, or a bare program name set in Settings → LSP, names a
+  Maven server there. Editora's own copy, which runs from a folder on this
+  machine, is never sent to the host. The same holds in a container or WSL.
 - **Python**: Pyright on the host is told the project's virtual environment as
   the host names it, found there the way [Run](/docs/run-debug) finds it, else
   the host's own `python` tool. The status-bar item names it, for example
@@ -1146,8 +1611,12 @@ for details.
 
 ## Notes and limits
 
-Document sync is **incremental** for servers that accept it (most of them), with
-a periodic full resync as a divergence safety net, and semantic highlighting
+A file reaches its server once it has loaded, with its whole text in the one
+open message. The server never sees it empty first, so an XML file shows no
+passing "Premature end of file" error while it opens. The indentation the server is
+told, which quick fixes and generated files follow, is read from the file and
+kept up to date as you edit. Document sync is **incremental** for servers that
+accept it (most of them), with a periodic full resync as a divergence safety net, and semantic highlighting
 transfers only what changed on servers that support token deltas. Diagnostics for
 files that aren't open are dropped by default, to keep the Problems window
 focused on what you're editing, and the whole-project selector above lifts that

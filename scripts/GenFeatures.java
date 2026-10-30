@@ -365,6 +365,7 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
 - **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
+- **Library sources**: a Maven library class opens with its real source when a repository has it; one that has none is shown decompiled, with **Download Sources** and **Choose Sources…** in its tab
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
 - **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)
 - **Format Document**: reformat the whole file via the server (palette or right-click), keeping the file's own indentation from `.editorconfig` or the file itself; a Python file is formatted with **Ruff** or **Black** (the project environment's first), also with language servers off
@@ -653,13 +654,13 @@ Long lists, quotes, code blocks, tables and paragraphs continue from the current
 """),
     new Feature("html-live-preview", DD, 4, false,
         "HTML live preview",
-        "Click the globe on any HTML file to open it in a detected browser (Safari, Chrome, Firefox, Edge…), served over a loopback web server with live-as-you-type reload. Sibling CSS, JS, and images included.",
+        "Click the globe on any HTML file to open it in a detected browser (Safari, Chrome, Firefox, Edge…), served over a loopback web server with live-as-you-type reload. The whole site's CSS, JS, and images included.",
         """
 A floating browser-globe button on any `.html`/`.htm`/`.xhtml` file opens it in a **detected browser**: Safari, Chrome, Firefox, Edge, or the system default.
 
-The file is served over a tiny embedded web server bound to **loopback only**, so its sibling CSS, JS, and images load, and a small injected script **reloads the page live as you type** (it serves the buffer's in-memory text, so you don't have to save). No external tool: it uses the JDK's built-in HTTP server.
+The page's whole site is served over a tiny embedded web server bound to **loopback only** (the project folder, or the nearest folder with an `index.html`), so its CSS, JS, images and `/…` links load, and a small injected script **reloads the page live as you type** (it serves the buffers' in-memory text, so you don't have to save). Editing a stylesheet of the site swaps it in without a reload. Hidden files and private keys are never served. No external tool: it uses the JDK's built-in HTTP server.
 
-On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. Read the [deep-dive](/blog/html-live-preview).
+On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. See the [HTML docs](/docs/html#live-preview), or read the [deep-dive](/blog/html-live-preview).
 """),
     new Feature("projects", WF, 1, false,
         "Project Map navigation",
@@ -673,7 +674,7 @@ Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global 
 
 Beside the familiar file tree, the **Map** button opens a **visual Project Map** in a window of its own, which you can place beside the editor window or on another screen; the Project tool window keeps the tree. The map lays the active path out as focused Miller-style columns on a canvas: expand a folder and its children appear in the next column, while the ancestor path stays visible. Choose left-to-right, right-to-left, top-to-bottom, or bottom-to-top flow; the connectors and arrow keys follow the direction you choose.
 
-Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** options preserve the scale and center each newly opened column; either can be turned off, and the choice is remembered per workspace. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and "Show hidden" checkbox. A large folder loads 300 rows at a time, with a "+N more…" row for the next chunk. Global filters narrow by open, modified, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path.
+Pan and pointer-centered zoom make room for large projects, with Fit, Center, and a compact overview when you want your bearings back. Default-on **Keep current zoom** and **Focus new column** options preserve the scale and center each newly opened column; either can be turned off, and the choice is remembered per workspace. Each column sizes itself to its content, can be repositioned and locked, and has its own name filter and "Show hidden" checkbox. A large folder loads 300 rows at a time, with a "+N more…" row for the next chunk. Global filters narrow by open, unsaved, Git-changed, bookmarked, or Personal Notes status and by file type without throwing away the surrounding path; **Hide unmatched** takes the rest off the map, with a badge and per-column counts saying how much is hidden.
 
 Click a file to open it in an editor tab, or use the row's eye icon for a movable, resizable **syntax-highlighted preview** over the canvas, including current unsaved text when that file is already open. Common bitmap images preview too, with zoom kept separately from text. Personal Notes badges open separate editable cards for files and folders, so a note and code preview can stay open together; a default-off filter temporarily hides all open note cards. Live connectors keep every preview and note card tied to its source row as the canvas pans or zooms and as cards move or resize. The map reuses the tree's file icons and context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven, and Git actions work in either view.
 

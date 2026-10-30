@@ -59,7 +59,9 @@ adds a level after a block opener (braces, a trailing `:` in Python or YAML,
 `do` / `then` in shell, an open tag in XML or HTML), and splits a matching pair
 into an indented stanza with the closer dropped below. Typing a closer such as
 `)`, `]`, `}`, or a keyword like `end` / `fi` / `done` re-aligns the line to its
-opener.
+opener. Inside an HTML page's `<script>` or `<style>`, Enter follows the brace
+rules of the code there: it indents after `{`, and a typed `}` lines up with its
+opener (see [HTML](/docs/html#comments-and-indentation)).
 
 In brace languages (JavaScript, TypeScript, Java, C, Go and the others), Enter
 also follows these shapes:
@@ -114,6 +116,15 @@ opens nothing.
   bash only ends `<<EOF` at an unindented delimiter (`<<-EOF` keeps tabs). The
   next line goes back to the level of the `cat <<EOF` line.
 - **Tab** in a line's leading whitespace follows the same rules.
+- **Tab** or **Indent Lines** over a selection shifts its lines but leaves the
+  shebang, the text of a here-document and its delimiter where they are (a
+  `<<-` here-document moves by tabs only), since moving them would change what
+  the script does.
+
+With the language server off, completion in a shell script offers the script's
+own function and variable names after the snippets, and only variables after
+`$` or `${`. With the [Bash server](/docs/lsp#shell-scripts) on, completion
+comes from the server, and Editora's shell snippets stay in the list.
 
 Shell blocks also [fold](/docs/navigation#folding): functions (from the line
 with their name), `{ }` groups, `if … fi`, loops, `case … esac` and each case
@@ -172,6 +183,10 @@ In Python a quote after a string prefix pairs too (`f`, `r`, `b`, `u`, `t`, and
 pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
 `'''` adds the closing triple quote, with the caret between them. A backtick is
 not Python syntax, so it is not paired there.
+
+In an HTML start tag, typing `=` after an attribute name inserts `""` with the
+caret inside, while **Auto-close HTML/XML tags** is on; a `"` typed straight
+after is taken as the opening quote. See [HTML](/docs/html#editing-tags).
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
@@ -234,6 +249,13 @@ Two kinds of line in a script are left alone, and the status bar says why:
 In an INI file such as `setup.cfg`, `tox.ini` or `.flake8`, the comment
 character is the one the file already uses: `#` when most of its comments start
 with `#`, otherwise `;`.
+
+In an HTML page the syntax follows where the selection is: `/* */` inside a
+`<style>`, `//` inside a `<script>`, and `<!-- -->` in the markup. A selection
+that runs from the markup into a script or style is refused, with *The
+selection runs from the HTML into a script, style or PHP block: comment each
+part on its own*. In a PHP file the HTML part gets `<!-- -->`. See
+[HTML](/docs/html#comments-and-indentation).
 
 ## Small operations
 
@@ -556,7 +578,8 @@ The **Display** card of Settings → Editor toggles whitespace markers, the
 rulers, indent guides, the minimap, and line numbers. These render as
 lightweight overlays drawn only for the visible lines, so they stay cheap on
 large files. The page's other cards are **Editing** (multiple cursors, tag
-auto-rename and auto-close, auto-fill, the project symbol index),
+auto-rename and auto-close, [HTML markup checks](/docs/html#markup-checks),
+auto-fill, the project symbol index),
 **Clipboard**, **Indentation**, **Saving** (auto save, save as administrator),
 **Performance**, **Logs**, **CSV**, **File previews** and **Export & Print**.
 While Simple UI mode is on, the Display card says that line numbers, the
