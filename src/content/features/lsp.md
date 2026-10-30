@@ -20,6 +20,7 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
 - **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
+- **Library sources**: a Maven library class opens with its real source when a repository has it; one that has none is shown decompiled, with **Download Sources** and **Choose Sources…** in its tab
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
 - **Inlay hints** (off by default), **occurrence highlighting**, and **hover docs** (`C-c h`)
 - **Format Document**: reformat the whole file via the server (palette or right-click), keeping the file's own indentation from `.editorconfig` or the file itself; a Python file is formatted with **Ruff** or **Black** (the project environment's first), also with language servers off
