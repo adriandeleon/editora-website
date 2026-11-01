@@ -247,7 +247,9 @@ What is checked depends on the file type:
   `aria-description` values. Tags, other attributes and the content of
   `<script>`, `<style>`, `<pre>`, `<code>`, `<kbd>`, `<samp>` and `<var>` are
   left alone; the rest of a line that holds an inline `<script>` is still
-  checked. See [HTML](/docs/html#spell-checking).
+  checked. Template expressions and tags (`{{ }}`, `{% %}`, `<% %>`) are left
+  alone too, in `title` and `alt` values as well, and so are tag names
+  mentioned in comments. See [HTML](/docs/html#spell-checking).
 - **Typst** has the document's text checked, plus comments. Typst math and
   lines that open with a `#` instruction are left alone.
 - **Source code** has only comments and string literals checked, so identifiers

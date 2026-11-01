@@ -29,7 +29,9 @@ A `.txt` file stays plain text.
 - Handlebars files (`.hbs`, `.handlebars`) are **Handlebars**.
 
 Both get the HTML colours, tag auto-close and rename, folding, Structure,
-spell checking, the HTML snippets and `<!-- -->` comments. The HTML language
+spell checking, the HTML snippets and `<!-- -->` comments (a line of template
+code gets the engine's own comment; see
+[Comments and indentation](#comments-and-indentation)). The HTML language
 server is never started for an HTML Template, so template syntax is not
 reported as errors or reformatted; Handlebars files do get the server's
 completion, hover and formatting. A template named after the file it renders,
@@ -52,10 +54,20 @@ language in the status bar (see [Languages](/docs/languages#when-the-file-name-s
 - **Auto-rename.** Editing a start tag's name renames its end tag, and the
   other way round.
 - **Attribute quotes.** In a start tag, typing `=` straight after an attribute
-  name inserts `""` with the caret inside: `<a class=` gives `<a class="|">`. If
-  you type the `"` yourself next, it is taken as the opening quote, so typing
-  `class="x"` still gives `class="x"`. The quotes are always double. This is
-  part of auto-close, and HTML only.
+  name inserts the quotes chosen in **Quotes for completed attributes**
+  ([Settings → LSP → HTML](#settings--lsp--html)), with the caret inside:
+  `<a class=` gives `<a class="|">` with *Double quotes* (the default), or
+  `<a class='|'>` with *Single quotes*; *No quotes* leaves the `=` alone.
+  - If you type the same quote yourself next, it is taken as the opening
+    quote, so typing `class="x"` still gives `class="x"`.
+  - Typing the other quote replaces the pair, so typing `class='x'` gives
+    `class='x'` even with double quotes chosen.
+  - A space or `>` typed while the pair is still empty takes the pair back,
+    so typing `a=>` gives `a=>`.
+  - No quotes are added inside template tags (`{% %}`, `{{ }}`, `<% %>`), or
+    in the code of a `<script>`, even a long one.
+
+  This is part of auto-close, in HTML pages and templates, not in XML.
 
 Auto-close and auto-rename are on by default. Turn them off with **Auto-close
 HTML/XML tags** and **Auto-rename paired HTML/XML tag** in Settings → Editor →
@@ -75,12 +87,58 @@ On a line that holds the tags as well, such as `<script>init()</script>`, only
 the code is commented, with `/* */`. A selection that runs from the markup into
 a script or style is refused, and the status bar says *The selection runs from
 the HTML into a script, style or PHP block: comment each part on its own*. The
-content of `<script type="text/x-template">` counts as markup. In a PHP file
-the HTML part is commented with `<!-- -->`.
+content of `<script type="text/x-template">` counts as markup.
+
+**In a template**, a line that holds template code (`{% %}`, `{{ }}`, `{# #}`,
+`<% %>`) is commented in the engine's own syntax, because an HTML comment does
+not stop a template engine: `<!-- {% include "x" %} -->` still includes, and
+`<!-- <% deleteAll() %> -->` still runs.
+
+| Engine | Files | Comment |
+| --- | --- | --- |
+| Jinja, Twig, Nunjucks | `.jinja`, `.jinja2`, `.j2`, `.twig`, `.njk` | `{# … #}` |
+| Liquid | `.liquid` | `{% comment %} … {% endcomment %}` |
+| ERB, EJS | `.erb`, `.ejs` | each tag becomes a comment tag: `<%= x %>` gives `<%#= x %>` |
+| Handlebars, Mustache | `.hbs`, `.handlebars`, `.mustache` | `{{!-- … --}}` |
+
+A `.html` page is judged by what it uses:
+
+- `<% %>` is ERB.
+- `{%` or `{#` is Liquid in a page with front matter or under `_includes/` or
+  `_layouts/` (Jekyll). Otherwise it is Django or Jinja, and each line gets its
+  own `{# #}`, since Django's comment is one line only.
+- Handlebars blocks (`{{#each}}`, `{{/if}}`) take `{{!-- --}}`.
+- Go template actions (Hugo's `{{ if }}`, `{{ range }}`) take `{{/* */}}`.
+- A page with only Angular or Vue `{{ value }}` keeps `<!-- -->`.
+
+Lines with no template code keep `<!-- -->`, and a comment that would nest is
+refused.
+
+**In a PHP file** the HTML part is commented with `<!-- -->`, and the code of a
+line that opens a PHP block is commented inside it: `<?php echo 1; ?>` gives
+`<?php /* echo 1; */ ?>`. A selection that starts on a bare `<?php` line
+comments the code lines below it. On a line with only `<?php`, or an `<?=`
+echo, the status bar says *This line opens a PHP block: comment the code after
+the opener, or select the lines below it*.
 
 **Enter** after a start tag indents the next line. Inside a `<script>` or
 `<style>`, Enter follows the brace rules instead: it indents after `{`, and a
-typed `}` lines up with its opener.
+typed `}` lines up with its opener. Enter between `<style>` and `</style>` (or
+`<script>` and `</script>`) opens an indented line and puts the end tag on its
+own line below.
+
+**Tab** in a line's leading whitespace re-indents it:
+
+- In an inline `<script>` or `<style>`, Tab follows the braces of the code
+  there. The first code line sits one level inside the start tag, and
+  `</script>` lines up with `<script>`.
+- On a line inside `<pre>` or `<textarea>` (or `<listing>`, `<xmp>`,
+  `<plaintext>`), Tab keeps the line's whitespace and moves the caret to the
+  end of its indent. On a blank line, or with the caret mid-line, it inserts
+  one indent.
+
+These lines are never sent to the language server to re-indent, so code and
+preformatted text are not pushed to the markup's indent.
 
 ## Folding and Structure
 
@@ -112,7 +170,11 @@ visitors do read are checked: `alt`, `title`, `placeholder`, `aria-label` and
 `aria-description`. The content of `<script>`, `<style>`, `<pre>`, `<code>`,
 `<kbd>`, `<samp>` and `<var>` is skipped, while the rest of a line that holds
 an inline `<script>` is still checked. A tag mentioned inside a comment does
-not turn checking off. See [Spell checking](/docs/languages#spell-checking).
+not turn checking off, and its name is not checked as a word. Template
+expressions and tags (`{{ … }}`, `{% … %}`, `<% … %>`) are skipped wherever
+they are, in `title` and `alt` values too; template comments (`{# #}`,
+`<%# %>`) are checked as prose. See
+[Spell checking](/docs/languages#spell-checking).
 
 ## Snippets and new files
 
@@ -126,7 +188,9 @@ Obsolete elements are not offered.
 Which snippets are offered follows where you are typing: CSS snippets inside a
 `<style>`, JavaScript snippets inside a `<script>`, the HTML snippets in the
 markup, and none inside a tag, so `col` in a stylesheet offers `color` rather
-than `<col>`. HTML Templates and Handlebars files get the HTML snippets. See
+than `<col>`. Where you are is read back to the `<script>` or `<style>` start
+tag, up to 100,000 characters back, so a long inline script still counts.
+HTML Templates and Handlebars files get the HTML snippets. See
 [Snippets](/docs/snippets-templates#html-snippets).
 
 **New File From Template** (`template.new`) has **HTML Page** (a minimal
@@ -141,13 +205,20 @@ the VS Code, CUA and Sublime keymaps, Ctrl+B in IntelliJ's) or **Ctrl/Cmd-click*
 on an `href`, `src`, `poster`, `action` or similar attribute opens the file it
 names. This works with or without the HTML language server, and with LSP off.
 
+Editora resolves the link itself first, the way a browser does, and asks the
+language server only when that names nothing on disk:
+
+- The page's `<base href>` is followed, a `?query` is dropped, `%20`, `%23` and
+  other escapes are decoded, and a root-relative link (`/css/site.css`) is
+  resolved against the project (or the server's workspace root). So a
+  cache-busted `style.css?v=3`, a page that uses `<base href>` and a file named
+  `C#notes.html` (linked as `C%23notes.html`) open their file, with the HTML
+  server running too.
 - A link with a `#fragment` opens the file at the element whose `id` (or `<a
   name>`) matches. A link that is only `#top` moves within the page. A fragment
   that names no element says *No element with id "top"*.
-- A link to a folder opens its `index.html`. The page's `<base href>` is
-  followed, a `?query` is dropped, `%20` and other escapes are decoded, and a
-  root-relative link (`/css/site.css`) is resolved against the project (or the
-  server's workspace root).
+- A link to a folder opens its `index.html`. A folder without one says
+  *pages/ is a folder with no index.html*.
 - A web address asks **Open https://… in the browser?** with **Open**, every
   time, and then opens in your browser.
 - A link to a file that does not exist says *File not found: missing.html*.
@@ -164,11 +235,33 @@ warnings:
 - a link to a local file that does not exist: *File not found: missing.html*.
 
 Elements whose end tag is optional (`<li>`, `<p>`, `<td>`, `<option>` and the
-others HTML allows), void elements, self-closing tags, comments and the content
-of `<script>` and `<style>` never count. The missing-file check looks only at
-links whose last part has an extension, so routes like `/about` and `docs/`
-are not flagged, and skips web addresses, form `action`s and `<base>`. It runs
-only for pages on this machine.
+others HTML allows), void elements, comments and the content of `<script>` and
+`<style>` never count. As in a browser, `/>` closes only a void element or an
+element inside `<svg>` or `<math>`: `<div/>` and `<x-icon/>` open their element,
+and a minified `<a href=/about/>` is an ordinary start tag.
+
+The missing-file check looks only at links whose last part has an extension, so
+routes like `/about` and `docs/` are not flagged, and skips web addresses, form
+`action`s and `<base>`. It runs only for pages on this machine. A link is not
+reported when the file is there for the site's build tool:
+
+- the file is in the project's `public/`, `static/` or `assets/` folder (Vite,
+  Create React App, Angular, Hugo), for root-relative and page-relative links
+  alike (without a project, those folders beside the page count);
+- the link holds a build placeholder such as `%PUBLIC_URL%`;
+- a missing `.css` has a `.scss`, `.sass` or `.less` source of the same name
+  in the same folder (Jekyll builds `assets/css/style.css` from one).
+
+The marks follow the disk: creating, deleting or renaming a linked file updates
+them without an edit to the page.
+
+**Template pages.** A `.html` page that uses template syntax (Django, Jinja,
+Jekyll, Hugo, Handlebars, ERB: `{% %}`, `{# #}`, `<% %>`, `{{#each}}`,
+`{{ if }}`…) is not checked for unclosed elements and stray end tags, since
+its tags are split across files; its links still are. The same goes for a page
+in a template folder (`templates/`, `_includes/`, `_layouts/`, `layouts/`,
+`partials/`, `_partials/` or `includes/`) between the project root and the
+page. A page that only has Angular or Vue `{{ value }}` is checked as usual.
 
 With the HTML language server, these warnings join the server's own
 diagnostics in the Problems window and the problem counter, with `editora` as
@@ -198,10 +291,14 @@ formats an HTML file with or without the language server.
 [HTML card](#settings--lsp--html):
 
 - The content of `<pre>`, `<code>` and `<textarea>` is left exactly as written,
-  so code samples and a textarea's default value keep their spaces. Scripts are
-  always kept.
-- The file's final newline is kept, unless its `.editorconfig` says
-  `insert_final_newline = false`.
+  so code samples and a textarea's default value keep their spaces. `<script>`
+  code is never reflowed as HTML; it is formatted as JavaScript.
+- Editora keeps the final newline itself, rather than the server: the file
+  ends with one when its EditorConfig `insert_final_newline` says so, else when
+  the project's `html` object sets `format.endWithNewline`, else when it had one
+  before. So no blank line appears before each `</style>`.
+- Code in a `<script>` gets VS Code's JavaScript spacing
+  (`function f() { return 1 }`), and a `<style>` VS Code's CSS formatting.
 - Long lines wrap at the file's EditorConfig `max_line_length` (never, for
   `off`), else at **Wrap lines at column** (120 by default).
 - The indentation is the file's own: EditorConfig's `indent_style` and
@@ -213,12 +310,26 @@ rather than *Already formatted*.
 
 **Without the server** (LSP off, or no HTML server running), Editora's own
 formatter puts one block element per line and indents by nesting, in the
-file's indent unit. It keeps the content of `<pre>`, `<textarea>`, `<script>`
-and `<style>` exactly, keeps your line breaks around text, and keeps up to one
-blank line in a row. It says *Formatted with the built-in HTML formatter*, or,
-when a tag, comment, script or `<pre>` is left open, *Not formatted: a tag,
-comment, script or \<pre\> is left open* and changes nothing. It formats plain
-HTML only, not templates, whose syntax it would reflow.
+file's indent unit.
+
+- Only block elements get a line of their own. Everything else stays in the
+  line of text it is in: `<select>`, `<textarea>`, `<svg>`, `<video>`, custom
+  elements, and a comment inside a word (`foo<!-- x -->bar`), so formatting adds
+  no spaces to the rendered page.
+- The content of `<pre>` and `<textarea>` is kept exactly. The code in a
+  `<script>` or `<style>` keeps its own relative indents and moves with its
+  start tag, one level inside it, and an end tag on its own line lines up with
+  the start tag. When a string in the code runs over lines, only the end tag
+  moves.
+- Your line breaks around text are kept, and up to one blank line in a row.
+
+It says *Formatted with the built-in HTML formatter*. When a tag, comment,
+script or `<pre>` is left open, it says *Not formatted: a tag, comment, script
+or \<pre\> is left open* and changes nothing. A page that uses template syntax
+(`{% %}`, `<% %>`, `{{#each}}`…) is left alone too, with *Not formatted: this
+page uses template syntax*. In an HTML Template file (Jinja, Twig, ERB…), which
+no server reads, Format Document says *No formatter available for this file*,
+with LSP on or off.
 
 ## The HTML language server
 
@@ -235,10 +346,11 @@ Settings → LSP. See [Language servers](/docs/lsp).
 
 The server reads `.html`, `.htm` and `.xhtml` files and Handlebars files, not
 HTML Templates. It runs once per workspace root: the project, else the nearest
-folder with a `package.json` or `.git`. A loose page of a static site with
-neither is rooted at the highest folder above it that holds an `index.html`
-(stopping below your home folder), so its `/css/…` links resolve. HTML files
-keep their server up to 50,000 lines.
+folder with a `package.json` or `.git` (one in your home folder or above it
+does not count). A loose page of a static site with neither is rooted at its
+[site root](#what-is-served), the same folder the live preview serves, so its
+`/css/…` links resolve and Ctrl-click and the browser agree. HTML files keep
+their server up to 50,000 lines.
 
 ### Installing it
 
@@ -254,21 +366,37 @@ needed. The banner says what Install does before you click:
 > vscode-langservers-extracted 4.10.0 with npm (it needs Node.js) to Editora’s
 > own folder; the one package brings the HTML, CSS and JSON servers.
 
-When npm is not found, the banner says so before you click, and asks you to
-install Node.js first (or start Editora where it is on your `PATH`).
+When a Node.js is chosen in Settings → Debugging → JavaScript (Node.js) →
+**Node.js** and has npm beside it, Install uses that npm, so it works with
+nothing on your `PATH`; otherwise it uses the npm on your `PATH`. When neither
+is found, the banner says so before you click: npm *was found neither on PATH
+nor beside the Node.js chosen in Settings*, with the advice to install Node.js
+or choose one in Settings.
 
 The install also links the TypeScript libraries the HTML server looks for, so
 JavaScript in a page gets the DOM and the standard library. A copy installed
 with npm on its own (`npm install -g vscode-langservers-extracted`) cannot load
 them: nothing completes after `document.` and there is no parameter help.
-[Doctor](/docs/troubleshooting#doctor)'s HTML row warns about such a copy and
-offers **Update**.
+When the HTML server in use is such a copy, the first HTML page a window opens
+says so on a banner, once:
+
+> This copy of the HTML language server (from an earlier npm install) cannot
+> load TypeScript’s libraries, so JavaScript in \<script\> gets no DOM or
+> standard library completion. Update installs Editora’s own copy, which has
+> them.
+
+Its **Update** installs Editora's copy and moves the running servers to it.
+The banner is not shown when the HTML command is your own.
+[Doctor](/docs/troubleshooting#doctor)'s HTML row warns about such a copy too
+and offers **Update**.
 
 With the HTML, CSS and JSON commands left blank in Settings → LSP, Editora
 runs its own copy first, then one on your `PATH`. A command you set always
-wins. The server runs on the Node.js chosen in Settings → Debugging →
-JavaScript (Node.js) → **Node.js**; left blank, that is the version a
-project's `.nvmrc` or `.node-version` names, else `node` on your `PATH`.
+wins; a command that is just the default text
+(`vscode-html-language-server --stdio`) counts as blank. The server runs on the
+Node.js chosen in Settings → Debugging → JavaScript (Node.js) → **Node.js**,
+else `node` on your `PATH`. A project's `.nvmrc` or `.node-version` does not
+change it, so an old Node.js pinned for the project cannot break the server.
 
 ### What the server adds
 
@@ -279,15 +407,21 @@ project's `.nvmrc` or `.node-version` names, else `node` on your `PATH`.
   and standard library: completion after `document.`, parameter help and
   hovers. With auto-close on, the list does not offer the end tag Editora has
   already inserted. **Enter** and **Tab** accept the selected item while the
-  documentation shows; links in it open with a click.
+  documentation shows; links in it open with a click. The documentation panel
+  is as tall as its text, up to a limit, so a long description is not cut
+  short.
 - **Two-step completions.** Accepting a CSS property opens the list of its
-  values, and accepting a folder in a path opens the list of its files.
+  values, and accepting a folder in an `href` or `src` opens the list of its
+  files. The second list stays open, as if you had asked for completion
+  there.
 - **Hover** documentation for elements, attributes and CSS properties, opening
   at the start of its text.
 - **Problems** in embedded scripts and styles (each can be switched off, below),
   with Editora's [markup checks](#markup-checks) added.
 - **Colour swatches.** A colour in a `<style>`, a `style=""` attribute or a CSS
-  file shows a small square in its colour before it. There is no colour picker.
+  file shows a small square in its colour before it. The squares move with the
+  text as you type before them; a square whose colour you replace disappears
+  until the server answers again. There is no colour picker.
 - **Structure** of every element, as [above](#folding-and-structure).
 - **Format Document** and **Format Selection**, as [above](#formatting).
 
@@ -301,9 +435,9 @@ The HTML card in Settings → LSP has the server's switch, its command and
 | **Formatting (HTML server)** | | |
 | Wrap lines at column | 120 | Format Document wraps lines longer than this; 0 never wraps. A file's EditorConfig `max_line_length` wins |
 | Attributes when formatting | Wrap only when the line is too long | How an element's attributes are laid out: also *One per line after the first*, *One per line, aligned with the first*, *One per line, each on a new line*, *Wrap when too long, aligned with the first*, *Keep as written* and *Keep as written, aligned with the first* |
-| Keep content as written in | `pre`, `code`, `textarea` | The elements whose content Format Document leaves exactly as written, separated by commas. Scripts are always kept |
+| Keep content as written in | `pre`, `code`, `textarea` | The elements whose content Format Document leaves exactly as written, separated by commas. `<script>` code is always formatted as JavaScript, never as HTML |
 | **Completion and embedded code (HTML server)** | | |
-| Quotes for completed attributes | Double quotes | What an attribute chosen from completion gets after its `=`: also *Single quotes* or *No quotes*. Typing `=` yourself always inserts double quotes |
+| Quotes for completed attributes | Double quotes | What an attribute gets after its `=`, chosen from completion or typed: also *Single quotes* or *No quotes*. See [Attribute quotes](#editing-tags) |
 | Check embedded scripts | On | Report problems in the `<script>` elements of an HTML file |
 | Check embedded styles | On | Report problems in the `<style>` elements of an HTML file |
 
@@ -321,16 +455,36 @@ VS Code's `html.*` settings, without the `html.` prefix:
 }
 ```
 
+VS Code's dotted keys work too, inside the object (`"format.wrapAttributes"`)
+or at the top level of the file with the prefix, as in a VS Code
+`settings.json`:
+
+```json
+{
+  "html.format.wrapAttributes": "force-aligned",
+  "html.validate.scripts": false
+}
+```
+
 The keys are a `format` object (`wrapLineLength`, `wrapAttributes`,
 `contentUnformatted`, `unformatted`, `indentInnerHtml`, `preserveNewLines`,
 `maxPreserveNewLines`, `indentHandlebars`, `extraLiners`, `templating`,
 `unformattedContentDelimiter`, `endWithNewline`, `wrapAttributesIndentSize`,
 `indentScripts`), `validate` (`scripts`, `styles`), `suggest` (`html5`),
-`hover` (`documentation`, `references`), `completion`
-(`attributeDefaultValue`) and `autoClosingTags`. A key Editora does not know,
-or a value of the wrong type, is ignored, and a key the project leaves out keeps
-your own setting. `customData` and `dataPaths` are not supported. Nothing in
-the object runs a program, so it applies in untrusted folders too. It applies
+`hover` (`documentation`, `references`) and `completion`
+(`attributeDefaultValue`). `format.endWithNewline` is not sent to the server:
+it is Editora's own final-newline choice when the file's EditorConfig says
+nothing (see [Formatting](#formatting)). A key the project leaves out keeps your
+own setting.
+
+A key Editora does not use, or a value of the wrong type, is ignored, and the
+status bar names it once, here for a misspelt key: *Not used from
+.editora/settings.json (html): format.wrapAtributes*. That includes
+`customData` and `dataPaths`, which are not supported, and `autoClosingTags`,
+which always follows Editora's own **Auto-close HTML/XML tags** switch.
+
+Nothing in the object runs a program, so it applies in untrusted folders too.
+It applies
 only to the project's own files: a page from another folder opened in the same
 window keeps your settings. A file's EditorConfig `max_line_length` and
 `insert_final_newline` still win.
@@ -364,57 +518,105 @@ only this machine can reach. The page reloads as you edit.
   one).
 
 The globe shows on `.html`, `.htm` and `.xhtml` files and on a file that opens
-as HTML from its first lines or its modeline, not on templates. A new, untitled
+as HTML from its first lines or its modeline, not on templates or
+[encrypted files](#encrypted-files). A new, untitled
 page must be saved once, so its stylesheets and images have a folder to load
 from: *Save the HTML file first so its assets can load.*
 
 ### What is served
 
 The preview serves the page's whole **site**, so `../css/site.css` and
-root-relative `/img/logo.png` links load:
+root-relative `/img/logo.png` links load. The site root is:
 
 - for a file in the project, the project folder;
-- otherwise, the nearest folder above the file that holds an `index.html`;
+- otherwise, the folder found by climbing from the file's folder: the nearest
+  folder that holds an `index.html`, then on up while the folder above holds
+  one too. `site/blog/post.html` is served from `site/` when both `site/` and
+  `site/blog/` have an `index.html`, and a saved page higher up, in Downloads
+  or `~/src`, is not reached past a folder without one. The climb never goes
+  into your home folder or above, Downloads, Desktop, Documents or a temporary
+  folder;
 - otherwise, the file's own folder.
 
-Some files are never served, whatever the page asks for: hidden files and
-folders (`.env`, `.git/`, `.ssh/`, `.npmrc`…, except `.well-known`) and private
-keys (`*.pem`, `*.key`, and `id_rsa`-style files without an extension or ending
-in `.pub`). A page sitting directly in your home folder, Downloads, Desktop,
-Documents or the temporary folder, or at the top of a drive, is refused, because
-the whole folder would be served: *Not serving …: the preview server exposes the
-file's whole folder. Move the HTML file into its own folder first.* When the
-project is your home folder, the rules for a loose file apply instead.
+The [HTML language server](#the-html-language-server) roots a loose page the
+same way, so Ctrl-click on a `/css/…` link opens the file the browser loads.
+
+Folder addresses work as on a static host: `/` and a folder link such as
+`blog/` serve that folder's `index.html`, and `blog` without the slash
+redirects to `blog/`. There is no folder listing: a folder without an
+`index.html`, the site root included, is not found.
+
+Some files are never served, whatever the page asks for; they answer *not
+found*:
+
+- hidden files and folders (`.env`, `.git/`, `.ssh/`, `.npmrc`…), except
+  `.well-known`;
+- private keys: `*.pem`, `*.key`, and `id_rsa`-style files without an
+  extension or ending in `.pub`;
+- certificate and password stores (`*.p12`, `*.pfx`, `*.kdbx`), Terraform
+  state and variables (`*.tfstate`, `*.tfstate.backup`, `*.tfvars`),
+  databases (`*.sqlite`, `*.sqlite3`, `*.db`), `credentials*.json` and
+  `secrets.*`;
+- [encrypted files](#encrypted-files) (`*.gpg`, `*.asc`, `*.pgp`).
+
+A page you preview in a hidden folder, such as `.github/` or `.vitepress/`, is
+served with the files of its own folder, still without the dotfiles and
+secrets in it. Nothing in `.git`, `.ssh`, `.gnupg`, `.aws`, `.docker`, `.kube`
+or a `.env…` folder is ever served.
+
+A page sitting directly in your home folder, Downloads, Desktop or Documents
+(also their OneDrive forms, under `~/OneDrive` or the folders `%OneDrive%`
+names on Windows), in a temporary folder (`/tmp`, `/var/tmp`, `/dev/shm`,
+macOS's `/private/tmp` and the system's own), or at the top of a drive, is
+refused, because the whole folder would be served: *Not serving …: the preview
+server exposes the file's whole folder. Move the HTML file into its own folder
+first.* When the project is your home folder, the rules for a loose file apply
+instead.
 
 Video and audio play and seek (Safari included), because files are streamed
-with byte ranges; big files are not loaded into Editora's memory. Each page
+with byte ranges. Only HTML pages up to 20 MB and the unsaved text of open
+files are put together in Editora's memory, a few at a time; everything else
+is streamed from disk, text files included. A file open in
+[large-file mode](/docs/troubleshooting#performance), or with more than about 4
+million characters, is served from disk without its unsaved edits. Each page
 keeps its own character encoding.
 
 ### Live reload
 
 The page reloads when you edit it, when you save it, and when you edit or save
 any other file of its site that is open in Editora: a stylesheet, a script,
-another page. Unsaved edits are served as you type. An edit to a stylesheet
-only is applied without a reload, so the page keeps its scroll position and
-state. Closing a file serves it from disk again. Files changed outside Editora,
-such as a build tool writing `dist/`, are not watched.
+another page. Opening a file without editing it reloads nothing. Unsaved edits
+are served as you type. An edit to a stylesheet only swaps the page's own
+stylesheets without a reload, so the page keeps its scroll position and state;
+stylesheets from a CDN or another site are left alone. Closing a file serves
+it from disk again. Files changed outside Editora, such as a build tool writing
+`dist/`, are not watched.
 
-Several sites can be previewed at once, each under its own address, and
-previewing a page of a site already served reuses it. Each **Open** opens a new
-browser tab. The tabs keep working until the server stops: when the preview is
-turned off or the window closes. The address changes every time the server
-starts. A tab whose server has stopped backs off and then says *Editora's
-preview server has stopped. Open the preview again from Editora.*
+Each previewed site has its own address, with its own port on `127.0.0.1` and
+its own random path. The browser keeps sites at different addresses apart, so
+a page you preview later, such as a downloaded one, cannot read another site's
+files or unsaved edits. Previewing a page of a site already served reuses it.
+Up to 32 sites are served at once; past that, the one served least recently
+stops. Each **Open** opens a new browser tab. The tabs keep working until the
+server stops: when the preview is turned off or the window closes. The address
+changes every time the server starts. A tab whose server has stopped backs off
+and then says *Editora's preview server has stopped. Open the preview again
+from Editora.*
 
 ### Browsers
 
 Editora detects Safari, Google Chrome, Chromium, Firefox, Firefox Developer
 Edition, Microsoft Edge, Brave, Vivaldi, Opera and Arc. On Linux it also finds
-Flatpak and Snap installs and any other browser with a desktop launcher; on
-Windows, per-user installs too. A browser installed later shows up without
-reopening the window. A remembered browser that is no longer installed shows as
-*Brave (not found)* in Settings → Web. Doctor's **Web Browsers** row lists what
-was found.
+Flatpak and Snap installs and any other web browser with a desktop launcher
+that can run on your desktop; an app that only opens links, such as a chat app,
+is not listed. On Windows it finds per-user installs too. A browser installed
+later shows up without reopening the window. Doctor's **Web Browsers** row
+lists what was found.
+
+If the browser you chose is no longer installed, **Open** uses the system
+default browser and says *Brave wasn't found, so the default browser opened
+the preview at …*. Your choice is kept, so Settings → Web shows it as *Brave
+(not found)* until you choose another or reinstall it.
 
 ### Status messages
 
@@ -427,6 +629,16 @@ The status bar says what happened:
   chosen browser has gone.
 - *Firefox quit right away (exit code 1). The preview is at …*, with the
   address to open by hand.
+
+### Encrypted files
+
+The preview never serves an [encrypted file](/docs/encrypted-files), because
+every script the page runs, a CDN or analytics script included, could read
+what it is given. An encrypted page has no globe, and the HTML Preview commands
+say *HTML Live Preview doesn't serve encrypted files: every script the page
+runs could read the decrypted text.* The decrypted text of an encrypted file
+you have open never reaches the preview, and the encrypted file itself is not
+found.
 
 ### Remote files
 
