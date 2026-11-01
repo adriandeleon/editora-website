@@ -80,6 +80,11 @@ than an empty query: it names what it will search and walks nothing.
 A single-line selection seeds the query, the same way the find bar and Find in
 Files do.
 
+**Show in Map** selects the highlighted file, or a symbol's file, on the
+[Project Map](/docs/workspace#project-map), opening the Map window if needed.
+Its key is `Alt-Enter` where the keymap leaves it free, else `Shift-Enter` or
+`Alt-M`; the hint line names it.
+
 The symbol half is backed by Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project), so it
 works with no language server installed.
