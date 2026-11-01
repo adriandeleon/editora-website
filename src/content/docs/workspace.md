@@ -947,12 +947,13 @@ Page) with their shortcuts.
   The right-click menus are trimmed the same way:
 
   - **Tab:** Save, Save As, Encrypt… (Lock File on an encrypted file), Print,
-    Export to PDF, Close, Close Others, Close All, Reveal in File Manager, Copy
-    Path and Rename. Unpin stays on a tab that was pinned before.
+    Export to PDF, Close, Close Others, Close All, Reveal in Map (when projects
+    are on), Reveal in File Manager, Copy Path and Rename. Unpin stays on a tab
+    that was pinned before.
   - **Editor:** Comment / Uncomment, the spelling suggestions, Cut, Copy,
     Paste, Undo, Redo, Select All, Print and Export to PDF.
-  - **Project tree:** New (a file or a folder), Rename, Undo Move, Delete and
-    Reveal in File Manager.
+  - **Project tree:** New (a file or a folder), Rename, Undo Move, Delete,
+    Reveal in Map and Reveal in File Manager.
   - **Preview** (Markdown, Typst, Markwhen, diagrams): the copy actions, Go to
     Source, Enlarge, Export to PDF and Print. Copy HTML and the other export
     formats are hidden.
