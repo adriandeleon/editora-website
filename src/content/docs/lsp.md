@@ -41,8 +41,13 @@ have somewhere to go; of two where one overrides the other, the nearer one is
 offered. A static or private method, or another overload, has no super method. In
 a lambda it goes to the functional interface's method, in a constructor to the
 super constructor it calls (through `this(...)` too), and from a class to its
-supertypes, the superclass first and each named by its type. Several targets open
-a picker, and it works the same in a library source tab.
+supertypes, the superclass first and each named by its type (never
+`java.lang.Object`, as in IntelliJ). On an anonymous class itself (its header,
+from the type's name to its `{`, or a field in it) it opens the type the class
+instantiates, also for a nested type written with `<>`, such as
+`new Outer.Mid.Sink<>() {…}` or an imported `Map.Entry`. A comment right above a
+method, Javadoc or `//`, counts as the method's. Several targets open a picker,
+and it works the same in a library source tab.
 
 The submenu does not change which actions a server contributes. A
 fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
@@ -444,7 +449,16 @@ is asked which imports the pasted text needs; they are added for you, and only
 for names the pasted text uses. Only the
 language server can do this, because it needs the type resolver. An answer that
 lost a race with your typing is dropped rather than applied to text it wasn't
-computed for.
+computed for. In the Emacs keymap, a yank (`C-y`) and each `M-y` get the imports
+their text needs, each kill ring entry with the file it was killed from, and `M-y`
+keeps working after those imports land.
+
+**Pasting into a string escapes the text.** Pasted between the quotes of a Java
+string, `C:\temp "x"` becomes `C:\\temp \"x\"`, and pasted lines become
+concatenated strings, each ending in `\n`. Text copied from inside a string
+literal pastes as it is, already escaped. In a text block only backslashes (and a
+`"""`) are escaped, and in a char literal its backslash and quote. One Undo takes
+the paste back.
 
 **Smart semicolon placement.** Typing `;` part-way through an expression puts it
 at the end of the statement: `compute(1, 2|)` becomes `compute(1, 2);|`. The
@@ -523,16 +537,27 @@ Imports and Format.
   Maven only), or run **View: Toggle Downloading Library Sources at Import**
   (`view.toggleJavaDownloadSources`). It applies at the next import; **LSP: Clean Java
   Workspace and Restart** applies it now.
-- **A failed import says why.** When jdtls cannot import the project (a Gradle
-  build that does not run, say), the status bar names the reason it logged and
-  Problems lists the build file's own errors. Fix the build file and run
-  **Reload Project Configuration**: after a failed import it starts the server
-  over to import again. A project that imports with build problems (a Maven
-  dependency that cannot be found) is loaded, and Problems lists them.
+- **A failed import says why.** When jdtls cannot import the project, the status
+  bar names the reason, each of its open files says **Not checked**, and Problems
+  lists the build file's own errors. That covers a Gradle build that does not run
+  (a settings file that `include`s a folder that does not exist, say), a pom that
+  does not parse, and a pom Maven cannot build a model of: a dependency without a
+  `<version>`, a parent it cannot resolve. A failure that belongs to one module or
+  folder is named with it, as in **jdtls (app): the project did not import**, and
+  the rest of the project stays checked. A module with
+  `<packaging>pom</packaging>` that holds Java sources says Maven compiles none of
+  them. Fix the build file and save it, or run **Reload Project Configuration**:
+  the project imports again, after a pom's model error with a cleaned workspace,
+  and a fix that arrives by `git pull` or another editor does the same. A project
+  that imports with build problems (a Maven dependency or a Gradle one that cannot
+  be found) is loaded and checked, and Problems lists them. A file the build
+  leaves out on purpose (a nested sample project, `buildSrc`, an excluded source)
+  does not make a healthy project look broken.
 - **Your project folder stays clean.** jdtls keeps Eclipse's `.project`,
   `.classpath` and `.settings/` in its own workspace, not in your project.
 - **Build files sync on save.** A change to `pom.xml` or `build.gradle` reaches
-  the classpath when you save it.
+  the classpath when you save it, also a module's in a folder you never expanded,
+  and so does one made outside Editora (a `git pull`, a branch switch).
 - **One server per build.** Files of the modules of one Maven reactor or Gradle
   build share a server even without a project open. A plain folder of `.java`
   files with packages, and no build file, gets the right source folder as soon as
