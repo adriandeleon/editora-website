@@ -1542,7 +1542,9 @@ server, the Settings → LSP card reads *lemminx-maven: incomplete — Install�
 repairs it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars
 beside an **Install…** button. If you installed this server with an earlier
 release, click **Install…** once: that bundle lacked the three libraries and
-could not answer a request.
+could not answer a request. The same goes for an install with a jsoup newer than
+1.14, which failed every hover on a schema-documented element: Editora now
+installs jsoup 1.14.3, the line the server's documentation renderer needs.
 
 **While you edit a pom:**
 
