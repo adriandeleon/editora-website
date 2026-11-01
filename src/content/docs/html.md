@@ -291,8 +291,8 @@ formats an HTML file with or without the language server.
 [HTML card](#settings--lsp--html):
 
 - The content of `<pre>`, `<code>` and `<textarea>` is left exactly as written,
-  so code samples and a textarea's default value keep their spaces. Scripts are
-  always kept.
+  so code samples and a textarea's default value keep their spaces. `<script>`
+  code is never reflowed as HTML; it is formatted as JavaScript.
 - Editora keeps the final newline itself, rather than the server: the file
   ends with one when its EditorConfig `insert_final_newline` says so, else when
   the project's `html` object sets `format.endWithNewline`, else when it had one
@@ -435,7 +435,7 @@ The HTML card in Settings → LSP has the server's switch, its command and
 | **Formatting (HTML server)** | | |
 | Wrap lines at column | 120 | Format Document wraps lines longer than this; 0 never wraps. A file's EditorConfig `max_line_length` wins |
 | Attributes when formatting | Wrap only when the line is too long | How an element's attributes are laid out: also *One per line after the first*, *One per line, aligned with the first*, *One per line, each on a new line*, *Wrap when too long, aligned with the first*, *Keep as written* and *Keep as written, aligned with the first* |
-| Keep content as written in | `pre`, `code`, `textarea` | The elements whose content Format Document leaves exactly as written, separated by commas. Scripts are always kept |
+| Keep content as written in | `pre`, `code`, `textarea` | The elements whose content Format Document leaves exactly as written, separated by commas. `<script>` code is always formatted as JavaScript, never as HTML |
 | **Completion and embedded code (HTML server)** | | |
 | Quotes for completed attributes | Double quotes | What an attribute gets after its `=`, chosen from completion or typed: also *Single quotes* or *No quotes*. See [Attribute quotes](#editing-tags) |
 | Check embedded scripts | On | Report problems in the `<script>` elements of an HTML file |
