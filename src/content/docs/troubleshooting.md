@@ -46,8 +46,11 @@ either way it follows its server into **Needs attention**. Under the Maven
 server, the **lemminx-maven artifact store** row shows the size of the
 `.lemminx-maven` folder where lemminx-maven keeps what it resolves (beside your
 local Maven repository: `~/.m2/.lemminx-maven`, or next to the folder
-`<localRepository>` names in `~/.m2/settings.xml`), with
-**Clear**, and **Reveal in File Manager** in its right-click menu. A language
+`<localRepository>` names in `~/.m2/settings.xml`, with `${env.…}` expanded), with
+**Clear**, and **Reveal in File Manager** in its right-click menu. The XML
+server's row names the Java fallback (*Java lemminx 0.30.1 (fallback)*) when
+XML runs on it, and is an error when the XML command would load lemminx-maven,
+which Editora refuses to start. A language
 server that keeps crashing, or fails its requests, is a warning with an
 **Install…** button that installs it again and a **Restart Language Servers**
 button; the same goes for a server this window stopped restarting after it
