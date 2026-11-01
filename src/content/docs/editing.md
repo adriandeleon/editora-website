@@ -187,11 +187,15 @@ pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
 not Python syntax, so it is not paired there.
 
 In an HTML start tag, typing `=` after an attribute name inserts the quotes
-chosen in **Quotes for completed attributes** (Settings → LSP → HTML: double by
-default, single, or none) with the caret inside, while **Auto-close HTML/XML
-tags** is on. The same quote typed straight after is taken as the opening
-quote, the other quote replaces the pair, and a space or `>` takes the empty
-pair back. Template tags get no quotes. See [HTML](/docs/html#editing-tags).
+chosen in **Quotes after a typed or completed =** (Settings → Editor → Editing,
+beside **Auto-close HTML/XML tags**: double by default, single, or none) with
+the caret inside, while **Auto-close HTML/XML tags** is on. The setting works
+with language servers off, and also decides what an attribute chosen from
+completion gets. Angular bindings such as `(click)`, `[value]`,
+`[(ngModel)]` and `*ngIf` get the quotes too. The same quote typed straight
+after is taken as the opening quote, the other quote replaces the pair, and a
+space or `>` takes the empty pair back. Template tags get no quotes. See
+[HTML](/docs/html#editing-tags).
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
