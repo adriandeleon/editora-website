@@ -201,7 +201,7 @@ A project's `.editora/settings.json` can set only these:
 | The program of the Java, Python and JavaScript debuggers | `debugTools`, by debugger |
 | Which language server to run for a language, and whether to run it | `lspCommands`, `lspEnabled`, by server |
 | The [Bash server's options](/docs/lsp#bash-server-options) | `bashIde` |
-| The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html` |
+| The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html`, or VS Code's dotted `html.…` keys at the top level |
 
 ```json
 {

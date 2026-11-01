@@ -65,14 +65,22 @@ cannot load TypeScript's libraries, which is the case for any copy installed
 with npm on its own: JavaScript in `<script>` then has no DOM or standard
 library, nothing completes after `document.` and there is no parameter help.
 **Update** installs Editora's own copy, which has them, and a blank HTML
-command uses it. When the HTML command is your own, the tip says to install the
-HTML server and clear the command. See [Installing it](/docs/html#installing-it).
+command uses it. A command that is just the default text
+(`vscode-html-language-server --stdio`) counts as blank, so Update is offered
+for it too. When the HTML command is your own, the tip says to clear its
+command in Settings, then click Update. Editora's own copy shows in the row by
+its program, as *vscode-html-language-server --stdio (Editora’s copy)*, rather
+than by its long path in the config folder. See
+[Installing it](/docs/html#installing-it).
 
 The **Node.js** row counts the open npm-installed servers (HTML, CSS, JSON,
 YAML, Bash, Pyright…) as needing Node.js, not only JavaScript and TypeScript.
-When it is missing and one of them needs it, the tip names that server and
-says to install Node.js or choose one in **Settings → Debugging →
-JavaScript**.
+When it is missing and one of them needs it, the tip names that server, or,
+when several need it, names them and says they are Node.js scripts, and says to
+install Node.js or choose one in **Settings → Debugging → JavaScript**. A
+server's own row that cannot start without Node.js says the same: install
+Node.js (or start Editora where it is on `PATH`), or choose one in Settings →
+Debugging → JavaScript, then click **Restart Language Servers**.
 
 ### Update… for servers older than Editora's
 
@@ -188,6 +196,9 @@ the Maven `pom.xml` server whose folder is missing jars is reported as
 A server whose requests time out twice in a row is reported once, with its
 name: *Not responding: its requests time out. Run “Restart Language Servers” to
 start it again.* When it answers again, the status bar says *Responding again*.
+Timeouts do not count while the server is busy: while jdtls is still importing
+a project, or while a server reports work in progress. Requests sent before
+the server finished starting do not count either.
 
 **Format Document** says why it changed nothing. *Already formatted* means the
 server answered with no edits. Otherwise it says *Format failed: the language
@@ -200,9 +211,10 @@ If completion after `document.` in a `<script>` offers nothing and there is no
 parameter help, the HTML server cannot find TypeScript's libraries (its log
 says *Unable to load library*). That happens with a copy of
 vscode-langservers-extracted installed with npm on its own, such as
-`npm install -g`. Doctor's HTML row says so: click **Update**, or **Install…**
-on the HTML card in Settings → LSP, to install Editora's own copy, and leave
-the HTML command blank so it is used. See
+`npm install -g`. The first HTML page a window opens says so on a banner, and
+so does Doctor's HTML row: click **Update** on either, or **Install…** on the
+HTML card in Settings → LSP, to install Editora's own copy, and leave the HTML
+command blank so it is used. See
 [Installing it](/docs/html#installing-it).
 
 ## Language servers run the wrong Node.js
@@ -210,9 +222,14 @@ the HTML command blank so it is used. See
 The Node.js chosen in **Settings → Debugging → JavaScript** (the **Node.js**
 row) runs every language server installed with npm, not only TypeScript's: the
 HTML, CSS, JSON, YAML and Bash servers, Pyright and the others. Left blank,
-Editora uses the version a project's `.nvmrc` or `.node-version` names (from
-nvm), else `node` on the `PATH`. A server row that would warn about a missing
-Node.js does not, when that setting names one that exists.
+they run on `node` on the `PATH`. A project's `.nvmrc` or `.node-version` does
+not change them, so an old Node.js pinned for the project cannot break them;
+only the TypeScript server follows the project's version file (from nvm), as
+[Run](/docs/run-debug#nodejs-scripts) does. A server row that would warn about
+a missing Node.js does not, when that setting names one that exists.
+
+Install uses the npm beside that Node.js when there is one, so npm-installed
+servers install even with nothing on the `PATH`.
 
 ## Python imports show as errors
 

@@ -296,6 +296,10 @@ it out of everything it would otherwise write or send elsewhere:
   decrypted text and may keep it in its own caches or logs.
 - **No agents, MCP clients or AI actions**: the embedded agent and MCP clients
   can't read the file, and AI actions don't send its text anywhere.
+- **No HTML Live Preview**: an encrypted page has no globe, the decrypted text
+  never reaches the preview server, and `.gpg`, `.asc` and `.pgp` files are
+  never served, since every script a previewed page runs could read them (see
+  [HTML](/docs/html#encrypted-files)).
 - **No Git change bars or blame**, no diagram previews (they render through
   temporary files; Mermaid blocks in an encrypted Markdown file show as code),
   and Replace in Files doesn't rewrite encrypted files that aren't open.

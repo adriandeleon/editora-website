@@ -832,10 +832,13 @@ A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
 single server. Python looks for its own markers first; see [Python](#python).
-An HTML page with no project, `package.json` or `.git` above it is rooted at
-the highest folder above it that holds an `index.html`, stopping below your
-home folder, so the whole static site shares one server and its `/css/…` links
-resolve.
+An HTML page with no project, and no `package.json` or `.git` above it (one in
+your home folder or above it does not count), is rooted at its site root, by
+the one rule HTML Live Preview uses too: the nearest folder with an
+`index.html`, then on up while the folder above holds one too, never into your
+home folder, Downloads, Desktop, Documents or a temporary folder. So the whole
+static site shares one server, its `/css/…` links resolve, and Ctrl-click and
+the browser agree (see [What is served](/docs/html#what-is-served)).
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -945,7 +948,13 @@ DOM and standard library in `<script>`. With the three commands left blank,
 Editora runs that copy first, then one on your `PATH`.
 [Doctor](/docs/troubleshooting#doctor) checks the installed version against
 4.10.0, and warns, with **Update**, about a copy that cannot load the
-TypeScript libraries.
+TypeScript libraries; the first HTML page a window opens offers the same
+**Update** on a banner.
+
+The three servers run on the Node.js chosen in **Settings → Debugging →
+JavaScript**, else `node` on your `PATH`. A project's `.nvmrc` or
+`.node-version` does not change them; it picks only the TypeScript server's
+Node.js. When a Node.js is chosen there, Install uses the npm beside it.
 
 What the HTML server adds, its settings on the HTML card (wrap column,
 attribute wrapping, content kept as written, attribute quotes, checking

@@ -237,6 +237,10 @@ TypeScript language server all use the same Node.js. The first of these wins:
 4. `node` on your `PATH` (the login shell's `PATH`, so the default of nvm, fnm
    or Volta counts).
 
+Editora's other npm language servers (HTML, CSS, JSON, YAML, Bash, Pyright…)
+skip step 3: they run on the **Node.js** setting, else `node` on your `PATH`, so
+an old Node.js a project pins cannot break them.
+
 [Doctor](/docs/troubleshooting#doctor) has a **Node.js** row that names the
 Node.js in use and why it was chosen, for example *Node.js setting* or
 *.nvmrc, via nvm*.

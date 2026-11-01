@@ -61,7 +61,9 @@ into an indented stanza with the closer dropped below. Typing a closer such as
 `)`, `]`, `}`, or a keyword like `end` / `fi` / `done` re-aligns the line to its
 opener. Inside an HTML page's `<script>` or `<style>`, Enter follows the brace
 rules of the code there: it indents after `{`, and a typed `}` lines up with its
-opener (see [HTML](/docs/html#comments-and-indentation)).
+opener. Enter between `<style>` and `</style>` puts the end tag on its own line,
+and Tab inside `<pre>` or `<textarea>` keeps the line as written (see
+[HTML](/docs/html#comments-and-indentation)).
 
 In brace languages (JavaScript, TypeScript, Java, C, Go and the others), Enter
 also follows these shapes:
@@ -184,9 +186,12 @@ pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
 `'''` adds the closing triple quote, with the caret between them. A backtick is
 not Python syntax, so it is not paired there.
 
-In an HTML start tag, typing `=` after an attribute name inserts `""` with the
-caret inside, while **Auto-close HTML/XML tags** is on; a `"` typed straight
-after is taken as the opening quote. See [HTML](/docs/html#editing-tags).
+In an HTML start tag, typing `=` after an attribute name inserts the quotes
+chosen in **Quotes for completed attributes** (Settings → LSP → HTML: double by
+default, single, or none) with the caret inside, while **Auto-close HTML/XML
+tags** is on. The same quote typed straight after is taken as the opening
+quote, the other quote replaces the pair, and a space or `>` takes the empty
+pair back. Template tags get no quotes. See [HTML](/docs/html#editing-tags).
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
@@ -254,7 +259,10 @@ In an HTML page the syntax follows where the selection is: `/* */` inside a
 `<style>`, `//` inside a `<script>`, and `<!-- -->` in the markup. A selection
 that runs from the markup into a script or style is refused, with *The
 selection runs from the HTML into a script, style or PHP block: comment each
-part on its own*. In a PHP file the HTML part gets `<!-- -->`. See
+part on its own*. In a template, a line with template code gets the engine's
+own comment (`{# #}`, `{% comment %}`, `<%#`, `{{!-- --}}`), since an HTML
+comment does not stop it. In a PHP file the HTML part gets `<!-- -->`, and a
+line that opens a PHP block is commented inside it. See
 [HTML](/docs/html#comments-and-indentation).
 
 ## Small operations
