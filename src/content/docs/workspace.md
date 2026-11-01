@@ -22,7 +22,8 @@ since 0.10.0; Settings → Workspace turns them off.
 The **Project** tool window shows the folder tree with keyboard navigation, a
 filter that runs a bounded project-wide filename search, per-file-type icons, and
 right-click actions: new file, **new folder**, new from template, rename, reveal,
-open terminal, Show Local History, and Git stage/revert. Typing in the filter
+open terminal, Show Local History, and Git stage/revert. A folder's menu also
+has **Find in Folder…** and Git ▸ **Show Git History**. Typing in the filter
 highlights the first match, so Enter opens it and Down moves on from there. The **project root has its
 own menu** too (with rename omitted so you can't move the whole project).
 From the keyboard, **F2** renames and **Delete** deletes the selected file, and
@@ -58,11 +59,12 @@ or Personal Note directly, with compact indicators showing both annotations.
 ### Project Map
 
 The Project Map shows the project on a spatial canvas, in a **window of its
-own**. Click **Map** beside the Project tool window's search field, or run
-*Project: Open / Close Project Map Window* (`project.toggleMapView`), to open
-it; if it is open already it comes forward. The command works even with the
-Project tool window closed, and closes the Map window when that is the window
-in use. The Project tool window keeps showing the tree.
+own**. Click **Map** beside the Project tool window's search field, press
+`Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs), or run *Project:
+Open / Close Project Map Window* (`project.toggleMapView`) to open it; if it is
+open already it comes forward. The key and the command work even with the
+Project tool window closed, and close the Map window when that is the window in
+use. The Project tool window keeps showing the tree.
 
 The map shows the project as Miller-style columns: selecting a folder reveals
 its children in the next column, and several open branches sit side by side
@@ -73,11 +75,6 @@ single-child folders, such as `src/main/java/com/acme` in a Java project, opens
 with one click and shows as **one column** titled `src / main / java / com / acme`;
 every folder of the chain is still in the breadcrumb.
 
-*Project Map: Reveal Active File* (`projectMap.revealActiveFile`) opens the Map
-window, or brings it forward, and selects the file you are editing. Turn on
-**Always select opened file** in the ⋯ menu to have the Map follow every file you
-open. A Map opened with nothing selected starts at the current file.
-
 The Map window is resizable and can sit beside the editor window or on another
 screen. It does not stay above the editor window: opening a file from the Map
 brings the editor window forward. It closes with its editor window or project.
@@ -86,6 +83,10 @@ per workspace, so a workspace that last had the Map open reopens it, even with
 the Project tool window closed. In a window without a project, the Map stays on
 the folder you opened it on while you open files and switch tabs; close and
 reopen it to map the current tab's folder.
+
+The window has its own **status line** under the map. Everything the Map has to
+tell you appears there, not in the editor window: a folder it cannot read, the
+row limit, what the search found, and the outcome of a move, an undo or a delete.
 
 - **Click a file** to open it in an editor tab. If you would rather select files
   with a click and open them with a double-click or `Enter`, turn off **Single-click
@@ -98,13 +99,20 @@ reopen it to map the current tab's folder.
   together, and the flow is remembered per workspace.
 - Drag anywhere to pan, including from a row, and use the mouse wheel to zoom
   around the pointer; `Shift` or `Alt` with the wheel pans instead. **Fit**,
-  **Center selection** and **Reset** recenter the layout. The overview in the
-  corner can be clicked or dragged; it stays on the map and is hidden in small
-  windows.
+  **Center selection** and **Reset** recenter the layout. Zoom runs from 15% to
+  225%, so Fit can show even a big map. Below 60% the columns become **labelled
+  blocks**: each row is a bar, matches are in the accent colour, and each column
+  is labelled with its title, how many items it lists and how many match. The
+  overview in the corner can be clicked or dragged; it stays on the map and is
+  hidden in small windows. When the zoom bar or the overview covers a row under
+  the pointer, it fades and lets the pointer through to that row.
 - Drag a column header to reposition it and use its lock to prevent accidental
-  movement. Columns size themselves to the longest loaded name, up to a limit;
-  longer names are shortened in the middle so the extension stays visible, and
-  the tooltip has the full name.
+  movement. Columns size themselves to the longest loaded name, up to a limit.
+  A longer name is shortened where it differs from its neighbours, keeping its
+  extension, so similar names stay apart; the tooltip has the full name.
+- Ignored, dependency (`node_modules`), vendored and generated files and folders
+  are **drawn dimmed**, and their tooltip says why. ⋯ → **Hide ignored and
+  generated** takes them off the map.
 - Filter globally by open, unsaved, Git-changed, bookmarked, or Personal Notes
   state and by file type. Matches and the folders that contain them stay
   prominent while everything else fades (still readable), or drops out with
@@ -115,22 +123,27 @@ reopen it to map the current tab's folder.
 - Click a file's **eye** (or select it and press `Shift-Enter`) for a movable,
   resizable, syntax-highlighted read-only preview card in the editor's font. The
   preview uses unsaved buffer text when available, says so, and follows later
-  edits; **Open** promotes it to a normal editor tab. A card opens where it hides
-  the least of the map, never over the folders that lead to the file or where its
-  next column will open; **Move to Free Space** in its menu places it again.
+  edits; **Open** promotes it to a normal editor tab. A code card opens past the
+  file's licence header. A card opens where it hides the least of the map, never
+  over the folders that lead to the file, where its next column will open, or
+  under the zoom bar and the overview; **Move to Free Space** in its menu places
+  it again.
 - Click a file's **Structure icon**, just before the eye, to open a column of
   its classes, methods or headings. See [File structure](#file-structure).
 - A Personal Notes badge opens an independent editable note card for a file or
   folder. Note cards can coexist with code previews.
 - Right-click a node for **Preview**, **Show Structure**, **Personal Notes** and
   **Close Column**, then the same New, Maven, rename, delete, reveal, terminal,
-  Local History, and Git actions available in the tree. Rename, New Folder,
-  Delete, Undo Move and Reveal stay in the Map window and ask there; a folder or
-  file made from the Map is shown and selected on it. The other actions bring the
-  editor window forward.
-- The **?** button lists every mouse gesture and key, including cards, notes and
-  filters, in your language. Screen readers announce the selected row's states
-  and its place among the visible rows.
+  Local History, and Git actions available in the tree. A file's menu adds
+  **Related Test / Subject**, and a folder's adds **Find in Folder…** and Git ▸
+  **Show Git History** (see [Following the code](#following-the-code)). Rename,
+  New Folder, Delete, Undo Move and Reveal stay in the Map window and ask there;
+  a folder or file made from the Map is shown and selected on it. The other
+  actions bring the editor window forward.
+- The **?** button lists every mouse gesture and key, including cards, notes,
+  the search and how to find where you are, in your language. Screen readers
+  announce the selected row's states, the folder it is in, its place among the
+  visible rows and, during a search, which match it is ("match 2 of 14").
 
 **Hide unmatched**, a checkbox in the filter row, takes the rows a filter
 doesn't match off the map instead of fading them, so only the matches and the
@@ -143,13 +156,17 @@ and a hidden folder's open columns disappear with it. Uncheck the box to bring
 the faded rows back. The choice is remembered per workspace.
 
 The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
-**Single-click opens files**, **Compact folder chains**, **Hide all open Personal
-Notes**, **Always select opened file**, **Print…** and **PDF…**. Keep current
-zoom, Focus new column, Single-click opens files and Compact folder chains are on
-by default; all of them except Hide all open Personal Notes are remembered per
-workspace. With Keep current zoom and Focus new column, opening a folder
-preserves the current scale and brings its new column into view; turning zoom
-preservation off restores fit-to-content when the map expands.
+**Single-click opens files**, **Compact folder chains**, **Compact rows**, **Hide
+ignored and generated**, **Hide all open Personal Notes**, **Always select opened
+file**, **Reveal Active File**, **Project overview**, **Open cards**, **Print…**
+and **PDF…**. Keep current zoom, Focus new column, Single-click opens files and
+Compact folder chains are on by default; every on/off option except Hide all
+open Personal Notes is remembered per workspace. With Keep current zoom and Focus new
+column, opening a folder preserves the current scale and brings its new column
+into view; turning zoom preservation off restores fit-to-content when the map
+expands. **Compact rows** fits more rows on screen; each column then shows its
+filter, Show hidden and lock only while the pointer is over it, it holds the
+selection, or one of them is set.
 
 Hidden (dot) files follow **Settings → Workspace → Show hidden files in the
 project tree**. A column's **Show hidden** checkbox overrides the setting for
@@ -157,40 +174,121 @@ that folder only.
 
 Preview and note cards sit on the map like columns: panning carries them along,
 zooming scales them with the columns around them, and you can drag a card past
-the edge of the window and pan back to it later. With a card focused,
-`Alt`+arrow keys move it and `Alt`+`Shift`+arrow keys resize it. Cards, the zoom
-bar and the overview never hide one another. A card's resize corner stays
-under the pointer at any zoom. Each card also keeps a live connector to its
-source row. Image previews support common bitmap formats. A binary file's card shows its
-size, type and date with **Reveal in File Manager** instead of its bytes, and a
-very long file is coloured for its first lines, with the card saying how many. A text or image card's
+the edge of the window and pan back to it later. The overview marks every open
+card, and ⋯ → **Open cards** lists them, the most recently used first; click a
+mark or pick one to bring that card back into view with the keyboard in it. With
+a card focused, `Alt`+arrow keys move it and `Alt`+`Shift`+arrow keys resize it.
+Cards, the zoom bar and the overview never hide one another. A card's resize
+corner stays under the pointer at any zoom. Each card also keeps a live
+connector to its source row. Image previews support common bitmap formats. A
+binary file's card shows its size, type and date with **Reveal in File Manager**
+instead of its bytes, and a very long file is coloured for its first lines, with
+the card saying how many. A card cut at its display limit says how much it shows
+(*Showing lines 1–7,515 of 9,135*) and ends in a line, *Preview ends here; Open
+to read the rest*, that opens the file when you click it. A text or image card's
 own **−** and **+** buttons size its content on top of the map's zoom, so a card
 can stay readable when the map is zoomed out. At most **eight cards** are open
 at once, previews and notes together; opening a ninth replaces the one used
 least recently.
 
-The Map window has its own search field at the top (the Project tool window's
-field filters the tree only). The file you name ranks first: an exact name, then
-whole words, then partial matches. The search covers the whole project and keeps
-the best 300 matches, and the status bar says when more matched. It reveals the
-ancestor columns needed to reach its matches and scrolls the first one into view;
-it also matches declarations in open Structure columns. Type at least two
-characters to search the whole project; one character filters what is on the
-map. Clearing the query (or `Escape`) restores the folders you had open and the
-row you had selected. Files sort in natural order (note-2 before note-10) here and
-in the Project tree.
+#### Searching the map
+
+The Map window has its own search field, **Search the map…**, at the top (the
+Project tool window's field filters the tree only). `Ctrl-F` (`Cmd-F` on macOS,
+`C-s` in Emacs) in the Map window jumps to it. The search covers **the whole
+project**, however large or deep, and answers as you type.
+
+- Type a **name** to find files and folders. A folder match is selected and
+  opened.
+- Type part of a **path**, such as `core/v1/types.go` or `cmd/kube-scheduler`,
+  to narrow a common file name; several words must all match the path. End the
+  query with `/` to find only folders.
+- Start with **`#`** to find files only, or with **`@`** to find declarations
+  (`@NewScheduler`), as in [Search Everywhere](/docs/navigation#search-everywhere).
+  A declaration is shown in its file's Structure column.
+
+The best match comes first: the exact name, then whole words, then partial
+matches; a name in the case you typed; source before tests, fixtures, resources
+and docs; your code before vendored code; and a top-level `README.md` before
+nested ones. A one-character query only filters what is already on the map;
+type at least two characters to search the whole project. The query also
+matches the declarations in open Structure columns.
+
+While a query searches, a **results strip** under the search field counts the
+matches (*3 of 49*), with previous and next buttons and a drop-down list of every
+match and its folder; folders and declarations are marked.
+
+| Key (in the search field) | Result |
+| --- | --- |
+| `Enter` / `Shift-Enter` | Step to the next / previous match (both wrap) |
+| `F3` / `Shift-F3` | The same, also on the map |
+| `Ctrl-Enter` (`Cmd-Enter` on macOS) | Open the current match: a file in the editor, a declaration in its card |
+
+The search keeps the best 2,000 matches and opens the folders of the **best 30**
+only, so a broad search does not turn the map into a tower of columns; stepping
+to a later match opens its folders. During a search a column's **+N more** row
+reads **+N not matching**, so no match hides behind it. The status line says
+when more matched than were kept and when the search did not reach the whole
+project (it lists up to 200,000 files, 64 levels deep), and the strip then
+reads *partial*. When nothing matches, **No files match** names your query.
+While **Exclude .gitignore files and folders from search** (Settings → Search)
+is on, ignored files are not searched, and No files match says so. On an
+[SSH project](/docs/remote) the host lists the project's files with one command.
+
+**Clearing the search keeps your place.** Press `Escape`, the field's **×** or
+**Clear**: the row the search took you to stays selected, with the folders that
+lead to it and any you opened during the search still open. **Back** returns to
+where you were before you searched.
+
+#### Finding your way
+
+**Back** and **Forward** (`Alt-Left` / `Alt-Right`) step through the **places**
+you visited: files you opened or previewed, where a search landed, reveals,
+breadcrumb jumps and rows you clicked. A run of arrow keys is one step, so Back
+returns to where the run started. Right-click either button for the list of
+places.
+
+*Project Map: Reveal Active File* (`projectMap.revealActiveFile`; `Alt-F1`,
+`C-c o r` in Emacs) opens the Map window, or brings it forward, and selects the
+file you are editing. The **crosshair** button after the breadcrumb and ⋯ →
+**Reveal Active File** do the same, and **Show in Map** in
+[Search Everywhere](/docs/navigation#search-everywhere) does it for the
+highlighted file. Turn on **Always select opened file** in the ⋯ menu to have
+the Map follow every file you open. A Map opened with nothing selected starts at
+the current file. A revealed row, like a search landing or a Back step, is shown
+a third of the way down with the folders that lead to it (zooming out to no less
+than 70% when that shows more), and flashes briefly.
+
+In a column, **type the first letters of a name** to jump to it; a one-second
+pause starts again, and the same letter again steps to the next row with that
+initial. `Home` and `End` go to the column's first and last rows.
+
+The first time you open the Map on a project, a **Project overview** card shows
+its README, build system and modules, languages, top-level folders with their
+file counts, likely entry points, and where the tests and docs are. Click any of
+them to see it on the map. Reopen it from ⋯ → **Project overview**; it does not
+count toward the eight cards. Module folders carry a small package badge, and a
+folder's tooltip gives its project-relative path and how many folders and files
+it holds.
+
+**The Map remembers your exploration** of a local project across restarts: the
+folders you opened, the selected row, Back and Forward, the zoom and pan, and the
+code cards you had open, with their place, size and Structure column. They come
+back the first time the Map shows that folder again; anything deleted meanwhile
+is dropped. Note cards are not kept.
 
 #### File structure
 
 A file whose language the **Structure** tool window can outline (Java, Python,
-JavaScript and TypeScript, Kotlin, Markdown headings, Typst, `.http` requests,
-Clojure, Maven poms and more) has a **Structure icon**, three stepped lines,
-just before its eye. Click it to open a **structure column** next to the file:
-its declarations, in the order they are written, as the Structure tool window
-lists them. A declaration that holds others, such as a class's members or a
-heading's subsections, has its own chevron and opens a further column, like a
-folder. A file with a single top-level class opens that class's members right
-away. Click the icon again, or the column's **×**, to close it.
+JavaScript and TypeScript, Go, Kotlin, Markdown headings, Typst, `.http`
+requests, Clojure, YAML, Dockerfiles, Makefiles, Maven poms and more) has a
+**Structure icon**, three stepped lines, just before its eye. Click it to open a
+**structure column** next to the file: its declarations, in the order they are
+written, as the Structure tool window lists them. A declaration that holds
+others, such as a class's members or a heading's subsections, has its own
+chevron and opens a further column, like a folder. A file with a single
+top-level class opens that class's members right away. Click the icon again, or
+the column's **×**, to close it.
 
 **Click a declaration** to open a preview card of **only its lines**: its block,
 with the doc comment and annotations written above it. Its line numbers are the
@@ -198,9 +296,9 @@ file's own, in the amber the editor uses for a narrowed file, and the card
 title names the declaration with its parameter types, for example
 *App.java › add(int, int)*, so overloads are easy to tell apart. In the card:
 
-- **Open** opens the file at the declaration.
-- **Open Narrowed**, in the card's right-click menu, opens the file narrowed
-  to the declaration's block, as the Structure tool window's
+- **Open** opens the file narrowed to the declaration's block.
+- **Open Narrowed**, in the card's right-click menu, does the same, as the
+  Structure tool window's
   [Narrow to fold region](/docs/editing#the-emacs-editing-model) toggle does.
 
 A declaration row's own right-click menu has **Preview**, **Open at
@@ -209,14 +307,67 @@ Declaration** and **Open Narrowed**.
 Several declarations of one file can be open side by side, within the
 eight-card limit. The columns and cards follow your edits: a card follows its
 declaration when lines move above it or its signature changes, and keeps its
-last lines when the declaration is deleted. One-line members, CSS rules and YAML
-keys are listed too, and a `.http` card shows the whole request with its headers
-and body. A file larger than the preview limit says its outline is partial. A file that is open
-in a tab is read from its unsaved text, using the language server's symbols
-when the Structure tool window has them. A closed file is read again when it
-changes on disk. A card whose declaration was removed keeps its last lines and
-says so. Structure columns are included when the map is printed, and they are
-not remembered when Editora restarts.
+last lines when the declaration is deleted. A file that is open in a tab is read
+from its unsaved text, using the language server's symbols when the Structure
+tool window has them. A closed file is read again when it changes on disk. A
+card whose declaration was removed keeps its last lines and says so. Structure
+columns are included when the map is printed, and they are not remembered when
+Editora restarts.
+
+Outlines follow the language's own conventions, here and in the Structure tool
+window:
+
+- **Go** files are listed as gopls lists them: methods by receiver
+  (`(*Kubelet).Run`) under their type, struct fields, interface methods, and
+  constants, a typed one under its type. Parameter lists show as `(…)`.
+- **Java** fields are listed, and a Java or Kotlin class whose header wraps onto
+  an `extends` or `implements` line still holds its members. Kotlin annotations
+  are not listed as types.
+- **Gradle Kotlin scripts** (`*.gradle.kts`) list their `plugins`,
+  `dependencies` and task blocks.
+- A **YAML** key's card shows its whole block or list. **Dockerfiles** are
+  outlined by build stage, and a **Makefile** target defined in several branches
+  is labelled by line and includes its recipe. One-line members, CSS rules, and
+  a `.http` request with its headers and body are listed too.
+
+A structure column reads files up to **4 MB**, so even a very large source file
+lists all its declarations, and a declaration card shows its own lines even
+past the whole-file card's display limit. A larger file says only its start was
+outlined.
+
+**A preview card has a Structure column too.** When the card's file can be
+outlined, its title bar has a **Structure** button, before **Notes**. It sticks
+the file's declarations beside the card as an indented list, coloured as the
+editor colours them. The column belongs to the card: it works even when the
+file's row is filtered or scrolled off the map, moves, zooms and closes with the
+card, and does not count toward the eight cards. It sits on whichever side of
+the card hides least of the map, and switches sides when you drag the card.
+
+- **Click a declaration**, or press `Enter` on it, to scroll the card to it and
+  highlight its lines.
+- **Shift-click** or `Shift-Enter` opens the declaration in a card of its own,
+  beside the column and connected to its row.
+- From the keyboard, the Structure tool window's key (`Alt-7` in the Emacs and
+  IntelliJ keymaps) or **Show this preview's Structure** in the card's menu
+  opens the column and puts the keyboard in it; the same key goes back to the
+  card. The arrows and `C-n`, `C-p`, `C-f` and `C-b` move in the column, its
+  right-click menu is a declaration row's, and `Escape` or its **×** takes it
+  off.
+
+#### Following the code
+
+From a card's or a declaration row's right-click menu, **Go to Definition**,
+**Find Usages**, **Go to Implementation**, **Type Hierarchy** and **Call
+Hierarchy** open the file in the editor at that spot and run there, bringing the
+editor window forward. Their keys work in a focused card too (`F12` and
+`Shift-F12` in the CUA and VS Code keymaps), at the card's caret.
+
+**Related Test / Subject**, in a file row's and a card's menu, finds the file's
+test, or the class a test tests, and reveals it on the Map; when there are
+several you pick one. **Show Git History** in a card's menu shows the file's
+log. A folder's menu, here and in the Project tree, has **Find in Folder…**,
+which opens [Find in Files](/docs/navigation#find-in-files) on that folder, and
+Git ▸ **Show Git History**, the [Git log](/docs/git#git-log) of that folder.
 
 #### Notes on cards
 
@@ -228,12 +379,14 @@ inside a focused card on that card's file.
 
 The **Notes** button before **Open** counts the notes on what the card shows and
 sticks them beside it as small editable sheets, each tied by a connector to its
-line, which is marked in the note's amber. Up to two stacks of sheets fit beside
-a card; the rest gather in one **+K more notes** sheet that opens the file's note
-card. Notes follow changes made to the file outside Editora; one whose text can
-no longer be found is marked orphaned. In a note card, each note is headed by its
-line; click the heading to open the file there. While **Hide all open Personal
-Notes** is on, the Notes button says so.
+line, which is marked in the note's amber. A sheet's **×** takes that one note
+off the card; it stays saved and comes back the next time the card shows its
+notes. Up to two stacks of sheets fit beside a card; the rest gather in one
+**+K more notes** sheet that opens the file's note card. Notes follow changes
+made to the file outside Editora; one whose text can no longer be found is
+marked orphaned. In a note card, each note is headed by its line; click the
+heading to open the file there. While **Hide all open Personal Notes** is on,
+the Notes button says so.
 
 #### Large folders
 
@@ -241,11 +394,23 @@ A column shows up to **300 rows** of a folder and ends in a **+N more…** row
 that loads the next 300; after it loads, the selection continues at the first new
 row. Its header reads *shown/total* whenever a filter or a limit hides rows, and a
 column's own filter searches the whole folder, not only the rows already loaded.
-The map as a whole shows at most **1,200 items**; when that limit is reached the
-status bar says so, and a folder that does not fit stays open with a **Not
-loaded** row until you close a column. An empty or unreadable folder opens a
-column that says so (an unreadable one in the status bar too), and a folder on a
-slow or stalled mount shows **Not responding** instead of holding up the map.
+The map as a whole shows at most **1,200 rows**, and the column you are reading
+keeps its rows when other columns open. When the limit is reached the status
+line says so, and a folder that does not fit stays open with a **Not loaded**
+row until you close a column; when there is no other column to close, type in
+the long folder's filter to find the rest. An empty or unreadable folder opens
+a column that says so (an unreadable one in the status line too), and a folder
+on a slow or stalled mount shows **Not responding** instead of holding up the
+map; the Map does not wait for it again.
+
+The Map lists a folder again only when it has changed. Opening a file from the
+Map or moving between Editora's windows does not re-read your folders, and
+coming back from another program only checks which ones changed. On an SSH
+project a folder's listing is reused for 30 seconds.
+
+Files sort in natural order (`note-2` before `note-10`) here and in the Project
+tree. A folder whose names are all hashes (a fuzz corpus, a cache, an object
+store) sorts in plain character order, so you can scan for a hash prefix.
 
 #### Keyboard
 
@@ -253,21 +418,28 @@ The canvas is fully keyboard-navigable.
 
 | Key | Result |
 | --- | --- |
+| `Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs) | Open or close the Map window, from anywhere |
+| `Alt-F1` (`C-c o r` in Emacs) | Reveal the active file on the Map, from anywhere |
 | Arrow keys | Move along the flow (into a folder, a file's structure or a declaration; back to the parent) and among siblings |
 | `Ctrl-N` / `Ctrl-P` | Select the next or previous sibling |
 | `Page Down` / `Page Up` | Move ten rows, stopping at the end of the column |
+| `Home` / `End` | Select the first or last row of the column (`Shift-Home`: the first row of the first column) |
+| Typing a name | Jump to the next row in the column whose name starts with what you typed |
 | `Enter` or `Space` | Open the selected file or a declaration's card, or expand or collapse the selected folder |
 | `Shift-Enter` | Open or close the selected file's or declaration's preview card |
 | `Backspace` | Select the parent (the project folder from the first column) |
-| `Home` | Select the first row of the first column |
-| `Alt-Left` / `Alt-Right` | Go back or forward through earlier selections |
+| `Alt-Left` / `Alt-Right` | Go back or forward through the places you visited |
+| `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) | Focus the Map's search field |
+| `F3` / `Shift-F3` | Step to the next / previous search match |
 | `/` | Focus the current column's filter; `Enter` there returns to the map on the first match |
 | `Ctrl-0` (`Cmd-0` on macOS) | Fit the whole map |
 | `F2` | Rename the selected file or folder |
 | `Delete` | Delete the selection, as in the tree |
 | Menu key or `Shift-F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes and Close Column |
 | `Alt`+arrows / `Alt`+`Shift`+arrows | In a focused card: move it / resize it |
-| `Escape` | Close open cards, then clear the search (back to the row selected before it), then return to the editor window |
+| `Alt-7` (Emacs and IntelliJ keymaps) | In a focused card: open its Structure column and move into it, or back to the card |
+| `F12` / `Shift-F12` (CUA and VS Code keymaps) | In a focused card: Go to Definition / Find Usages in the editor |
+| `Escape` | Close open cards, then clear the search (your place stays; `Alt-Left` goes back to before it), then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
 chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`. `Tab`
