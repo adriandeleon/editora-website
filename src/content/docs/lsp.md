@@ -863,7 +863,12 @@ the one rule HTML Live Preview uses too: the nearest folder with an
 `index.html`, then on up while the folder above holds one too, never into your
 home folder, Downloads, Desktop, Documents or a temporary folder. So the whole
 static site shares one server, its `/css/…` links resolve, and Ctrl-click and
-the browser agree (see [What is served](/docs/html#what-is-served)).
+the browser agree. A page with a `package.json` or `.git` above it is rooted
+there instead, while the preview still serves its site root, so the two agree
+only when that folder is the site root (see
+[What is served](/docs/html#what-is-served)). Go to Definition on a `/…` link
+and the markup checks use the server's root for a page outside the project
+even when no server is running.
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -982,10 +987,12 @@ JavaScript**, else `node` on your `PATH`. A project's `.nvmrc` or
 Node.js. When a Node.js is chosen there, Install uses the npm beside it.
 
 What the HTML server adds, its settings on the HTML card (wrap column,
-attribute wrapping, content kept as written, attribute quotes, checking
-embedded scripts and styles), the `html` object a project can commit, and what
+attribute wrapping, content kept as written, checking embedded scripts and
+styles), the `html` object a project can commit, and what
 it does not do (markup validation, Emmet) are on the
-[HTML](/docs/html#the-html-language-server) page. The HTML and CSS servers also
+[HTML](/docs/html#the-html-language-server) page. The quotes an attribute gets
+after its `=` are chosen in Settings → Editor, not on the card (see
+[Attribute quotes](/docs/html#editing-tags)). The HTML and CSS servers also
 draw a small swatch before each colour.
 
 ## Shell scripts

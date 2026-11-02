@@ -298,8 +298,10 @@ it out of everything it would otherwise write or send elsewhere:
   can't read the file, and AI actions don't send its text anywhere.
 - **No HTML Live Preview**: an encrypted page has no globe, the decrypted text
   never reaches the preview server, and `.gpg`, `.asc` and `.pgp` files are
-  never served, since every script a previewed page runs could read them (see
-  [HTML](/docs/html#encrypted-files)).
+  never served, since every script a previewed page runs could read them. This
+  covers a file you encrypt while the preview runs: after **Encrypt File…**
+  the old address serves only the unencrypted file left on disk, if you kept
+  it, never your edits (see [HTML](/docs/html#encrypted-files)).
 - **No Git change bars or blame**, no diagram previews (they render through
   temporary files; Mermaid blocks in an encrypted Markdown file show as code),
   and Replace in Files doesn't rewrite encrypted files that aren't open.

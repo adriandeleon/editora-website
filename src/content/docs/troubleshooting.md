@@ -204,7 +204,9 @@ a project, or while a server reports work in progress. Requests sent before
 the server finished starting do not count either.
 
 **Format Document** says why it changed nothing. *Already formatted* means the
-server answered with no edits. Otherwise it says *Format failed: the language
+server answered with no edits, or with edits that change nothing together
+(an HTML page that already ends the way its EditorConfig
+`insert_final_newline` asks, for example); no undo step is left. Otherwise it says *Format failed: the language
 server did not answer in time*, *Format failed: the language server stopped
 before it answered*, or *Format failed:* with the server's own error.
 
@@ -232,7 +234,19 @@ only the TypeScript server follows the project's version file (from nvm), as
 a missing Node.js does not, when that setting names one that exists.
 
 Install uses the npm beside that Node.js when there is one, so npm-installed
-servers install even with nothing on the `PATH`.
+servers install even with nothing on the `PATH`. A server installed with
+`npm install -g` into that Node.js (Bash, YAML, Pyright, TypeScript and the
+other npm servers) is found in its folder even when that folder is not on the
+`PATH`: Settings, Doctor and the banner's install check look there after the
+`PATH`. If npm is set up to put global packages somewhere else, Install fails
+and says where they went: *npm installed it, but Editora does not find
+yaml-language-server — npm put it in …/bin. Add that folder to PATH, or choose
+the Node.js there in Settings → Debugging → JavaScript, then try again*.
+
+Doctor's **Installer Prerequisites** row counts that Node.js and the npm beside
+it too, so a machine with no `node` or `npm` on the `PATH` is not reported as
+missing them; they are listed as *npm, node (from Settings → Debugging →
+JavaScript)*.
 
 ## Python imports show as errors
 
