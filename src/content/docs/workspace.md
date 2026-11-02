@@ -216,7 +216,9 @@ for reading and editing. A card's lock says so: *Preview — read only; Open to
 edit*.
 
 - **Pin** a card from its title bar, or with **Pin Card** in its menu, to keep
-  it open: a pinned card is never closed to make room. When all eight are
+  it open until you close it with its own **×**: it is never closed to make
+  room, and closing its folder, **Collapse All**, **Close Other Branches**,
+  `Escape` on the map or a trail moving on all leave it open. When all eight are
   pinned, a new card is refused, and the status line asks you to unpin one.
 - **Find in a card** with `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) while the
   card has the keyboard, or **Find in Card…** in its menu. A find bar opens
@@ -415,12 +417,17 @@ editor window forward. Their keys work in a focused card too (`F12` and
 To follow the code without leaving the Map, right-click a declaration, or a name
 in a card, and choose **Show Callers as Cards** or **Show References as Cards**.
 The places found open as cards around it, each joined to it by an edge that says
-how: *calls*, *references*, or *by name*. Up to six open; a **+N more** chip on
-the card lists the rest, and picking one opens its card. A language server that is
-already running for the language answers, even for files with no editor tab,
-and the editor stays where it is. With no server running, Editora matches the
-name in the project's files instead: those edges are dashed and say *by name*,
-and the status line says no server answered.
+how: *calls*, *references*, or *by name*. Each opens at the call or use, with the
+name selected. Up to six open, the code nearest the declaration first and tests
+last; a **+N more** chip on the card lists the rest, and picking one opens its
+card. When pinned cards leave no room, the places left over are listed under the
+chip and the status line says so. Closing the card you asked from closes the
+cards it opened, except pinned ones, and stepping it to another declaration ends
+its question. A language server that is already running for the language
+answers, even for files with no editor tab, and the editor stays where it is.
+With no server running, or when it fails or does not answer in time, Editora
+matches the name in the project's files instead: those edges are dashed and say
+*by name*, and the status line says why.
 
 **Related Test / Subject**, in a file row's and a card's menu, finds the file's
 test, or the class a test tests, and reveals it on the Map; when there are
@@ -455,28 +462,38 @@ open Personal Notes** is on, the Notes button says so.
 ⋯ → **Show recent changes** warms each row by how often it changed in the last
 90 days, with a heat bar along the foot of the row. Hover a row to see how many
 commits touched it and who changed it last. Merges are left out, and a very long
-history is read only up to a limit, so the Map stays quick. A shallow clone
-counts only the history it holds, so a clone of one commit shows no heat, and
-the Project overview says where its history stops. The option is off by default.
+history is read only up to a limit, so the Map stays quick; a renamed or moved
+file keeps its history. A folder is never warmer than the folder it is in. A
+shallow clone counts only the history it holds, so a clone of one commit shows no
+heat. When there is nothing to show (a shallow clone, no Git history, no commits
+in the window) or only the newest commits were read, turning the option on says
+so in the Map's status line. The option is off by default.
 
-If the project has a `CODEOWNERS` file (in `.github/`, the root or `docs/`) or
-Kubernetes-style `OWNERS` files, each row's tooltip says who owns it, and who
-reviews it when an `OWNERS` file names reviewers. Teams and aliases show as the
-file writes them: everything is read from the project's own files, with no
-network.
+If the project has a `CODEOWNERS` file (in `.github/`, the root, `docs/` or
+`.gitlab/`, with GitLab sections and their default owners) or Kubernetes-style
+`OWNERS` files, each row's tooltip says who owns it, and who reviews it when an
+`OWNERS` file names reviewers. A folder whose `OWNERS` file names only reviewers
+shows them as reviewers, and its owners come from the nearest folder above that
+names approvers. Teams and aliases show as the file writes them: everything is
+read from the project's own files, with no network, and an edited owner file is
+read again.
 
 The [Project overview](#finding-your-way) card adds both: **Most changed (90
-days)** lists the folders where most of the work happens, and **Owners** lists
-who owns the project and its top-level folders.
+days)** lists the folders where most of the work happens, counting commits to
+each folder's own files and leaving out generated, vendored and ignored folders,
+and **Owners** lists who owns the project and its top-level folders. A card's
+status line ends with the last change to its file or declaration; in a shallow
+clone, a change older than the clone's history reads *before this shallow
+clone's history*.
 
 #### Working sets
 
 A working set is a view of the Map you can go back to. Choose ⋯ → **Working
 sets** ▸ **Save Current As…** and give it a name. It keeps the open folders, the
 selected row, the zoom and pan, and the open cards with their Structure
-columns. Pick the set from the same menu to show it again, as a restart would:
-the search is cleared, the cards you have open now close, and the set's folders
-and cards come back. Anything deleted since is dropped. Saving under a name you
+columns and pins. Pick the set from the same menu to show it again, as a restart
+would: the search is cleared, a playing trail ends, the cards you have open now
+close, and the set's folders and cards come back at the zoom and pan you saved. Anything deleted since is dropped. Saving under a name you
 already used replaces that set, and **Delete** ▸ removes one.
 
 Working sets are kept per workspace, and the menu lists only the sets of the
@@ -495,25 +512,35 @@ same tour.
   card's declaration, else the lines you selected, else the lines in view.
 - **Play it.** Choose ⋯ → **Trails** ▸ **Play** and the trail's name. A bar at
   the top of the map shows *Stop 3 of 9* and the stop's title, with **‹ ›** to
-  step. Each stop opens its card at the stop's lines, with your note stuck
-  beside it. The bar's **×**, or `Escape` in the bar, ends the tour and leaves
-  the last card open.
+  step, or `Ctrl-Right` / `Ctrl-Left` (`Cmd` on macOS) from the map, the bar
+  or a note. Each stop opens its card at the stop's lines, with your note stuck
+  beside it; a card you pin during a stop stays open when the tour moves on. If
+  you close the stop's card, the bar's title says *(card closed)* and clicking
+  it shows the stop again. The bar's **×**, or `Escape` on the map or in the bar,
+  ends the tour before any card closes, and leaves the last card open. The
+  palette commands *Project Map: Next Trail Stop*, *Previous Trail Stop* and
+  *Close Trail* do the same and can be bound to keys.
 - **Edit it.** **Edit** in the bar or in ⋯ → **Trails** opens the trail's
   stops in a card over the map. **Move Up** and **Move Down** (`Alt-Up` /
   `Alt-Down`), **Remove** (`Delete`), **Rename…** and **Note…** change a stop;
   **Play from Here** (`Enter`, or a double-click) starts the tour at it, and
-  **Rename Trail…** renames the trail. Each change is saved at once.
+  **Rename Trail…** renames the trail. Each change is saved at once, unless
+  the file changed on disk meanwhile (a pull, say): then the editor shows the
+  trail as it is now and saves nothing.
 
 A new stop goes to the trail you made, played or edited last; with none yet,
-Editora asks for a new trail's name first. A stop whose file is gone says so in
-the status line. A trail file that cannot be read is listed with the reason and
-left alone, and one written by a newer Editora plays but cannot be edited.
-Trails need a local folder.
+Editora asks for a new trail's name first. A trail file can be named or renamed
+by hand. A stop whose file is gone, or whose lines are past the end of its file,
+says so in the status line. A trail file that cannot be read is listed with the
+reason and left alone, and one written by a newer Editora, or with more than 200
+stops or fields Editora does not know, plays but cannot be edited. Trails need a
+local folder.
 
 #### Large folders
 
 On a local project a column lists its **whole folder**, up to 50,000 entries,
-so you can scroll a folder of thousands of files from top to bottom. On an
+so you can scroll a folder of thousands of files from top to bottom. Whole folders
+list at most 60,000 rows between them; past that, a folder ends in **+N more…**. On an
 [SSH project](/docs/remote) a column shows up to **300 rows** of a folder and
 ends in a **+N more…** row that loads the next 300; after it loads, the
 selection continues at the first new row. A column's header reads *shown/total*
@@ -566,10 +593,11 @@ The canvas is fully keyboard-navigable.
 | `Alt`+arrows / `Alt`+`Shift`+arrows | In a focused card: move it / resize it |
 | `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) | In a focused card: find in the card; `Enter` / `Shift-Enter` or `F3` / `Shift-F3` step through the matches |
 | `Alt-Page Up` / `Alt-Page Down` | In a declaration card: show the previous / next declaration of the file |
+| `Ctrl-Right` / `Ctrl-Left` (`Cmd` on macOS) | While a trail plays: the next / previous stop |
 | Menu key or `Shift-F10` | In a focused card: open its menu at the caret, with Pin Card, Find in Card…, Show Callers as Cards, Annotate and Add This Card as a Stop |
 | `Alt-7` (Emacs and IntelliJ keymaps) | In a focused card: open its Structure column and move into it, or back to the card |
 | `F12` / `Shift-F12` (CUA and VS Code keymaps) | In a focused card: Go to Definition / Find Usages in the editor |
-| `Escape` | In a card: close its find bar, then the card. On the map: close open cards, then clear the search (your place stays; `Alt-Left` goes back to before it), then return to the editor window |
+| `Escape` | In a card: close its find bar, then the card. On the map: end a playing trail, close open cards (not pinned ones), then clear the search (your place stays; `Alt-Left` goes back to before it), then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
 chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`. `Tab`
@@ -593,14 +621,16 @@ with the current flow, filters, open branches and column positions. The output
 is light whatever the theme. A map that is wider than tall goes on a landscape
 page. A map slightly too big for one page is shrunk a little, with labels no
 smaller than 6 pt; a larger one is split across several pages, and the status bar
-says how many. The Print Preview and the Save dialog open over the Map window.
+says how many. One print or PDF makes at most 40 pages: a bigger map is shrunk to
+fit them, and the status bar says so. A long folder is output as its first 300
+rows and a **+N more** row, not every file. The Print Preview and the Save dialog open over the Map window.
 The PDF is searchable: every name on it is text, so a PDF viewer's find, select
 and copy reach it. See [Print & PDF export](/docs/print-pdf) for the preview and
 the Save dialog.
 
 ⋯ → **Export** ▸ saves the map as an image:
 
-- **PNG…** saves what you see, at twice its size, with the cards and their
+- **PNG…** saves the map area exactly as you see it, at twice its size, with the cards and their
   connectors but not the zoom bar or the overview.
 - **SVG…** saves the whole map, laid out as Print and PDF lay it out, with every
   name as text you can search and copy.
