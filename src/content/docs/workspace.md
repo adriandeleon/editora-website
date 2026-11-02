@@ -138,10 +138,14 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   resizable, syntax-highlighted read-only preview card in the editor's font. The
   preview uses unsaved buffer text when available, says so, and follows later
   edits; **Open** promotes it to a normal editor tab. A code card opens past the
-  file's licence header. A card opens where it hides the least of the map, never
-  over the folders that lead to the file, where its next column will open, or
-  under the zoom bar and the overview; **Move to Free Space** in its menu places
-  it again.
+  file's licence header. A card opens the way the map flows: past its row's
+  column, as a new column would (right of it when the map flows left to right,
+  below it when it flows down, and so on), panning the map back a little when
+  there is no room there. It never covers the folders that lead to the file,
+  where its next column will open, or the zoom bar and the overview; when the
+  flow side is taken, it opens beside the column instead. A declaration card
+  opened from a card's Structure column opens past that column, level with its
+  row. **Move to Free Space** in a card's menu places it again.
 - Click a file's **Structure icon**, just before the eye, to open a column of
   its classes, methods or headings. See [File structure](#file-structure).
 - A file's Personal Notes badge opens its preview card with the notes stuck
