@@ -74,6 +74,8 @@ open already it comes forward. The key and the command work even with the
 Project tool window closed, and close the Map window when that is the window in
 use. The Project tool window keeps showing the tree.
 
+![The Project Map window: columns for the debug, java and src folders, one column titled main / java / com / example / shelf for a chain of single-child folders with Shelf.java selected, the file's Structure column, and a column listing the Shelf class's record, field, constructor and methods](/screenshots/docs/project-map.png "The Project Map follows the open file: one column per folder, single-child folders chained into one column, and a file's Structure past it.")
+
 The map shows the project as Miller-style columns: selecting a folder reveals
 its children in the next column, and several open branches sit side by side
 without mixing together. The first column lists the project's own files and
@@ -166,6 +168,8 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   the reader's focus. They announce its states, the folder it is in, its place
   among the visible rows and, during a search, which match it is ("match 2 of
   14").
+
+![A read-only preview card for Shelf.java on the Project Map, opened past the file's column and joined to its row by a connector, showing syntax-highlighted Java, with the file's last change and the card's buttons in its header](/screenshots/docs/project-map-card.png "A preview card opens the way the map flows, past the file's column.")
 
 **Hide unmatched**, a checkbox in the filter row, takes the rows a filter
 doesn't match off the map instead of fading them, so only the matches and the
@@ -922,6 +926,8 @@ own side, shown or hidden as on a fresh install, in the default order.
 
 With no session to restore, Editora opens a **Welcome** page (a real tab).
 Reopen it with `view.welcome`. From top to bottom it has:
+
+![The Welcome tab with the Editora logo, a Start list (New File, Open File, Open Folder as a Project, Clone Git Repository, Command Palette) with shortcuts, and Recent Projects and Recent Files lists](/screenshots/docs/welcome.png "The Welcome page, with the Project tool window open beside it.")
 
 - **Start**: New File, Open File, Open Folder as a Project, Clone Git
   Repository and the Command Palette, each with its shortcut when the keymap

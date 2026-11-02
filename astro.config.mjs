@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
 import { version } from "./src/lib/version.ts";
 import { docVersions } from "./src/lib/doc-versions.ts";
+import rehypeDocFigures from "./src/lib/rehype-doc-figures.mjs";
 
 // Served at the custom apex domain editora-project.dev (www. redirects to it).
 // No `base` — the site lives at the domain root, so asset/link paths are "/".
@@ -49,7 +50,7 @@ export default defineConfig({
   // matter how CI invokes the build) and serves the index in `astro dev`.
   integrations: [sitemap(), pagefind()],
   markdown: {
-    rehypePlugins: [rehypeVersionDocs],
+    rehypePlugins: [rehypeVersionDocs, rehypeDocFigures],
   },
   // Bare /docs lands on the current version; every served version's command
   // index points at the searchable command list. Unversioned doc/command URLs

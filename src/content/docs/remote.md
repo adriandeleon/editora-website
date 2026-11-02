@@ -37,6 +37,8 @@ each run, then runs, builds and debugs the program in that copy.
 | Open a remote file by URI | `remote.openFile` |
 | Disconnect | `remote.disconnect` |
 
+![The Connect to SFTP dialog over the editor, with Host, Port, User, Authentication, Key file, Secret and Path fields](/screenshots/docs/remote-connect.png "Connecting to a host over SFTP.")
+
 `remote.connect` (*Remote: Connect to SFTP…*) opens a form for host, port,
 user, the login method, and the folder to open (blank is the home folder). The
 form has no password field: a password, a key's passphrase or a 2FA code is

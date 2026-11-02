@@ -447,6 +447,8 @@ model is on.
 | Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
 | Open the response body in its own tab | `http.openResponseInTab` | (Open in tab icon) |
 
+![An .http file with a GET request and its response handler, and the response pane beside it: a Run button, a 200 OK status pill, the response picker, Body, Headers, Request and Notes tabs, and the formatted JSON body](/screenshots/docs/http-response.png "Running a request: the response opens beside the file.")
+
 In the other keymaps, Run Request is `Ctrl+Alt+R`, Run All is
 `Ctrl+Alt+Shift+Enter` and Cancel is `Ctrl+Alt+K` (`Option+Cmd+R`,
 `Option+Cmd+Shift+Enter` and `Option+Cmd+K` on macOS in the CUA, Sublime and VS

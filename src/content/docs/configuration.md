@@ -20,6 +20,8 @@ page title has a **?** link that opens that page's documentation for the
 version of Editora you are running. The window fits its 900 px minimum width in
 every language.
 
+![The Settings window on its Appearance page: User and Project scope buttons, a search field, a sidebar of pages with icons, and the page's language, font, theme and editor theme settings above a live preview](/screenshots/docs/settings.png "The Settings window: pages in the sidebar, each with its icon.")
+
 - Changes apply as you make them. There is no OK or Save button, and the footer
   says so. Every setting is also a palette command.
 - The window opens centred on the editor window the first time. After that it

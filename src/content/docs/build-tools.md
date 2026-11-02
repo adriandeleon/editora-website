@@ -147,6 +147,8 @@ debugging a single Clojure file is covered in
 
 ## Maven
 
+![The Maven tool window beside an open pom.xml: a toolbar, the build root marked Trusted, a search field, the Lifecycle phases from clean to deploy, and the project's profiles](/screenshots/docs/maven.png "The Maven tool window lists the lifecycle phases and the profiles the pom declares.")
+
 ### What the tree reads
 
 The tree is built from the nearest `pom.xml` **merged with the `<parent>`

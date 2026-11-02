@@ -56,6 +56,8 @@ no file to open.
 The console's first line, drawn muted, is the command that started a script or
 a test run: which interpreter ran, with which options, on which file.
 
+![hello.py with a green run arrow in the gutter on its __main__ guard, and the Run tool window below showing the Python 3.13 runtime chip, Process finished with exit code 0, the muted command line and the script's output](/screenshots/docs/run-file.png "A Python script after a run: the ▶ in the gutter, the runtime chip, and the command line above the output.")
+
 The console reads the terminal codes programs print: colours are drawn in the
 theme's colours, a carriage return (`\r`) rewrites the current line so a
 progress bar stays on one line, and `clear` empties the console. Other cursor
@@ -668,6 +670,8 @@ list, and
 **Run: Save Run Configuration…** creates one from the palette;
 **Run: Run Configuration…** runs one and **Run: Delete Run Configuration…**
 removes one.
+
+![The Run Configurations window with a hello.py entry in the list and its form: Name, Type (Python script), Script, Interpreter, Interpreter options, Program arguments, Working directory, Environment, Before launch, Console and Run on](/screenshots/docs/run-configurations.png "Add starts from the open file: here a Python script configuration, prefilled from hello.py.")
 
 **Add** starts from the file you are looking at rather than a blank entry. For
 an active Python, Node.js or shell script it adds a configuration of that type

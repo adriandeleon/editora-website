@@ -9,6 +9,8 @@ Open a log file and Editora switches into a dedicated log mode built for
 reading server output. It's **on by default** (Settings → Editor → Logs; toggle
 with *View: Toggle Log Viewer*).
 
+![A stack-trace log open in View Mode: ERROR records tinted red, Java, Python and Node stack frames, and the log control bar with a level filter and a text filter](/screenshots/features/log-viewer.png "A log file in the log viewer, with the control bar's level and text filters.")
+
 ## Which files open as logs
 
 A file opens in log mode when its name says it is a log:

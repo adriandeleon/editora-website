@@ -24,6 +24,8 @@ terminal to hide the window. A hidden Terminal's shells keep running, and the
 next toggle brings them back. The Window menu has **Terminal** and **New
 Terminal**, and the File menu has **Open Terminal Here**.
 
+![The Terminal tool window under the editor, running git status --short and git log --oneline in the project folder](/screenshots/docs/terminal.png "The Terminal tool window, started in the project folder.")
+
 | Action | Command | Emacs | IntelliJ IDEA | VS Code, CUA, Sublime Text |
 | --- | --- | --- | --- | --- |
 | Show, focus or hide the Terminal | `tool.terminal` | `M-0` | Alt+F12 (⌥F12 on macOS) | Ctrl+\` |
