@@ -20,12 +20,20 @@ since 0.10.0; Settings → Workspace turns them off.
 | Edit this project's settings | `project.editSettings` | (palette) |
 
 The **Project** tool window shows the folder tree with keyboard navigation, a
-filter that runs a bounded project-wide filename search, per-file-type icons, and
+filter that searches the whole project by file name, per-file-type icons, and
 right-click actions: new file, **new folder**, new from template, rename, reveal,
-open terminal, Show Local History, and Git stage/revert. A folder's menu also
-has **Find in Folder…** and Git ▸ **Show Git History**. Typing in the filter
-highlights the first match, so Enter opens it and Down moves on from there. The **project root has its
-own menu** too (with rename omitted so you can't move the whole project).
+**Reveal in Map**, open terminal, Show Local History, and Git stage/revert. A
+folder's menu also has **Find in Folder…** and Git ▸ **Show Git History**.
+Typing in the filter highlights the first match, so Enter opens it and Down
+moves on from there. The **project root has its own menu** too (with rename
+omitted so you can't move the whole project).
+
+The filter searches every file in the project, however deep, and never lists
+`.git`. A path such as `core/v1/types.go` narrows a common name. Search
+Everywhere, the Project Map's search and the tree's filter share one list of the
+project's files, kept current as you work, and rank matches the same way: the
+name as you typed it first, then the project's own source, then vendored code,
+then tests. So each of them finds the same file first.
 From the keyboard, **F2** renames and **Delete** deletes the selected file, and
 the **Menu key** or **Shift+F10** opens the selected row's context menu (also in
 the Bookmarks, Notes, TODO, Git Log, and Structure tool windows). Renaming or
@@ -94,9 +102,13 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   column; clicking a folder that is already open selects it and brings its column
   into view. A folder's **chevron** expands or collapses it, and a column's **×**
   closes that branch (a whole folder chain at once).
-- Choose left-to-right (the default), right-to-left, top-to-bottom, or
-  bottom-to-top flow. Connector direction and arrow-key navigation change
-  together, and the flow is remembered per workspace.
+- ⋯ → **Collapse All** tidies the map down to the path you are on: it closes
+  every column but the first and the ones that lead to the selection, with the
+  cards opened from them. A row's **Close Other Branches** keeps just the way to
+  that row.
+- ⋯ → **Flow** sets the direction: left-to-right (the default), right-to-left,
+  top-to-bottom, or bottom-to-top. Connector direction and arrow-key navigation
+  change together, and the flow is remembered per workspace.
 - Drag anywhere to pan, including from a row, and use the mouse wheel to zoom
   around the pointer; `Shift` or `Alt` with the wheel pans instead. **Fit**,
   **Center selection** and **Reset** recenter the layout. Zoom runs from 15% to
@@ -107,7 +119,9 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   hidden in small windows. When the zoom bar or the overview covers a row under
   the pointer, it fades and lets the pointer through to that row.
 - Drag a column header to reposition it and use its lock to prevent accidental
-  movement. Columns size themselves to the longest loaded name, up to a limit.
+  movement. The lock shows only while you use that column (the pointer is over
+  it or the keyboard is in it) or once it is locked. Columns size themselves to
+  the longest loaded name, up to a limit.
   A longer name is shortened where it differs from its neighbours, keeping its
   extension, so similar names stay apart; the tooltip has the full name.
 - Ignored, dependency (`node_modules`), vendored and generated files and folders
@@ -130,10 +144,12 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   it again.
 - Click a file's **Structure icon**, just before the eye, to open a column of
   its classes, methods or headings. See [File structure](#file-structure).
-- A Personal Notes badge opens an independent editable note card for a file or
-  folder. Note cards can coexist with code previews.
-- Right-click a node for **Preview**, **Show Structure**, **Personal Notes** and
-  **Close Column**, then the same New, Maven, rename, delete, reveal, terminal,
+- A file's Personal Notes badge opens its preview card with the notes stuck
+  beside it (see [Notes on cards](#notes-on-cards)). A folder's badge opens an
+  editable note card for the folder.
+- Right-click a node for **Preview**, **Show Structure**, **Personal Notes**,
+  **Close Column** and **Close Other Branches**, then the same New, Maven,
+  rename, delete, reveal, terminal,
   Local History, and Git actions available in the tree. A file's menu adds
   **Related Test / Subject**, and a folder's adds **Find in Folder…** and Git ▸
   **Show Git History** (see [Following the code](#following-the-code)). Rename,
@@ -141,9 +157,11 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   a folder or file made from the Map is shown and selected on it. The other
   actions bring the editor window forward.
 - The **?** button lists every mouse gesture and key, including cards, notes,
-  the search and how to find where you are, in your language. Screen readers
-  announce the selected row's states, the folder it is in, its place among the
-  visible rows and, during a search, which match it is ("match 2 of 14").
+  the search and how to find where you are, in your language.
+- Screen readers read the rows on screen as a tree, and the selected row has
+  the reader's focus. They announce its states, the folder it is in, its place
+  among the visible rows and, during a search, which match it is ("match 2 of
+  14").
 
 **Hide unmatched**, a checkbox in the filter row, takes the rows a filter
 doesn't match off the map instead of fading them, so only the matches and the
@@ -157,11 +175,13 @@ the faded rows back. The choice is remembered per workspace.
 
 The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
 **Single-click opens files**, **Compact folder chains**, **Compact rows**, **Hide
-ignored and generated**, **Hide all open Personal Notes**, **Always select opened
-file**, **Reveal Active File**, **Project overview**, **Open cards**, **Print…**
-and **PDF…**. Keep current zoom, Focus new column, Single-click opens files and
-Compact folder chains are on by default; every on/off option except Hide all
-open Personal Notes is remembered per workspace. With Keep current zoom and Focus new
+ignored and generated**, **Show recent changes**, **Hide all open Personal
+Notes**, **Always select opened file** and **Flow ▸**; then **Reveal Active
+File**, **Project overview**, **Open cards**, **Collapse All**, **Working sets
+▸** and **Trails ▸**; then **Print…**, **PDF…** and **Export ▸**. Keep current
+zoom, Focus new column, Single-click opens files and Compact folder chains are
+on by default; every on/off option except Hide all open Personal Notes is
+remembered per workspace. With Keep current zoom and Focus new
 column, opening a folder preserves the current scale and brings its new column
 into view; turning zoom preservation off restores fit-to-content when the map
 expands. **Compact rows** fits more rows on screen; each column then shows its
@@ -189,7 +209,26 @@ to read the rest*, that opens the file when you click it. A text or image card's
 own **−** and **+** buttons size its content on top of the map's zoom, so a card
 can stay readable when the map is zoomed out. At most **eight cards** are open
 at once, previews and notes together; opening a ninth replaces the one used
-least recently.
+least recently that is not pinned.
+
+Cards are for a glance beside the map; **Open** takes the file to the editor
+for reading and editing. A card's lock says so: *Preview — read only; Open to
+edit*.
+
+- **Pin** a card from its title bar, or with **Pin Card** in its menu, to keep
+  it open: a pinned card is never closed to make room. When all eight are
+  pinned, a new card is refused, and the status line asks you to unpin one.
+- **Find in a card** with `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) while the
+  card has the keyboard, or **Find in Card…** in its menu. A find bar opens
+  under the title bar with *k of N*, previous and next, and **Aa** for match
+  case. `Enter` and `Shift-Enter` (or `F3` and `Shift-F3`) step through the
+  matches. `Escape` closes the find bar with the match still selected; a second
+  `Escape` closes the card.
+- **Who changed it last.** In a Git project a card's status line ends with the
+  last change to its file, or to a declaration card's lines: *Last change: Ada,
+  3 days ago*. Hover it for the commit's subject. **Annotate** in the card's
+  menu, beside **Show Git History**, opens the file with
+  [blame annotations](/docs/git#blame).
 
 #### Searching the map
 
@@ -253,7 +292,9 @@ places.
 file you are editing. The **crosshair** button after the breadcrumb and ⋯ →
 **Reveal Active File** do the same, and **Show in Map** in
 [Search Everywhere](/docs/navigation#search-everywhere) does it for the
-highlighted file. Turn on **Always select opened file** in the ⋯ menu to have
+highlighted file. To find any other file on the Map, right-click its editor tab,
+or the file in the Project tree, and choose **Reveal in Map**. Turn on **Always
+select opened file** in the ⋯ menu to have
 the Map follow every file you open. A Map opened with nothing selected starts at
 the current file. A revealed row, like a search landing or a Back step, is shown
 a third of the way down with the folders that lead to it (zooming out to no less
@@ -275,7 +316,8 @@ it holds.
 folders you opened, the selected row, Back and Forward, the zoom and pan, and the
 code cards you had open, with their place, size and Structure column. They come
 back the first time the Map shows that folder again; anything deleted meanwhile
-is dropped. Note cards are not kept.
+is dropped. Note cards are not kept. To keep a view you want to come back to on
+purpose, save it as a [working set](#working-sets).
 
 #### File structure
 
@@ -304,12 +346,20 @@ title names the declaration with its parameter types, for example
 A declaration row's own right-click menu has **Preview**, **Open at
 Declaration** and **Open Narrowed**.
 
+A declaration card's **‹ ›** buttons, or `Alt-Page Up` / `Alt-Page Down`, show
+the previous or next declaration of the same file in the same card. **Show in
+Structure**, in the card's menu, selects the declaration in the file's Structure
+column, opening the column if it is closed.
+
 Several declarations of one file can be open side by side, within the
 eight-card limit. The columns and cards follow your edits: a card follows its
 declaration when lines move above it or its signature changes, and keeps its
 last lines when the declaration is deleted. A file that is open in a tab is read
 from its unsaved text, using the language server's symbols when the Structure
-tool window has them. A closed file is read again when it changes on disk. A
+tool window has them. When a language server is already running for a file's
+language, the Structure columns use its outline even for files you have not
+opened; the Map never starts a server for this, and uses its own outline when
+none is running. A closed file is read again when it changes on disk. A
 card whose declaration was removed keeps its last lines and says so. Structure
 columns are included when the map is printed, and they are not remembered when
 Editora restarts.
@@ -362,6 +412,16 @@ Hierarchy** open the file in the editor at that spot and run there, bringing the
 editor window forward. Their keys work in a focused card too (`F12` and
 `Shift-F12` in the CUA and VS Code keymaps), at the card's caret.
 
+To follow the code without leaving the Map, right-click a declaration, or a name
+in a card, and choose **Show Callers as Cards** or **Show References as Cards**.
+The places found open as cards around it, each joined to it by an edge that says
+how: *calls*, *references*, or *by name*. Up to six open; a **+N more** chip on
+the card lists the rest, and picking one opens its card. A language server that is
+already running for the language answers, even for files with no editor tab,
+and the editor stays where it is. With no server running, Editora matches the
+name in the project's files instead: those edges are dashed and say *by name*,
+and the status line says no server answered.
+
 **Related Test / Subject**, in a file row's and a card's menu, finds the file's
 test, or the class a test tests, and reveals it on the Map; when there are
 several you pick one. **Show Git History** in a card's menu shows the file's
@@ -384,19 +444,86 @@ off the card; it stays saved and comes back the next time the card shows its
 notes. Up to two stacks of sheets fit beside a card; the rest gather in one
 **+K more notes** sheet that opens the file's note card. Notes follow changes
 made to the file outside Editora; one whose text can no longer be found is
-marked orphaned. In a note card, each note is headed by its line; click the
-heading to open the file there. While **Hide all open Personal Notes** is on,
-the Notes button says so.
+marked orphaned. A file's Personal Notes badge on the map, and **Personal
+Notes** in its row's menu, open the file's card with its notes already out. A
+folder's notes open in a note card of their own. In a note card, each note is
+headed by its line; click the heading to open the file there. While **Hide all
+open Personal Notes** is on, the Notes button says so.
+
+#### Recent changes and owners
+
+⋯ → **Show recent changes** warms each row by how often it changed in the last
+90 days, with a heat bar along the foot of the row. Hover a row to see how many
+commits touched it and who changed it last. Merges are left out, and a very long
+history is read only up to a limit, so the Map stays quick. A shallow clone
+counts only the history it holds, so a clone of one commit shows no heat, and
+the Project overview says where its history stops. The option is off by default.
+
+If the project has a `CODEOWNERS` file (in `.github/`, the root or `docs/`) or
+Kubernetes-style `OWNERS` files, each row's tooltip says who owns it, and who
+reviews it when an `OWNERS` file names reviewers. Teams and aliases show as the
+file writes them: everything is read from the project's own files, with no
+network.
+
+The [Project overview](#finding-your-way) card adds both: **Most changed (90
+days)** lists the folders where most of the work happens, and **Owners** lists
+who owns the project and its top-level folders.
+
+#### Working sets
+
+A working set is a view of the Map you can go back to. Choose ⋯ → **Working
+sets** ▸ **Save Current As…** and give it a name. It keeps the open folders, the
+selected row, the zoom and pan, and the open cards with their Structure
+columns. Pick the set from the same menu to show it again, as a restart would:
+the search is cleared, the cards you have open now close, and the set's folders
+and cards come back. Anything deleted since is dropped. Saving under a name you
+already used replaces that set, and **Delete** ▸ removes one.
+
+Working sets are kept per workspace, and the menu lists only the sets of the
+folder the Map shows. They need a local folder.
+
+#### Trails
+
+A trail is a guided tour of the code. It is kept in the project's
+`.editora/map-trails/` folder, so the team can commit it and everyone gets the
+same tour.
+
+- **Make a trail.** Choose ⋯ → **Trails** ▸ **New Trail…** and give it a name.
+  Then open a card on the code you want to show and choose **Add This Card as a
+  Stop**, from the card's menu or from ⋯ → **Trails**. Write a note for the stop,
+  or leave it empty. A stop keeps the card's file and its lines: a declaration
+  card's declaration, else the lines you selected, else the lines in view.
+- **Play it.** Choose ⋯ → **Trails** ▸ **Play** and the trail's name. A bar at
+  the top of the map shows *Stop 3 of 9* and the stop's title, with **‹ ›** to
+  step. Each stop opens its card at the stop's lines, with your note stuck
+  beside it. The bar's **×**, or `Escape` in the bar, ends the tour and leaves
+  the last card open.
+- **Edit it.** **Edit** in the bar or in ⋯ → **Trails** opens the trail's
+  stops in a card over the map. **Move Up** and **Move Down** (`Alt-Up` /
+  `Alt-Down`), **Remove** (`Delete`), **Rename…** and **Note…** change a stop;
+  **Play from Here** (`Enter`, or a double-click) starts the tour at it, and
+  **Rename Trail…** renames the trail. Each change is saved at once.
+
+A new stop goes to the trail you made, played or edited last; with none yet,
+Editora asks for a new trail's name first. A stop whose file is gone says so in
+the status line. A trail file that cannot be read is listed with the reason and
+left alone, and one written by a newer Editora plays but cannot be edited.
+Trails need a local folder.
 
 #### Large folders
 
-A column shows up to **300 rows** of a folder and ends in a **+N more…** row
-that loads the next 300; after it loads, the selection continues at the first new
-row. Its header reads *shown/total* whenever a filter or a limit hides rows, and a
-column's own filter searches the whole folder, not only the rows already loaded.
-The map as a whole shows at most **1,200 rows**, and the column you are reading
-keeps its rows when other columns open. When the limit is reached the status
-line says so, and a folder that does not fit stays open with a **Not loaded**
+On a local project a column lists its **whole folder**, up to 50,000 entries,
+so you can scroll a folder of thousands of files from top to bottom. On an
+[SSH project](/docs/remote) a column shows up to **300 rows** of a folder and
+ends in a **+N more…** row that loads the next 300; after it loads, the
+selection continues at the first new row. A column's header reads *shown/total*
+whenever a filter or a limit hides rows, and its own filter searches the whole
+folder, not only the rows already loaded.
+
+The map as a whole shows at most **1,200 rows**; a long folder counts as one
+screenful of them, so it does not crowd out the other columns. The column you
+are reading keeps its rows when other columns open. When the limit is reached
+the status line says so, and a folder that does not fit stays open with a **Not loaded**
 row until you close a column; when there is no other column to close, type in
 the long folder's filter to find the rest. An empty or unreadable folder opens
 a column that says so (an unreadable one in the status line too), and a folder
@@ -435,11 +562,14 @@ The canvas is fully keyboard-navigable.
 | `Ctrl-0` (`Cmd-0` on macOS) | Fit the whole map |
 | `F2` | Rename the selected file or folder |
 | `Delete` | Delete the selection, as in the tree |
-| Menu key or `Shift-F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes and Close Column |
+| Menu key or `Shift-F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes, Close Column and Close Other Branches |
 | `Alt`+arrows / `Alt`+`Shift`+arrows | In a focused card: move it / resize it |
+| `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) | In a focused card: find in the card; `Enter` / `Shift-Enter` or `F3` / `Shift-F3` step through the matches |
+| `Alt-Page Up` / `Alt-Page Down` | In a declaration card: show the previous / next declaration of the file |
+| Menu key or `Shift-F10` | In a focused card: open its menu at the caret, with Pin Card, Find in Card…, Show Callers as Cards, Annotate and Add This Card as a Stop |
 | `Alt-7` (Emacs and IntelliJ keymaps) | In a focused card: open its Structure column and move into it, or back to the card |
 | `F12` / `Shift-F12` (CUA and VS Code keymaps) | In a focused card: Go to Definition / Find Usages in the editor |
-| `Escape` | Close open cards, then clear the search (your place stays; `Alt-Left` goes back to before it), then return to the editor window |
+| `Escape` | In a card: close its find bar, then the card. On the map: close open cards, then clear the search (your place stays; `Alt-Left` goes back to before it), then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
 chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`. `Tab`
@@ -454,7 +584,7 @@ works on case-insensitive disks. Multi-select and drag-to-move are in the
 [Project tree](#projects), not the Map. Preview and note cards follow a
 file you rename or move inside Editora.
 
-#### Printing the map
+#### Printing and exporting the map
 
 **Print…** and **PDF…** in the options menu, or *Project Map: Print…*
 (`projectMap.print`) and *Project Map: Export to PDF…*
@@ -464,8 +594,19 @@ is light whatever the theme. A map that is wider than tall goes on a landscape
 page. A map slightly too big for one page is shrunk a little, with labels no
 smaller than 6 pt; a larger one is split across several pages, and the status bar
 says how many. The Print Preview and the Save dialog open over the Map window.
-Labels are drawn as an image, so the PDF's text is not searchable. See
-[Print & PDF export](/docs/print-pdf) for the preview and the Save dialog.
+The PDF is searchable: every name on it is text, so a PDF viewer's find, select
+and copy reach it. See [Print & PDF export](/docs/print-pdf) for the preview and
+the Save dialog.
+
+⋯ → **Export** ▸ saves the map as an image:
+
+- **PNG…** saves what you see, at twice its size, with the cards and their
+  connectors but not the zoom bar or the overview.
+- **SVG…** saves the whole map, laid out as Print and PDF lay it out, with every
+  name as text you can search and copy.
+
+The Save dialog opens over the Map window in the project folder, and the status
+line says where the file went.
 
 With no project open, the Project tool window becomes a
 **Current Folder** explorer rooted at the active file's parent directory, and
@@ -806,12 +947,13 @@ Page) with their shortcuts.
   The right-click menus are trimmed the same way:
 
   - **Tab:** Save, Save As, Encrypt… (Lock File on an encrypted file), Print,
-    Export to PDF, Close, Close Others, Close All, Reveal in File Manager, Copy
-    Path and Rename. Unpin stays on a tab that was pinned before.
+    Export to PDF, Close, Close Others, Close All, Reveal in Map (when projects
+    are on), Reveal in File Manager, Copy Path and Rename. Unpin stays on a tab
+    that was pinned before.
   - **Editor:** Comment / Uncomment, the spelling suggestions, Cut, Copy,
     Paste, Undo, Redo, Select All, Print and Export to PDF.
-  - **Project tree:** New (a file or a folder), Rename, Undo Move, Delete and
-    Reveal in File Manager.
+  - **Project tree:** New (a file or a folder), Rename, Undo Move, Delete,
+    Reveal in Map and Reveal in File Manager.
   - **Preview** (Markdown, Typst, Markwhen, diagrams): the copy actions, Go to
     Source, Enlarge, Export to PDF and Print. Copy HTML and the other export
     formats are hidden.

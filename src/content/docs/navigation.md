@@ -80,6 +80,14 @@ than an empty query: it names what it will search and walks nothing.
 A single-line selection seeds the query, the same way the find bar and Find in
 Files do.
 
+**File results** come from the same list of the project's files as the
+[Project Map](/docs/workspace#project-map)'s search and the
+[Project tree's filter](/docs/workspace#projects), kept current as you work,
+and they rank the same way: the name as you typed it first, then the project's
+own source, then vendored code, then tests. So all three find the same file
+first. Deep and very large projects are searched completely, and a path such as
+`core/v1/types.go` narrows a common name.
+
 **Show in Map** selects the highlighted file, or a symbol's file, on the
 [Project Map](/docs/workspace#project-map), opening the Map window if needed.
 Its key is `Alt-Enter` where the keymap leaves it free, else `Shift-Enter` or
@@ -139,8 +147,10 @@ matched, and emboldens the characters responsible for the match.
   humps of `MainController` rather than whichever `c` comes first.
 - **Several terms, any order.** Whitespace splits the query into terms that must
   all match, in any order, so `toggle git` finds *Git: Toggle Blame*.
-- **Paths know their basename.** The Project tree's filter scores the whole
-  relative path, so a query can name a directory as well as a file.
+- **Paths know their basename.** The Project tree's filter, Search
+  Everywhere's files and the Project Map's search match a file's name, and a
+  query with a `/` in it matches the relative path, so `core/v1/types.go` or
+  `cmd/kube-scheduler` can name a directory as well as a file.
 
 Grouped and structural lists (build actions, branches, the Structure tree)
 use the same matcher but keep their own order, because a tree that reorders
