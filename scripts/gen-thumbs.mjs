@@ -33,6 +33,9 @@ let built = 0, skipped = 0, srcBytes = 0, outBytes = 0;
 for (const file of readdirSync(srcDir)) {
   const ext = extname(file).toLowerCase();
   if (!RASTER.has(ext)) continue; // SVG stand-ins are already tiny
+  // A `<slug>.dark.<ext>` capture is the detail page's dark-theme twin; the
+  // cards use the light one.
+  if (basename(file, ext).endsWith(".dark")) continue;
   const src = join(srcDir, file);
   const out = join(outDir, basename(file, ext) + ".webp");
 

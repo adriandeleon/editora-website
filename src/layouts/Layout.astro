@@ -39,7 +39,7 @@ const canonical = new URL(withSlash(canonicalPath ?? Astro.url.pathname), Astro.
 const ogImageUrl = new URL(ogImage ?? "/og-image.png", Astro.site).href;
 
 const nav = [
-  { href: url("#features"), label: "Features" },
+  { href: url("features"), label: "Features" },
   { href: url("news"), label: "News" },
   { href: url("blog"), label: "Blog" },
   { href: url(docsRel), label: "Docs" },
