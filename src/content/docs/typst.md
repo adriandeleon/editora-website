@@ -13,6 +13,8 @@ The last good render stays on screen as you edit, without flicker, and a
 compile error keeps the pages visible under a small
 banner. Zoom resizes the pages.
 
+![A Typst file in Split mode: source on the left and the rendered page on the right with a centred title, a numbered heading, body text and a typeset formula](/screenshots/features/typst.png "A Typst document in Split mode.")
+
 ## Editing
 
 Typst files get Markdown-style ergonomics:

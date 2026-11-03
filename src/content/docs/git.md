@@ -98,6 +98,8 @@ The Commit window (`tool.commit`, `M-4`) lists **Staged**, **Changes**, and
 shows how many commits are waiting to be pushed or pulled, or that the branch
 has not been published yet.
 
+![The Commit tool window beside the editor: Shelf.java under Changes with +3 −2 line counts, two untracked entries, Amend and Sign off checkboxes and a commit message being typed; the editor gutter marks the changed lines](/screenshots/docs/git-commit.png "The Commit window lists changes and untracked files with their line counts; the editor gutter shows the same changes.")
+
 - **Space** stages or unstages the selected rows; on a group header it acts on
   the whole group. Group menus offer **Stage All in Group**, **Unstage All**
   (`git.unstageAll`), and **Discard All Changes…** (`git.discardAll`), which
@@ -286,6 +288,8 @@ The Git Log (`tool.gitLog`, `C-x v S-l`) lists the current branch's commits and
 loads more as you scroll, a page at a time, so it reaches the whole history
 (`git.log.loadMore` does the same from the keyboard).
 
+![The Git Log maximized: a commit graph beside each row's hash, branch and tag labels, subject, author and date, and below it the selected merge commit's details and changed files](/screenshots/docs/git-log.png "The Git Log with its commit graph; the selected commit's details and files are underneath.")
+
 - **All branches** (`git.log.toggleAllBranches`) lists the commits of every
   branch, remote, and tag.
 - A **commit graph** is drawn beside the rows when the list is a plain walk of
@@ -348,6 +352,8 @@ Reverting a merge commit asks which parent is the mainline.
 `git.toggleBlame` (`C-x v g`) shows each line's last commit, author and date,
 in a gutter column. `git.blameShowCommit` opens the diff of the commit that last
 changed the caret line.
+
+![A Java file with the blame gutter on: each line shows its author and date, and the three changed lines show You · Uncommitted changes](/screenshots/docs/git-blame.png "Blame annotations in the gutter; lines you have not committed yet say so.")
 
 - **Annotate Previous Revision** (`git.blamePreviousRevision`) opens the file as
   it was before the commit the caret line is blamed on, annotated in turn, so

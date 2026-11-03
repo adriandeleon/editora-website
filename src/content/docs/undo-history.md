@@ -11,6 +11,8 @@ typing burst. It's finer-grained than save-based
 (it's not persisted, and it's off in large-file mode and for documents over a
 million characters).
 
+![A Python file with the Undo History panel on the right, listing timestamped checkpoints, each with the line it touched](/screenshots/features/undo-history.png "The Undo History panel: one checkpoint per typing burst.")
+
 Up to **50** checkpoints are kept, within a memory budget, whichever limit is
 reached first. A count of 50 whole-document snapshots does not bound memory when
 documents differ in size by three orders of magnitude, so an ordinary file

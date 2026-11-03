@@ -25,6 +25,8 @@ top-right of the editor:
 - **Split**: source on the left, preview on the right.
 - **Preview**: the rendered page only.
 
+![A Markdown file in Split mode: the source on the left and the rendered preview on the right with a heading, a task list, a table and a code block, and the Editor / Split / Preview control at the top right](/screenshots/docs/markdown-preview.png "Split mode: source on the left, the live preview on the right.")
+
 A file opens in the view it was last shown in. A file with no remembered view,
 and a new untitled Markdown buffer, opens in the default view set in
 **Settings → Markdown** (*Open Markdown files in*, Editor by default).
@@ -501,6 +503,8 @@ Mermaid renders inline. A fenced ` ```mermaid ` block in Markdown becomes a
 diagram in the preview, and standalone `.mmd` files get the same 3-mode preview.
 Inside a Mermaid fence, completion offers Mermaid keywords, and diagrams are
 drawn for the preview's own light or dark theme.
+
+![A Mermaid flowchart file in Split mode: the source on the left and the rendered flowchart on the right, with a decision node branching yes and no](/screenshots/features/mermaid.png "A Mermaid flowchart rendered in the preview.")
 
 Mermaid is **on by default**, self-gating on detection, so it stays inert until
 the `mmdc` (mermaid-cli) command is found. Install it with

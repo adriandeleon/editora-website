@@ -43,6 +43,8 @@ project files and symbols**, so you can type the *name* of the thing instead of
 first deciding which of Editora's five pickers, each behind its own chord, it
 lives in.
 
+![Search Everywhere open over a Java file with the query theme, listing matching project files and then matching symbols, each with its path](/screenshots/features/search-everywhere.png "Search Everywhere: files and symbols from one query.")
+
 With a Java language server running, the symbols include the JDK's and your
 dependencies' classes (`List`, `Assertions`), listed after the project's own and
 opened as read-only library source.

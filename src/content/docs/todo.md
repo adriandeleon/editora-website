@@ -8,6 +8,8 @@ order: 4
 Editora highlights **TODO / FIXME-style patterns** everywhere they appear,
 IntelliJ-style, and collects them in a **TODO** tool window. It's on by default.
 
+![A Java file with TODO comments highlighted in the editor, and the TODO tool window below grouped by file](/screenshots/features/todo-highlighting.png "TODO comments highlighted in the editor and collected in the TODO tool window.")
+
 ## In the editor and the tool window
 
 - Matches are highlighted inline and listed in the **TODO** tool window

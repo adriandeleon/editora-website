@@ -15,6 +15,8 @@ Compare files in a dedicated tab, **side by side** or **unified**, with per-line
 backgrounds, intra-line word emphasis, change ribbons between related hunks,
 and a right-edge overview of the whole document.
 
+![A side-by-side diff of Themes.java, HEAD on the left and the working tree on the right, with one changed line highlighted, word-level emphasis inside it, and the unchanged lines folded](/screenshots/features/diff-merge.png "The diff viewer, side by side, with unchanged lines folded away.")
+
 | Compare | Command | Default key |
 | --- | --- | --- |
 | Against HEAD | `diff.vsHead` | `C-x v =` |
