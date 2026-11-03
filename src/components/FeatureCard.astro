@@ -1,0 +1,84 @@
+---
+// One feature as a card with its screenshot thumbnail: the /features grid and
+// the home page's preview of it use the same card.
+import type { CollectionEntry } from "astro:content";
+import { featureShot } from "../lib/features";
+
+interface Props {
+  feature: CollectionEntry<"features">;
+}
+
+const { feature: f } = Astro.props;
+const shot = featureShot(f.id);
+---
+
+<a class="card" href={`/features/${f.id}`}>
+  {
+    shot ? (
+      <span class="card-shot">
+        <img src={shot} alt="" loading="lazy" decoding="async" width="560" height="315" />
+      </span>
+    ) : (
+      <span class="card-shot card-shot-empty" aria-hidden="true">
+        {"{ }"}
+      </span>
+    )
+  }
+  <h4>
+    {f.data.title}
+    {f.data.beta && <span class="beta-pill">Beta</span>}
+  </h4>
+  <p set:html={f.data.summary} />
+</a>
+
+<style>
+  .card {
+    display: block;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: inherit;
+    overflow: hidden;
+    transition:
+      border-color 0.15s ease,
+      transform 0.05s ease;
+  }
+  .card:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+  }
+  .card-shot {
+    display: block;
+    aspect-ratio: 16 / 9;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card-shot-empty {
+    display: grid;
+    place-items: center;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    letter-spacing: 0.1em;
+  }
+  .card h4 {
+    margin: 0.9rem 1.1rem 0.4rem;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+  .card:hover h4 {
+    color: var(--accent);
+  }
+  .card p {
+    margin: 0 1.1rem 1.15rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+</style>

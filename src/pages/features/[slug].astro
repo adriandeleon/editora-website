@@ -3,7 +3,7 @@ import { getCollection, render } from "astro:content";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import Layout from "../../layouts/Layout.astro";
-import { groupedFeatures } from "../../lib/features";
+import { groupedFeatures, groupId } from "../../lib/features";
 
 export async function getStaticPaths() {
   const features = await getCollection("features");
@@ -23,6 +23,12 @@ const exts = ["png", "jpg", "jpeg", "webp", "gif", "avif", "svg"];
 const shot = exts
   .map((e) => `screenshots/features/${entry.id}.${e}`)
   .find((p) => existsSync(resolve("public", p)));
+// A `<slug>.dark.<ext>` twin, when there is one, is shown in the dark site
+// themes instead (the .doc-figure rules in Layout.astro pick one).
+const shotDark = shot
+  ? shot.replace(/(\.[a-z]+)$/, ".dark$1")
+  : null;
+const hasDark = shotDark !== null && existsSync(resolve("public", shotDark));
 
 // Sibling features in the same group, for "Related".
 const groups = await groupedFeatures();
@@ -35,7 +41,7 @@ const related = (group?.items ?? []).filter((f) => f.id !== entry.id).slice(0, 6
   description={entry.data.summary.replace(/<[^>]+>/g, "")}
 >
   <main class="doc feature" data-pagefind-body data-pagefind-meta="kind:Feature">
-    <p class="back"><a href="/#features">← All features</a></p>
+    <p class="back"><a href={group ? `/features#${groupId(group.title)}` : "/features"}>← All features</a></p>
     <h1>
       {entry.data.title}
       {entry.data.beta && <span class="beta-pill">Beta</span>}
@@ -44,8 +50,15 @@ const related = (group?.items ?? []).filter((f) => f.id !== entry.id).slice(0, 6
 
     {
       shot ? (
-        <figure class="shot">
-          <img src={`/${shot}`} alt={`${entry.data.title} in Editora`} />
+        <figure class="shot doc-figure">
+          <a class={`doc-figure-link${hasDark ? " doc-figure-light" : ""}`} href={`/${shot}`} title="Open the full-size screenshot">
+            <img src={`/${shot}`} alt={`${entry.data.title} in Editora`} />
+          </a>
+          {hasDark && (
+            <a class="doc-figure-link doc-figure-dark" href={`/${shotDark}`} title="Open the full-size screenshot">
+              <img src={`/${shotDark}`} alt={`${entry.data.title} in Editora`} />
+            </a>
+          )}
         </figure>
       ) : (
         <div class="shot-placeholder" aria-hidden="true">
@@ -87,11 +100,7 @@ const related = (group?.items ?? []).filter((f) => f.id !== entry.id).slice(0, 6
   .shot {
     margin: 0 0 2.5rem;
   }
-  .shot img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--border);
+  .shot .doc-figure-link {
     border-radius: var(--radius);
   }
   .shot-placeholder {
