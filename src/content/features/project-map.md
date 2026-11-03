@@ -26,17 +26,25 @@ A file's **Structure** icon opens a column of its classes, methods or headings, 
 
 ## Follow the code without leaving the map
 
+![Show Callers as Cards on Pricing.apply: the callers in Shelf.checkout and two ShelfTest tests open as cards around Pricing.java, each joined to it by a dashed edge labelled by name](/screenshots/map/references.png "With no language server running, the callers are found by name, and the edges say so.")
+
 Right-click a declaration, or a name in a card, and choose **Show Callers as Cards** or **Show References as Cards**. The places found open as cards around it, joined by edges that say how: *calls*, *references* or *by name*. A [language server](/features/lsp) that is already running answers, even for files that are not open; with none running, Editora matches the name across the project instead and draws those edges dashed. **Related Test / Subject** jumps between a class and its test, and Go to Definition, Find Usages and the hierarchies work from a focused card.
 
 ## Search and filter
+
+![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
 
 The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only or `@` for declarations. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked or noted files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
 
 ## See where the work happens
 
+![Show recent changes on the Editora repo: rows tinted and underlined by how often they changed, with a tooltip reading 5 commits in 90 days, last: Adrian De Leon, 2 weeks ago, and Owners: @adriandeleon from .github/CODEOWNERS](/screenshots/map/recent-changes.png "Recent-change heat, with the commit count, the last author and the owners in the tooltip.")
+
 ⋯ → **Show recent changes** warms each row by how often it changed in the last 90 days, and its tooltip says how many commits touched it and who changed it last. With a `CODEOWNERS` or Kubernetes-style `OWNERS` file, every row's tooltip names its owners and reviewers, read from the project's own files with no network. The first time you open a project, a **Project overview** card shows its README, build system and modules, languages, likely entry points, where the tests live, the most-changed folders and the owners.
 
 ## Working sets and trails
+
+![A trail playing: the bar reads Stop 2 of 4, Pricing.discountFor, the card highlights that method's lines and the stop's note is stuck beside it](/screenshots/map/trail.png "A trail at its second stop: the card shows the stop's lines, with its note beside it.")
 
 Save the map as a **working set** (open folders, selection, zoom, cards and pins) and pick it to come back to exactly that view. A **trail** is a guided tour of the code: add cards as stops, write a note at each, then play it stop by stop with `Ctrl-Right` / `Ctrl-Left`. Trails live in the project's `.editora/map-trails/` folder, so the team can commit them and everyone gets the same tour of a new codebase.
 

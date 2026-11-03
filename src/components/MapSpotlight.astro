@@ -34,28 +34,23 @@ const hero = {
 
 const shots = [
   {
-    src: "/screenshots/docs/project-map-card.png",
-    alt: "A read-only preview card for Shelf.java, opened past its folder column and joined to its row by a connector",
-    caption: "A preview card opens the way the map flows, tied to its row.",
-  },
-  {
     src: "/screenshots/map/references.png",
-    alt: "A declaration card with the places that call it opened as cards around it, joined by labelled edges",
-    caption: "Show Callers as Cards: every call site, one edge each.",
+    alt: "Show Callers as Cards on Pricing.apply: the callers in Shelf.checkout and two ShelfTest tests open as cards around Pricing.java, each joined to it by an edge labelled by name",
+    caption: "Show Callers as Cards: every call site opens around the declaration, one edge each.",
   },
   {
     src: "/screenshots/map/recent-changes.png",
-    alt: "Map rows warmed by how often they changed in the last 90 days, with a tooltip naming commits and owners",
-    caption: "Show recent changes warms the rows where the work happens.",
+    alt: "Show recent changes on the Editora repo: rows tinted and underlined by how often they changed, with a tooltip reading 5 commits in 90 days, last: Adrian De Leon, 2 weeks ago, and Owners: @adriandeleon from .github/CODEOWNERS",
+    caption: "Show recent changes warms the rows where the work happens; tooltips name the owners.",
   },
   {
     src: "/screenshots/map/trail.png",
-    alt: "A trail playing on the map: the stop bar reads Stop 2 of 5 and a note sits beside the stop's card",
-    caption: "A trail walks a newcomer through the code, stop by stop.",
+    alt: "A trail playing: the bar reads Stop 2 of 4, Pricing.discountFor, the card highlights that method's lines and the stop's note is stuck beside it",
+    caption: "A trail walks the team through the code, a note at every stop.",
   },
   {
     src: "/screenshots/map/filters.png",
-    alt: "The filter row with Git changed and Hide unmatched on, a badge counting hidden rows and shown/total counts on each column",
+    alt: "Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge and shown/total counts on each column",
     caption: "Filters narrow the map and count what they hide.",
   },
 ].filter((s) => existsSync(resolve("public", s.src.slice(1))));
@@ -223,17 +218,12 @@ const heroDark = dark(hero.src);
   }
   .map-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 0.5rem 1.25rem;
-    margin-top: 2.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+    gap: 0.75rem 1.5rem;
+    margin-top: 2.5rem;
   }
   .map-gallery .doc-figure {
     margin: 0;
-  }
-  .map-gallery .doc-figure img {
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    object-position: top left;
   }
   .map-cta {
     display: flex;
