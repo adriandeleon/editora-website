@@ -462,7 +462,9 @@ inside a focused card on that card's file.
 
 The **Notes** button before **Open** counts the notes on what the card shows and
 sticks them beside it as small editable sheets, each tied by a connector to its
-line, which is marked in the note's amber. A sheet's **×** takes that one note
+line, which is marked in the note's amber. The keymap's caret keys work in a
+sheet as in the editor's Notes box (`C-f`, `C-b`, `C-n`, `C-p`, `C-a`, `C-e`,
+`M-f`, `M-b` in the Emacs keymap), and so do they in a note card. A sheet's **×** takes that one note
 off the card; it stays saved and comes back the next time the card shows its
 notes. Up to two stacks of sheets fit beside a card; the rest gather in one
 **+K more notes** sheet that opens the file's note card. Notes follow changes
