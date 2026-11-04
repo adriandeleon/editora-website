@@ -49,6 +49,14 @@ export default defineConfig({
   // pagefind() runs the Pagefind indexer inside `astro build` (so it works no
   // matter how CI invokes the build) and serves the index in `astro dev`.
   integrations: [sitemap(), pagefind()],
+  // `astro dev` watches the whole project folder. The built site (dist/, about
+  // 19,000 folders) and Claude Code worktrees under .claude/ are not sources,
+  // and watching them can exhaust the system's file-watch limits.
+  vite: {
+    server: {
+      watch: { ignored: ["**/dist/**", "**/.claude/**"] },
+    },
+  },
   markdown: {
     rehypePlugins: [rehypeVersionDocs, rehypeDocFigures],
   },
