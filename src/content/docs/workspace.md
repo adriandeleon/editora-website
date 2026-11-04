@@ -146,7 +146,7 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   opens beside the column, level with its row; opening a card never pans the
   map. It never covers the folders that lead to the file, where its next column
   will open, or the zoom bar and the overview. A declaration card
-  opened from a card's Structure column opens past that column, level with its
+  opened from a card's Structure column opens right of it, level with its
   row. **Move to Free Space** in a card's menu places it again.
 - Click a file's **Structure icon**, just before the eye, to open a column of
   its classes, methods or headings. See [File structure](#file-structure).
@@ -400,13 +400,15 @@ outlined, its title bar has a **Structure** button, before **Notes**. It sticks
 the file's declarations beside the card as an indented list, coloured as the
 editor colours them. The column belongs to the card: it works even when the
 file's row is filtered or scrolled off the map, moves, zooms and closes with the
-card, and does not count toward the eight cards. It sits on whichever side of
-the card hides least of the map, and switches sides when you drag the card.
+card, and does not count toward the eight cards. It always sits on the card's
+right, so the declarations read on from the code; opened on a card near the
+right edge, the card first steps left to make room for it.
 
 - **Click a declaration**, or press `Enter` on it, to scroll the card to it and
   highlight its lines.
 - **Shift-click** or `Shift-Enter` opens the declaration in a card of its own,
-  beside the column and connected to its row.
+  right of the column, level with its row and connected to it. When there is no
+  room there, the file card steps left to make some.
 - From the keyboard, the Structure tool window's key (`Alt-7` in the Emacs and
   IntelliJ keymaps) or **Show this preview's Structure** in the card's menu
   opens the column and puts the keyboard in it; the same key goes back to the
