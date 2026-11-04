@@ -28,5 +28,4 @@ Also in this release:
 
 Plus fixes: the Cargo/Go/Gradle tool-window icons no longer render blank, and
 installing the Typst language server (tinymist) from the banner now
-activates it. The full list is on the [What's New](/whats-new) page, and there's
-a [0.9.4 blog post](/blog/editora-0-9-4).
+activates it. The full list is on the [What's New](/whats-new) page.

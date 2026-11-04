@@ -37,5 +37,4 @@ Output window** instead of a console each (see [Build tools](/docs/build-tools))
 CSS, and HTML. And **Reset to Defaults** now resets all of your settings,
 rather than the 23 out of 181 it used to.
 
-There's a [0.9.6 blog post](/blog/editora-0-9-6) on what a per-feature audit
-turns up, and the full changelog is on [What's New](/whats-new).
+The full changelog is on [What's New](/whats-new).

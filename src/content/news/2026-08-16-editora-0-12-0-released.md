@@ -86,6 +86,5 @@ a drag. And every debug launch stopped logging a parse failure for a reply that
 was correct. Nothing was broken except the log, but a failure logged on every
 launch teaches you to ignore the log.
 
-There is a [0.12.0 blog post](/blog/editora-0-12-0) on what moving a tool
-window turned out to involve. The complete list is on the
+The complete list is on the
 [What's New](/whats-new) page.

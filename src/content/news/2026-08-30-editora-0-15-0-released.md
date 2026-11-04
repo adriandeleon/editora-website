@@ -177,6 +177,5 @@ Three smaller things in the same area:
   Language-server and debug-adapter behaviour is unchanged; this is the protocol
   library catching up.
 
-There is a [0.15.0 blog post](/blog/editora-0-15-0) on four of these bugs and
-what they had in common. The complete list is on the
+The complete list is on the
 [What's New](/whats-new) page.

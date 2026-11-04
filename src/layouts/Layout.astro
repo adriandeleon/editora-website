@@ -41,7 +41,6 @@ const ogImageUrl = new URL(ogImage ?? "/og-image.png", Astro.site).href;
 const nav = [
   { href: url("features"), label: "Features" },
   { href: url("news"), label: "News" },
-  { href: url("blog"), label: "Blog" },
   { href: url(docsRel), label: "Docs" },
   { href: `${repo}/discussions`, label: "Discussions", external: true },
   { href: url("roadmap"), label: "Roadmap" },
@@ -65,7 +64,6 @@ const footerCols = [
     title: "Project",
     links: [
       { href: url("plugins"), label: "Plugins" },
-      { href: url("blog"), label: "Blog" },
       { href: url("news"), label: "News" },
       { href: url("compare"), label: "How it compares" },
       { href: url("roadmap"), label: "Roadmap" },
@@ -126,12 +124,6 @@ const isActive = (href: string) => {
     <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" type="image/png" href={url("favicon.png")} />
     <link rel="apple-touch-icon" href={url("apple-touch-icon.png")} />
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="Editora Blog"
-      href={url("blog/rss.xml")}
-    />
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -500,7 +492,7 @@ const isActive = (href: string) => {
     white-space: nowrap;
   }
 
-  /* "Beta" pill — used on feature cards and beta news/blog entries. */
+  /* "Beta" pill — used on feature cards and beta news entries. */
   .beta-pill {
     display: inline-block;
     margin-left: 0.5rem;

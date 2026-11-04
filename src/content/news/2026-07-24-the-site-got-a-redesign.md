@@ -41,6 +41,3 @@ commands that had never made it onto the site, including the whole Maven, npm,
 Cargo, Go, and Gradle family and the Emacs rectangle commands. The generator now
 cross-checks against the app's own catalogue, so a command can no longer be
 registered in Editora and missing here.
-
-There is more on how it was built, and on two bugs found along the way, in
-[Rebuilding the website](/blog/rebuilding-the-editora-website).

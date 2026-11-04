@@ -34,28 +34,17 @@ const heroVideo = ["mp4", "webm"]
   .map((e) => `screenshots/hero-demo.${e}`)
   .find((p) => existsSync(resolve("public", p)));
 
-// Latest entries for the home-page teaser — News first, then Blog.
-const newsItems = (await getCollection("news")).map((e) => ({
-  kind: "News",
-  href: `/news/${e.id}`,
-  title: e.data.title,
-  description: e.data.description,
-  date: e.data.date,
-  version: e.data.version,
-  beta: e.data.beta,
-}));
-const blogItems = (await getCollection("blog")).map((e) => ({
-  kind: "Blog",
-  href: `/blog/${e.id}`,
-  title: e.data.title,
-  description: e.data.description,
-  date: e.data.date,
-  beta: e.data.beta,
-}));
-// Interleaved by date. Concatenating put every news item first, so the section
-// headed "From the blog & news" never actually showed a blog post.
-// Same-day items tie-break on version (newest release first), then on the link.
-const latest = [...newsItems, ...blogItems]
+// Latest news for the home-page teaser. Same-day items tie-break on version
+// (newest release first), then on the link.
+const latest = (await getCollection("news"))
+  .map((e) => ({
+    href: `/news/${e.id}`,
+    title: e.data.title,
+    description: e.data.description,
+    date: e.data.date,
+    version: e.data.version,
+    beta: e.data.beta,
+  }))
   .sort(
     (a, b) =>
       b.date.valueOf() - a.date.valueOf() ||
@@ -278,18 +267,19 @@ const platforms = [
       latest.length > 0 && (
         <section id="latest" class="section">
           <div class="latest-head">
-            <h2>From the blog &amp; news</h2>
+            <h2>Latest news</h2>
             <span class="latest-links">
-              <a href="/news">All news</a> · <a href="/blog">All posts</a>
+              <a href="/news">All news</a>
             </span>
           </div>
           <div class="latest-grid">
             {latest.map((p) => (
               <a class="latest-card" href={p.href}>
-                <span class="latest-tags">
-                  <span class={`latest-kind kind-${p.kind.toLowerCase()}`}>{p.kind}</span>
-                  {p.beta && <span class="beta-pill">Beta</span>}
-                </span>
+                {p.beta && (
+                  <span class="latest-tags">
+                    <span class="beta-pill">Beta</span>
+                  </span>
+                )}
                 <span class="latest-title">{p.title}</span>
                 {p.description && <span class="latest-desc">{p.description}</span>}
                 <span class="latest-date">{fmtDate(p.date)}</span>
@@ -857,7 +847,7 @@ const platforms = [
     font-weight: 600;
   }
 
-  /* Latest blog & news teaser */
+  /* Latest news teaser */
   .latest-head {
     display: flex;
     align-items: baseline;
@@ -896,25 +886,6 @@ const platforms = [
   }
   .latest-tags .beta-pill {
     margin-left: 0;
-  }
-  .latest-kind {
-    align-self: flex-start;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-  }
-  .latest-kind.kind-news {
-    color: var(--accent);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-  .latest-kind.kind-blog {
-    color: var(--bookmark);
-    border-color: color-mix(in srgb, var(--bookmark) 40%, transparent);
   }
   .latest-title {
     font-weight: 600;

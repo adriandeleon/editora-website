@@ -9,9 +9,7 @@ first frame (~300–480 ms on macOS)**, thanks to a JDK 25 **AOT cache** trained
 against a real GUI run and baked into each installer. It degrades gracefully, so
 a launch can never be slower than before.
 
-Grab a [fresh installer](/#download) to feel it, and read the
-[deep-dive on the blog](/blog/faster-cold-start-with-an-aot-cache) for how it
-works.
+Grab a [fresh installer](/#download) to feel it.
 
 **Update (October 2026).** "Never slower than before" was too strong. The cache
 step later caused a Windows launch failure (fixed in

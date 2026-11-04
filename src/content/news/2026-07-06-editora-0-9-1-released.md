@@ -22,6 +22,4 @@ the Agent Client Protocol, using the Anthropic API or a local model. It's off by
 default; read the [AI guide](/docs/ai).
 
 Installers are currently unsigned, so on first launch you may need to right-click
-→ *Open* (macOS) or "More info → Run anyway" (Windows). Read the
-[0.9.1 release notes](/blog/editora-0-9-1) for the story behind the version
-number.
+→ *Open* (macOS) or "More info → Run anyway" (Windows).

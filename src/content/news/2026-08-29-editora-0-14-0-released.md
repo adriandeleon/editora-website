@@ -224,5 +224,4 @@ query now, as the palette had always done.
   and window title that had always done so.
 
 There was also a dependency sweep (Jackson, Lucene, PDFBox, POI, commonmark and
-JSVG), and the full list is in the [changelog](/whats-new). There is also a
-[0.14.0 blog post](/blog/editora-0-14-0) on the bugs found along the way.
+JSVG), and the full list is in the [changelog](/whats-new).
