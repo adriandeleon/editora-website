@@ -147,7 +147,8 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   map. It never covers the folders that lead to the file, where its next column
   will open, or the zoom bar and the overview. A declaration card
   opened from a card's Structure column opens right of it, level with its
-  row. **Move to Free Space** in a card's menu places it again.
+  row, and one opened from the map's Structure column opens past that column.
+  **Move to Free Space** in a card's menu places it again.
 - Click a file's **Structure icon**, just before the eye, to open a column of
   its classes, methods or headings. See [File structure](#file-structure).
 - A file's Personal Notes badge opens its preview card with the notes stuck
@@ -404,11 +405,16 @@ card, and does not count toward the eight cards. It always sits on the card's
 right, so the declarations read on from the code; opened on a card near the
 right edge, the card first steps left to make room for it.
 
-- **Click a declaration**, or press `Enter` on it, to scroll the card to it and
-  highlight its lines.
-- **Shift-click** or `Shift-Enter` opens the declaration in a card of its own,
-  right of the column, level with its row and connected to it. When there is no
-  room there, the file card steps left to make some.
+- **Click a declaration**, or press `Enter` on it, to open it in a card of its
+  own, right of the column, level with its row and connected to it. When there
+  is no room there, the file card steps left to make some.
+- **Shift-click** or `Shift-Enter` scrolls the file card to the declaration
+  instead and highlights its lines.
+- A declaration card follows the Structure column you last opened it from. If
+  the file's Structure column on the map is open too, clicking the same
+  declaration there moves its card beside that column, with its line from that
+  row; clicking it in the card's column brings it back. A pinned card stays
+  where it is, and only its line moves.
 - From the keyboard, the Structure tool window's key (`Alt-7` in the Emacs and
   IntelliJ keymaps) or **Show this preview's Structure** in the card's menu
   opens the column and puts the keyboard in it; the same key goes back to the
