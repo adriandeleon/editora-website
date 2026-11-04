@@ -3,13 +3,10 @@
 // links to its feature page and docs. The home page uses it as a section; the
 // /features page puts it above the grid, with the gallery of extra captures.
 //
-// Screenshots follow the docs figures' convention (src/lib/rehype-doc-figures.mjs):
-// 2x captures in the app's light theme, with a `.dark` twin the dark site
-// themes show instead. Gallery shots in public/screenshots/map/ appear as soon
-// as their file exists, so a capture can be added without touching this file.
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
+// The pictures come from src/lib/screenshots.ts, as light captures with dark
+// twins; each opens full size in the Lightbox, which the page must include.
 import { docsBase } from "../lib/editora";
+import { mapHero, mapShots } from "../lib/screenshots";
 
 interface Props {
   /** Show the gallery of extra Map captures under the points. */
@@ -20,40 +17,11 @@ interface Props {
 
 const { gallery = false, id } = Astro.props;
 
-const dark = (src: string) => {
-  const d = src.replace(/\.png$/, ".dark.png");
-  return existsSync(resolve("public", d.slice(1))) ? d : null;
-};
-
 const hero = {
-  src: "/screenshots/docs/project-map.png",
-  alt: "The Project Map window: folder columns from the project root down to a Java package, the selected Shelf.java, its Structure column and a column of the Shelf class's members, joined by connectors",
-  caption:
-    "Folders open as columns along the flow; a file's Structure opens past it.",
+  ...mapHero,
+  caption: "Folders open as columns along the flow; a file's Structure opens past it.",
 };
-
-const shots = [
-  {
-    src: "/screenshots/map/references.png",
-    alt: "Show Callers as Cards on Pricing.apply: the callers in Shelf.checkout and two ShelfTest tests open as cards around Pricing.java, each joined to it by an edge labelled by name",
-    caption: "Show Callers as Cards: every call site opens around the declaration, one edge each.",
-  },
-  {
-    src: "/screenshots/map/recent-changes.png",
-    alt: "Show recent changes on the Editora repo: rows tinted and underlined by how often they changed, with a tooltip reading 5 commits in 90 days, last: Adrian De Leon, 2 weeks ago, and Owners: @adriandeleon from .github/CODEOWNERS",
-    caption: "Show recent changes warms the rows where the work happens; tooltips name the owners.",
-  },
-  {
-    src: "/screenshots/map/trail.png",
-    alt: "A trail playing: the bar reads Stop 2 of 4, Pricing.discountFor, the card highlights that method's lines and the stop's note is stuck beside it",
-    caption: "A trail walks the team through the code, a note at every stop.",
-  },
-  {
-    src: "/screenshots/map/filters.png",
-    alt: "Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge and shown/total counts on each column",
-    caption: "Filters narrow the map and count what they hide.",
-  },
-].filter((s) => existsSync(resolve("public", s.src.slice(1))));
+const shots = mapShots;
 
 const points = [
   {
@@ -88,7 +56,6 @@ const points = [
   },
 ];
 
-const heroDark = dark(hero.src);
 ---
 
 <div class="map-spot">
@@ -102,16 +69,18 @@ const heroDark = dark(hero.src);
   </p>
 
   <figure class="doc-figure map-hero">
-    <a class={`doc-figure-link${heroDark ? " doc-figure-light" : ""}`} href={hero.src} title="Open the full-size screenshot">
-      <img src={hero.src} alt={hero.alt} width="1360" height="760" loading="lazy" decoding="async" />
+    <a
+      class="doc-figure-link"
+      href={hero.src}
+      title="View full size"
+      data-lb="map"
+      data-lb-dark={hero.dark}
+      data-lb-caption={hero.caption}
+      data-lb-alt={hero.alt}
+    >
+      <img class:list={{ "v-light": hero.dark }} src={hero.src} alt={hero.alt} width="1360" height="760" loading="lazy" decoding="async" />
+      {hero.dark && <img class="v-dark" src={hero.dark} alt={hero.alt} width="1360" height="760" loading="lazy" decoding="async" />}
     </a>
-    {
-      heroDark && (
-        <a class="doc-figure-link doc-figure-dark" href={heroDark} title="Open the full-size screenshot">
-          <img src={heroDark} alt={hero.alt} width="1360" height="760" loading="lazy" decoding="async" />
-        </a>
-      )
-    }
     <figcaption>{hero.caption}</figcaption>
   </figure>
 
@@ -132,22 +101,23 @@ const heroDark = dark(hero.src);
   {
     gallery && shots.length > 0 && (
       <div class="map-gallery">
-        {shots.map((s) => {
-          const d = dark(s.src);
-          return (
-            <figure class="doc-figure">
-              <a class={`doc-figure-link${d ? " doc-figure-light" : ""}`} href={s.src} title="Open the full-size screenshot">
-                <img src={s.src} alt={s.alt} loading="lazy" decoding="async" />
-              </a>
-              {d && (
-                <a class="doc-figure-link doc-figure-dark" href={d} title="Open the full-size screenshot">
-                  <img src={d} alt={s.alt} loading="lazy" decoding="async" />
-                </a>
-              )}
-              <figcaption>{s.caption}</figcaption>
-            </figure>
-          );
-        })}
+        {shots.map((s) => (
+          <figure class="doc-figure">
+            <a
+              class="doc-figure-link"
+              href={s.src}
+              title="View full size"
+              data-lb="map"
+              data-lb-dark={s.dark}
+              data-lb-caption={s.caption}
+              data-lb-alt={s.alt}
+            >
+              <img class:list={{ "v-light": s.dark }} src={s.src} alt={s.alt} loading="lazy" decoding="async" />
+              {s.dark && <img class="v-dark" src={s.dark} alt={s.alt} loading="lazy" decoding="async" />}
+            </a>
+            <figcaption>{s.caption}</figcaption>
+          </figure>
+        ))}
       </div>
     )
   }
@@ -181,6 +151,9 @@ const heroDark = dark(hero.src);
   }
   .map-hero {
     margin: 0 0 2rem;
+  }
+  .doc-figure-link {
+    cursor: zoom-in;
   }
   .map-hero .doc-figure-link {
     box-shadow:

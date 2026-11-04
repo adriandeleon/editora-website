@@ -1,195 +1,192 @@
 ---
+// Every screenshot on the site in one place, grouped, as thumbnails that open
+// full size in the Lightbox. The list lives in src/lib/screenshots.ts; each
+// feature's capture in public/screenshots/features/ joins its group on its own.
 import Layout from "../layouts/Layout.astro";
-import { readdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, resolve, parse } from "node:path";
-import { repo } from "../lib/editora";
+import Lightbox from "../components/Lightbox.astro";
+import { gallerySections } from "../lib/screenshots";
 
-const base = import.meta.env.BASE_URL;
-const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
-
-// Optional captions keyed by filename. Anything not listed gets a caption
-// derived from its filename. Drop images into public/screenshots/ and they
-// appear here automatically.
-const captions: Record<string, string> = {
-  "editor.jpg":
-    "Editing a Java file, with syntax highlighting, bookmarks in the line-number gutter, the minimap, and the status bar",
-  "command-palette.jpg":
-    "The M-x command palette, where you fuzzy-search and run any command",
-  "bookmarks-panel.jpg":
-    "The Bookmarks tool window, listing bookmarks across every file",
-  "file-information.jpg":
-    "The File Information tool window: encoding, line endings, counts, and character details",
-  "markdown-split.jpg":
-    "Markdown split view, with the source on the left and a live GitHub-style preview on the right",
-  "markdown-preview-zen.jpg":
-    "Markdown preview in Zen mode, with rendered task lists",
-  "doctor.jpg":
-    "The Doctor screen, which lists every external tool Editora can use and whether it was found",
-};
-
-const here = dirname(fileURLToPath(import.meta.url));
-const dir = resolve(here, "../../public/screenshots");
-const exts = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif"]);
-
-const prettify = (name: string) =>
-  name
-    .replace(/[-_]+/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim();
-
-// Each shot ships as a WebP plus a JPG fallback of the same basename, so the
-// gallery groups by basename — listing both would show every picture twice.
-// The JPG is the <img> (universal fallback) and the WebP a <source>.
-let shots: { src: string; webp?: string; alt: string; caption: string }[] = [];
-try {
-  const files = readdirSync(dir).filter((f) =>
-    exts.has(parse(f).ext.toLowerCase()),
-  );
-  const byBase = new Map<string, string[]>();
-  for (const f of files) {
-    const base = parse(f).name;
-    byBase.set(base, [...(byBase.get(base) ?? []), f]);
-  }
-  shots = [...byBase.keys()].sort().map((base) => {
-    const group = byBase.get(base)!;
-    const webp = group.find((f) => parse(f).ext.toLowerCase() === ".webp");
-    // Fall back to whatever non-WebP variant exists, else the WebP itself.
-    const fallback = group.find((f) => f !== webp) ?? webp!;
-    const caption = captions[fallback] ?? captions[`${base}.jpg`] ?? prettify(base);
-    return {
-      src: url(`screenshots/${fallback}`),
-      webp: webp && webp !== fallback ? url(`screenshots/${webp}`) : undefined,
-      alt: caption,
-      caption,
-    };
-  });
-} catch {
-  shots = [];
-}
+const sections = await gallerySections();
+const total = sections.reduce((n, s) => n + s.shots.length, 0);
 ---
 
 <Layout
   title="Screenshots — Editora"
-  description="Screenshots of Editora: the editor, command palette, tool windows, themes, and Markdown preview."
+  description={`${total} screenshots of Editora, the keyboard-driven editor: the editor, the Project Map, Git, the HTTP Client, previews, run and debug, settings and more.`}
 >
-  <main class="page">
-    <h1>Screenshots</h1>
-    <p class="lead">
-      The editor, the command palette, tool windows, and the Markdown preview.
-    </p>
+  <main class="sg">
+    <header class="sg-head">
+      <h1>Screenshots</h1>
+      <p class="sg-lead">
+        {total} pictures of Editora, all taken from the real app. Click one to
+        see it full size, then use <kbd>←</kbd> and <kbd>→</kbd> to step
+        through the rest.
+      </p>
+      <nav class="sg-jump" aria-label="Screenshot sections">
+        {
+          sections.map((s) => (
+            <a href={`#${s.id}`}>
+              {s.title}
+              <span class="sg-count">{s.shots.length}</span>
+            </a>
+          ))
+        }
+      </nav>
+    </header>
 
     {
-      shots.length > 0 ? (
-        <div class="gallery">
-          {shots.map((s) => (
-            <figure class="shot">
-              <a href={s.src} target="_blank" rel="noopener">
-                <picture>
-                  {s.webp && <source srcset={s.webp} type="image/webp" />}
-                  <img
-                    src={s.src}
-                    alt={s.alt}
-                    width="2720"
-                    height="1700"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </picture>
-              </a>
-              <figcaption>{s.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-      ) : (
-        <div class="empty">
-          <p>No screenshots yet.</p>
-          <p class="empty-hint">
-            Drop image files into <code>website/public/screenshots/</code> and
-            they'll appear here automatically. The filename becomes the
-            caption (e.g. <code>command-palette.png</code> →
-            "Command Palette"). Add custom captions in the
-            <code>captions</code> map at the top of
-            <code>src/pages/screenshots.astro</code>.
-          </p>
-          <p>
-            <a href={repo}>See the project on GitHub</a> in the meantime.
-          </p>
-        </div>
-      )
+      sections.map((sec) => (
+        <section class="sg-section" id={sec.id}>
+          <h2>
+            {sec.title}
+            <span class="sg-count">{sec.shots.length}</span>
+          </h2>
+          {sec.lead && <p class="sg-sub">{sec.lead}</p>}
+          <div class="sg-grid">
+            {sec.shots.map((s) => (
+              <figure class="sg-item">
+                <a
+                  class="sg-thumb"
+                  href={s.src}
+                  data-lb="gallery"
+                  data-lb-dark={s.dark}
+                  data-lb-caption={s.caption}
+                  data-lb-alt={s.alt}
+                  data-lb-more={s.more?.href}
+                  data-lb-more-label={s.more?.label}
+                >
+                  <img class:list={{ "v-light": s.thumbDark }} src={s.thumb} alt={s.alt} loading="lazy" decoding="async" width="560" height="315" />
+                  {s.thumbDark && (
+                    <img class="v-dark" src={s.thumbDark} alt={s.alt} loading="lazy" decoding="async" width="560" height="315" />
+                  )}
+                </a>
+                <figcaption>{s.title}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      ))
     }
   </main>
+  <Lightbox />
 </Layout>
 
 <style>
-  .page {
+  .sg {
     max-width: var(--maxw);
     margin: 0 auto;
-    padding: 3rem 1.25rem 2rem;
+    padding: 3rem 1.25rem 4rem;
   }
-
-  h1 {
+  .sg-head h1 {
     font-size: 2.4rem;
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.6rem;
     letter-spacing: -0.02em;
   }
-
-  .lead {
+  .sg-lead {
     color: var(--muted);
+    font-size: 1.1rem;
+    margin: 0 0 1.5rem;
     max-width: 44rem;
-    margin: 0 0 2.5rem;
   }
-
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+  .sg-jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
-
-  .shot {
-    margin: 0;
+  .sg-jump a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
     background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+  .sg-jump a:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .sg-count {
+    color: var(--faint);
+    font-size: 0.8em;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .sg-section {
+    margin-top: 2.75rem;
+    scroll-margin-top: 4.5rem;
+  }
+  .sg-section h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .sg-sub {
+    color: var(--muted);
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+  }
+  .sg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem 1rem;
+    margin-top: 1rem;
+  }
+  .sg-item {
+    margin: 0;
+  }
+  .sg-thumb {
+    display: block;
+    aspect-ratio: 16 / 9;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
+    background: var(--bg-soft);
+    cursor: zoom-in;
+    transition: border-color 0.15s ease;
   }
-
-  .shot img {
+  .sg-thumb:hover,
+  .sg-thumb:focus-visible {
+    border-color: var(--accent);
+  }
+  .sg-thumb img {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 2720 / 1700;
-    border-bottom: 1px solid var(--border);
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    transition: transform 0.25s ease;
   }
-
-  .shot figcaption {
-    padding: 0.75rem 1rem;
-    color: var(--muted);
-    font-size: 0.9rem;
+  .sg-thumb:hover img {
+    transform: scale(1.03);
   }
-
-  .empty {
-    background: var(--bg-soft);
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 2.5rem;
-    text-align: center;
-  }
-
-  .empty p {
-    margin: 0 0 0.75rem;
-  }
-
-  .empty p:first-child {
-    font-size: 1.2rem;
+  .sg-item figcaption {
+    margin-top: 0.5rem;
+    color: var(--text);
+    font-size: 0.92rem;
     font-weight: 600;
   }
-
-  .empty-hint {
-    color: var(--muted);
-    max-width: 40rem;
-    margin: 0 auto 1rem;
-    font-size: 0.95rem;
-    line-height: 1.7;
+  @media (max-width: 600px) {
+    .sg {
+      padding-top: 2rem;
+    }
+    .sg-head h1 {
+      font-size: 2rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sg-thumb img {
+      transition: none;
+    }
   }
 </style>
