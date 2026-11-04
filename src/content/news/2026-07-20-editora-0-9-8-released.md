@@ -40,7 +40,6 @@ whatever the active file previews as. And development builds now carry a
 `-SNAPSHOT` suffix and a `snapshot` toolbar badge, so a build made from source is
 never mistaken for a release.
 
-The complete list is on the [What's New](/whats-new) page, and there's a
-[0.9.8 blog post](/blog/editora-0-9-8). If you're upgrading from further back,
-[0.9.7](/blog/editora-0-9-7) was a broad performance pass and
-[0.9.6](/blog/editora-0-9-6) a large security and data-safety one.
+The complete list is on the [What's New](/whats-new) page. If you're upgrading from further back,
+[0.9.7](/news/2026-07-18-editora-0-9-7-released) was a broad performance pass and
+[0.9.6](/news/2026-07-17-editora-0-9-6-released) a large security and data-safety one.

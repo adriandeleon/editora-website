@@ -58,5 +58,4 @@ keybindings. Test Results tracks the running test and shows a passing test's
 real output. And adding a bookmark moved off the gutter click, onto `C-c m` and
 the editor right-click menu.
 
-The complete list is on the [What's New](/whats-new) page, and there's a
-[0.9.9 blog post](/blog/editora-0-9-9).
+The complete list is on the [What's New](/whats-new) page.

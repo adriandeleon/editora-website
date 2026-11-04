@@ -39,6 +39,3 @@ PC no longer double-binds), plugin class loaders that no longer leak jar handles
 strand each other's remote files, text zoom that now works in diff views and on
 the Welcome page, and one Ctrl-Z that fully reverts a repeated snippet field. The
 full list is on the [What's New](/whats-new) page.
-
-There's a [0.9.7 blog post](/blog/editora-0-9-7) on the performance work, and the
-complete changelog is on [What's New](/whats-new).

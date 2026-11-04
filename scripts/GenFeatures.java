@@ -660,7 +660,7 @@ A floating browser-globe button on any `.html`/`.htm`/`.xhtml` file opens it in 
 
 The page's whole site is served over a tiny embedded web server bound to **loopback only** (the project folder, or the highest folder of an unbroken chain of folders with an `index.html`, the root the HTML language server gives a loose page too), so its CSS, JS, images, `/…` links and folder links load, and a small injected script **reloads the page live as you type** (it serves the buffers' in-memory text, so you don't have to save). Editing a stylesheet of the site swaps it in without a reload; opening a file without editing it reloads nothing. Each site gets its own address (its own port and random path), so one previewed page cannot read another site's files. Hidden files, private keys, credential and password stores, databases and encrypted files are never served. No external tool: it uses the JDK's built-in HTTP server.
 
-On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. See the [HTML docs](/docs/html#live-preview), or read the [deep-dive](/blog/html-live-preview).
+On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. See the [HTML docs](/docs/html#live-preview).
 """),
     new Feature("project-map", WF, 0, false,
         "Project Map",
@@ -802,7 +802,7 @@ Two ways to mark up code.
 
 **Bookmarks** toggle on a line (`C-c m`) with a gutter marker and an optional note; the Bookmarks tool window lists them across files, `C-c ]` / `C-c [` cycle within a file, and `M-g b` is a cross-file picker, reorderable and scoped per project.
 
-**Personal Notes** attach an annotation to a word, line, range, or project folder, stored *outside* the file (useful for read-only or generated code, or project context that does not belong in source). They survive edits and renames via content-hash identity and text anchoring, render Markdown, and have their own tool window and `M-g n` picker. Folder notes appear as Project-tree tooltips, and activating one selects its folder in the explorer. See the [deep-dive](/blog/personal-notes-that-survive-edits).
+**Personal Notes** attach an annotation to a word, line, range, or project folder, stored *outside* the file (useful for read-only or generated code, or project context that does not belong in source). They survive edits and renames via content-hash identity and text anchoring, render Markdown, and have their own tool window and `M-g n` picker. Folder notes appear as Project-tree tooltips, and activating one selects its folder in the explorer.
 """),
     new Feature("find-in-files", WF, 5, false,
         "Find in files",

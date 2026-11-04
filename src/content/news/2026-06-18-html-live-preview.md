@@ -19,8 +19,6 @@ It's **off by default**; enable it under **Settings → HTML Preview**, then use
 the globe or the *Open in Browser* / *Open in Browser…* palette commands. It adds
 no new dependency because it uses the JDK's built-in HTTP server.
 
-Read the [deep-dive on the blog](/blog/html-live-preview) for how it works.
-
 **Update (October 2026).** HTML live preview is no longer Beta and is now on by
 default. The preview server also answers only the browser tab it opened, under
 a per-session URL prefix.

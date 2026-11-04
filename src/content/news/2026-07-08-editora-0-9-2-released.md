@@ -28,5 +28,4 @@ cache landed, every Windows install failed to start with "Failed to find JVM in
 ...\runtime directory", because the build stripped the runtime's `bin/` (which,
 on Windows only, holds the JVM itself). The strip is now guarded to non-Windows.
 
-See the full [What's New](/whats-new) for the complete list, or the
-[0.9.2 release notes](/blog/editora-0-9-2).
+See the full [What's New](/whats-new) for the complete list.

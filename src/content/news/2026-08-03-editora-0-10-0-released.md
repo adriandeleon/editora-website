@@ -248,6 +248,4 @@ Java-only, and now says so instead of reporting a confusing Java error. See
   Welcome and Doctor pages and the image, hex, PDF and diff viewers, which aren't text
   buffers.
 
-The complete list is on the [What's New](/whats-new) page, and there is a
-[0.10.0 blog post](/blog/editora-0-10-0) on what a design system has to
-decide.
+The complete list is on the [What's New](/whats-new) page.
