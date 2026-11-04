@@ -17,6 +17,9 @@ import KeymapCompare from "../components/KeymapCompare.astro";
 import ThemeGallery from "../components/ThemeGallery.astro";
 import FeatureCard from "../components/FeatureCard.astro";
 import MapSpotlight from "../components/MapSpotlight.astro";
+import ShotCarousel from "../components/ShotCarousel.astro";
+import Lightbox from "../components/Lightbox.astro";
+import { tourShots, gallerySections } from "../lib/screenshots";
 
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
@@ -70,6 +73,8 @@ const fmtDate = (d: Date) =>
     day: "numeric",
     timeZone: "UTC",
   });
+
+const galleryCount = (await gallerySections()).reduce((n, s) => n + s.shots.length, 0);
 
 const featureGroups = await groupedFeatures();
 const featureTotal = featureGroups.reduce((n, g) => n + g.items.length, 0);
@@ -164,7 +169,7 @@ const platforms = [
         {
           heroVideo
             ? "The actual editor, recorded: editing, navigating, and running commands from the keyboard."
-            : "The actual editor: a Java file with syntax highlighting, folding markers in the gutter, the minimap, the Project tool window, and a status bar that stays out of your way."
+            : "The actual editor, not a mockup: the code, the Project Map, Git, the HTTP Client and more. Click a picture to see it full size."
         }
       </p>
       {
@@ -180,24 +185,12 @@ const platforms = [
             controls
           />
         ) : (
-          <figure class="demo-poster">
-            <picture>
-              <source
-                srcset={url("screenshots/hero/editor.webp")}
-                type="image/webp"
-              />
-              <img
-                src={url("screenshots/hero/editor.jpg")}
-                alt="The Editora editor: a Java file with syntax highlighting, a line-number gutter with bookmarks, a minimap, and a status bar"
-                width="2720"
-                height="1700"
-                fetchpriority="high"
-              />
-            </picture>
-            <figcaption>
-              Editora with the Editora&nbsp;Dark theme.
-            </figcaption>
-          </figure>
+          <ShotCarousel
+            shots={tourShots}
+            group="tour"
+            galleryHref={url("screenshots")}
+            galleryCount={galleryCount}
+          />
         )
       }
     </section>
@@ -737,6 +730,7 @@ const platforms = [
         .catch(function () {});
     })();
   </script>
+  <Lightbox />
 </Layout>
 
 <style>
@@ -1248,9 +1242,8 @@ const platforms = [
     margin: 0.9rem 0 0;
   }
 
-  /* --- "See it in action" video / stand-in poster --- */
-  .demo-video,
-  .demo-poster img {
+  /* --- "See it in action" video (the slideshow styles itself) --- */
+  .demo-video {
     display: block;
     width: 100%;
     height: auto;
@@ -1259,28 +1252,6 @@ const platforms = [
     box-shadow:
       0 20px 50px -20px rgba(0, 0, 0, 0.6),
       0 0 0 1px var(--border-soft);
-  }
-  .demo-poster {
-    margin: 0;
-  }
-  .demo-poster figcaption {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-    margin-top: 0.9rem;
-  }
-  .demo-badge {
-    flex: none;
-    color: var(--on-accent);
-    background: var(--accent);
-    border-radius: 999px;
-    padding: 0.1rem 0.55rem;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
   /* --- Why: pillars --- */

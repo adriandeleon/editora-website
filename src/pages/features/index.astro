@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import FeatureCard from "../../components/FeatureCard.astro";
 import MapSpotlight from "../../components/MapSpotlight.astro";
+import Lightbox from "../../components/Lightbox.astro";
 import { groupedFeatures, groupId } from "../../lib/features";
 import { docsBase } from "../../lib/editora";
 
@@ -19,7 +20,8 @@ const total = groups.reduce((n, g) => n + g.items.length, 0);
       <p class="fp-lead">
         Everything Editora does, in {total} features across {groups.length} areas.
         Each card opens a page with the details and links into the
-        <a href={docsBase}>docs</a>.
+        <a href={docsBase}>docs</a>, or see them all in the
+        <a href="/screenshots">screenshot gallery</a>.
       </p>
       <nav class="fp-jump" aria-label="Feature areas">
         <a href="#project-map">Project Map</a>
@@ -54,6 +56,7 @@ const total = groups.reduce((n, g) => n + g.items.length, 0);
       ))
     }
   </main>
+  <Lightbox />
 </Layout>
 
 <style>

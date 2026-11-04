@@ -1,0 +1,470 @@
+---
+// The home page's slideshow: one big screenshot at a time, crossfading every
+// few seconds. Tabs under it name every picture and jump to it; clicking the
+// picture opens it full size in the Lightbox (which the page must include).
+//
+// It pauses while the pointer or keyboard focus is on the picture, while it is
+// off screen or the tab is hidden, and while the Lightbox is open, and it stops
+// for good once someone picks a picture themselves. With reduced motion asked
+// for it does not start on its own and does not fade.
+//
+// Only the current picture and its neighbours are displayed, so the browser's
+// lazy loading fetches those and not the whole set up front.
+import type { Shot } from "../lib/screenshots";
+
+interface Props {
+  shots: Shot[];
+  /** Lightbox group, so ← and → in the viewer walk the same pictures. */
+  group: string;
+  /** The gallery page, and how many pictures it has. */
+  galleryHref: string;
+  galleryCount: number;
+}
+
+const { shots, group, galleryHref, galleryCount } = Astro.props;
+const n = shots.length;
+const near = (k: number) => k === 0 || k === 1 || k === n - 1;
+---
+
+<div class="car" data-carousel={group} aria-roledescription="carousel" aria-label="Editora screenshots">
+  <div class="car-frame">
+    {
+      shots.map((s, k) => (
+        <div
+          class:list={["car-slide", { "is-current": k === 0, "is-near": near(k) }]}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${k + 1} of ${n}: ${s.title}`}
+          data-caption={s.caption}
+          inert={k !== 0}
+        >
+          <a
+            href={s.src}
+            data-lb={group}
+            data-lb-dark={s.dark}
+            data-lb-caption={s.caption}
+            data-lb-alt={s.alt}
+            data-lb-more={s.more?.href}
+            data-lb-more-label={s.more?.label}
+            title="View full size"
+          >
+            <img class:list={{ "v-light": s.dark }} src={s.src} alt={s.alt} loading="lazy" decoding="async" draggable="false" />
+            {s.dark && <img class="v-dark" src={s.dark} alt={s.alt} loading="lazy" decoding="async" draggable="false" />}
+          </a>
+        </div>
+      ))
+    }
+    <button type="button" class="car-arrow car-prev" aria-label="Previous screenshot">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+    </button>
+    <button type="button" class="car-arrow car-next" aria-label="Next screenshot">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+    </button>
+    <span class="car-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
+      Click to enlarge
+    </span>
+  </div>
+
+  <div class="car-controls">
+    <div class="car-tabs" role="group" aria-label="Pick a screenshot">
+      {
+        shots.map((s, k) => (
+          <button type="button" class="car-tab" aria-current={k === 0 ? "true" : undefined}>
+            {s.title}
+            <span class="car-fill" aria-hidden="true" />
+          </button>
+        ))
+      }
+    </div>
+    <button type="button" class="car-play" aria-label="Pause the slideshow" data-playing>
+      <svg class="car-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12" /></svg>
+      <svg class="car-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z" /></svg>
+    </button>
+  </div>
+
+  <p class="car-cap" aria-live="polite">{shots[0].caption}</p>
+  <p class="car-all">
+    <a href={galleryHref}>Browse all {galleryCount} screenshots →</a>
+  </p>
+</div>
+
+<script>
+  const DELAY = 6000;
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-carousel]")) {
+    const group = root.dataset.carousel!;
+    const frame = root.querySelector<HTMLElement>(".car-frame")!;
+    const slides = [...root.querySelectorAll<HTMLElement>(".car-slide")];
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>(".car-tab")];
+    const cap = root.querySelector<HTMLElement>(".car-cap")!;
+    const play = root.querySelector<HTMLButtonElement>(".car-play")!;
+    const n = slides.length;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wrap = (k: number) => (k + n) % n;
+
+    let cur = 0;
+    let timer = 0;
+    let playing = !reduce;
+    let hovered = false;
+    let focused = false;
+    let visible = false;
+    let viewing = false;
+
+    root.style.setProperty("--car-delay", `${DELAY}ms`);
+
+    function tick() {
+      clearTimeout(timer);
+      root.removeAttribute("data-running");
+      if (!playing || hovered || focused || !visible || viewing || document.hidden) return;
+      void root.offsetWidth; // restart the tab's progress bar
+      root.setAttribute("data-running", "");
+      timer = window.setTimeout(() => go(cur + 1), DELAY);
+    }
+
+    function setPlaying(p: boolean) {
+      playing = p;
+      play.toggleAttribute("data-playing", p);
+      play.setAttribute("aria-label", p ? "Pause the slideshow" : "Play the slideshow");
+      tick();
+    }
+
+    function go(k: number, byUser = false) {
+      k = wrap(k);
+      if (k !== cur) {
+        const from = slides[cur];
+        const to = slides[k];
+        to.classList.add("is-near");
+        void to.offsetWidth; // let it render at opacity 0 so it fades in
+        from.classList.remove("is-current");
+        from.inert = true;
+        to.classList.add("is-current");
+        to.inert = false;
+        tabs[cur].removeAttribute("aria-current");
+        tabs[k].setAttribute("aria-current", "true");
+        // On phones the tabs scroll sideways; keep the current one in view.
+        const list = tabs[k].parentElement!;
+        list.scrollLeft = tabs[k].offsetLeft - (list.clientWidth - tabs[k].offsetWidth) / 2;
+        cap.textContent = to.dataset.caption ?? "";
+        cur = k;
+        slides[wrap(k + 1)].classList.add("is-near");
+        slides[wrap(k - 1)].classList.add("is-near");
+        // Once the fade is done, hide all but the neighbours again.
+        window.setTimeout(() => {
+          slides.forEach((s, j) => {
+            if (j !== cur && j !== wrap(cur + 1) && j !== wrap(cur - 1)) s.classList.remove("is-near");
+          });
+        }, 700);
+      }
+      if (byUser) setPlaying(false);
+      else tick();
+    }
+
+    root.querySelector(".car-prev")!.addEventListener("click", () => go(cur - 1, true));
+    root.querySelector(".car-next")!.addEventListener("click", () => go(cur + 1, true));
+    tabs.forEach((t, k) => t.addEventListener("click", () => go(k, true)));
+    play.addEventListener("click", () => setPlaying(!playing));
+
+    frame.addEventListener("pointerenter", (e) => {
+      if (e.pointerType === "mouse") { hovered = true; tick(); }
+    });
+    frame.addEventListener("pointerleave", () => { hovered = false; tick(); });
+    frame.addEventListener("focusin", () => { focused = true; tick(); });
+    frame.addEventListener("focusout", (e) => {
+      if (!frame.contains(e.relatedTarget as Node | null)) { focused = false; tick(); }
+    });
+    frame.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") go(cur - 1, true);
+      else if (e.key === "ArrowRight") go(cur + 1, true);
+      else return;
+      e.preventDefault();
+      // Keep focus on the picture now showing.
+      slides[cur].querySelector("a")?.focus();
+    });
+
+    // Swipe on touch screens; a swipe is not also a click on the picture.
+    let sx = 0;
+    let sy = 0;
+    let swiped = false;
+    frame.addEventListener("touchstart", (e) => {
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+      swiped = false;
+    }, { passive: true });
+    frame.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        swiped = true;
+        go(dx < 0 ? cur + 1 : cur - 1, true);
+      }
+    });
+    frame.addEventListener("click", (e) => {
+      if (swiped) { e.preventDefault(); e.stopPropagation(); swiped = false; }
+    }, true);
+
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; tick(); }, { threshold: 0.35 }).observe(frame);
+    document.addEventListener("visibilitychange", tick);
+    // Opened from the keyboard: focus comes back to the picture now showing,
+    // not to the one it was opened from, which is no longer focusable.
+    let fromKeyboard = false;
+    document.addEventListener("lightbox:open", (e) => {
+      if ((e as CustomEvent).detail.group !== group) return;
+      fromKeyboard = frame.querySelector("a:focus-visible") !== null;
+      viewing = true;
+      tick();
+    });
+    document.addEventListener("lightbox:close", (e) => {
+      const d = (e as CustomEvent).detail;
+      if (d.group !== group) return;
+      viewing = false;
+      go(d.index); // land on the last picture looked at
+      if (fromKeyboard) slides[cur].querySelector("a")?.focus();
+    });
+
+    setPlaying(playing);
+  }
+</script>
+
+<style>
+  .car {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .car-frame {
+    position: relative;
+    aspect-ratio: 2560 / 1520;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-soft);
+    box-shadow:
+      0 20px 50px -20px rgba(0, 0, 0, 0.6),
+      0 0 0 1px var(--border-soft);
+  }
+  .car-slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .car-slide.is-near,
+  .car-slide.is-current {
+    display: block;
+  }
+  .car-slide.is-current {
+    opacity: 1;
+    z-index: 1;
+  }
+  .car-slide a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: zoom-in;
+  }
+  .car-slide a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
+  }
+  .car-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+  }
+  .car-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(13, 17, 23, 0.72);
+    color: #e6edf3;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .car-prev {
+    left: 0.75rem;
+  }
+  .car-next {
+    right: 0.75rem;
+  }
+  .car-arrow:hover {
+    background: rgba(33, 38, 45, 0.92);
+  }
+  .car-arrow svg,
+  .car-play svg,
+  .car-hint svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .car-hint {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(13, 17, 23, 0.72);
+    color: #e6edf3;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .car-hint svg {
+    width: 14px;
+    height: 14px;
+  }
+  .car-frame:hover .car-arrow,
+  .car-frame:hover .car-hint,
+  .car-frame:focus-within .car-arrow,
+  .car-arrow:focus-visible {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .car-arrow {
+      opacity: 0.85;
+    }
+    .car-hint {
+      display: none;
+    }
+  }
+
+  .car-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .car-tabs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .car-tab {
+    position: relative;
+    overflow: hidden;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .car-tab:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .car-tab[aria-current] {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .car-fill {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+  .car[data-running] .car-tab[aria-current] .car-fill {
+    animation: car-fill var(--car-delay) linear forwards;
+  }
+  @keyframes car-fill {
+    to {
+      width: 100%;
+    }
+  }
+  .car-play {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .car-play:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .car-play svg {
+    width: 16px;
+    height: 16px;
+  }
+  .car-play .car-icon-pause,
+  .car-play[data-playing] .car-icon-play {
+    display: none;
+  }
+  .car-play[data-playing] .car-icon-pause {
+    display: block;
+  }
+  .car-cap {
+    min-height: 2.9em;
+    margin: 0.85rem auto 0;
+    max-width: 46rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+  .car-all {
+    margin: 0.35rem 0 0;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .car-controls {
+      align-items: flex-start;
+    }
+    .car-tabs {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .car-tab {
+      flex: none;
+    }
+    .car-arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .car-slide,
+    .car-arrow,
+    .car-hint {
+      transition: none;
+    }
+  }
+</style>

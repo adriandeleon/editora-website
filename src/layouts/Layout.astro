@@ -814,6 +814,15 @@ const isActive = (href: string) => {
   [data-theme="primer-light"] .doc-figure .doc-figure-link.doc-figure-light {
     display: block;
   }
+  /* The same rule for a capture and its twin as two <img>s in one link (the
+     slideshow, the gallery, the Map spotlight). */
+  .v-light,
+  [data-theme="primer-light"] .v-dark {
+    display: none !important;
+  }
+  [data-theme="primer-light"] .v-light {
+    display: block !important;
+  }
   .doc-figure figcaption {
     margin-top: 0.55rem;
     color: var(--faint);
