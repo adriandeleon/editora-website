@@ -160,10 +160,12 @@ version from its `package.json`.
 Many other servers and tools Editora installs at their latest release, so there
 is no tested version to compare with. **Check for Newer Versions**, in Doctor's
 header, asks where each one is published (npm, the Go module proxy, GitHub and
-HashiCorp) for its latest release. It covers Pyright,
-typescript-language-server, the YAML, Dockerfile, TOML
+HashiCorp) for its latest release. It covers Pyright, the YAML, Dockerfile, TOML
 and Astro servers, gopls, clangd, lua-language-server, tinymist, terraform-ls
 and the Mermaid CLI (`mmdc`), and only the ones that are installed and working.
+typescript-language-server is not looked up: Editora installs it at 5.3.0 with
+TypeScript 5.9.3 (see [TypeScript and JavaScript](/docs/lsp#typescript-and-javascript)),
+and **Install…** replaces Editora's own copy when it is older than that.
 
 Nothing is looked up until you click the button: opening Doctor or clicking
 **Refresh** never asks for newer versions. The status bar then says what the
