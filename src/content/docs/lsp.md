@@ -142,7 +142,13 @@ appears only where the argument is a literal; **LSP: Set Inlay Hint Filter**
 (`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered; in Java
 they show the inferred type of a `var` and of a lambda's parameters. Arguments
 named only by number (`List.of(e1: 1, e2: 2)`) get no hint. They cost nothing
-while off.
+while off. Not every server gives them; Pyright, for one, does not. Turning inlay
+hints on in such a file says so in the status bar (*Inlay hints are on, but
+Pyright gives none for this file.*), and **Set Inlay Hint Filter** says there is
+nothing to filter instead of opening its list. Turning on **View: Toggle
+Semantic Highlighting** (`view.toggleSemanticHighlight`) gives the same notice
+when the file's server sends no semantic tokens, and the file keeps its grammar
+colours.
 
 **Code lenses** are the server's reference and implementation counts, drawn
 after a declaration (`3 references`, `2 implementations`). A lens lights up
@@ -153,7 +159,8 @@ implementations lens runs Go to Implementation. When a declaration has more
 than one lens, a short list asks which one. They are **off by default**,
 because each count is a search on the server; turn them on in Settings → Code
 Completion ("Code lenses") or with `view.toggleCodeLens` (**View: Toggle Code
-Lenses**).
+Lenses**). Turning them on in a file whose server gives none, such as a Python
+file under Pyright, says so in the status bar.
 
 **Occurrence highlighting** needs no command: rest the caret on a symbol and
 every occurrence in the file gets a subtle wash, with writes (assignments) shaded
@@ -165,7 +172,8 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 "style" level, for example) is drawn as a faint dotted line rather than a full
 squiggle, code the server marks as unused, such as a variable nothing reads,
 is drawn faded, and a call the server marks as deprecated is struck through.
-Those unused and deprecated marks are not listed in the Problems window.
+Those unused and deprecated marks are not listed in the Problems window or
+counted by the problem counter.
 
 The **problem counter** at the top right of the editor shows the file's errors
 and warnings, and a muted count of notes (information and hints, such as
@@ -187,7 +195,12 @@ Dark and Blacky, whose accent is the bookmark's yellow, the quick-action bulb ta
 the text colour). Both
 can be turned off in Settings → Code Completion → Language server features.
 **Completion** is merged into
-the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
+the [autocomplete](/docs/languages#autocomplete) popup, which keeps every row the
+server sends (`os.` in Python lists all of the module's members). When the
+server has not answered after 300 ms, as Pyright may not on a very large file,
+the popup shows the rows Editora has without it, with **Waiting for Pyright…**
+(or the name of the file's server) under them, and the server's answer replaces
+them when it comes. The **Structure**
 tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures. A server that lists its symbols
 flat, as bash-language-server does, has them nested under the function that
@@ -258,6 +271,11 @@ With Open files, the same build runs when another file of the project is open, i
 this window or another one on the same project, so
 a file calling a method you just renamed elsewhere shows the error at once.
 
+For Python, **Whole project** has Pyright check every Python file of the
+project, opened or not, which can take a while on a large one; **Open files**
+has it check only the open ones. **Build Project** on a Python file switches
+Problems to Whole project and says so in the status bar.
+
 Problems of the project rather than of a file, such as a JDK version the build
 expects and the machine does not have, are reported after a Maven or Gradle
 project is imported: said in the status line, and listed in Problems in either
@@ -301,7 +319,9 @@ the command is in the palette and the right-click menu in every keymap.
 request, Pyright's organize-imports command, or the server's organize-imports
 code action. If the server has none of these, the status bar says so. On a
 Python file **Format Document** uses Ruff or Black; see
-[Formatting Python](#formatting-python).
+[Formatting Python](#formatting-python). Pyright offers no quick fixes of its
+own, so on a Python file Editora adds **Import**, **Remove unused import** and
+**Ignore on this line**; see [Python quick fixes](#python-quick-fixes).
 
 A multi-file edit is applied **completely or not at all**. An action that would
 delete a folder or replace an existing file asks first and names the paths, and
@@ -865,7 +885,9 @@ question went unanswered.
 A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
-single server. Python looks for its own markers first; see [Python](#python).
+single server. Python looks for its own markers first, and a Python sub-project
+inside a project gets a server of its own; see
+[Python sub-projects](#python-sub-projects).
 An HTML page with no project, and no `package.json` or `.git` above it (one in
 your home folder or above it does not count), is rooted at its site root, by
 the one rule HTML Live Preview uses too: the nearest folder with an
@@ -1338,7 +1360,8 @@ Python files use **Pyright** (`pyright-langserver --stdio`). Language servers
 are off by default, so the first Python file a window opens asks **Turn on
 Python code intelligence?** with **Turn on** and **Not now**. The offer comes
 once per window and follows the same switch as the install banners
-(`view.toggleInstallPrompts`).
+(`view.toggleInstallPrompts`). It is not shown while **Enable Python (Pyright)**
+is off in Settings → LSP.
 
 ### The Python interpreter
 
@@ -1355,57 +1378,111 @@ The first match wins:
    Editora works;
 4. a virtual environment in the project: a `.venv`, `venv`, `env` or `.env`
    folder with a `pyvenv.cfg`, looked for from the file's folder up to the
-   project root;
-5. **Settings → Debugging → Python interpreter (fallback for Run, Debug and code
-   intelligence)**;
+   project root. Pyright and the status-bar item look from the folder Pyright
+   is rooted at, so a [Python sub-project](#python-sub-projects) finds its own;
+5. **Settings → LSP → Python → Python interpreter (fallback for Run, Debug and
+   code intelligence)**, which may be a path or a bare name such as python3.12
+   that is looked up on `PATH`;
 6. the system Python on `PATH` (`python3`, then `python`; on Windows `py -3`,
    then `python`, never the Microsoft Store stub).
 
 A status-bar item on Python files shows the result and why, for example
 `Python 3.13.5 (.venv)`, `Python 3.12.4 (PATH)` or `Python 3.13.5 (picked)`.
-Hover it for the full command. Click it, or run **Python: Select Interpreter**
-(`python.selectInterpreter`), to choose another one: **Detect automatically**
-(the order above), the one in use, the project's environments, every Python on
-`PATH`, or **Browse…** for any file. The pick is kept per project; inside the
-project folder it is stored as a relative path. In a window without a project
-it applies to every loose Python file in that window.
+It is the interpreter Pyright analyses with. Hover it for the full command.
+Click it, press Enter on it after reaching it with Tab, or run **Python: Select
+Interpreter** (`python.selectInterpreter`), to choose another one: **Detect
+automatically** (the order above), the one in use, the project's environments,
+every Python on `PATH`, or **Browse…** for any file. An environment's row names
+its folder, for example `Python 3.13.5 — .venv` or
+`Python 3.13.5 — services/api/venv`, with a long path shortened in the middle, and typing
+filters the rows by path as well as by name. An interpreter found twice on
+`PATH` is listed once. **Browse…** checks that the file answers `--version` as
+Python does and changes nothing when it does not. The pick keeps the whole
+command, arguments included. It is kept per project; inside the project folder
+it is stored as a relative path. In a window without a project it applies to
+every loose Python file in that window.
+
+The **Python** card on Settings → LSP holds the fallback interpreter, a
+**Python: Select Interpreter** row whose **Choose…** button opens the same
+picker for this window's project, and **Format on save (Ruff/Black)**. The card
+can be edited with language servers and debugging off.
 
 Pyright is told the interpreter, so the packages in a project's `.venv` resolve
 with no `pyrightconfig.json`. A changed pick reaches the running server at once.
+So does a virtual environment created while the project is open, as soon as its
+`pyvenv.cfg` is written, and a package installed into it with `pip install`:
+its imports resolve within seconds, with no restart.
 A `pyrightconfig.json` or a `[tool.pyright]` section with `venvPath` and `venv`
 still wins inside Pyright, and settings such as `pythonVersion` or
 `typeCheckingMode` belong there too.
 [Doctor](/docs/troubleshooting#doctor) shows the same interpreter in its
-**Python interpreter** row.
+**Python interpreter** row, whose **Settings…** opens the Python card.
+
+### Python sub-projects
+
+The Python server's root is the nearest folder with a `pyproject.toml`,
+`setup.py`, `setup.cfg` or `pyrightconfig.json`, else the repository (`.git`),
+else the nearest `requirements.txt` or `Pipfile`. A `docs/requirements.txt`
+therefore does not split the documentation off from the package it documents.
+
+In a project window the project root is the root, except for a Python
+sub-project: a folder inside the project with its own `pyproject.toml`,
+`setup.py`, `setup.cfg` or `pyrightconfig.json`, such as a `backend/` beside a
+`frontend/`. It gets a Pyright of its own, with its own `.venv`, its own `src/`
+and its own `[tool.pyright]` settings, and the status-bar item on its files
+names that `.venv`. A member of a uv workspace (under a `pyproject.toml` with
+`[tool.uv.workspace]`) shares the workspace's server and its one `.venv`.
+Without a project, a uv workspace member still finds the workspace's `.venv`.
+Remote projects keep one server at the project root.
 
 ### What Pyright adds
 
 - **Unused names are faded** (an import or a variable nothing reads) and
   **calls to a deprecated function are struck through**. These marks are drawn
-  in the editor but not listed in the Problems window, where they would bury
-  the real errors.
+  in the editor but not listed in the Problems window or counted by the problem
+  counter, where they would bury the real errors.
 - **Organize Imports** (`lsp.organizeImports`) sorts and groups the imports
   with Pyright's own command. It leaves unused ones in place; they are the
   faded ones.
-- **Go to Definition** into the standard library, site-packages or Pyright's
-  bundled stubs opens that file in View mode, on the project's server, and
-  without the library's own type errors. **Enable Editing** in the View mode
+- **Find References** from a call lists that call with the others, and on a
+  function's only call it stays there rather than jumping to the definition.
+- **Go to Definition** into the standard library, site-packages (the project's
+  own `.venv` included) or Pyright's bundled stubs opens that file in View
+  mode, on the project's server, and without the library's own type errors.
+  The status bar says **Read-Only**, and **Enable Editing** in the View mode
   bar makes it editable.
 - An **untitled** buffer set to Python is analysed too. In a project window it
   sees the project's modules. Once you save it, its file takes over.
 - A Python file keeps its server up to **50,000 lines**, even above the
   **Disable minimap & LSP above** limit (10,000 lines by default), which then
-  turns off only the minimap.
+  turns off only the minimap. Pyright can take several seconds to answer on a
+  file that large; completion says **Waiting for Pyright…** meanwhile.
 
-The Python server's root is the nearest folder with a `pyproject.toml`,
-`setup.py` or `setup.cfg`, else the repository (`.git`), else the nearest
-`requirements.txt` or `Pipfile`. A `docs/requirements.txt` therefore does not
-split the documentation off from the package it documents. In a project window
-the project root is the root.
+Pyright gives no inlay hints, semantic highlighting or code lenses. Turning one
+of them on in a Python file says so in the status bar. basedpyright, set as the
+Python server below, gives inlay hints and semantic highlighting.
 
 To use another server, set the Python command in **Settings → LSP**, for example
 `basedpyright-langserver --stdio`. If that command is not found, the banner
 names it and offers **Settings…**, rather than installing Pyright.
+
+### Python quick fixes
+
+Pyright answers a request for code actions with nothing, so Editora adds its
+own to **Code Actions** and the lightbulb on a Python problem:
+
+- **Import Path from pathlib** (or **Import os**) on a name that is not
+  defined. Pyright's own import suggestions come first; when it has none, a
+  built-in list of common standard-library names and modules supplies the
+  import. The new line goes after the file's imports, or into its existing
+  one-line `from pathlib import …`. A module of your project that nothing in
+  the file reaches yet is not offered.
+- **Remove unused import sys** on a faded import, one name at a time.
+- **Ignore reportAssignmentType on this line**, listed under **Suppress**, on
+  an error, warning or information that names its Pyright rule. It adds
+  `# pyright: ignore[reportAssignmentType]` at the end of the line, or adds the
+  rule to the line's existing ignore comment. It is not offered on a line that
+  ends inside a string or with a backslash.
 
 ### Formatting Python
 
@@ -1421,7 +1498,28 @@ undoable edit, and the status bar names the tool, for example
 If neither is installed, the status bar says so; install one into the project's
 environment (`pip install ruff`). A Python server that formats by itself, such
 as `ruff server`, keeps the job. Doctor's **Python formatter** row shows which
-tool Format Document will use.
+tool Format Document will use. A missing formatter is optional there, and a
+warning only while Format on save is on.
+
+The text is left as it was, and the status bar says why, when:
+
+- the formatter prints nothing for a file that is not blank, which usually means
+  the file matches its `force-exclude` setting;
+- the result is larger than 10 MB;
+- the buffer is narrowed (*Widen the buffer to format it*) or read-only;
+- the file is on another machine (*Ruff and Black cannot format a file on
+  another machine yet*). A Python server that formats by itself still formats
+  remote files.
+
+A formatter that writes CRLF line endings adds no blank lines, and the file is
+saved with its own line endings. A format that finishes after you switch tabs
+still lands in its own file.
+
+**Format on save (Ruff/Black)** on the Python card of Settings → LSP formats a
+Python file with Ruff or Black after you save it, then saves it again. It is
+off by default, runs after an explicit save only (never after auto-save), and
+uses Ruff or Black even when a Python server that formats is running. With no
+formatter found, a save says so in the status bar.
 
 ## XML
 
@@ -1811,6 +1909,10 @@ than a path on this machine.
 - **Java** works too: jdtls runs on the host with the host's JDKs and keeps its
   index in `~/.cache/editora` there.
   *LSP: Clear Java Index Caches* clears only the indexes on this machine.
+- Files changed on the host, by `git pull` in a terminal for example, reach the
+  server when the Editora window comes back to the front, and every minute while
+  it stays there. Each check lists up to 300 folders and 5,000 files, and skips
+  virtual environments.
 - Losing the connection stops the host's servers without reporting a crash, and
   reconnecting starts them again.
 - The Astro server does not run on a host yet.
@@ -1831,6 +1933,8 @@ set in Settings → LSP is used there only when it is a bare program name.
   on this machine.
 - **Python**: Pyright inside is told the project's virtual environment by the
   name it has inside, as on a remote host.
+- Files changed inside reach the server the same way as on a remote host: when
+  the window comes back to the front, and every minute while it stays there.
 - The Astro server does not run in a container or distribution yet.
 
 ## Finding the server's binary
@@ -1854,7 +1958,10 @@ transfers only what changed on servers that support token deltas. Diagnostics fo
 files that aren't open are dropped by default, to keep the Problems window
 focused on what you're editing, and the whole-project selector above lifts that
 when you want it. Java can [organize imports and format on
-save](#java-only-assists); other languages cannot yet.
+save](#java-only-assists), JavaScript and TypeScript have their own
+[actions on save](#actions-on-save), and Python can
+[format on save](#formatting-python) with Ruff or Black; other languages cannot
+yet.
 
 The protocol library is **LSP 3.18 / DAP 1.70**. Two fields it widened affect
 Editora. A diagnostic's message may be markup rather than plain text;

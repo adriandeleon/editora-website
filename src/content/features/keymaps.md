@@ -10,6 +10,6 @@ Editora ships five complete keymaps (**Emacs** (default), **CUA**, **Sublime Tex
 
 For your own bindings, the built-in keybinding editor records multi-key chords (like `C-x C-s`) in the active keymap's notation, rebinds, removes or resets any command, and finds a command by name or by a chord typed in any notation. Shortcuts of macros, external tools and run configurations follow you to another keymap. Overrides are saved in `settings.json`, layered on top of the active keymap, so you only specify what you change.
 
-Every keymap binds the debugger. CUA and Sublime Text use VS Code's function keys, where F11 steps into while a program is paused and switches full screen otherwise.
+Every keymap binds the debugger. CUA and Sublime Text use VS Code's function keys, where F11 steps into while a program is paused and switches full screen otherwise. The VS Code keymap keeps VS Code's own chords for code too, such as Shift+Alt+O to organize imports and Ctrl+Shift+Space for parameter hints.
 
 On macOS the non-Emacs keymaps use ⌘ wherever the [keybindings reference](/keybindings) shows Ctrl.

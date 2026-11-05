@@ -159,19 +159,37 @@ by line comes out nested the way Python reads it:
   Enter steps out one level, since nothing more runs in that block.
 - Typing the `:` of `else`, `elif …`, `except …`, `finally` or `case …` moves
   the line to the statement it belongs to: the `if`, `for`, `while` or `try` of
-  an `else`, the `try` of an `except`, the previous `case`.
+  an `else`, the `try` of an `except` or `finally`, the previous `case`. A
+  `finally` after an `if`/`else` inside the `try` body still goes to the `try`.
+- A clause with nothing above it to line up with stays where you typed it. The
+  first `case` under a `match` stays one level inside the `match`, and Enter at
+  the end of a `case` line that is already right leaves it there.
 - Inside an open bracket that ends its line, the next line hangs one level in.
   When an argument follows the bracket (`result = some_function(arg_one,`), the
   next line lines up with that argument, as PEP 8 shows. After the closing
   bracket the next line goes back to the statement's indent.
 - A trailing `\` continues the statement one level in.
 - Inside a docstring or another triple-quoted string, Enter keeps the line's own
-  indent.
+  indent. Enter between an opening `"""` and its closing `"""` puts the
+  caret on an indented line of its own, with the closing quotes below it.
+- Quotes inside an f-string's `{ }` are read as code, so an f-string that
+  reuses its own quote (`f"{d["key"]}"`) does not throw the indent off.
+- **Tab** in a line's leading whitespace indents it to where Enter would have
+  put it.
 - Backspace in the indentation removes one level.
 
 The indent size is guessed from the lines that start a statement, so the hanging
 indents of wrapped calls and signatures do not make a 4-space file look like an
 8-space one.
+
+A file that mixes tabs and spaces in a way Python rejects with a `TabError`
+shows it on the status bar: the indent segment reads `Tab 4 · mixed indent` in
+the warning colour, and its tooltip names the line to fix.
+
+**Narrow to Defun** (`C-x n d`) in a Python file narrows to the innermost `def`
+or `class` around the caret, with its decorators, as Emacs's python-mode does.
+**Go: Beginning of Defun** and **Go: End of Defun** (`C-M-a`, `C-M-e`) use the
+same rule.
 
 Python blocks [fold](/docs/navigation#folding) by indentation, with or without
 a language server. A statement that ends in `:` folds over its body, and a

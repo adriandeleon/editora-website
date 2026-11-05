@@ -1050,7 +1050,10 @@ the caret.
 In the **status bar**, indent, line endings and encoding are one segment
 (`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
 They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is open. The encoding
+three different commands, and they appear only when a file is open. In a
+Python file that mixes tabs and spaces the way Python rejects, the indent part
+reads `Tab 4 · mixed indent` in the warning colour (see
+[Editing](/docs/editing#python)). The encoding
 is drawn in the warning colour when Editora had to guess it; see
 [File encodings](#file-encodings). A file whose
 lines do not all end the same way reads **Mixed** with its dominant ending, for
