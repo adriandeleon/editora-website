@@ -230,19 +230,31 @@ start them.
 **Which Node.js runs.** Run, run configurations, Debug, npm scripts and the
 TypeScript language server all use the same Node.js. The first of these wins:
 
-1. a run configuration's **Interpreter** field;
-2. the **Node.js** field under **Settings → Debugging → JavaScript**;
-3. the version that a `.nvmrc` or `.node-version` file names, when nvm has that
-   version installed (the file is looked for from the script's folder up to its
-   package folder). A version such as `20` or `20.11` picks the newest matching
-   install; an alias such as `lts/*` is not followed;
+1. a run configuration's **Node.js** field;
+2. the version that a `.nvmrc` or `.node-version` file names, when nvm has that
+   version installed. The file is looked for from the script's folder up to the
+   project root, so a monorepo's root `.nvmrc` counts for each of its packages
+   (with no project open, the search stops at the package folder). nvm's
+   versions are looked for in `$NVM_DIR` (or `$XDG_CONFIG_HOME/nvm`), then in
+   `~/.nvm`. A version such as
+   `20` or `20.11` picks the newest matching install; an alias such as `lts/*`
+   is not followed;
+3. the **Node.js** field in the **Node.js** card under **Settings → Build
+   Tools**;
 4. `node` on your `PATH` (the login shell's `PATH`, so the default of nvm, fnm
    or Volta counts).
 
+When a `.nvmrc` asks for a version that nvm does not have, the run goes on with
+the next Node.js in the list, and the Run console says so first, for example
+*.nvmrc asks for Node.js 18, which nvm does not have: using the Node.js setting
+instead*.
+
 Editora's other npm language servers (HTML, CSS, JSON, YAML, Bash, Pyright…)
-skip step 3: they run on the **Node.js** setting, else `node` on your `PATH`, so
+skip step 2: they run on the **Node.js** setting, else `node` on your `PATH`, so
 an old Node.js a project pins cannot break them.
 
+The tooltip of the Run window's runtime chip ends with where that Node.js was
+chosen from, such as *Chosen from: .nvmrc, via nvm*.
 [Doctor](/docs/troubleshooting#doctor) has a **Node.js** row that names the
 Node.js in use and why it was chosen, for example *Node.js setting* or
 *.nvmrc, via nvm*.
@@ -258,15 +270,36 @@ shebang keeps its flags, such as `#!/usr/bin/env -S node --no-warnings`, but
 runs under the Node.js chosen above. A shebang that names `deno`, `bun`, `tsx`
 or `ts-node` runs with that program, as written.
 
-**TypeScript** runs on plain Node.js 22.18 or newer, which removes the types
-itself; no `tsx` or build step is needed. On an older Node.js, Run says that
-the file needs 22.18 or newer instead of showing a syntax error.
+**TypeScript** runs the first way that works for the file:
+
+1. **The project's tsx.** When `node_modules/tsx` is in the file's folder or a
+   folder above it (up to the project root), Node.js runs the file with
+   `--import tsx`. It is still the Node.js chosen above, with its flags.
+2. **The compiled file.** When the nearest `tsconfig.json` has an `outDir` and
+   the file it compiles to exists (`src/index.ts` → `dist/index.js`), that file
+   runs, with source maps. The console's first line says so: *Running the
+   compiled dist/index.js (built from src/index.ts)*. When the compiled file is
+   older than its source, the line says to build again to run your latest
+   changes.
+3. **Plain Node.js** 22.18 or newer, which removes the types itself. On an
+   older Node.js, Run says that the file needs 22.18 or newer (or tsx) instead
+   of showing a syntax error. Plain Node.js cannot map an import of `./greet.js`
+   to `greet.ts`, which is how a `"module": "NodeNext"` project writes its
+   imports; when that import fails, a hint follows the error: add tsx to the
+   project (`npm install -D tsx`), or build it so Run uses the compiled file.
+
+A TypeScript test file's ▶ takes the same route.
 
 **Test files.** The ▶ of a test file runs `node --test` and shows the results
 in [Test Results](/docs/build-tools#test-runner). A test file is a
 `*.test.*` or `*.spec.*` file, or any script under a `test/`, `tests/` or
-`__tests__/` folder. **Rerun Failed** and **Rerun This Test** work on these
-results.
+`__tests__/` folder. The Run console shows node's own readable report, while
+Test Results reads a TAP report of the same run. A test file that fails to
+load, for example on a missing module, is a failed row named after the file,
+with the error and its stack. A skipped or todo test shows as skipped under its
+own name, with or without a reason. **Rerun Failed** and **Rerun This Test**
+work on these results; Rerun Failed on a file that failed to load runs the
+whole file again.
 
 While the program runs, the Run window names its runtime, such as
 **Node.js 24.18.1** (see
@@ -407,6 +440,10 @@ rather than a path on this machine, then the host's `python3`. `PYTHONPATH` gets
 the project root and its `src/` folder; the host's own `PYTHONPATH` is not
 kept, because Editora does not know it. Stop ends a remote program straight
 away, without the Ctrl-C a local Python program gets first.
+
+A Node.js script runs from its package folder there, the nearest folder above
+it on the host with a `package.json`, as it does locally. This holds in a
+container and in WSL too. A `.nvmrc` on the host is not read.
 
 A project on this machine can run on a host too: set a configuration's **Run
 on** to a [deployment](/docs/deployments), and Editora copies what changed in the
@@ -550,11 +587,14 @@ method the file declares, or else from the file's package and name. A
 configuration still named "New Configuration", or named after the class it
 launched before, is renamed after the new class; a name you typed is kept.
 
-A **Node.js script** configuration has the script, **Node.js arguments** (such
-as `--max-old-space-size=4096`), **Interpreter**, program arguments and
-environment. Left blank, **Interpreter** uses the Node.js that Run uses (see
+A **Node.js script** configuration has **Script**, **Node.js options** (such
+as `--max-old-space-size=4096`), **Node.js**, program arguments and
+environment. Left blank, **Node.js** is picked the way Run picks it (see
 [Node.js scripts](#nodejs-scripts)), and a blank working directory is the
-package folder, the nearest one with a `package.json`.
+package folder, the nearest one with a `package.json`. A **Node.js** path that
+does not exist stops the run with a message that names it, and the
+configuration opens so you can fix it. **Before launch** can run a command
+first, such as `npm run build`.
 
 An **npm script** configuration runs `<manager> run <name>`, with its arguments
 after `--`. The manager is the one the project uses (npm, pnpm, yarn or bun), as
@@ -1019,45 +1059,58 @@ accept; the console then tells you to restart.
 ### Debugging JavaScript and TypeScript
 
 **Debug** on a JavaScript or TypeScript file (`.js`, `.mjs`, `.cjs`, `.ts`,
-`.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug with
-the same Node.js, folder and flags as Run (see
-[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js**
-field under **Settings → Debugging → JavaScript**; left blank, Editora uses the
-version a project's `.nvmrc` or `.node-version` names (when nvm has it), else
-`node` on your `PATH`. The card's **Detected** line names that Node.js version
-and where vscode-js-debug was found.
+`.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug,
+started exactly as Run starts it: the same Node.js, flags, environment and
+folder, and for TypeScript the project's tsx or the compiled file (see
+[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js** card
+under **Settings → Build Tools**; left blank, Editora uses the version a
+project's `.nvmrc` or `.node-version` names (when nvm has it), else `node` on
+your `PATH`. The Debug console's first line is the command that runs. When that
+is a compiled file older than its source, a red line says so: build the project
+first to debug your latest changes. The **JavaScript** card under **Settings →
+Debugging** has a link to the Node.js card, and its **Detected** line names the
+vscode-js-debug version and the Node.js it runs on, such as *found (1.117.0 ·
+Node.js v24.18.1)*.
 
-- **TypeScript** files are debugged directly on Node.js 22.18 or newer. With an
-  older Node.js, Debug says so. In a project that compiles its TypeScript, a
-  breakpoint in a `.ts` source stops there when the compiled JavaScript runs,
-  through its source maps.
+- **TypeScript** files without tsx or a compiled file are debugged on plain
+  Node.js 22.18 or newer. With an older Node.js, Debug says so. In a project
+  that compiles its TypeScript, a breakpoint in a `.ts` source stops there when
+  the compiled JavaScript runs, through its source maps.
 - **JSX and TSX** files can't be run by Node.js. Debug the compiled JavaScript
   instead; a breakpoint in the `.jsx` or `.tsx` file still stops there through
   its source map.
-- **Output and input.** All output reaches the Debug console, including
-  `process.stdout.write` and `readline` prompts, and the program can read lines
-  you type there (see
+- **Output and input.** All output reaches the Debug console in the order the
+  program wrote it, with its colours, including `process.stdout.write` and
+  `readline` prompts. Output to stderr is not shown in red, because it shares
+  stdout's stream to keep that order. The program can read lines you type there
+  (see
   [Program input in the Debug console](#program-input-in-the-debug-console)).
-- Node.js's own modules are skipped, so they don't fill the call stack and Step
-  Into doesn't enter them.
+- Node.js's own modules are skipped, so Step Into doesn't enter them. In the
+  call stack, Node.js's own frames fold into one row, such as *… 7 frames of
+  runtime or library code (click to show)*; click it to see them.
 - A breakpoint condition that isn't valid JavaScript marks the breakpoint as
   rejected, and the console says why, once.
-- Child processes and worker threads show all their threads.
+- Child processes and worker threads show all their threads. The status line
+  names the file a thread stopped in, such as *Suspended in worker.js —
+  parent.js*.
 - **Debug Test at Caret** (`test.debugAtCaret`) on a `node:test` test runs that
   test under `node --test` and stops at its breakpoints.
 - **Node.js script** and **npm script** [run configurations](#run-configurations)
   can be debugged, started the way Run starts them.
 
 **Attach to a running program.** Start Node.js with `--inspect` (for example
-`node --inspect server.js`), then run **Debug: Attach to JVM…** (`debug.attach`)
-on a JavaScript or TypeScript file. It asks for the inspector's `host:port`,
-such as `localhost:9229`. A program started with `--inspect-brk` waits before its
-first line; attaching does not start it, so press Continue.
+`node --inspect server.js`), then run **Debug: Attach to Running Program…**
+(`debug.attach`) on a JavaScript or TypeScript file. It asks for the
+inspector's `host:port`, such as `localhost:9229`. Once attached, the console
+names the address, such as *Attached to 127.0.0.1:9229.* A program started with `--inspect-brk` waits
+before its first line; attaching does not start it, so press Continue.
 
-vscode-js-debug itself needs Node.js 18 or newer to run. When it can't start,
-or the Node.js is too old, Debug says so instead of stopping without a word.
-**Install…** on the JavaScript card installs vscode-js-debug v1.117.0, a version
-tested with Editora.
+vscode-js-debug itself needs Node.js 18 or newer to run. An older Node.js
+chosen for a project still runs the program, while vscode-js-debug runs on the
+newest Node.js 18 or newer that nvm has, else `node` on your `PATH`. When
+vscode-js-debug can't start, or no Node.js new enough is found, Debug says so
+instead of stopping without a word. **Install…** on the JavaScript card
+installs only vscode-js-debug v1.117.0, a version tested with Editora.
 
 ### Managing breakpoints
 
@@ -1264,7 +1317,7 @@ JDK and VM arguments.
 For a Gradle project, open a Kotlin file and use
 [Debug via Build Tool](#debug-via-the-build-tool): Gradle starts the app under
 a suspended JVM and Editora's Kotlin debugger attaches to it, so breakpoints in
-`.kt` files bind. **Debug: Attach to JVM…** (`debug.attach`) from a Kotlin file attaches the same
+`.kt` files bind. **Debug: Attach to Running Program…** (`debug.attach`) from a Kotlin file attaches the same
 way to any JVM listening for a debugger.
 
 Not supported yet: conditions, hit counts and log messages on a breakpoint (such
@@ -1337,8 +1390,9 @@ Breakpoints of a remote file are kept across reconnects.
   Run and tests**, with the project root and `src/` on `PYTHONPATH`. debugpy
   runs under the host's **Python for debugging**. The program's output reaches
   the Debug console, but it can't read typed input there.
-- **JavaScript** runs vscode-js-debug and `node` on the host. The program's
-  output reaches the Debug console, but it can't read typed input there.
+- **JavaScript** runs vscode-js-debug and `node` on the host, from the
+  script's package folder there, as Run does. The program's output reaches the
+  Debug console, but it can't read typed input there.
 - **Java** in a Maven or Gradle project goes through the host's `jdtls`: Debug,
   Debug Main Class, Attach (where `localhost` is the host), Debug Test, and a
   saved configuration. Editora copies its java-debug plugin to
@@ -1378,10 +1432,11 @@ palette commands:
 | --- | --- | --- |
 | **Install: Java Language Support** (`install.javaSupport`) | jdtls and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
 | **Install: Python Language Support** (`install.pythonSupport`) | Pyright and debugpy | Python with `pip` for debugpy; Node.js with `npm` for Pyright |
-| **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` with TypeScript 6, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
+| **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` 5.3.0 with TypeScript 5.9.3, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
 
-Each language's card on the **Settings → Debugging** page has the same
-**Install…** button. An install fetches only what is missing. When one tool's
+The Java and Python cards on the **Settings → Debugging** page have the same
+**Install…** button; the JavaScript card's **Install…** installs only
+vscode-js-debug. An install fetches only what is missing. When one tool's
 runtime is missing, the others still install and the status bar names the one
 that waits (debugpy installs without Node.js, for example). When Python has no
 `pip`, the error says so. After a debugger installs while debugging is off, the

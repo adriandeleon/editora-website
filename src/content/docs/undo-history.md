@@ -42,7 +42,8 @@ or with `tool.undoHistory`.
 
 ## Files without undo
 
-A file of 5 MB or more, or one with a very long line, opens in
+A file of 5 MB or more, or one with a line of 64K characters or more, opens in
+[View Mode](/docs/editing#read-only-and-view-mode) and, once you enable editing, in
 [large-file mode](/docs/troubleshooting#performance), which keeps no undo steps
 at all. Typing there is not undoable. A **bulk edit** is treated differently,
 because it changes text you are not looking at: Replace in Files, a line

@@ -16,6 +16,15 @@ thread. Token colors come from the active editor theme.
 
 Files without a bundled grammar are left unstyled rather than guessed at.
 
+Long lines are coloured only while that stays cheap. A line of 2,000 characters
+or more that splits into more than 400 tokens, or that does not finish within
+the half second a highlighting pass gives long lines, is shown as plain text,
+with its brackets uncoloured. A long comment, string or Markdown paragraph has
+few tokens, so it keeps its colours. A language server's semantic colours are
+not drawn on lines of 2,000 characters or more, and a line over 20,000
+characters is never highlighted. Files that are mostly long lines open in
+[View Mode](/docs/editing#read-only-and-view-mode).
+
 ### Supported languages
 
 Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
@@ -199,6 +208,41 @@ The other files of a Python project open with a format too:
 - **JSON:** `Pipfile.lock` and Jupyter notebooks (`.ipynb`). A notebook opens as
   its JSON text; there is no notebook view.
 
+### JavaScript and TypeScript
+
+`.js`, `.mjs` and `.cjs` files open as JavaScript, `.jsx` as JSX, `.ts`,
+`.mts` and `.cts` as TypeScript, and `.tsx` as TSX. JavaScript, JSX and TSX
+share one grammar, so JSX markup is coloured in a plain `.js` file too. VS Code
+workspace files (`.code-workspace`) and Bun's text lockfile (`bun.lock`) open
+as JSON.
+
+Without a [language server](/docs/lsp):
+
+- **Folding.** Braces fold in every JavaScript and TypeScript file. In
+  JavaScript, JSX and TSX files, parentheses that span lines fold too (a
+  `return (` … `);` block or a wrapped call), and so does every JSX element
+  written over several lines, from its opening tag to the closing tag at the
+  same indent.
+- **Structure.** The Structure window lists functions, classes and methods, and
+  top-level constants whose value spans lines, such as `const routes = { … }`.
+  An assignment like `module.exports.formatBytes = …` is listed by its name.
+- **Go to Definition** resolves a name by scope. A
+  parameter, a local `const`, `let` or `var` (destructured ones too) or a
+  `catch` binding goes to its declaration in the enclosing scope, and an
+  imported name goes to its `import` line. Only a name no enclosing scope
+  declares falls back to the file's top-level declarations and the
+  [symbol index](/docs/code-navigation#go-to-definition-without-a-language-server).
+- **Related File** pairs a TypeScript source with the JavaScript compiled from
+  it and its declaration file: `util.ts`, `util.js` and `util.d.ts` (and the
+  `.mts` / `.mjs` / `.d.mts` and `.cts` / `.cjs` / `.d.cts` families). A `.tsx`
+  file pairs with the `.jsx` of the same name. See
+  [Go to Related File](/docs/code-navigation#go-to-related-file).
+- **Editing.** Toggle Comment writes `{/* … */}` in JSX markup, and Enter after
+  an opening tag indents one level (see
+  [Editing](/docs/editing#auto-indent)). A new file indents with 2 spaces.
+- **Spell check** reads the text between JSX tags as well as comments and
+  strings.
+
 ## Autocomplete
 
 Completion appears as you type, debounced and kept off the hot path. Java member
@@ -257,7 +301,8 @@ What is checked depends on the file type:
   (`pipefail`, package names, `-xzf`) are not checked; quoted strings, here-doc
   text and comments are. In Python the first word of a prefixed string
   (`f"…"`, `rb'…'`) is checked like the rest, without its prefix, and in a pip
-  requirements file only the comments are checked.
+  requirements file only the comments are checked. In JavaScript, JSX and TSX
+  the text between JSX tags is checked too.
 - **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.

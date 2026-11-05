@@ -295,6 +295,32 @@ Project's Tools Here* removes the folder's entry. Whether a container or WSL
 distribution may run a project's tools is kept in `connections.json`, with the
 hosts' answers.
 
+### JavaScript and TypeScript tools
+
+`nodePath` is the Node.js that Run, run configurations, Debug, Package Scripts,
+the language servers and HTTP scripts use. It is the **Node.js** field on its
+own card under **Settings → Build Tools**, beside npm. Blank (the default) means
+automatic: a project's `.nvmrc` or `.node-version` version when nvm has it,
+else `node` on the PATH.
+
+ESLint and formatting are the **ESLint and formatting** rows of the TypeScript
+card under **Settings → LSP**. ESLint, Prettier and Biome run only in a trusted
+folder:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `eslintEnabled` | Check with ESLint | `true` |
+| `jsFormatter` | Formatter: `auto` (Automatic), `prettier`, `biome` or `server` (TypeScript server) | `auto` |
+| `jsOrganizeImportsOnSave` | Organize imports on save | `false` |
+| `eslintFixOnSave` | Apply ESLint fixes on save | `false` |
+| `jsFormatOnSave` | Format on save | `false` |
+
+**Automatic** formats with the project's own Prettier or Biome when it has one,
+else with the TypeScript server. The three on-save actions run in that order
+after a save you make yourself, never after auto-save. When they change the
+file it is saved again, and their changes undo as one step. See
+[Language servers](/docs/lsp).
+
 ### Rulers and indent guides
 
 These are the rows under **Settings → Editor → Display**:

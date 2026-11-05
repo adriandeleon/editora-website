@@ -296,7 +296,11 @@ Editora ships 37 templates:
   `.editorconfig`, GitHub issue and pull request templates, and a multi-stage
   Java Dockerfile, on its own or with a `compose.yaml` and `.dockerignore`.
 - **Projects:** a Python project and a Node.js TypeScript project (which installs
-  TypeScript 6; see [why](/docs/lsp#typescript-and-javascript)).
+  TypeScript 5.9; see [why](/docs/lsp#typescript-and-javascript)). The
+  TypeScript project's `npm start` runs `tsx src/index.ts`, and its `npm test`
+  runs `node --import tsx --test` on the `src/**/*.test.ts` files; `tsx`,
+  `typescript` and `@types/node` are its dev dependencies, and `npm run build` compiles to
+  `dist/` with `tsc`.
 
 Every field the wizard shows starts filled in, so pressing **Create** without
 changing anything gives a working file.

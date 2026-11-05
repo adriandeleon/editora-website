@@ -83,6 +83,11 @@ also follows these shapes:
 - **Doc comments.** Enter inside a `/** … */` comment (JSDoc, Javadoc) starts
   the new line with ` * `. Enter right after a new `/**` also adds the closing
   ` */` below.
+- **JSX tags.** In JavaScript, JSX and TSX files, Enter after an opening tag
+  such as `<div className="x">` indents the next line one level. Enter between
+  `<div>` and `</div>` puts the caret on an indented line, with the closing tag
+  below at the opening tag's indent. Fragments (`<>` and `</>`) work the same
+  way.
 
 **Smart backspace** clears a line's indentation in one press. On a blank,
 auto-indented line, a single Backspace jumps back to the end of the previous
@@ -90,8 +95,11 @@ line. In Python and YAML, where indentation is syntax, Backspace in the
 indentation removes one indent level instead and never joins the line above.
 The indent unit (tabs or spaces) is inferred from the file, including its
 width: a 2-space file gets 2-space Tab, Enter, and Shift-Tab whatever the tab
-size setting says. A tab character is drawn at the configured tab size (the
-setting or `.editorconfig`), 4 columns by default.
+size setting says. A file with nothing indented yet, such as a new one, takes
+its language's own unit: 2 spaces in JavaScript, TypeScript, JSON and YAML, the
+tab size elsewhere. An `.editorconfig` indent rule, or an **Indent style** of
+spaces or tabs, still comes first. A tab character is drawn at the configured
+tab size (the setting or `.editorconfig`), 4 columns by default.
 
 ### Shell scripts
 
@@ -176,10 +184,13 @@ end it. Sticky scroll pins the same blocks.
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps
 the caret between them. Type the closer when it's already next to the caret and
 Editora types over it. Type an opener with a selection and it wraps the
-selection. Backspace inside an empty pair deletes both halves. Quotes aren't
-auto-paired next to a word character, so the apostrophe in `don't` is left
-alone. Whenever the caret sits next to a bracket, it and its match are
-highlighted.
+selection. Backspace inside an empty pair deletes both halves. A bracket pairs
+only where its closer can sit: before whitespace, a closing bracket, a
+separator (`;`, `:`, `.`, `,`, `=`, `>`), a quote, or at the end of the line.
+Typing `(` just before `foo` gives `(foo`, so you can type the closer where it
+belongs. This holds in every language. Quotes aren't auto-paired next to a word
+character, so the apostrophe in `don't` is left alone. Whenever the caret sits
+next to a bracket, it and its match are highlighted.
 
 In Python a quote after a string prefix pairs too (`f`, `r`, `b`, `u`, `t`, and
 pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
@@ -268,6 +279,11 @@ own comment (`{# #}`, `{% comment %}`, `<%#`, `{{!-- --}}`), since an HTML
 comment does not stop it. In a PHP file the HTML part gets `<!-- -->`, and a
 line that opens a PHP block is commented inside it. See
 [HTML](/docs/html#comments-and-indentation).
+
+In JavaScript, JSX and TSX files, a line of JSX markup (between an opening and
+a closing tag, where `//` would be page text) gets `{/* … */}`, and toggling
+again removes it. A multi-line selection of markup is wrapped in one
+`{/* … */}`. Lines of code in the same file keep `//`.
 
 ## Small operations
 
@@ -566,6 +582,24 @@ automatically, and is never replaced silently: Save asks first (once per file),
 and auto-save reports that it cannot write. A Word-style **View Mode banner** docks above the editor with an
 *Enable Editing* button when the file is writable, and while read-only,
 **Space** pages down and **Backspace** pages up like a pager.
+
+Some files are slow or risky to type into, so the first time a tab loads one it
+opens in View Mode, and the banner says why:
+
+- **A file of 5 MB or more.** It opens in
+  [large-file mode](/docs/troubleshooting#performance), which keeps no undo.
+- **A file with a line of 64K characters or more** (65,536). Such a line is too
+  wide to lay out quickly, so the file also opens without undo.
+- **Minified or generated code**: a file of at least 100,000 characters whose
+  lines average 500 characters or more, such as `dist/bundle.min.js`. It keeps
+  undo. Markdown, Typst, plain text, logs, CSV and TSV, Markwhen and diffs never
+  count as minified, since their long lines are paragraphs or records.
+
+**Enable Editing** makes the file editable, and reloading it does not put it
+back in View Mode. While an editable file has no undo, the status bar says
+**Editable, No Undo**; its tooltip says why, and clicking it makes the file
+read-only again. See [Files without undo](/docs/undo-history#files-without-undo)
+for how bulk edits are kept safe there.
 
 For existing local files, Save writes a staged replacement and only swaps it
 into place after the complete new content is ready. If Editora cannot create a

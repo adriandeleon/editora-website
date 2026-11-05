@@ -15,7 +15,7 @@ Every integration gets a row, grouped by area:
 - **Encryption**: GnuPG and its passphrase prompt, for [encrypted files](/docs/encrypted-files).
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, Graphviz and PlantUML (with their versions), and the Typst CLI.
 - **Language servers**: one row per enabled server, showing the resolved path (and Pyright's version).
-- **Formatting & linting**: the **Python formatter** (Ruff or Black) that Format Document uses, and ShellCheck and shfmt, which the Shell server lints and formats with.
+- **Formatting & linting**: the **Python formatter** (Ruff or Black) that Format Document uses, ShellCheck and shfmt, which the Shell server lints and formats with, and a JavaScript project's own ESLint, Prettier and Biome.
 - **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
 - **Run**: the JDK used to run a file, the **Python interpreter** that Run, Debug and Pyright share (its version, command and why it was chosen), the Node.js that Run, Debug, npm scripts and the TypeScript server share, `bash`, and `make`.
 - **HTTP Client**: the Node.js that runs response handlers and pre-request scripts.
