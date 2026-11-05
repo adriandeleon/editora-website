@@ -248,7 +248,7 @@ the list further as you type.
 ## Find in files
 
 `C-S-f` opens the **Find in Files** tool window and focuses it. It searches the
-active project (skipping dot-dirs, oversize, and binary files) plus the
+active project (skipping dot-dirs, binary files and files over 2 MB) plus the
 in-memory text of open buffers, so unsaved edits are included. Results are
 grouped by file; Enter or double-click jumps to a match. Case, regex, and
 whole-word apply here too.
@@ -260,9 +260,15 @@ excludes. It also skips every `node_modules` folder, even in a project with no
 files. The symbol index, Go to File, Search Everywhere, the TODO window and the
 Project tree's filter skip it the same way. To search inside it, add
 `!node_modules/` to the `.gitignore`, or name it in an include glob such as
-`node_modules/react/**`.
+`node_modules/react/**`. With the setting off, the symbol index and Go to File
+take the project's own files first and `node_modules` after them, so their file
+limit is not used up before your own code is reached.
 
-Find in Files stops at 5,000 matches, and says so when it stops there.
+Find in Files stops at 5,000 matches, and says so when it stops there. The
+built-in search and ripgrep both skip files over 2 MB, such as a built
+`dist/bundle.min.js`, without counting them, so the results say *(truncated)*
+only when the search stopped short: at the match or file limit, or at a folder
+it could not read.
 
 **Replace in files** rewrites matches across the project after a confirmation:
 open buffers are edited in-memory (undoable) and closed files are rewritten on

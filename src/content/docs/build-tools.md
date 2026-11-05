@@ -402,9 +402,9 @@ updated: 3 dependencies, 2 plugins*).
 ## npm and other package managers
 
 The `package.json` scripts are in the **Package Scripts** tool window
-(`tool.npm`). Each row shows a script's name and its command; run one with
-double-click or Enter. Scripts run as `<manager> run <name>`, where the manager
-is the one the project uses:
+(`tool.npm`). Each row shows a script's name; hover it to see the command it
+runs. Run one with double-click or Enter. Scripts run as
+`<manager> run <name>`, where the manager is the one the project uses:
 
 1. the `packageManager` field of `package.json` (for example `"pnpm@9.12.0"`);
 2. else the lockfile: `pnpm-lock.yaml` → pnpm, `yarn.lock` → yarn, a `bun`
@@ -415,12 +415,29 @@ In a **workspace** (a monorepo), a member package has no lockfile of its own, so
 Editora looks upward to the workspace root that has the `packageManager` field,
 the lockfile or a `pnpm-workspace.yaml`, and stops at the project root. A member
 of a pnpm workspace therefore runs pnpm, not npm, and is never offered
-`npm install`. Run configurations of the npm type use the same manager.
+`npm install`. `install` from a member runs in the member's folder; pnpm, yarn
+and npm 7 or newer find the workspace root themselves. Run configurations of
+the npm type use the same manager.
 
-The npm card in **Settings → Languages & Tools → Build Tools** names the manager
+Its commands are **Package Scripts: Show Actions** (`npm.showActions`),
+**Package Scripts: Run Custom Task(s)…** (`npm.runCustom`), **Package Scripts:
+Stop** (`npm.stop`), **Package Scripts: Rerun Last** (`npm.rerunLast`) and
+**Package Scripts: Refresh package.json** (`npm.refresh`). **View: Toggle
+Package Scripts** (`view.toggleNpmSupport`) turns the window, its actions popup
+and its Output tab on or off.
+
+The **Node.js** card in **Settings → Languages & Tools → Build Tools**, just
+above the npm card, has the **Node.js** field: the Node.js for Run, npm scripts,
+Debug, the language servers and HTTP scripts. Left blank, Editora uses `node`
+on your `PATH`. A project's `.nvmrc` or `.node-version` wins over the field
+when nvm has that version (see
+[Which Node.js runs](/docs/run-debug#nodejs-scripts)). The card can be edited
+while JavaScript debugging is turned off.
+
+The npm card on the same page names the manager
 the active project uses and why, for example *pnpm (pnpm-lock.yaml)*. Its
 **Command override** applies only when it names that same manager, or is a
-wrapper script of your own; an override of `npm` no longer makes a pnpm or yarn
+wrapper script of your own; an override of `npm` does not make a pnpm or yarn
 project run npm.
 
 The window always shows the project's own `package.json`: opening a file inside
@@ -437,10 +454,17 @@ showing an error from Java:
   `<manager> install` first;
 - a `package.json` that can't be read says where the mistake is.
 
-The Output tab is named after the manager, and it shows the colours the script
-prints and the Node.js it runs under, such as **Node.js 24.18.1**. Scripts use
-the same Node.js as [Run](/docs/run-debug#nodejs-scripts). Stop first sends
-Ctrl+C (SIGINT), so the script and its child processes can clean up.
+Runs stream to the **Package Scripts** tab of the Output window, which shows
+the colours the script prints and the Node.js it runs under, such as
+**Node.js 24.18.1**. The tab, and the Run console of an npm script
+configuration, start with the command line that runs, and the status bar names
+the manager that ran, for example *pnpm finished successfully*.
+
+Scripts use the same Node.js as [Run](/docs/run-debug#nodejs-scripts): that
+Node.js's folder goes first on the script's `PATH`, and the npm beside it runs.
+So the `node` that a script's own commands call is the same Node.js too. Stop
+first sends Ctrl+C (SIGINT), so the script and its child processes can clean
+up.
 
 ## Test runner
 

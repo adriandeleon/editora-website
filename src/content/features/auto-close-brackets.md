@@ -6,6 +6,6 @@ beta: false
 summary: "Typing <code>([{</code> or quotes inserts the closer, type-over to skip, wrap a selection, and Backspace clears an empty pair. The bracket beside the caret is highlighted with its match."
 ---
 
-Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps the caret between them. Type the closer when it's already next to the caret and Editora types over it; type an opener with a selection and it wraps the selection; Backspace inside an empty pair deletes both halves.
+Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps the caret between them. Type the closer when it's already next to the caret and Editora types over it; type an opener with a selection and it wraps the selection; Backspace inside an empty pair deletes both halves. A bracket pairs only before whitespace, a closer, a separator, a quote or the end of the line, so `(` typed before `foo` gives `(foo`.
 
 Quotes aren't auto-paired next to a word character, so the apostrophe in `don't` is left alone. In Python a quote after a string prefix (`f'`, `rb"`, `t'`) pairs as well, the third quote of `"""` adds the closing triple quote with the caret between, and a backtick is not paired. And whenever the caret sits next to a bracket, both it and its match are highlighted.

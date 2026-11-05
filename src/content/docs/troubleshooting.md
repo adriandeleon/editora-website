@@ -14,7 +14,7 @@ spirit of `flutter doctor`. It covers Git and the GitHub CLI (including whether
 `gh` is signed in), ripgrep, GnuPG and its passphrase prompt for encrypted
 files, the preview and diagram tools (`mmdc`, `maid`, Graphviz, PlantUML, the
 Typst CLI), every enabled language server, the Python formatter, ShellCheck and
-shfmt, the debug adapters (java-debug, debugpy, js-debug), the Run interpreters
+shfmt, a JavaScript project's ESLint, Prettier and Biome, the debug adapters (java-debug, debugpy, js-debug), the Run interpreters
 (with a JDK 25 check for Java, and the Python interpreter and Node.js that Run,
 Debug and the language servers share), the Node.js for HTTP scripts, the build
 tools, the AI provider and agent, the container engine (and WSL on Windows),
@@ -80,10 +80,39 @@ The **Node.js** row counts the open npm-installed servers (HTML, CSS, JSON,
 YAML, Bash, Pyright…) as needing Node.js, not only JavaScript and TypeScript.
 When it is missing and one of them needs it, the tip names that server, or,
 when several need it, names them and says they are Node.js scripts, and says to
-install Node.js or choose one in **Settings → Debugging → JavaScript**. A
-server's own row that cannot start without Node.js says the same: install
-Node.js (or start Editora where it is on `PATH`), or choose one in Settings →
-Debugging → JavaScript, then click **Restart Language Servers**.
+install Node.js or choose one on the **Node.js** card under **Settings →
+Build Tools**. A server's own row that cannot start without Node.js says the
+same: install Node.js (or start Editora where it is on `PATH`), or choose one
+in Settings → Build Tools → Node.js, then click **Restart Language Servers**.
+
+The **TypeScript / JavaScript** row shows the TypeScript the server runs and
+where it is. It warns when that TypeScript is 6 or newer: TypeScript 6 leaves
+out `@types/node` and the other installed `@types` packages unless a tsconfig
+lists them, and TypeScript 7 has no `tsserver`, so the server cannot start on
+it. **Update…** installs Editora's own TypeScript 5.9, which the server then
+uses. When the server's command is your own, the tip says to use **Install…**
+on the TypeScript card in Settings → LSP instead; your command then uses
+Editora's TypeScript. See
+[TypeScript features are off or show false errors](#typescript-features-are-off-or-show-false-errors).
+
+For a project with a `package.json` at its root, **Formatting & Linting** has
+an **ESLint**, a **Prettier** and a **Biome** row. Each reads the tool from
+the project's own `node_modules` and its version from the tool's
+`package.json`; nothing is run.
+
+- **OK**: the tool is installed and the folder is trusted. The row shows its
+  version and path.
+- **Not installed** (not counted): the project has no ESLint configuration, or
+  does not use Prettier or Biome.
+- **Warning**: the project has a configuration (or Prettier in its
+  dependencies, or the tool chosen as **Formatter**) but the tool is not
+  installed; run `npm install` in the project. Or the tool is installed but the
+  folder is not trusted, and the tools run only in trusted folders.
+- **Off**: **Check with ESLint** is off in Settings (the ESLint row only).
+
+Their **Settings…** button opens Settings → LSP; see
+[ESLint](/docs/lsp#eslint) and
+[Formatting JavaScript and TypeScript](/docs/lsp#formatting-javascript-and-typescript).
 
 ### Update… for servers older than Editora's
 
@@ -224,8 +253,8 @@ command blank so it is used. See
 
 ## Language servers run the wrong Node.js
 
-The Node.js chosen in **Settings → Debugging → JavaScript** (the **Node.js**
-row) runs every language server installed with npm, not only TypeScript's: the
+The Node.js chosen on the **Node.js** card under **Settings → Build Tools**
+runs every language server installed with npm, not only TypeScript's: the
 HTML, CSS, JSON, YAML and Bash servers, Pyright and the others. Left blank,
 they run on `node` on the `PATH`. A project's `.nvmrc` or `.node-version` does
 not change them, so an old Node.js pinned for the project cannot break them;
@@ -235,18 +264,65 @@ a missing Node.js does not, when that setting names one that exists.
 
 Install uses the npm beside that Node.js when there is one, so npm-installed
 servers install even with nothing on the `PATH`. A server installed with
-`npm install -g` into that Node.js (Bash, YAML, Pyright, TypeScript and the
-other npm servers) is found in its folder even when that folder is not on the
+`npm install -g` into that Node.js (Bash, YAML, Pyright and the other npm
+servers) is found in its folder even when that folder is not on the
 `PATH`: Settings, Doctor and the banner's install check look there after the
 `PATH`. If npm is set up to put global packages somewhere else, Install fails
 and says where they went: *npm installed it, but Editora does not find
 yaml-language-server — npm put it in …/bin. Add that folder to PATH, or choose
-the Node.js there in Settings → Debugging → JavaScript, then try again*.
+the Node.js there in Settings → Build Tools → Node.js, then try again*.
 
 Doctor's **Installer Prerequisites** row counts that Node.js and the npm beside
 it too, so a machine with no `node` or `npm` on the `PATH` is not reported as
-missing them; they are listed as *npm, node (from Settings → Debugging →
-JavaScript)*.
+missing them; they are listed as *npm, node (from Settings → Build Tools →
+Node.js)*.
+
+## TypeScript features are off or show false errors
+
+JavaScript and TypeScript need a TypeScript with a `tsserver`, and Editora
+installs its own: **Install…** on the TypeScript / JavaScript card in
+**Settings → LSP** puts typescript-language-server 5.3.0 and TypeScript 5.9.3
+in Editora's config folder, not in your global npm folder. Do not install a
+newer TypeScript globally to fix the server:
+
+- **TypeScript 6** leaves out `@types/node` and the other installed `@types`
+  packages unless a tsconfig lists them. Node.js code then shows false errors
+  such as *Cannot find name 'process'*, and JavaScript hovers Node's APIs as
+  `any`. Doctor's TypeScript / JavaScript row and the card's **TypeScript**
+  line warn: *TypeScript 6.0.3: leaves out @types packages*.
+- **TypeScript 7** has no `tsserver`, so the server cannot start. The status
+  bar says *JavaScript and TypeScript features are off: TypeScript 7.0.2 has no
+  tsserver*, and Doctor's row warns too.
+
+In both cases, click **Update…** on Doctor's row, or **Install…** on the card.
+Editora's own TypeScript is then used even by a server you installed yourself,
+except in a trusted folder that has its own. Which TypeScript runs, and in
+what order, is under [TypeScript and JavaScript](/docs/lsp#typescript-and-javascript).
+
+When the status bar says *the only TypeScript here is this folder's own, and
+the folder is not trusted*, either trust the folder with *Project: Trust This
+Project's Settings* (`lsp.trustProjectSettings`) or install Editora's own
+TypeScript.
+
+## Too many open files in a big JavaScript project
+
+In a large JavaScript or TypeScript project, the TypeScript server can run out
+of file watchers: it watches each `node_modules` folder it reads. On Linux this
+shows as *too many open files*, or as a file-watcher limit reached, and changes
+on disk may stop reaching the server. Editora cannot pass watch options to
+`tsserver`, so set them in the project. Add this to `tsconfig.json` (or
+`jsconfig.json`):
+
+```json
+"watchOptions": {
+  "excludeDirectories": ["**/node_modules"]
+}
+```
+
+Or raise the system's limit, for example with
+`sudo sysctl fs.inotify.max_user_watches=524288`, and put
+`fs.inotify.max_user_watches=524288` in a file under `/etc/sysctl.d/` to keep
+it. Then run **Restart Language Servers**.
 
 ## Python imports show as errors
 
@@ -423,12 +499,16 @@ Editora aims to stay responsive on large files. Highlighting and the minimap
 turn off automatically at about 5 MB; the status line then lists everything a
 large file opens without (highlighting, folding, Structure, spell check, the
 minimap, undo and the language server), and the Structure window says why it is
-empty. Files of about 50 MB open read-only
+empty. Such a file, one with a line of 64K characters or more, and minified code
+open in [View Mode](/docs/editing#read-only-and-view-mode) with the reason;
+**Enable Editing** edits them, and the status bar says **Editable, No Undo**
+while undo is off. Files of about 50 MB open read-only
 with a capped load. A file of 5 MB or more that would not fit in the memory that
 is left (typically a second or third very large file) opens the same way, as a
 read-only slice of its first part; close other large tabs and reopen it to edit
 it. Lines longer than 20,000 characters are not syntax-highlighted, though the
-rest of the file is. A file with a line of 10,000 characters or a long run
+rest of the file is. A line of 2,000 characters or more with more than 400
+tokens, or one that takes too long to colour, is shown plain. A file with a line of 10,000 characters or a long run
 without spaces (minified code, an embedded image) opens unwrapped even where
 [word wrap](/docs/editing#word-wrap) is on; *View: Toggle Word Wrap* wraps it
 anyway. Find in a very large file searches in the background and

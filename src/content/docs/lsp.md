@@ -708,8 +708,12 @@ for a host in Settings → Remote instead (see
 If a server isn't installed, Editora can fetch it for you. **Every server** is
 covered through one of these channels, picked per server:
 
-- **npm** packages (Astro, Bash, YAML, Dockerfile, TOML, TypeScript,
-  Python/Pyright), needing Node.
+- **npm** packages (Astro, Bash, YAML, Dockerfile, TOML, Python/Pyright),
+  needing Node.
+- **Pinned npm packages** for TypeScript / JavaScript, typescript-language-server
+  5.3.0 and TypeScript 5.9.3, installed with npm into Editora's own folder
+  rather than globally (see [TypeScript and JavaScript](#typescript-and-javascript)).
+  They need Node.
 - A **pinned npm package** for HTML, CSS and JSON, vscode-langservers-extracted
   4.10.0, installed with npm into Editora's own folder rather than globally
   (see [HTML, CSS and JSON](#html-css-and-json)). It needs Node.
@@ -758,11 +762,12 @@ is the expected tool, so a failed or interrupted install leaves the working
 version in place.
 
 For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
-whether it is hoisted in the workspace or installed alongside the server by
-Editora (TypeScript 6, as for the
-[TypeScript / JavaScript server](#typescript-and-javascript)). A TypeScript SDK inside the project is loaded only from a trusted
-folder; otherwise Editora uses the SDK beside the server, or does not start the
-server until you trust the folder. The trust prompt lists the SDK.
+whether it is hoisted in the workspace or Editora's own TypeScript 5.9.3, the
+same copy the [TypeScript / JavaScript server](#typescript-and-javascript)
+uses. A TypeScript SDK inside the project is loaded only from a trusted
+folder; otherwise Editora uses its own or the one beside the server, or does
+not start the server until you trust the folder. The trust prompt lists the SDK when the folder has an
+`astro.config.*` or an `.astro` file is open.
 
 ## Groovy
 
@@ -911,29 +916,53 @@ errors are not reported. A script in a remote folder is not given a copy.
 
 JavaScript and TypeScript files use **typescript-language-server**, which runs
 TypeScript's own `tsserver`. **Install…** on its card (or *Install: TypeScript
-/ JavaScript (Node.js) Language Support*, `install.jsSupport`) installs the
-server with **TypeScript 6** beside it. The server runs on the same Node.js as
+/ JavaScript (Node.js) Language Support*, `install.jsSupport`) installs
+typescript-language-server **5.3.0** and TypeScript **5.9.3** with npm into
+`plugins/lsp/typescript` under Editora's config folder. Nothing is installed
+globally, so your own `tsc` stays as it is. With the server's command left
+blank, Editora runs that copy. The server runs on the same Node.js as
 [Run](/docs/run-debug#nodejs-scripts).
 
-**Why TypeScript 6.** TypeScript 7 is a new compiler written in Go. It has no
-`tsserver`, so typescript-language-server cannot run on it. npm's newest
-TypeScript is now 7, so Editora asks for TypeScript 6, the last version with a
-`tsserver`. When the only TypeScript found has no `tsserver`, or there is none,
-Editora does not start the server and says why, with the fix:
-`npm install -g typescript@6`, or **Install…** on the card. It does not try
-again each time you open another tab. [Doctor](/docs/troubleshooting#doctor)
-and the card's **TypeScript** line show the version in use, or that it has no
-`tsserver`. In that case the Doctor row is a warning with an **Update…** button,
-which installs typescript-language-server again with TypeScript 6 beside it.
+**Why TypeScript 5.9.** TypeScript 6 leaves out the installed `@types`
+packages, such as `@types/node`, unless a tsconfig lists them. Node.js code
+then shows false errors such as *Cannot find name 'process'*, and plain
+JavaScript gets no types for Node's APIs. TypeScript 7 is a new compiler
+written in Go and has no `tsserver`, so typescript-language-server cannot run
+on it. TypeScript 5.9 has neither problem.
+
+**Which TypeScript runs**, in this order:
+
+1. The folder's own `node_modules/typescript`, in a
+   [trusted folder](/docs/workspace#trusted-folders).
+2. Editora's own TypeScript 5.9.3, when it is installed, even for a server
+   you installed yourself or a command you set.
+3. The TypeScript installed beside the server.
+
+The card's **TypeScript** line shows the one in use, such as *Editora's own,
+…*. While a JavaScript or TypeScript file is active, the status bar's LSP
+segment names it too, for example **LSP: TypeScript 5.9.3**.
+
+When the only TypeScript found is 6 or newer, the card's TypeScript line and
+[Doctor](/docs/troubleshooting#typescript-features-are-off-or-show-false-errors)
+warn about it: *TypeScript 6.0.3: leaves out @types packages*, or *TypeScript
+7.0.2 has no tsserver*. With no TypeScript that has a `tsserver`, Editora does
+not start the server and says why in the status bar, with the fix: **Install…**
+on the TypeScript card in Settings → LSP. It does not try again each time you
+open another tab.
 
 **A folder's own TypeScript runs only once you trust the folder.** Many projects
 have their own `node_modules/typescript`. That is code from the folder, so
-Editora uses it only in a [trusted folder](/docs/workspace#trusted-folders),
-and the trust prompt lists it. Until then, the TypeScript installed beside the
-server is used. When the folder's own copy is the only one, the server waits
-until you run *Project: Trust This Project's Settings*
-(`lsp.trustProjectSettings`). On a remote host, the server still picks its
-TypeScript itself.
+Editora uses it only in a trusted folder, and the trust prompt asks about it
+(see [the prompt](#a-folders-own-typescript-and-the-trust-prompt)). Until then,
+Editora's own TypeScript is used, else the one beside the server. When the
+folder's own TypeScript has another major version than the one running, the
+status bar says so once, when the server is ready: *This folder has TypeScript
+5.4.5, but Editora runs 5.9.3 here until the folder is trusted*, since results
+can differ from the folder's own `tsc`. When the folder's own copy is the only
+one, the server waits until you run *Project: Trust This Project's Settings*
+(`lsp.trustProjectSettings`). Without a project, the status bar says that only
+a project can be trusted, and points to **Install…**. On a remote host, the
+server still picks its TypeScript itself.
 
 **Type definitions are not downloaded.** Left to itself, the server downloads
 `@types` packages from the npm registry for the libraries your JavaScript uses.
@@ -941,23 +970,138 @@ Editora turns that off. To turn it on, use **Download type definitions
 automatically** on the TypeScript / JavaScript card in **Settings → LSP**. When
 a folder has no Node.js types, the status bar suggests
 `npm install --save-dev @types/node`, so hover and completion know Node's APIs.
+The hint replaces the server's ready line and stays in the status bar.
 
 **What it adds:**
 
 - **Organize Imports** (`lsp.organizeImports`) sorts the imports and removes
-  unused ones. The code-action menu also offers **Fix all**, **Add missing
-  imports** and **Remove unused**, and quick fixes follow the file's own
-  indentation.
+  unused ones. On a line with a problem, the code-action menu also offers
+  **Fix all**, **Add all missing imports** and **Remove unused**, and quick
+  fixes follow the file's own indentation.
+- **Imports follow moved files.** Moving or renaming a `.ts` or `.js` file in
+  the Project tree updates the imports that name it, in open and closed files,
+  and saves them. A renamed folder does the same, unless a Java server serves
+  it.
+- **Completion details**: the documentation pane beside a completion shows
+  the signature, such as the method's parameters or where an auto-import
+  comes from.
 - **Inlay hints** for parameter names, return types and enum values, when
   [inlay hints](#reading-the-code) are on.
 - **Code lenses**: a references count on each function, when code lenses are
   on.
 
+A `tsserver` that dies restarts the server, within the
+[crash cap](#while-the-server-works), and the status bar says it stopped
+unexpectedly. JavaScript and TypeScript files keep their server up to
+**50,000 lines**, even above the **Disable minimap & LSP above** limit.
+
 **Workspace roots.** Without a project open, a file's server root is the
 nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
-`package.json`, then the Git repository. This gives each package in a monorepo
-its own root. Scripts with none of these above them share one server, wherever
-they are, instead of starting one each.
+`package.json`, then the Git repository. A monorepo still gets **one server**:
+the root widens to the outermost folder above that is a workspace's root, one
+with a `package.json` that lists `"workspaces"`, a `pnpm-workspace.yaml`, or a
+`tsconfig.json` with `"references"`. It never widens to your home folder or
+above, and never outside an open project. Scripts with none of these above
+them share one server, wherever they are, instead of starting one each.
+
+### A folder's own TypeScript and the trust prompt
+
+When a folder brings nothing to trust but its own TypeScript, the trust prompt
+asks about that alone: **Run the folder *name*'s own TypeScript?** It says that,
+once trusted, the JavaScript and TypeScript features run that copy instead of
+Editora's, and that its code runs with your privileges. Each copy is listed on
+one line, for example *TypeScript 5.9.3 in node_modules/typescript, run by the
+TypeScript / JavaScript server*. When the folder also has an
+`.editora/settings.json` with settings to trust, the prompt is the usual
+**Use the settings of the folder *name*?**, with the TypeScript lines in its
+list.
+
+The Astro server loads a TypeScript too. Its line (*… loaded by the Astro
+server*) appears only when the folder has an `astro.config.*` or an `.astro`
+file is open. Trust is remembered for the folder and the folders inside it;
+revoke it in Settings → Advanced, under Trusted folders.
+
+### ESLint
+
+A project's own **ESLint** checks JavaScript and TypeScript files (`.js`,
+`.jsx`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.mts` and `.cts`) when the project has an ESLint
+configuration (`eslint.config.*`, an `.eslintrc*` file, or an `eslintConfig`
+key in `package.json`) and ESLint installed in `node_modules`. It checks a
+file when its tab is shown, 0.8 s after you stop typing, and on save. Its
+problems join the TypeScript server's in the squiggles, the problem counter and
+the Problems window, with **eslint** as their source. ESLint runs from its
+configuration's folder, on the project's Node.js, and only from the project's
+`node_modules`: a global or `PATH` copy is never used.
+
+- **Code Actions** lists each problem's fixes and suggestions, such as *Fix
+  this no-var problem*, and *Fix all auto-fixable ESLint problems*. They show
+  while the TypeScript server runs; the lightbulb does not light for a line
+  with only ESLint problems.
+- **ESLint: Fix All Problems** (`eslint.fixAll`) applies every automatic fix
+  to the active file. The status bar says how many problems are left. A fix
+  from a check older than your last edit is refused with *The file changed
+  since ESLint checked it*; try again a moment later.
+
+ESLint loads the project's configuration and plugins, which are code, so it
+runs only in a [trusted folder](/docs/workspace#trusted-folders). In an
+untrusted one, the first JavaScript or TypeScript file of the project says so
+once per window, with **Trust Folder** and **Not now**. A project with a
+configuration but no ESLint installed stays quiet; Doctor's **ESLint** row
+says *configuration found, but ESLint is not installed*.
+
+ESLint's problems are shown only while **Enable LSP (language servers)** is on.
+**ESLint: Fix All Problems**, fixes on save and Prettier or Biome work with it
+off. To stop ESLint, turn off **Check with ESLint** (see
+[the settings](#eslint-and-formatting-settings)).
+
+### Formatting JavaScript and TypeScript
+
+**Format Document** (`lsp.formatDocument`) on a JavaScript or TypeScript file
+uses the **Formatter** setting:
+
+- **Automatic** (the default): the project's **Prettier** when the project uses
+  it (a Prettier configuration file, a `prettier` key in `package.json`, or
+  Prettier among its dependencies) and has it installed; else its **Biome**
+  when it has a `biome.json` or `biome.jsonc` and Biome installed; else the
+  TypeScript server.
+- **Prettier** or **Biome**: that tool, when it is installed in the project,
+  whatever the configuration says.
+- **TypeScript server**: always the server.
+
+Prettier and Biome run from the project's `node_modules` on the project's
+Node.js, and only in a trusted folder. With **Automatic**, an untrusted folder
+or a missing tool leaves the file to the server. With **Prettier** or
+**Biome**, a tool that cannot run shows why in the status bar and leaves the
+text as it is. The result is one undoable edit, and the status bar names the
+tool, for example *Formatted with Prettier*. When the tool fails, the status
+bar shows its first error line and the text stays as it was.
+
+With a selection, Format Document gives Prettier the selection's range. Biome,
+or no tool, leaves the range to the server.
+
+### Actions on save
+
+Three switches tidy a JavaScript or TypeScript file after you save it, in this
+order: **Organize imports on save**, **Apply ESLint fixes on save** and
+**Format on save**. They run after an explicit save, never after autosave.
+When they change the file, Editora saves it again, and one undo takes all
+their changes back. A step is skipped when you type in the file while it runs.
+Organize imports needs the TypeScript server. All three are off by default.
+
+### ESLint and formatting settings
+
+The **ESLint and formatting** group on the TypeScript / JavaScript card in
+**Settings → LSP** holds:
+
+| Setting | Values | Default |
+|---|---|---|
+| **Check with ESLint** | On · Off | On |
+| **Formatter** | Automatic · Prettier · Biome · TypeScript server | Automatic |
+| **Organize imports on save** | On · Off | Off |
+| **Apply ESLint fixes on save** | On · Off | Off |
+| **Format on save** | On · Off | Off |
+
+They apply to every window at once.
 
 ## HTML, CSS and JSON
 
@@ -981,10 +1125,24 @@ Editora runs that copy first, then one on your `PATH`.
 TypeScript libraries; the first HTML page a window opens offers the same
 **Update** on a banner.
 
-The three servers run on the Node.js chosen in **Settings → Debugging →
-JavaScript**, else `node` on your `PATH`. A project's `.nvmrc` or
+The three servers run on the Node.js chosen on the **Node.js** card under
+**Settings → Build Tools**, else `node` on your `PATH`. A project's `.nvmrc` or
 `.node-version` does not change them; it picks only the TypeScript server's
 Node.js. When a Node.js is chosen there, Install uses the npm beside it.
+
+**JSON with comments.** These files allow comments and trailing commas:
+`tsconfig.json` and `jsconfig.json` (and their `tsconfig.*.json` variants),
+`.eslintrc`, `.eslintrc.json`, `.babelrc`, `.babelrc.json`, `.swcrc`,
+`deno.json`, `bun.lock`, any `.json` file in a `.vscode` folder, and `*.jsonc`
+and `*.code-workspace` files. Other `.json` files are strict JSON.
+
+**package.json and tsconfig.json** are checked and completed against schemas
+bundled with Editora, so they work offline. The JSON server flags a misspelt
+compiler option such as `"strictt"`, a wrong value such as `"type": "modul"`,
+or `"scripts"` that is not an object, and completes and explains the keys and
+values inside `compilerOptions`. The tsconfig schema covers `tsconfig.json`,
+`tsconfig.*.json`, `tsconfig-*.json`, `jsconfig.json` and `jsconfig.*.json`.
+Unknown top-level keys in `package.json` are allowed, since tools add their own.
 
 What the HTML server adds, its settings on the HTML card (wrap column,
 attribute wrapping, content kept as written, checking embedded scripts and
@@ -1541,7 +1699,7 @@ default) and then trusts the open project when the file is in it, else the
 pom's own reactor. For any other file outside the project it trusts nothing:
 open that file's folder as a project first. In every window, the folder's open
 poms, background tabs included, then move to the Maven server at once. Revoking
-that trust (Settings → Workspace → Trusted folders) stops the Maven server on
+that trust (Settings → Advanced → Trusted folders) stops the Maven server on
 the folder and moves its poms back to the XML server, with their diagnostics.
 While the Maven server is not installed, a pom in an untrusted folder instead
 offers to install it, saying it runs only in folders you trust.

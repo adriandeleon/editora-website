@@ -436,8 +436,8 @@ needed. The banner says what Install does before you click:
 > vscode-langservers-extracted 4.10.0 with npm (it needs Node.js) to Editora’s
 > own folder; the one package brings the HTML, CSS and JSON servers.
 
-When a Node.js is chosen in Settings → Debugging → JavaScript (Node.js) →
-**Node.js** and has npm beside it, Install uses that npm, so it works with
+When a Node.js is chosen in the **Node.js** card under **Settings → Build
+Tools** and has npm beside it, Install uses that npm, so it works with
 nothing on your `PATH`; otherwise it uses the npm on your `PATH`. When neither
 is found, the banner says so before you click: npm *was found neither on PATH
 nor beside the Node.js chosen in Settings*, with the advice to install Node.js
@@ -464,8 +464,8 @@ With the HTML, CSS and JSON commands left blank in Settings → LSP, Editora
 runs its own copy first, then one on your `PATH`. A command you set always
 wins; a command that is just the default text
 (`vscode-html-language-server --stdio`) counts as blank. The server runs on the
-Node.js chosen in Settings → Debugging → JavaScript (Node.js) → **Node.js**,
-else `node` on your `PATH`. A project's `.nvmrc` or `.node-version` does not
+Node.js chosen in the **Node.js** card under **Settings → Build Tools**, else
+`node` on your `PATH`. A project's `.nvmrc` or `.node-version` does not
 change it, so an old Node.js pinned for the project cannot break the server.
 
 ### What the server adds

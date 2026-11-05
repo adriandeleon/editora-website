@@ -1251,7 +1251,7 @@ the open project when the file is in it, else a pom's own Maven project. It
 asks first, with Cancel as the default, and covers builds too. Revoking the
 folder turns both off again.
 
-Review or revoke trust in **Settings → Workspace → Trusted folders**, with the
+Review or revoke trust in **Settings → Advanced → Trusted folders**, with the
 **Revoke** button in the Maven or Gradle window's header (which shows
 *Trusted* or *Not trusted yet*), or from the palette with
 `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a folder that is
