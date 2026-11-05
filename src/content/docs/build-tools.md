@@ -80,6 +80,12 @@ resolution, Java Run and Debug, and before-launch commands, and the same JDK
 runs sbt, Mill, Scala CLI and Scala's Run and Debug, the
 [New Maven Project](#new-maven-project) wizard's Maven, and the
 [Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server).
+A Java file without a build tool (a loose file, or a project folder with no
+`pom.xml` or Gradle build) runs and debugs on it too, and it is the default JDK
+of the [Java language server](/docs/lsp#the-java-server-and-your-project): the
+JDK it builds those files for, shows JDK sources from, and runs Gradle imports
+on. With **System default**, they use the `java` on your `PATH`. A changed
+Default JDK reaches a running language server at once, with no restart.
 A saved run configuration can override it for one project or launch. With
 **System default** and no `JAVA_HOME`, the program a Maven Run launches uses the
 `java` on your `PATH`, which may not be the version Maven compiled with.
@@ -117,10 +123,20 @@ on PATH*, or the override. [Doctor](/docs/troubleshooting#doctor)'s Build Tools
 section says the same. The command row is greyed while that tool is turned off.
 
 The same page has **Build before Run and Debug** (on): in a Maven or Gradle
-project, Run and Debug on a main class first compile with the build tool, as
-described under
+project, Run, **Debug: Debug Main Class…** and Debug on a run configuration first
+compile with the build tool (`compile` or `compileJava`, or the test variant for
+a class under `src/test`), as described under
 [Running a project's main class](/docs/run-debug#running-a-projects-main-class).
-Turn it off to launch whatever `target/classes` holds.
+A run configuration with its own before-launch step runs that step instead.
+Turn it off and Run launches whatever `target/classes` holds, while Debug builds
+with the Java language server.
+
+Debug on a file (**Debug: Start / Continue** in a Java file, or the gutter's
+Debug ▶) always builds with the Java language server, and stops on compile
+errors. In a
+Gradle project the language server writes its classes to `bin/` in the project
+folder, so add `bin/` to your `.gitignore`. The Gradle daemons it starts for
+its imports stop after 10 idle minutes.
 
 ## Clojure
 

@@ -127,7 +127,10 @@ JDK** selects the toolchain used by Run, Debug, Maven classpath resolution,
 Maven tasks, and before-launch steps. Installed JDKs are discovered from the
 usual platform locations and common version managers. A run configuration's
 **JDK** field can inherit that choice or override it for one configuration. The
-Default JDK also applies to standalone Java Run and Debug.
+Default JDK also applies to standalone Java Run and Debug. A Java file or folder
+without Maven or Gradle runs on the Default JDK, else on the `java` on your
+`PATH`, and the Java language server builds it for that same JDK. A changed
+Default JDK reaches a running language server at once, with no restart.
 
 ### Python scripts
 
@@ -772,7 +775,10 @@ script as it runs.
 
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
-buttons in the Debug window, and the **Run** menu lists every debugger action.
+buttons in the Debug window, and every debugger action is in the **Run** menu.
+Its top level has Start / Continue, Debug Main Class, Attach, Stop, Restart and
+Toggle Breakpoint. Stepping, evaluate, watches, breakpoints and exception
+breakpoints are in its **Debugger** submenu (**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -794,8 +800,11 @@ italics instead.
 Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
 message** (which turns it into a logpoint that logs and never suspends), and an
-**enabled** toggle. The hit count makes it stop only on that hit: `5` stops on
-the fifth, and Python also takes forms such as `>= 3` or `% 2`. A breakpoint
+**enabled** toggle. Its title names the file and line, such as *Edit
+Breakpoint — Main.java:27*, and the line's code is shown above the fields, since
+the form can cover that line. The hit count makes it stop only on that hit: `5`
+stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
+debuggers take only a number, and the field's hint says which. A breakpoint
 with a condition or a hit count is drawn as conditional. Breakpoints in closed
 files are honored too.
 
@@ -815,7 +824,8 @@ When the panel is wide enough, the call stack, variables, and console sit side
 by side; they stack when it is narrow. The call stack lists the innermost 1,000
 frames when the adapter supports partial stacks. The console is cleared at each
 launch and kept after the session ends, and its right-click menu has **Clear
-Console**. **Restart** is disabled for a debugger attached to a test or build
+Console**. It keeps the last 200,000 characters; when older output was dropped,
+the Debug window's state line says so. **Restart** is disabled for a debugger attached to a test or build
 run (its tooltip says why); a session started with *Debug → Attach* can still be
 restarted.
 
@@ -917,7 +927,8 @@ unbuffered, so a prompt shows before the program waits. Lines written to stdout
 and stderr at almost the same moment can appear in either order.
 
 It is **on by default**. The switch, **Run the debugged program in the Debug
-console (program input)**, is under **Settings → Debugging → Java** (or use
+console (program input)**, is on the **Debugged programs** card of
+**Settings → Debugging** (or use
 *Debug: Toggle Program Input in the Debug Console*,
 `debug.toggleProgramConsole`) and takes effect at the next launch. It applies
 to a launched Java program, and to a Python or JavaScript program started on
@@ -930,12 +941,15 @@ in a tab of the [Terminal](/docs/terminal#run-and-debug-programs-in-a-terminal)
 tool window rather than the Debug console. Use it for a program that draws on
 the screen, reads single keys or asks for a password. Its output and input are
 then in that tab, which is titled *Debug: <file>* and stays when the program
-ends. The program's exit still ends the session, and Stop ends the program. It
-is off by default and needs the program console switch on.
+ends. The Debug console's first line names the tab. The program's exit still
+ends the session, and Stop ends the program. It is off by default and needs the
+program console switch on.
 
-With the switch off, the debugger starts a Java program itself. The console
-still reports the program's exit code on Linux and macOS when the program runs
-on this machine. On Windows, and on a remote host, in WSL or in a container, it
+With the switch off, the debugger starts a Java program itself. A program that
+prints a lot then gets its output to the console well after it writes it; the
+session ends, and the exit line shows, once the last of it has arrived. The
+console still reports the program's exit code on Linux and macOS when the
+program runs on this machine. On Windows, and on a remote host, in WSL or in a container, it
 says "The program ended." instead. A JavaScript program's output, including
 `process.stdout.write`, still reaches the console, but the program cannot read
 input.
@@ -948,7 +962,8 @@ breakpoints and stack frames to the original file and removes its temporary
 compiled files after the session. Java debugging needs the Java language server
 and debug adapter described below.
 
-JUnit tests are debugged from their gutter icon or with *Debug Test at Caret*,
+JUnit tests are debugged from their gutter icon, with *Debug Test at Caret*, or
+with Debug in the test file (see [Starting a Java session](#starting-a-java-session)),
 including tests inside `@Nested` classes; see the
 [test runner](/docs/build-tools#test-runner).
 
@@ -962,17 +977,28 @@ class, so its arguments, VM options, environment, working directory and JDK
 apply, as they do for Run ▶. Before a Java launch, Editora saves every unsaved
 Java file of the project.
 
+In a JUnit test file of a Maven or Gradle project, Debug debugs the test at the
+caret, or the whole class when the caret is outside a test, the way Debug Test
+does. A file with a `main` of its own is launched as a program instead.
+
 In a Maven or Gradle project, Debug builds first, so the program runs the code
-you see. With **Build before Run and Debug** on (the default), the build tool
-compiles in the Debug console (Maven `compile`, or `test-compile` for a class
-under `src/test`; Gradle `compileJava` or `compileTestJava`), through the same
-Maven or Gradle the tasks tree runs, and a failed build aborts the launch. With
-the setting off, Debug asks the Java language server to build the project
-instead: if that build finds compile errors, nothing is launched, the Debug
-console lists the errors as links to their lines, and the status bar gives
-their number; if it cannot run, the program starts anyway, and the console
-warns you when a class file is missing or older than its source. Stop during
-either build cancels the launch. A run configuration with a
+you see. Debug on a file builds the project with the Java language server: if
+that build finds compile errors, nothing is launched, the Debug console lists
+the errors as links to their lines (with paths relative to the project), the
+status bar gives their number, and the Debug window reads "Not started: the
+build failed". If the project could not be imported, the console says so
+instead; when its errors name a Java version, choose another Default JDK in
+**Settings → Build Tools**. If the build cannot run, the program starts anyway,
+and the console warns you when a class file is missing or older than its
+source.
+
+*Debug Main Class* and Debug on a saved configuration compile with the build
+tool when **Build before Run and Debug** is on (the default): Maven `compile`,
+or `test-compile` for a class under `src/test`; Gradle `compileJava` or
+`compileTestJava`. The build runs in the Debug console, through the same Maven
+or Gradle the tasks tree runs, and a failed build aborts the launch. With the
+setting off, they build with the Java language server, as Debug on a file does.
+Stop during either build cancels the launch. A run configuration with a
 [before-launch step](#a-step-before-the-launch) uses that step as its build
 instead. A Java configuration's step runs in the project root, whatever the
 configuration's working directory.
@@ -983,8 +1009,29 @@ right-click menu. In a project window for such a folder, *Debug Main Class* and
 Debug on a saved Java configuration work, and the program runs in the project
 root.
 
-Debug in another Java tab while a session runs asks before it stops that
-session. When Java debugging can't start, the status bar names the missing
+A loose `.java` file, or a project folder without Maven or Gradle, is built by
+the Java language server before every Debug, so the program always runs the
+code you saved. Compile errors stop the launch and are listed in the Debug
+console, as in a Maven project. In a window with no project, only errors in the
+file's own folder count; a broken file in another folder does not stop it. A
+configuration's before-launch step runs first, and the language server's build
+after it. The program runs on the Default JDK, else on the `java` on your
+`PATH` (see [Which runtime a program runs under](#which-runtime-a-program-runs-under)).
+A compact source file is compiled by `javac` instead.
+
+Debug in another Java tab while a session runs, or while a launch is still
+starting (building, compiling or waiting for you to choose a main class), asks
+before it replaces that session. Debug in the same file while its build runs
+says that it is already being debugged. Esc on the main-class chooser cancels
+the launch.
+
+**Debug: Attach to Running Program…** (`debug.attach`) on a Java file attaches
+to a JVM listening for a debugger. It asks for the `host:port`, and offers the
+address you used last in the window (at first `localhost:5005`). When nothing
+listens there, the Debug console shows the `-agentlib:jdwp` option that starts a
+JVM listening on that address.
+
+When Java debugging can't start, the status bar names the missing
 piece: LSP is off, the Java language server is turned off, or jdtls or
 java-debug was not found. The Java card of **Settings → Debugging** has an
 **Install…** button for what is missing.
@@ -1001,13 +1048,14 @@ When you step into JDK or library code anyway, or click such a frame in the
 call stack, its source opens in a read-only tab. A stop at a breakpoint, a
 Pause or an exception still selects the nearest frame of your own code.
 
-**Debug: Smart Step Into…** (`C-c C-d s`, also in the Run menu) lists the
-calls on the current line, for example `add(twice(1), twice(2))`, `twice(1)`
-and `twice(2)`. Pick one to step into it. On a line with a single call it
-steps straight in.
+**Debug: Smart Step Into…** (`C-c C-d s`, also in Run ▸ Debugger) lists the
+calls on the current line in the order they run, for example `twice(1)`,
+`twice(2)` and `add(twice(1), twice(2))`. Pick one to step into it. On a line
+with a single call it steps straight in. The list closes when the program runs
+on.
 
 **Debug: Restart Frame** (`C-c C-d f`, the call stack's right-click menu, or
-the Run menu) runs the method of the selected frame again from its first line
+Run ▸ Debugger) runs the method of the selected frame again from its first line
 and pauses there. It is greyed out on the bottom frame.
 
 If the connection to the debugger is lost, Editora ends the program at once and
@@ -1019,8 +1067,10 @@ The running program keeps the code it was started with. When you edit a file
 during a session, Editora matches breakpoints and the stopped line to the code
 the program runs, so they stay on the right lines. At a stop in an edited file,
 the status bar says that the program still runs the code it started with. A
-breakpoint on a line you added during the session is kept, and its hover says
-that it takes effect in the next session. To run the new code, restart the
+breakpoint on a line you change in place keeps working and stopping there; when
+you split a line in two, the breakpoint stays on its first half. A breakpoint on
+a line you added during the session is kept, and its hover says that it takes
+effect in the next session. To run the new code, restart the
 session, or let [hot code replace](#hot-code-replace) load a change to a
 method body.
 
@@ -1036,8 +1086,17 @@ was:
 - the program refused the change, with its reason. A change to a method's body
   can be loaded; a change such as adding or removing a method or a field needs
   a restart, and the console tells you so;
+- for a file without Maven or Gradle, the program runs an older Java than the
+  code was built for ("the program runs Java N, but the code was built for
+  Java M"): choose the program's JDK as the Default JDK in **Settings → Build
+  Tools**, or restart the session;
 - the Java language server could not build the project;
 - the program already runs this code.
+
+A change to a method that is running when you save is applied too. That method
+goes on with its old code until it returns, and its frame in the call stack
+reads "old code (replaced while it ran)". To run it again with the new code,
+select its frame and use **Debug: Restart Frame**.
 
 Choose when this happens with **Apply code changes to a running Java program**
 on the Java card of **Settings → Debugging**:
@@ -1045,7 +1104,7 @@ on the Java card of **Settings → Debugging**:
 | Choice | What a save does |
 | --- | --- |
 | **On save** (default) | loads the change when you save a file yourself; autosave does not |
-| **Only with Debug: Apply Code Changes** | shows a hint in the status bar; run **Debug: Apply Code Changes** (`C-c C-d h`, Run menu) to load the saved changes |
+| **Only with Debug: Apply Code Changes** | shows a hint in the status bar; run **Debug: Apply Code Changes** (`C-c C-d h`, Run ▸ Debugger) to load the saved changes |
 | **Never** | nothing; Debug: Apply Code Changes says that it is off |
 
 Debug: Apply Code Changes loads only what is saved. When the active Java tab
@@ -1120,8 +1179,8 @@ a condition or a hit count, and grey for a disabled one. Its hover names the
 condition, log message and hit count, and says when it is disabled. A hit
 count stops on that hit in Java too: `3` stops the third time the line runs.
 
-Right-click a glyph for **Edit…**, **Enable Breakpoint** or **Disable
-Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
+Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
+**Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
 right-click menu has Toggle Breakpoint and Edit Breakpoint, and while the
 program is paused also Run to Cursor, Show Value at Caret and Add to Watches.
 
@@ -1129,28 +1188,35 @@ A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
 only a closing `}` takes a breakpoint.
 
-**Debug: Breakpoints…** (`C-c C-d l`) lists every breakpoint. Type to filter
-it; Enter jumps to the selected breakpoint, Alt+E enables or disables it,
-Alt+D removes it, and Alt+M mutes them all. **Debug: Mute Breakpoints**
-(`C-c C-d m`) turns every breakpoint off without removing it, until you run it
-again. While breakpoints are muted, every glyph is faded, a glyph's hover says
-that none of them stops the program, Mute Breakpoints is checked in the Run
-menu, and the Debug window's state line says "breakpoints muted". Editora keeps
-the choice for each project, so a muted project is still muted when you open it
-again. **Debug: Enable / Disable
-Breakpoint** (`C-c C-d t`) switches the breakpoint on the caret line. These
-commands are in the Run menu's **Breakpoints** submenu.
+**Debug: Breakpoints…** (`C-c C-d l`; Ctrl+Shift+F8 in the IntelliJ keymap)
+lists every breakpoint. Each row has the gutter's glyph for its kind, its file,
+line and code, and below them what it does (its condition or log message) and
+its folder, relative to the project (none for a file at the project root), or with
+your home folder shortened to `~`. With no breakpoints, the list says how to set
+one. Type to filter it; Enter jumps to the selected breakpoint, Alt+E enables
+or disables it, Alt+D removes it, and Alt+M mutes them all.
+
+**Debug: Mute Breakpoints** (`C-c C-d m`) turns every breakpoint off without
+removing it, until you run it again. It also stops exception breakpoints from
+stopping the program; your caught and uncaught choices come back when you turn
+it off. While breakpoints are muted, every glyph is faded, a glyph's hover says
+that none of them stops the program, Mute Breakpoints is checked in
+Run ▸ Debugger, and the Debug window's state line says "breakpoints muted".
+Editora keeps the choice for each project, so a muted project is still muted
+when you open it again. **Debug: Enable / Disable Breakpoint** (`C-c C-d t`)
+switches the breakpoint on the caret line. These commands are in
+**Run ▸ Debugger**.
 
 **Debug: Break on Caught Exceptions** stops wherever an exception is thrown,
 even one the program catches. **Debug: Break on Uncaught Exceptions** stops on
-an exception that nothing catches. Both are in the Run menu, checked when on,
-and are the **Caught** and **Uncaught** buttons in the Debug window's toolbar.
+an exception that nothing catches. Both are in Run ▸ Debugger, checked when on,
+and in the menu of the ⚠ button in the Debug window's toolbar. While either is
+on, the ⚠ is drawn in the accent colour, and its tooltip says which are on.
 They act on the running session's language, or else on the active file's, and
 Editora keeps your choice for each project. To stop only on some Java exception
 classes, list them, separated by commas, in **Exception breakpoints: only these
 classes** on the Java card of **Settings → Debugging** (for example
-java.lang.IllegalStateException). Left blank, Caught and Uncaught stop on every
-exception.
+java.lang.IllegalStateException). Left blank, both stop on every exception.
 
 At an exception stop, the line that threw is drawn red, and the exception's
 type and message are the top row of Variables.
@@ -1165,10 +1231,10 @@ Caret** (`C-c C-d v`) does the same from the keyboard.
 
 A plain value, such as a number, shows on one line. An object, array or
 collection shows as a tree that opens with its first level unfolded; unfold a
-row to see its fields or elements. A Java `String` is an object to the
-debugger, so it shows as a tree too: its value, then its fields. A big array comes a page at a time: its
-last row is "Show N more…". Right-click a row for **Copy Value** and **Add to
-Watches**. The popup closes with Esc or when the mouse leaves it. When you open
+row to see its fields or elements. A Java `String` shows its whole text,
+wrapped, under a line that gives its length, with a **Copy Value** button. A
+big array comes a page at a time: its last row is "Show N more…". Right-click a
+row for **Copy Value** and **Add to Watches**. The popup closes with Esc or when the mouse leaves it. When you open
 it with Show Value at Caret, the keyboard works it while it is open:
 
 | Key | Action |
@@ -1185,10 +1251,20 @@ Any other key closes the popup and does its usual thing in the editor. When the
 popup was opened by the mouse, any key closes it.
 
 In the Variables tree, the right-click menu has **Copy Value** (a string is
-copied without its quotes and escapes), **Copy Name** and **Add to Watches**,
-which adds the row's whole expression, such as `order.items`. Ctrl+C (⌘C on
+copied without its quotes and escapes), **Copy Name**, **Add to Watches**,
+which adds the row's whole expression, such as `order.items`, and **Set
+Value…**. Ctrl+C (⌘C on
 macOS) copies the selected value, and Delete removes the selected watch. In
 the evaluate field, Up and Down bring back the expressions you typed before.
+An expression that throws says what it threw, such as *The expression threw
+NullPointerException in length()*.
+
+In Java, an object whose class has its own `toString()`, such as a record, an
+enum or a date, shows that text after its type, for example
+`Main$Point@17 "Point[x=3, y=4]"`, and still unfolds to its fields. A boxed
+number, such as an `Integer`, shows just its value: `42`. A lambda reads
+`lambda@19`. Variables, inline values and the hover popup all show values this
+way.
 
 While the program is paused, **completion** works in the Debug console's
 evaluate field, the Add Watch and Edit Watch prompts, and a breakpoint's
@@ -1285,8 +1361,8 @@ arguments, folder, environment, JDK and VM arguments.
 - **Hover and Watch** read a variable or a field path such as `order.total`.
   They never call a method, so looking cannot change the program.
 - **Exceptions**: an exception that leaves your code uncaught stops where it was
-  thrown. This is on by default for Groovy; the **Caught** toggle also stops on
-  exceptions your own code catches. Exceptions Groovy throws and catches inside
+  thrown. This is on by default for Groovy; **Break on Caught Exceptions** also
+  stops on exceptions your own code catches. Exceptions Groovy throws and catches inside
   its runtime never stop.
 
 Not supported yet: conditions, hit counts and log messages on a breakpoint (such
@@ -1311,8 +1387,8 @@ JDK and VM arguments.
   the elements of an array. **Hover and Watch** read a variable or a field
   path; they never call a method.
 - **Exceptions**: an exception that leaves your code uncaught stops where it is
-  thrown, on by default; the **Caught** toggle also stops on exceptions your
-  code catches.
+  thrown, on by default; **Break on Caught Exceptions** also stops on
+  exceptions your code catches.
 
 For a Gradle project, open a Kotlin file and use
 [Debug via Build Tool](#debug-via-the-build-tool): Gradle starts the app under

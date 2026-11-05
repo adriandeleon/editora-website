@@ -399,11 +399,12 @@ a real terminal, which the Run and Debug consoles are not. For those:
 - A [run configuration](/docs/run-debug#run-configurations)'s **Console:
   Run in a Terminal tab** runs its program in the Terminal tool window. A
   before-launch step still runs in the Run console.
-- **Settings → Debugging → Java → Run the program in a Terminal tab instead**
-  does the same for a Java or Python program you debug. It needs **Run the
-  debugged program in the Debug console (program input)**, beside it, on as
-  well (see
-  [Program input](/docs/run-debug#program-input-in-the-debug-console)).
+- **Run the program in a Terminal tab instead**, on the **Debugged programs**
+  card of **Settings → Debugging**, does the same for a Java, Python or
+  JavaScript program you debug. It needs **Run the debugged program in the
+  Debug console (program input)**, beside it, on as well (see
+  [Program input](/docs/run-debug#program-input-in-the-debug-console)). The
+  Debug console's first line names the tab the program runs in.
 
 The program runs where its configuration or file runs: on this computer, on
 the project's host, or in its container or WSL distribution. Its tab is named

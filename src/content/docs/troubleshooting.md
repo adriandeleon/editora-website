@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Doctor, unsigned installers, finding external tools, the debug log, recovering after a crash, performance, and resetting config.
+description: Doctor, unsigned installers, finding external tools, the application log, recovering after a crash, performance, and resetting config.
 category: Help
 order: 3
 ---
@@ -400,14 +400,33 @@ theirs, may be a zsh script: ShellCheck cannot check zsh, and the problem
 counter says **Not checked**. A `PKGBUILD` shows no SC2034 or SC2154 by design.
 
 The server's own warnings, such as a helper it could not find, are in the
-Debug Log (below).
+Application Log (below).
+
+## Java debugging does not start or apply changes
+
+When the Debug window's state line reads *Not started: the import failed*, the
+Java language server could not import the Maven or Gradle project, so nothing
+was built or launched. The Debug console lists the import's errors. Fix the
+build file and debug again. When the errors name a Java version, choose
+another **Default JDK** in **Settings → Languages & Tools → Build Tools**.
+
+*Not started: the build failed* means the project has compile errors; the
+Debug console lists them, with a link to each line.
+
+When a save during a session says *Code changes not applied: the program runs
+Java N, but the code was built for Java M*, the program runs on another JDK
+than the one the language server builds for. Choose the program's JDK as the
+**Default JDK**, or restart the debug session. See
+[Build tools](/docs/build-tools) for which JDK a program runs on.
 
 ## Seeing errors in a packaged build
 
 A packaged app has no visible console. Editora captures its logging and uncaught
-exceptions into a **Debug Log**:
+exceptions into an **Application Log**. It is Editora's own log, not the output
+of a program you debug, which is in the Debug console.
 
-- Open it with **Settings → Advanced → Show Debug Log…** or `view.debugLog`.
+- Open it with **Settings → Advanced → Show Application Log…** or
+  **View: Application Log** (`view.debugLog`).
 - It also mirrors to `editora-session.log` in your config folder, so it survives
   a crash for a bug report. The session before keeps its file as
   `editora-session.prev.log`, so reopening Editora after a crash does not erase
@@ -418,8 +437,8 @@ session history of the transient status-bar messages.
 
 ## Reporting a problem
 
-**Help → Report a Problem…** (`help.reportProblem`, also a button in the Debug
-Log window) prepares a bug report from the Debug Log of this session and the one
+**Help → Report a Problem…** (`help.reportProblem`, also a button in the
+Application Log window) prepares a bug report from the Application Log of this session and the one
 before. It also lists Editora's version, the Java it runs on, your operating
 system and your plugins. Before you see it, Editora replaces what looks private:
 paths in your home folder, your user name, e-mail addresses, credentials in URLs,
@@ -550,4 +569,4 @@ Zen 4). It is fixed in 0.13.1, and there is no workaround worth applying on the
 old build.
 
 If you are still stuck, [report a problem](#reporting-a-problem): the report
-carries the Debug Log, redacted.
+carries the Application Log, redacted.
