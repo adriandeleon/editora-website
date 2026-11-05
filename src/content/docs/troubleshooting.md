@@ -23,7 +23,9 @@ failed to load or start.
 
 A missing tool is a problem only when the window needs it: a file of that
 language is open, the project has the tool's marker file, or you set its command.
-Anything else shows as **Not installed** and is not counted. Problems and warnings
+Anything else shows as **Not installed** and is not counted. The **Python
+formatter** row (Ruff or Black) is optional the same way: it is a warning only
+while **Format on save (Ruff/Black)** is on. Problems and warnings
 are gathered under **Needs attention** at the top; sections where everything is
 OK fold to one line.
 
@@ -335,16 +337,44 @@ means Pyright is looking at a different Python than the one the package is in.
   `Python 3.13.5 (PATH)`. `(PATH)` means no project environment was found.
 - Click it, or run **Python: Select Interpreter** (`python.selectInterpreter`),
   and pick the project's environment, or **Browse…** to the environment's
-  `python`. The server picks the change up at once.
+  `python`. The server picks the change up at once. The status bar shows the
+  interpreter Pyright analyses with.
+- A `.venv` created after the project was opened, and packages added with
+  `pip install`, reach Pyright within a few seconds. There is no need to
+  restart the server.
+- A folder with its own `pyproject.toml`, `setup.py`, `setup.cfg` or
+  `pyrightconfig.json` gets its own Pyright, which uses that folder's `.venv`.
+  A uv workspace member uses its workspace's `.venv`, with or without a project
+  open.
 - An environment named something other than `.venv`, `venv`, `env` or `.env`, or
   one outside the project, is not found by itself: pick it once, and the project
   keeps it.
 - A `pyrightconfig.json` or `[tool.pyright]` section that sets `venv` wins over
   the pick inside Pyright.
 - Doctor's **Python interpreter** row shows the same interpreter, its version
-  and why it was chosen.
+  and why it was chosen. Its **Settings…** opens the Python card on
+  **Settings → LSP**, where the fallback interpreter is set.
 
 See [the Python interpreter](/docs/lsp#the-python-interpreter).
+
+## Python Format Document changes nothing
+
+Format Document on a Python file runs Ruff or Black, from the project's
+environment first, then from your `PATH`. When it leaves the text alone, the
+status bar says why:
+
+- **No Python formatter found**: install `ruff` or `black` in the project's
+  environment or on your `PATH`.
+- **printed nothing, so the text was left as it was**: the formatter skipped the
+  file, usually because it matches Black's or Ruff's `force-exclude` setting.
+- **the result is larger than 10 MB**: the output was cut off, so it is not
+  applied.
+- **Widen the buffer to format it**: the buffer is narrowed.
+- **Ruff and Black cannot format a file on another machine yet**: the file is on
+  a remote host, in WSL or in a container. A Python language server that
+  formats still formats it.
+
+A read-only file is not formatted either, and the status bar says so.
 
 ## A project's tools don't run in its container
 

@@ -72,7 +72,8 @@ file) takes it from its own first lines:
   PyPy), Node, Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters,
   and `kotlin`, `scala`, `scala-cli` (`#!/usr/bin/env -S scala-cli shebang`),
   `clojure`, `clj` and Babashka's `bb`. A version or build suffix is ignored
-  (`python3.12`, the free-threaded `python3.14t` and `python3-dbg` are Python).
+  (`python3.12`, the free-threaded `python3.14t` and `python3-dbg` are Python),
+  and `ipython`, `graalpy`, `micropython` and `pythonw` are Python too.
   A Python runner counts too: `#!/usr/bin/env -S uv run --script` (a script
   with inline dependencies), `pipx run`, and `poetry`, `pdm`, `hatch`, `rye` or
   `pipenv` running `python`. A `java` shebang counts when a `--source N` follows
@@ -187,14 +188,33 @@ f-strings with nested quotes and format specs (`f"{when:%Y-%m-%d}"`), t-strings
 or call stays a name), type parameters (`def first[T](items: list[T])`,
 `class Box[T]:`) and the `type` alias statement. A name after `def` or `class`
 is coloured as a declaration, including `__init__` and a method named like a
-builtin (`def open`), and decorators such as `@property` read as decorators.
+builtin (`def open`), and decorators read as decorators, from `@property` to
+any expression after the `@` (`@buttons[0].clicked.connect`).
 Number prefixes and suffixes (`0x`, `0b`, `3j`) are part of the number.
+
+Some files open as Python under another name. They get the Python grammar,
+`#` comments, indentation and folding, but no Pyright and no Run:
+
+- **Starlark** (Bazel, Buck and Tilt build files): `.bzl` and `.star` files,
+  `BUILD.bazel`, `WORKSPACE.bazel`, `MODULE.bazel`, `Tiltfile`, and `BUILD`
+  and `WORKSPACE` spelled in capitals (a lower-case `build` is left to the
+  shell).
+- **Cython:** `.pyx`, `.pxd` and `.pxi` files.
+
+SCons build scripts (`SConstruct`, `SConscript`) and a Python startup file
+(`.pythonrc`, `.pythonstartup`) open as Python itself.
 
 Without a [language server](/docs/lsp), Python files still fold by indentation
 and get sticky scroll (see [Editing](/docs/editing#python)), the Structure tool
 window lists classes, functions and methods nested by indentation, and
 [Go to Symbol in Project](/docs/code-navigation#go-to-symbol-in-project) finds
-them across the project.
+them across the project. Structure also lists the names a module or a class body
+assigns: a name in capitals as a constant, other module names as variables, and
+class-body names as fields. Names assigned inside a function or a block are
+left out. A def's row carries a small marker for the kind of def it is, with or
+without a server: `async`, `property`, `classmethod`, `staticmethod`,
+`abstract`, `setter`, `deleter` or `overload`, read from the `async` keyword and
+the decorators above it.
 
 The other files of a Python project open with a format too:
 
@@ -252,7 +272,10 @@ prefix.
 
 - **Code buffers** get a popup that merges sources and ranks them: language-server
   results (when [LSP](/docs/lsp) is on), then snippets.
-  Press **Enter** or **Tab** to accept. Complete result lists filter locally and
+  Press **Enter** or **Tab** to accept. Every item the server sends is listed
+  (`os.` in Python lists all of the module's members). While a slow server is
+  still answering, the popup shows a row that names it, such as **Waiting for
+  Pyright…**, after a moment. Complete result lists filter locally and
   obsolete server requests are cancelled as you keep typing. Accepting a snippet
   starts a tab-stop session; accepting a Java LSP item can safely add its import
   after continued typing, grouped with the completion as one undo/redo action.
@@ -268,6 +291,8 @@ The code popup is IntelliJ-style: per-kind icons (class, method, keyword,
 snippet, and so on), the matched characters highlighted, deprecated items struck
 through, and a **documentation popup** beside the list. The docs popup shows
 automatically and toggles with `C-q` (*Edit: Toggle Completion Documentation*).
+It widens to fit a long signature, and narrows beside the list where the screen
+is tight.
 
 Toggles live in **Settings → Code Completion**: a master switch plus per-source switches
 for words (prose), snippets, and Mermaid keywords. Palette equivalents are

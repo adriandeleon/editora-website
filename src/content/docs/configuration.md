@@ -323,6 +323,30 @@ after a save you make yourself, never after auto-save. When they change the
 file it is saved again, and their changes undo as one step. See
 [Language servers](/docs/lsp).
 
+### Python
+
+The Python settings are on the **Python** card under **Settings → LSP**. The
+card stays editable with language servers and debugging switched off, since Run
+and tests use the interpreter too:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `pythonDebugCommand` | Python interpreter (fallback for Run, Debug and code intelligence) | blank (the first Python on the `PATH`) |
+| `pythonFormatOnSave` | Format on save (Ruff/Black) | `false` |
+
+The interpreter is the fallback: it is used when a project has no virtual
+environment (`.venv` or `venv`) and none was picked for it. A path or a bare
+name such as `python3.12` works; a bare name is looked up on the `PATH`, for
+Run and Debug and for Pyright alike. The card's **Choose…** button runs
+**Python: Select Interpreter** (`python.selectInterpreter`), which picks the
+interpreter for the window's project; that pick is kept with the project's
+session, not in `settings.json`. See
+[The Python interpreter](/docs/lsp#the-python-interpreter).
+
+**Format on save (Ruff/Black)** formats a Python file with Ruff or Black (the
+project's own first) after a save you make yourself, and saves it again when
+that changed it. Auto-save does not format.
+
 ### Rulers and indent guides
 
 These are the rows under **Settings → Editor → Display**:

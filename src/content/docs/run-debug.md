@@ -148,7 +148,7 @@ these wins:
    `$CONDA_PREFIX`);
 4. a `.venv`, `venv`, `env` or `.env` folder holding a `pyvenv.cfg`, looked for
    from the script's folder up to the project root;
-5. **Settings → Debugging → Python interpreter**;
+5. the **Python interpreter** on the Python card of **Settings → LSP**;
 6. `python3`, then `python`, on your `PATH`. On Windows: the `py` launcher
    (`py -3`), then `python`, never the Microsoft Store shortcut.
 
@@ -437,8 +437,8 @@ A Python script or configuration runs under the configuration's
 **Interpreter**, the interpreter picked for the project, or the project's venv
 on the host (a `.venv`, `venv`, `env` or `.env` folder there). Without one, it
 uses the host's **Python for Run and tests** from Settings → Remote → This Host
-(see [Remote](/docs/remote#what-runs-on-the-host)), then
-**Settings → Debugging → Python interpreter** when that is a plain command name
+(see [Remote](/docs/remote#what-runs-on-the-host)), then the **Python
+interpreter** on **Settings → LSP → Python** when that is a plain command name
 rather than a path on this machine, then the host's `python3`. `PYTHONPATH` gets
 the project root and its `src/` folder; the host's own `PYTHONPATH` is not
 kept, because Editora does not know it. Stop ends a remote program straight
@@ -883,8 +883,8 @@ A script whose shebang hands it to a runner (`uv run --script`, `pipx run`,
 the debugger needs an interpreter, not a runner.
 
 The debugger itself (debugpy) runs under the same interpreter when that
-interpreter can import debugpy, else under the **Python interpreter** set in
-Settings → Debugging. A program that starts child Python processes, for example
+interpreter can import debugpy, else under the **Python interpreter** set on
+the Python card of Settings → LSP. A program that starts child Python processes, for example
 with `multiprocessing`, runs them without the debugger: breakpoints stop in the
 main process only.
 
@@ -1507,7 +1507,7 @@ palette commands:
 | Command | Installs | Needs |
 | --- | --- | --- |
 | **Install: Java Language Support** (`install.javaSupport`) | jdtls and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
-| **Install: Python Language Support** (`install.pythonSupport`) | Pyright and debugpy | Python with `pip` for debugpy; Node.js with `npm` for Pyright |
+| **Install: Python Language Support (Pyright, debugpy)** (`install.pythonSupport`) | Pyright and debugpy | Python with `pip` for debugpy; Node.js with `npm` for Pyright |
 | **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` 5.3.0 with TypeScript 5.9.3, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
 
 The Java and Python cards on the **Settings → Debugging** page have the same
@@ -1532,15 +1532,18 @@ script for each:
 - **Python**: `debugpy`, `scripts/install-debugpy.sh`.
 - **JavaScript**: vscode-js-debug, `scripts/install-js-debug.sh`.
 
-Each card on **Settings → Debugging** has the adapter's path field with
-**Browse…** and a **Detected** line, for example *debugpy: found
-(/usr/bin/python3)* (the interpreter that has debugpy) or *js-debug: not
-found*, also while that language's debugging is switched off. While **Enable
-debugging (DAP)** is off, the cards are greyed and a note says to turn it on.
-Python's path field is the **Python interpreter (fallback for Run, Debug and
-code intelligence)**: the Python used when a project has no interpreter of its
-own, and the one that runs debugpy when the project's interpreter cannot import
-it.
+Each card on **Settings → Debugging** has a **Detected** line, for example
+*debugpy: found (/usr/bin/python3)* (the interpreter that has debugpy) or
+*js-debug: not found*, also while that language's debugging is switched off.
+The Java and JavaScript cards also have the adapter's path field with
+**Browse…**. While **Enable debugging (DAP)** is off, the cards are greyed and
+a note says to turn it on. Python has no path field there: debugpy runs under
+a Python interpreter, and the **Python interpreter (fallback for Run, Debug and
+code intelligence)** is on the Python card of **Settings → LSP**, which stays
+editable with debugging off. It is the Python used when a project has no
+interpreter of its own, and the one that runs debugpy when the project's
+interpreter cannot import it. A link at the top of the Debugging page leads
+there.
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, npm, Cargo, Go, and Gradle tasks,

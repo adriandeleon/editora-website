@@ -132,7 +132,9 @@ Two rules make it stay out of the way:
   you; the file-level type has been off screen longest.
 
 Rows are rebuilt from the highlighting the editor has already applied, so they
-match what's on screen and cost no extra tokenizing. It's on by default, and off in
+match what's on screen and cost no extra tokenizing. A pinned header starts at
+the same column as the code, past the gutter, so it lines up with the lines
+under it. It's on by default, and off in
 [large-file mode](/docs/troubleshooting#performance) along with the other per-viewport work.
 Toggle it in **Settings → Editor → Display** or with `view.toggleStickyScroll`.
 
