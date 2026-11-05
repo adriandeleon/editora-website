@@ -183,6 +183,22 @@ autocomplete. Type and press Tab to complete, Enter to descend into a folder or
 open (or create) a file. There's a matching folder finder for picking a
 directory.
 
+**`C-d` opens a folder as a project**, the same as
+[Open Project Folder](/docs/workspace) (`project.open`), and closes the finder.
+The folder it opens is:
+
+- the highlighted folder, when you picked it: typed its name, or moved the
+  highlight onto it;
+- the folder being listed, when the field ends in a path separator and you
+  haven't moved the highlight (the first row is just the folder's first entry,
+  not a choice);
+- on a file row, the folder that file is in.
+
+The key legend shows it as "C-d open as project". It is only offered when
+projects are on (Settings → Workspace), not in the Open Project Folder picker
+(whose Enter already chooses a folder), and not in the IntelliJ macOS keymap,
+where `C-d` is Start Debugging.
+
 ## The tab switcher
 
 `C-x C-b` (`switcher.show`) opens an IntelliJ-style switcher over the open

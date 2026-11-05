@@ -19,6 +19,9 @@ since 0.10.0; Settings → Workspace turns them off.
 | New project from a template | `project.newFromTemplate` | (palette) |
 | Edit this project's settings | `project.editSettings` | (palette) |
 
+From the [file finder](/docs/navigation#the-file-finder) (`C-x C-f`), `C-d`
+opens the highlighted folder as a project too.
+
 The **Project** tool window shows the folder tree with keyboard navigation, a
 filter that searches the whole project by file name, per-file-type icons, and
 right-click actions: new file, **new folder**, new from template, rename, reveal,
