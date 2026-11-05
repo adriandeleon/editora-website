@@ -321,8 +321,11 @@ initial. `Home` and `End` go to the column's first and last rows.
 The first time you open the Map on a project, a **Project overview** card shows
 its README, build system and modules, languages, top-level folders with their
 file counts, likely entry points, and where the tests and docs are. Click any of
-them to see it on the map. Reopen it from ⋯ → **Project overview**; it does not
-count toward the eight cards. Module folders carry a small package badge, and a
+them to see it on the map. It opens before the project's own column, the way the
+map flows (left of it, right of it, above or below), and the map moves aside
+just enough to make room. Its **−** and **+** make its text smaller or larger,
+as a file card's do, and the next overview opens at the same size. Reopen it
+from ⋯ → **Project overview**; it does not count toward the eight cards. Module folders carry a small package badge, and a
 folder's tooltip gives its project-relative path and how many folders and files
 it holds.
 
