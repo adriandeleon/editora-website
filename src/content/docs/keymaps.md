@@ -63,13 +63,15 @@ The CUA and Sublime Text keymaps use VS Code's function keys:
 | F10 | Step over |
 | F11 | Step into while the program is paused, otherwise Full Screen |
 | Shift+F11 | Step out |
+| Ctrl+Shift+Y | Open the Debug window (⌘⇧Y on macOS) |
 
 Because F11 steps into only while a program is paused, Full Screen also has
 Ctrl+Alt+F in these two keymaps (Ctrl+⌘F on macOS). The VS Code keymap has the
-same keys, with F11 always Step Into.
+same keys, with F11 always Step Into and Ctrl+Shift+D (⌘⇧D) for the Debug
+window.
 
 The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
-Show Value at Caret, Ctrl+Shift+F9 Breakpoints, Shift+F7 Smart Step Into and
+Show Value at Caret, Ctrl+Shift+F8 Breakpoints, Shift+F7 Smart Step Into and
 Ctrl+F9 Apply Code Changes to its usual debugger keys.
 
 Some debugger keys are the same in every keymap. While the program is paused,

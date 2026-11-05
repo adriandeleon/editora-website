@@ -44,7 +44,9 @@ every language.
   Cancel as the default button.
 - The Editor page is grouped into Display, Editing, Clipboard, Indentation and
   Saving, followed by Performance, Logs, CSV, File previews and Export & Print.
-  Updates and Trusted folders are on the Advanced page.
+  Updates, Trusted folders and
+  [Show Application Log…](/docs/troubleshooting#seeing-errors-in-a-packaged-build)
+  are on the Advanced page.
 - A few settings apply only when Editora starts: the **Language** on the
   Appearance page, merging the menu bar into the title bar, and turning plugins
   on or off. Once you change one, its row says it applies after a restart, and

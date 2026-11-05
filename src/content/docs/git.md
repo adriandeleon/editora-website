@@ -482,7 +482,7 @@ Editora window says so instead, in its status bar and message log as an unread
 error naming the project, with Git's output on one line: *Push failed (in the
 window of site, now closed): remote: rejected by policy · …*. With no other
 window open, the failure goes to the
-[Debug Log](/docs/troubleshooting#seeing-errors-in-a-packaged-build).
+[Application Log](/docs/troubleshooting#seeing-errors-in-a-packaged-build).
 
 After a pull, the transcript lists the files it changed. Clicking a file's
 change graph (`4 ++--`) opens a diff of that file between the commit you were on

@@ -517,9 +517,13 @@ Imports and Format.
   compiles with (the compiler plugin's `<release>`, a parent pom, a Gradle
   toolchain or version catalog). The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
-  Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
-  jdtls keeps the JDK it started with, so changing it says to run **Restart
-  Language Servers**.
+  Tools → Default JDK, else the JDK of the `java` on your `PATH`, else
+  `JAVA_HOME`, else the newest JDK installed. It is the JDK a Java file without a
+  build tool runs on, so jdtls builds a loose file or a plain folder for the
+  Java that runs it, and a JDK class opened while debugging shows that JDK's
+  source. A changed Default JDK reaches a running jdtls at once; only the Java
+  jdtls itself runs on waits for **Restart Language Servers**. The Gradle daemons
+  jdtls starts for its imports stop after 10 idle minutes.
 - **Library sources.** A Maven library class you open (with Go to Definition,
   say) gets its sources when a repository has them: the tab shows the real code,
   with its parameter names and Javadoc. A class that has none is shown
@@ -1771,8 +1775,8 @@ installs jsoup 1.14.3, the line the server's documentation renderer needs.
   twice or misspelled, or a DOCTYPE that declares entities, under a parent it
   cannot resolve offline. Then the status bar says once that Maven completion
   is off and names the likely pom and line, for example *…probably
-  dup/pom.xml (`<dependencies>` appears twice, line 13)*; the Debug Log has the
-  server's own message.
+  dup/pom.xml (`<dependencies>` appears twice, line 13)*; the Application Log has
+  the server's own message.
 - Once that pom is fixed (saved in Editora, or fixed by a checkout or another
   editor, in any folder), Editora restarts the Maven server for that project
   only, and its open poms move to the new server at once. Each project's Maven
