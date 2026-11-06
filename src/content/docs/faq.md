@@ -61,12 +61,13 @@ has a build provenance attestation:
 Fewer than you might expect. They fall into two groups.
 
 **Off until you ask for them** are the features that run code, reach the
-network, or change how the editor works: language servers, debugging, plugins,
-the AI features, the MCP server, and Settings sync. Turn on what you want in Settings; each has
+network, or change how the editor works: plugins, the AI features, the MCP
+server, and Settings sync. Turn on what you want in Settings; each has
 its own page in these docs.
 
 **On, but invisible until their tool exists** is the larger group. Git, GitHub,
-Mermaid, the diagram tools, Typst and the rest are enabled by default, and
+language servers, debugging, Mermaid, the diagram tools, Typst and the rest are
+enabled by default, and
 they self-gate: the button, panel or gutter icon isn't there until Editora finds
 the command it needs. A fresh install stays uncluttered without you having to
 switch anything on, and installing `git` or `mmdc` later makes the feature

@@ -8,9 +8,9 @@
 //   Expert  — hides window chrome only; KEEPS line numbers, minimap, status bar.
 //   Simple  — keeps toolbar/tabs/status bar, drops the gutter + minimap, and
 //             switches the heavy features off (LSP, git, debug, plugins…).
-//   Full    — the whole interface. Language servers and debugging are still
-//             opt-in (off by default in Settings), so the copy must
-//             not say they are running out of the box.
+//   Full    — the whole interface. Language servers and debugging are on by
+//             default but each waits for its server or adapter to be
+//             installed, so the copy must not say they run out of the box.
 import { lspServerCount } from "../lib/editora";
 
 const modes = [
@@ -50,7 +50,7 @@ const modes = [
     name: "Full IDE",
     how: "Default layout",
     tag: "Everything",
-    blurb: `The whole interface: git and GitHub, build tools and live previews out of the box, plus ${lspServerCount} language servers and step debugging once you switch them on in Settings.`,
+    blurb: `The whole interface: git and GitHub, build tools and live previews out of the box, plus ${lspServerCount} language servers and step debugging once their tools are installed.`,
     shows: ["Tool windows", "Gutter + minimap", "Every feature available"],
   },
 ];

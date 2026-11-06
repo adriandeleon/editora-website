@@ -496,7 +496,10 @@ There are two paths under that, picked automatically:
 
 - With the **Java language server** set up, Editora asks it for the project's
   main classes and resolved classpath. This is the fast, project-wide path, and
-  it is the only one that can debug.
+  it is the only one that can debug. In a folder you have not trusted the
+  server runs without the build, so it knows only the JDK's classes and the
+  project's sources (see
+  [Servers that load a project's build](/docs/lsp#servers-that-load-a-projects-build)).
 - Without it, plain **Run** falls back to the **build tool**: Maven resolves the
   classpath (`compile dependency:build-classpath`) and runs the file's
   `main`, and Gradle delegates to its `run` task, or `bootRun` in a Spring Boot
@@ -755,7 +758,9 @@ file in the project serves, and it reports an error only when there isn't one.
 
 Editora debugs **Java**, **Python**, **JavaScript and TypeScript (Node.js)**,
 **Groovy**, **Kotlin**, **Clojure** and **Scala** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
-is **off by default**; enable it in **Settings → Debugging**. Shell scripts
+is **on by default**, and each language's debugger starts once its adapter is
+found ([Installing adapters](#installing-adapters)); the switch is **Enable
+debugging (DAP)** in **Settings → Debugging**. Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
 
@@ -974,7 +979,10 @@ Compact `.java` sources and extensionless Java `--source 25+` shebang files can
 be debugged with breakpoints, stepping, and local variables. Editora maps
 breakpoints and stack frames to the original file and removes its temporary
 compiled files after the session. Java debugging needs the Java language server
-and debug adapter described below.
+and debug adapter described below. In a folder you have not
+[trusted](/docs/workspace#trusted-folders), the Java language server runs
+without the project's Maven or Gradle build, so trust the folder before
+debugging a project's code.
 
 JUnit tests are debugged from their gutter icon, with *Debug Test at Caret*, or
 with Debug in the test file (see [Starting a Java session](#starting-a-java-session)),

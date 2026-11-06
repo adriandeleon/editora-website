@@ -39,7 +39,8 @@ remembered per file.
 
 The preview is built from CommonMark + GFM and aims to match GitHub: real
 task-list checkboxes, inline-code pills, underlined headings, tables, and images
-(local and remote, including SVG badges). It updates live as you type, follows
+(local and remote, including SVG badges; see [Remote images](#remote-images)).
+It updates live as you type, follows
 the active theme or its own light/dark toggle, and remembers its mode per file.
 An edit rebuilds only the block it touches, and a long document is built a
 slice at a time.
@@ -142,9 +143,11 @@ Side* is also in the **View** menu.
 **Load remote images in the preview** in Settings → Markdown chooses what
 happens to images from the web:
 
-- **Always** (the default) loads them.
-- **Ask for each document** fetches nothing when a document opens; a bar at the
-  top of the preview says the document has remote images and offers **Load**.
+- **Always** loads them.
+- **Ask for each document** (the default) fetches nothing when a document
+  opens; a bar at the top of the preview says the document has remote images
+  and offers **Load**. A README from a repository you just cloned can't fetch
+  a tracking image the moment you preview it.
 - **Never** shows their alt text and fetches nothing.
 
 *Markdown: Set Remote Image Loading…* picks one of the three, and *View: Toggle
@@ -638,7 +641,7 @@ such as an oversized image, that cannot be split.
 | Scroll the editor and the preview together | On | `view.toggleMarkdownScrollSync` |
 | Hide front matter in the preview | Off | `view.toggleMarkdownFrontMatter` |
 | Preview theme (Follows the app theme / Light / Dark) | Follows the app theme | `view.toggleMarkdownPreviewTheme` |
-| Load remote images in the preview | Always | `markdown.setRemoteImagePolicy` |
+| Load remote images in the preview | Ask for each document | `markdown.setRemoteImagePolicy` |
 | Render LaTeX math ($…$, $$…$$) | On | `view.toggleMath` |
 | **HTML export** | | |
 | Embed local images in exported HTML | On | `view.toggleHtmlExportEmbedImages` |

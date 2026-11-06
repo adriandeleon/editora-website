@@ -6,8 +6,11 @@ order: 2
 ---
 
 Editora speaks the **Language Server Protocol**, so with a server installed you
-get real language smarts. LSP is **off by default**; turn it on in
-**Settings → LSP**.
+get real language smarts. LSP is **on by default**: each server starts once it
+is installed, and a file whose server is missing offers to install it. In a
+folder you have not trusted, servers that would run the project's build wait
+(see [Servers that load a project's build](#servers-that-load-a-projects-build)).
+The master switch is **Enable LSP (language servers)** in **Settings → LSP**.
 
 ## Navigation
 
@@ -185,7 +188,10 @@ problems at all. Until the server has
 checked the file it says **Analyzing…** (for Java, until the project has loaded,
 and again after a restart), and **Not checked** when the file's project did not
 import. Its arrows go to the previous and next problem in that
-file, notes included, and clicking the counts shows or hides Problems. It hides when the code
+file, notes included, and clicking the counts shows or hides Problems. While
+the Problems window is open, its arrows and **Next Problem** / **Previous
+Problem** select the problem they reach there too, and the focus stays in the
+editor. It hides when the code
 pane is narrower than 520 pixels. When the caret rests on a line where the
 server can **fix an error**, a red **lightbulb** with a `!` appears in the
 gutter; an amber one marks other quick actions, a warning's fixes included.
@@ -528,6 +534,10 @@ Imports and Format.
 
 ### The Java server and your project
 
+- **Untrusted folders.** In a folder you have not trusted, jdtls starts
+  without the project's Maven or Gradle build, and the file says so with
+  **Trust Folder**; see
+  [Servers that load a project's build](#servers-that-load-a-projects-build).
 - **Which jdtls.** Install fetches jdtls **1.63.0**. [Doctor](/docs/troubleshooting#doctor)
   names the installed version and warns when it is older, with an
   [Update…](/docs/troubleshooting#update-for-servers-older-than-editoras)
@@ -734,6 +744,29 @@ A remote project's `.editora/settings.json` is not read; set a server's command
 for a host in Settings → Remote instead (see
 [Language servers on a remote host](#language-servers-on-a-remote-host)).
 
+### Servers that load a project's build
+
+Some servers run the project's own code just to load it: a Gradle build's
+scripts, Maven build extensions, Rust build scripts and proc macros, a
+`Gemfile`, MSBuild projects, Leiningen. In a folder you have not
+[trusted](/docs/workspace#trusted-folders), Editora holds that back:
+
+| Server | In an untrusted folder |
+| --- | --- |
+| Java (jdtls) | Starts without the Maven or Gradle build. Syntax checks, the JDK's types and navigation within the file still work. |
+| Kotlin | Waits when the folder has a `pom.xml`, `build.gradle(.kts)` or `settings.gradle(.kts)`. |
+| Scala (Metals) | Waits when the folder has a `build.sbt`, `build.sc`, `build.mill` or `project.scala`. |
+| Rust (rust-analyzer) | Waits when the folder, or a folder one level down, has a `Cargo.toml`. |
+| Ruby (Ruby LSP) | Waits when the folder has a `Gemfile` or `gems.rb`. |
+| C# (csharp-ls) | Waits when the folder, or a folder up to two levels down, has a solution, a project file or `Directory.Build.props`/`.targets`. |
+| Clojure (clojure-lsp) | Waits when the folder has a `project.clj`, `build.boot` or `shadow-cljs.edn`. A `deps.edn` or `bb.edn` is read as data and does not hold it back. |
+
+A file of one of these languages says so, with **Trust Folder** and **Not
+now**. Trusting the folder (the button, or **Workspace: Trust This Folder**)
+restarts the server with the build; removing the trust in Settings → Advanced →
+Trusted folders stops it again. A loose file with no build next to it starts its
+server as usual. Other servers, Pyright among them, are not held back.
+
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
@@ -829,7 +862,10 @@ set yourself is kept, so fwcd's `kotlin-language-server` still works there.
 The server imports the project's Gradle or Maven build, so its root is the
 folder with `settings.gradle.kts` (or `settings.gradle`), else the nearest
 `build.gradle.kts`, `build.gradle` or `pom.xml`: every module of a multi-module
-build shares one server. Once the import ends (a few seconds for a small
+build shares one server. In a folder you have not trusted, the server waits
+until you trust it, since the import runs the build (see
+[Servers that load a project's build](#servers-that-load-a-projects-build)).
+Once the import ends (a few seconds for a small
 project, longer the first time Gradle fetches its plugins) it reports
 compiler errors and warnings and offers completion, hover, go to definition,
 references, rename, the outline, formatting and code actions.
@@ -853,7 +889,9 @@ outline and formatting. To resolve the project's dependencies it asks the
 project's own tool for the classpath (`clojure -Spath`, `lein classpath`,
 `bb print-deps` or `npx shadow-cljs classpath`), which it finds on the same
 `PATH` Editora gives every language server. Without that tool it still works on
-the project's own files.
+the project's own files. In a folder you have not trusted, a `project.clj`,
+`build.boot` or `shadow-cljs.edn` makes the server wait until you trust it
+(see [Servers that load a project's build](#servers-that-load-a-projects-build)).
 
 A server runs per project root: the folder with a `deps.edn`, `project.clj`,
 `bb.edn`, `shadow-cljs.edn` or `build.boot`, else the repository. Any of those
@@ -876,6 +914,8 @@ Gradle or Maven build. The first time it sees one it asks whether to **import
 the build**; the question appears as a dialog, and the editor stays usable while
 it is open. An import runs the build tool and compiles the project, which takes
 a minute or more the first time. Metals shows its progress in the status bar.
+In a folder you have not trusted, Metals waits until you trust it (see
+[Servers that load a project's build](#servers-that-load-a-projects-build)).
 
 It reports compiler errors, and offers completion, hover, go to definition,
 references, rename, the outline and formatting (with a `.scalafmt.conf`). When
@@ -884,8 +924,7 @@ Metals asks for a value or a choice of its own, a text field or a picker opens.
 A `build.sbt`, `build.mill`, `build.sc` or `project.scala` at a project's root
 makes [Doctor](/docs/troubleshooting#doctor) expect Metals.
 
-Any server's question with buttons gets the same dialog; before, such a
-question went unanswered.
+Any server's question with buttons gets the same dialog.
 
 ## Workspace roots and lifetime
 
@@ -1200,9 +1239,9 @@ names a shell, and any file with a `# shellcheck shell=bash` (or `sh`, `dash`,
 shell script too; its `pkgname`, `pkgver` and other makepkg variables are not
 reported as unused (SC2034) or unset (SC2154).
 
-Language servers are off by default, so the first shell script a window opens
-asks **Turn on shell script code intelligence?** with **Turn on** and **Not
-now**, once per window, like the [Python offer](#python).
+If language servers are off (Settings → LSP), the first shell script a window
+opens asks **Turn on shell script code intelligence?** with **Turn on** and
+**Not now**, once per window, like the [Python offer](#python).
 
 zsh startup files (`.zshrc`, `.zshenv`, `.zprofile`, `.zlogin`, `.zlogout`)
 are not opened on the Bash server. ShellCheck has no zsh mode and would report
@@ -1367,9 +1406,9 @@ one folder or file.
 
 ## Python
 
-Python files use **Pyright** (`pyright-langserver --stdio`). Language servers
-are off by default, so the first Python file a window opens asks **Turn on
-Python code intelligence?** with **Turn on** and **Not now**. The offer comes
+Python files use **Pyright** (`pyright-langserver --stdio`). If language
+servers are off (Settings → LSP), the first Python file a window opens asks
+**Turn on Python code intelligence?** with **Turn on** and **Not now**. The offer comes
 once per window and follows the same switch as the install banners
 (`view.toggleInstallPrompts`). It is not shown while **Enable Python (Pyright)**
 is off in Settings → LSP.
@@ -1537,9 +1576,9 @@ formatter found, a save says so in the status bar.
 XML files use **lemminx**, Red Hat's XML language server. Editora installs a
 fixed release of it (see [Installing lemminx](#installing-lemminx)), and a
 `pom.xml` in a trusted folder gets the
-[Maven-aware server](#pomxml-and-the-maven-server) instead. Language servers
-are off by default, so the first XML file a window opens asks whether to turn
-them on, once per window.
+[Maven-aware server](#pomxml-and-the-maven-server) instead. If language
+servers are off (Settings → LSP), the first XML file a window opens asks
+whether to turn them on, once per window.
 
 Besides `.xml`, `.xsd`, `.xsl` and the other usual extensions, these XML
 dialects open as XML, with highlighting, folding, comments and the language

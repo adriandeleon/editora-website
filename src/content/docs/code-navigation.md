@@ -96,7 +96,7 @@ Turn it off in **Settings → Editor → Editing** ("Project symbol index"), or 
 ## Go to Definition without a language server
 
 **LSP: Go to Definition** (`lsp.gotoDefinition`) asks the
-[language server](/docs/lsp) first. When LSP is off (the default), when no
+[language server](/docs/lsp) first. When LSP is off, when no
 server handles the file, or when the server finds nothing, Editora looks up the
 name at the caret itself: first in the file's own declarations, then in the
 project's symbol index. One match jumps there; several open the symbol picker.

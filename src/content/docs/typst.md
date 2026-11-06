@@ -28,8 +28,8 @@ Typst files get Markdown-style ergonomics:
   `typst.insertImage`, `typst.outline`).
 - Bundled snippets cover figures, tables, and more.
 
-Code intelligence comes from the **tinymist** language server (enable the
-[LSP feature](/docs/lsp) and install tinymist).
+Code intelligence comes from the **tinymist** language server (install
+tinymist; see [Language servers](/docs/lsp)).
 
 Editing actions are grouped under a single **Typst** submenu in the editor's
 right-click menu. Listed flat, the eight entries would push cut, copy, paste

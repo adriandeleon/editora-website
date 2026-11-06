@@ -410,10 +410,10 @@ taken out of VS Code. One install gives all three
 (`vscode-css-language-server` and `vscode-json-language-server` too). It is a
 Node.js program, so it needs **Node.js**.
 
-Language servers are off by default. The first HTML (or CSS) file a window
-opens asks **Turn on HTML code intelligence?**, with **Turn on** and **Not
-now**. To turn them on yourself, use **Enable LSP (language servers)** in
-Settings → LSP. See [Language servers](/docs/lsp).
+If language servers are off, the first HTML (or CSS) file a window opens asks
+**Turn on HTML code intelligence?**, with **Turn on** and **Not now**. The
+switch is **Enable LSP (language servers)** in Settings → LSP. See
+[Language servers](/docs/lsp).
 
 The server reads `.html`, `.htm` and `.xhtml` files and Handlebars files, not
 HTML Templates. It runs once per workspace root: the project, else the nearest

@@ -386,7 +386,7 @@ Document sync is incremental, semantic highlighting transfers only what changed 
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
-Off by default. Enable it under Settings → LSP; the first Python file you open offers to turn it on.
+On by default: each server starts once it is installed. In a folder you have not trusted, a server that would run the project's build to load it waits (Kotlin, Scala, Rust, Ruby, C#, Clojure), and Java starts without its Maven or Gradle build; the file offers **Trust Folder**. The master switch is in Settings → LSP.
 """),
     new Feature("code-navigation", CI, 3, false,
         "Code navigation",
@@ -500,7 +500,7 @@ Clojure uses the same debugger, under the Clojure CLI or Leiningen: breakpoints 
 
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript (a Python program under the project's virtual environment on that host), and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button that fetches it, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button that fetches it, and a `jdtls` that already bundles java-debug is detected as-is. On by default; the switch is in Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp), which is on by default too. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
 """),
     new Feature("http-client", RD, 4, false,
         "HTTP client",
@@ -583,7 +583,7 @@ Apply changes with guarded, undoable gutter actions or open an editable Result d
         """
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
 
-It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. A ```` ```console ```` or ```` ```shell-session ```` block shows as a terminal session: a muted prompt, the command highlighted as shell, and plain output. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
+It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges; remote images load once you allow them for the document). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. A ```` ```console ```` or ```` ```shell-session ```` block shows as a terminal session: a muted prompt, the command highlighted as shell, and plain output. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
 
 Markdown files get a full editing kit:
 
@@ -1032,10 +1032,10 @@ The other three ways to run the editor are [Zen mode](/features/zen-mode), [Expe
         """
 The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, toolbar, tab bar, breadcrumb, gutter, minimap, and status bar are all on screen, and tool windows such as Project, Git Log, TODO, and Output dock around the editor.
 
-Some features work as soon as you open a folder, and some wait for you to switch them on:
+Some features work as soon as you open a folder, and some wait for their tool or for you to trust the folder:
 
 - **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [Local History](/features/local-file-history).
-- **Switched on in Settings:** [language servers](/features/lsp) and [debugging](/features/debugging).
+- **Once their tool is installed:** [language servers](/features/lsp) and [debugging](/features/debugging). A file whose server is missing offers to install it, and servers that would run a project's build wait until you trust the folder.
 
 Every piece of the interface can be shown or hidden on its own from the View menu or Settings → Interface. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode) and [Expert mode](/features/expert-mode) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode) hides more and also switches the heavier features off.
 """),
