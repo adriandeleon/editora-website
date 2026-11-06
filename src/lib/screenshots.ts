@@ -156,7 +156,7 @@ const aroundShots: Shot[] = [
   shot("/screenshots/doctor.webp", {
     title: "Doctor",
     caption: "The Doctor lists every external tool Editora can use, and whether it was found.",
-    alt: "The Doctor tab: version control, search, preview and diagram tools, language servers and debuggers, each with its status and version",
+    alt: "The Doctor tab: a summary of what is OK, missing or off, then checks grouped by area (version control, search, encryption, preview and diagram tools), each with its status and version",
     more: { href: "/features/doctor", label: "More about the Doctor" },
   }),
   shot("/screenshots/docs/git-commit.png", {
