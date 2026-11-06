@@ -80,6 +80,12 @@ resolution, Java Run and Debug, and before-launch commands, and the same JDK
 runs sbt, Mill, Scala CLI and Scala's Run and Debug, the
 [New Maven Project](#new-maven-project) wizard's Maven, and the
 [Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server).
+A Java file without a build tool (a loose file, or a project folder with no
+`pom.xml` or Gradle build) runs and debugs on it too, and it is the default JDK
+of the [Java language server](/docs/lsp#the-java-server-and-your-project): the
+JDK it builds those files for, shows JDK sources from, and runs Gradle imports
+on. With **System default**, they use the `java` on your `PATH`. A changed
+Default JDK reaches a running language server at once, with no restart.
 A saved run configuration can override it for one project or launch. With
 **System default** and no `JAVA_HOME`, the program a Maven Run launches uses the
 `java` on your `PATH`, which may not be the version Maven compiled with.
@@ -117,10 +123,20 @@ on PATH*, or the override. [Doctor](/docs/troubleshooting#doctor)'s Build Tools
 section says the same. The command row is greyed while that tool is turned off.
 
 The same page has **Build before Run and Debug** (on): in a Maven or Gradle
-project, Run and Debug on a main class first compile with the build tool, as
-described under
+project, Run, **Debug: Debug Main Class…** and Debug on a run configuration first
+compile with the build tool (`compile` or `compileJava`, or the test variant for
+a class under `src/test`), as described under
 [Running a project's main class](/docs/run-debug#running-a-projects-main-class).
-Turn it off to launch whatever `target/classes` holds.
+A run configuration with its own before-launch step runs that step instead.
+Turn it off and Run launches whatever `target/classes` holds, while Debug builds
+with the Java language server.
+
+Debug on a file (**Debug: Start / Continue** in a Java file, or the gutter's
+Debug ▶) always builds with the Java language server, and stops on compile
+errors. In a
+Gradle project the language server writes its classes to `bin/` in the project
+folder, so add `bin/` to your `.gitignore`. The Gradle daemons it starts for
+its imports stop after 10 idle minutes.
 
 ## Clojure
 
@@ -146,6 +162,8 @@ debugging a single Clojure file is covered in
 [Clojure files](/docs/run-debug#clojure-files).
 
 ## Maven
+
+![The Maven tool window beside an open pom.xml: a toolbar, the build root marked Trusted, a search field, the Lifecycle phases from clean to deploy, and the project's profiles](/screenshots/docs/maven.png "The Maven tool window lists the lifecycle phases and the profiles the pom declares.")
 
 ### What the tree reads
 
@@ -400,9 +418,9 @@ updated: 3 dependencies, 2 plugins*).
 ## npm and other package managers
 
 The `package.json` scripts are in the **Package Scripts** tool window
-(`tool.npm`). Each row shows a script's name and its command; run one with
-double-click or Enter. Scripts run as `<manager> run <name>`, where the manager
-is the one the project uses:
+(`tool.npm`). Each row shows a script's name; hover it to see the command it
+runs. Run one with double-click or Enter. Scripts run as
+`<manager> run <name>`, where the manager is the one the project uses:
 
 1. the `packageManager` field of `package.json` (for example `"pnpm@9.12.0"`);
 2. else the lockfile: `pnpm-lock.yaml` → pnpm, `yarn.lock` → yarn, a `bun`
@@ -413,12 +431,29 @@ In a **workspace** (a monorepo), a member package has no lockfile of its own, so
 Editora looks upward to the workspace root that has the `packageManager` field,
 the lockfile or a `pnpm-workspace.yaml`, and stops at the project root. A member
 of a pnpm workspace therefore runs pnpm, not npm, and is never offered
-`npm install`. Run configurations of the npm type use the same manager.
+`npm install`. `install` from a member runs in the member's folder; pnpm, yarn
+and npm 7 or newer find the workspace root themselves. Run configurations of
+the npm type use the same manager.
 
-The npm card in **Settings → Languages & Tools → Build Tools** names the manager
+Its commands are **Package Scripts: Show Actions** (`npm.showActions`),
+**Package Scripts: Run Custom Task(s)…** (`npm.runCustom`), **Package Scripts:
+Stop** (`npm.stop`), **Package Scripts: Rerun Last** (`npm.rerunLast`) and
+**Package Scripts: Refresh package.json** (`npm.refresh`). **View: Toggle
+Package Scripts** (`view.toggleNpmSupport`) turns the window, its actions popup
+and its Output tab on or off.
+
+The **Node.js** card in **Settings → Languages & Tools → Build Tools**, just
+above the npm card, has the **Node.js** field: the Node.js for Run, npm scripts,
+Debug, the language servers and HTTP scripts. Left blank, Editora uses `node`
+on your `PATH`. A project's `.nvmrc` or `.node-version` wins over the field
+when nvm has that version (see
+[Which Node.js runs](/docs/run-debug#nodejs-scripts)). The card can be edited
+while JavaScript debugging is turned off.
+
+The npm card on the same page names the manager
 the active project uses and why, for example *pnpm (pnpm-lock.yaml)*. Its
 **Command override** applies only when it names that same manager, or is a
-wrapper script of your own; an override of `npm` no longer makes a pnpm or yarn
+wrapper script of your own; an override of `npm` does not make a pnpm or yarn
 project run npm.
 
 The window always shows the project's own `package.json`: opening a file inside
@@ -435,10 +470,17 @@ showing an error from Java:
   `<manager> install` first;
 - a `package.json` that can't be read says where the mistake is.
 
-The Output tab is named after the manager, and it shows the colours the script
-prints and the Node.js it runs under, such as **Node.js 24.18.1**. Scripts use
-the same Node.js as [Run](/docs/run-debug#nodejs-scripts). Stop first sends
-Ctrl+C (SIGINT), so the script and its child processes can clean up.
+Runs stream to the **Package Scripts** tab of the Output window, which shows
+the colours the script prints and the Node.js it runs under, such as
+**Node.js 24.18.1**. The tab, and the Run console of an npm script
+configuration, start with the command line that runs, and the status bar names
+the manager that ran, for example *pnpm finished successfully*.
+
+Scripts use the same Node.js as [Run](/docs/run-debug#nodejs-scripts): that
+Node.js's folder goes first on the script's `PATH`, and the npm beside it runs.
+So the `node` that a script's own commands call is the same Node.js too. Stop
+first sends Ctrl+C (SIGINT), so the script and its child processes can clean
+up.
 
 ## Test runner
 

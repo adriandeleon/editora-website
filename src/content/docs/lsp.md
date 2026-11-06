@@ -41,8 +41,13 @@ have somewhere to go; of two where one overrides the other, the nearer one is
 offered. A static or private method, or another overload, has no super method. In
 a lambda it goes to the functional interface's method, in a constructor to the
 super constructor it calls (through `this(...)` too), and from a class to its
-supertypes, the superclass first and each named by its type. Several targets open
-a picker, and it works the same in a library source tab.
+supertypes, the superclass first and each named by its type (never
+`java.lang.Object`, as in IntelliJ). On an anonymous class itself (its header,
+from the type's name to its `{`, or a field in it) it opens the type the class
+instantiates, also for a nested type written with `<>`, such as
+`new Outer.Mid.Sink<>() {…}` or an imported `Map.Entry`. A comment right above a
+method, Javadoc or `//`, counts as the method's. Several targets open a picker,
+and it works the same in a library source tab.
 
 The submenu does not change which actions a server contributes. A
 fully-featured server offers up to eight. Grouping them keeps cut, copy, paste
@@ -137,7 +142,13 @@ appears only where the argument is a literal; **LSP: Set Inlay Hint Filter**
 (`lsp.setInlayHintMode`) switches between that and hints on all arguments. Type hints are never filtered; in Java
 they show the inferred type of a `var` and of a lambda's parameters. Arguments
 named only by number (`List.of(e1: 1, e2: 2)`) get no hint. They cost nothing
-while off.
+while off. Not every server gives them; Pyright, for one, does not. Turning inlay
+hints on in such a file says so in the status bar (*Inlay hints are on, but
+Pyright gives none for this file.*), and **Set Inlay Hint Filter** says there is
+nothing to filter instead of opening its list. Turning on **View: Toggle
+Semantic Highlighting** (`view.toggleSemanticHighlight`) gives the same notice
+when the file's server sends no semantic tokens, and the file keeps its grammar
+colours.
 
 **Code lenses** are the server's reference and implementation counts, drawn
 after a declaration (`3 references`, `2 implementations`). A lens lights up
@@ -148,7 +159,8 @@ implementations lens runs Go to Implementation. When a declaration has more
 than one lens, a short list asks which one. They are **off by default**,
 because each count is a search on the server; turn them on in Settings → Code
 Completion ("Code lenses") or with `view.toggleCodeLens` (**View: Toggle Code
-Lenses**).
+Lenses**). Turning them on in a file whose server gives none, such as a Python
+file under Pyright, says so in the status bar.
 
 **Occurrence highlighting** needs no command: rest the caret on a symbol and
 every occurrence in the file gets a subtle wash, with writes (assignments) shaded
@@ -160,7 +172,8 @@ light up an unrelated field `x`, and it clears the moment the caret moves.
 "style" level, for example) is drawn as a faint dotted line rather than a full
 squiggle, code the server marks as unused, such as a variable nothing reads,
 is drawn faded, and a call the server marks as deprecated is struck through.
-Those unused and deprecated marks are not listed in the Problems window.
+Those unused and deprecated marks are not listed in the Problems window or
+counted by the problem counter.
 
 The **problem counter** at the top right of the editor shows the file's errors
 and warnings, and a muted count of notes (information and hints, such as
@@ -182,7 +195,12 @@ Dark and Blacky, whose accent is the bookmark's yellow, the quick-action bulb ta
 the text colour). Both
 can be turned off in Settings → Code Completion → Language server features.
 **Completion** is merged into
-the [autocomplete](/docs/languages#autocomplete) popup, and the **Structure**
+the [autocomplete](/docs/languages#autocomplete) popup, which keeps every row the
+server sends (`os.` in Python lists all of the module's members). When the
+server has not answered after 300 ms, as Pyright may not on a very large file,
+the popup shows the rows Editora has without it, with **Waiting for Pyright…**
+(or the name of the file's server) under them, and the server's answer replaces
+them when it comes. The **Structure**
 tool window builds its outline from the server's document symbols, with real
 kinds, per-kind icons and method signatures. A server that lists its symbols
 flat, as bash-language-server does, has them nested under the function that
@@ -253,6 +271,11 @@ With Open files, the same build runs when another file of the project is open, i
 this window or another one on the same project, so
 a file calling a method you just renamed elsewhere shows the error at once.
 
+For Python, **Whole project** has Pyright check every Python file of the
+project, opened or not, which can take a while on a large one; **Open files**
+has it check only the open ones. **Build Project** on a Python file switches
+Problems to Whole project and says so in the status bar.
+
 Problems of the project rather than of a file, such as a JDK version the build
 expects and the machine does not have, are reported after a Maven or Gradle
 project is imported: said in the status line, and listed in Problems in either
@@ -296,7 +319,9 @@ the command is in the palette and the right-click menu in every keymap.
 request, Pyright's organize-imports command, or the server's organize-imports
 code action. If the server has none of these, the status bar says so. On a
 Python file **Format Document** uses Ruff or Black; see
-[Formatting Python](#formatting-python).
+[Formatting Python](#formatting-python). Pyright offers no quick fixes of its
+own, so on a Python file Editora adds **Import**, **Remove unused import** and
+**Ignore on this line**; see [Python quick fixes](#python-quick-fixes).
 
 A multi-file edit is applied **completely or not at all**. An action that would
 delete a folder or replace an existing file asks first and names the paths, and
@@ -444,7 +469,16 @@ is asked which imports the pasted text needs; they are added for you, and only
 for names the pasted text uses. Only the
 language server can do this, because it needs the type resolver. An answer that
 lost a race with your typing is dropped rather than applied to text it wasn't
-computed for.
+computed for. In the Emacs keymap, a yank (`C-y`) and each `M-y` get the imports
+their text needs, each kill ring entry with the file it was killed from, and `M-y`
+keeps working after those imports land.
+
+**Pasting into a string escapes the text.** Pasted between the quotes of a Java
+string, `C:\temp "x"` becomes `C:\\temp \"x\"`, and pasted lines become
+concatenated strings, each ending in `\n`. Text copied from inside a string
+literal pastes as it is, already escaped. In a text block only backslashes (and a
+`"""`) are escaped, and in a char literal its backslash and quote. One Undo takes
+the paste back.
 
 **Smart semicolon placement.** Typing `;` part-way through an expression puts it
 at the end of the statement: `compute(1, 2|)` becomes `compute(1, 2);|`. The
@@ -503,9 +537,13 @@ Imports and Format.
   compiles with (the compiler plugin's `<release>`, a parent pom, a Gradle
   toolchain or version catalog). The
   default JDK for your projects, which Gradle also runs on, is Settings → Build
-  Tools → Default JDK, else `JAVA_HOME`, else the newest JDK installed. A running
-  jdtls keeps the JDK it started with, so changing it says to run **Restart
-  Language Servers**.
+  Tools → Default JDK, else the JDK of the `java` on your `PATH`, else
+  `JAVA_HOME`, else the newest JDK installed. It is the JDK a Java file without a
+  build tool runs on, so jdtls builds a loose file or a plain folder for the
+  Java that runs it, and a JDK class opened while debugging shows that JDK's
+  source. A changed Default JDK reaches a running jdtls at once; only the Java
+  jdtls itself runs on waits for **Restart Language Servers**. The Gradle daemons
+  jdtls starts for its imports stop after 10 idle minutes.
 - **Library sources.** A Maven library class you open (with Go to Definition,
   say) gets its sources when a repository has them: the tab shows the real code,
   with its parameter names and Javadoc. A class that has none is shown
@@ -523,16 +561,27 @@ Imports and Format.
   Maven only), or run **View: Toggle Downloading Library Sources at Import**
   (`view.toggleJavaDownloadSources`). It applies at the next import; **LSP: Clean Java
   Workspace and Restart** applies it now.
-- **A failed import says why.** When jdtls cannot import the project (a Gradle
-  build that does not run, say), the status bar names the reason it logged and
-  Problems lists the build file's own errors. Fix the build file and run
-  **Reload Project Configuration**: after a failed import it starts the server
-  over to import again. A project that imports with build problems (a Maven
-  dependency that cannot be found) is loaded, and Problems lists them.
+- **A failed import says why.** When jdtls cannot import the project, the status
+  bar names the reason, each of its open files says **Not checked**, and Problems
+  lists the build file's own errors. That covers a Gradle build that does not run
+  (a settings file that `include`s a folder that does not exist, say), a pom that
+  does not parse, and a pom Maven cannot build a model of: a dependency without a
+  `<version>`, a parent it cannot resolve. A failure that belongs to one module or
+  folder is named with it, as in **jdtls (app): the project did not import**, and
+  the rest of the project stays checked. A module with
+  `<packaging>pom</packaging>` that holds Java sources says Maven compiles none of
+  them. Fix the build file and save it, or run **Reload Project Configuration**:
+  the project imports again, after a pom's model error with a cleaned workspace,
+  and a fix that arrives by `git pull` or another editor does the same. A project
+  that imports with build problems (a Maven dependency or a Gradle one that cannot
+  be found) is loaded and checked, and Problems lists them. A file the build
+  leaves out on purpose (a nested sample project, `buildSrc`, an excluded source)
+  does not make a healthy project look broken.
 - **Your project folder stays clean.** jdtls keeps Eclipse's `.project`,
   `.classpath` and `.settings/` in its own workspace, not in your project.
 - **Build files sync on save.** A change to `pom.xml` or `build.gradle` reaches
-  the classpath when you save it.
+  the classpath when you save it, also a module's in a folder you never expanded,
+  and so does one made outside Editora (a `git pull`, a branch switch).
 - **One server per build.** Files of the modules of one Maven reactor or Gradle
   build share a server even without a project open. A plain folder of `.java`
   files with packages, and no build file, gets the right source folder as soon as
@@ -589,7 +638,10 @@ a moment; for jdtls that is after the project import, not at its own earlier
 "Ready". After that, background work (diagnostics after an edit, a search) is
 shown only when it is still running after that moment, and work that was shown
 ends with another ready line, so the last line never reads as a job left
-unfinished. A line that repeats the one just shown is skipped.
+unfinished. Work that a ready server began but never reported as done counts as
+over once the server has been silent for 30 seconds, so the ready line, and the
+end of the loading bar, always come. A line that repeats the one just shown is
+skipped.
 
 External file changes are forwarded to the running servers, so a server's
 project model stays current after a `git checkout`, a branch switch, a CLI build
@@ -683,8 +735,12 @@ for a host in Settings → Remote instead (see
 If a server isn't installed, Editora can fetch it for you. **Every server** is
 covered through one of these channels, picked per server:
 
-- **npm** packages (Astro, Bash, YAML, Dockerfile, TOML, TypeScript,
-  Python/Pyright), needing Node.
+- **npm** packages (Astro, Bash, YAML, Dockerfile, TOML, Python/Pyright),
+  needing Node.
+- **Pinned npm packages** for TypeScript / JavaScript, typescript-language-server
+  5.3.0 and TypeScript 5.9.3, installed with npm into Editora's own folder
+  rather than globally (see [TypeScript and JavaScript](#typescript-and-javascript)).
+  They need Node.
 - A **pinned npm package** for HTML, CSS and JSON, vscode-langservers-extracted
   4.10.0, installed with npm into Editora's own folder rather than globally
   (see [HTML, CSS and JSON](#html-css-and-json)). It needs Node.
@@ -733,11 +789,12 @@ is the expected tool, so a failed or interrupted install leaves the working
 version in place.
 
 For Astro, startup also locates the TypeScript SDK required by `astro-ls`,
-whether it is hoisted in the workspace or installed alongside the server by
-Editora (TypeScript 6, as for the
-[TypeScript / JavaScript server](#typescript-and-javascript)). A TypeScript SDK inside the project is loaded only from a trusted
-folder; otherwise Editora uses the SDK beside the server, or does not start the
-server until you trust the folder. The trust prompt lists the SDK.
+whether it is hoisted in the workspace or Editora's own TypeScript 5.9.3, the
+same copy the [TypeScript / JavaScript server](#typescript-and-javascript)
+uses. A TypeScript SDK inside the project is loaded only from a trusted
+folder; otherwise Editora uses its own or the one beside the server, or does
+not start the server until you trust the folder. The trust prompt lists the SDK when the folder has an
+`astro.config.*` or an `.astro` file is open.
 
 ## Groovy
 
@@ -831,11 +888,21 @@ question went unanswered.
 A server runs once per workspace root. The root is the active project, else the
 nearest build marker (`pom.xml`, `package.json`, `go.mod`, `Cargo.toml`, and so
 on), else the file's directory. Files of the same language in one project share a
-single server. Python looks for its own markers first; see [Python](#python).
-An HTML page with no project, `package.json` or `.git` above it is rooted at
-the highest folder above it that holds an `index.html`, stopping below your
-home folder, so the whole static site shares one server and its `/css/…` links
-resolve.
+single server. Python looks for its own markers first, and a Python sub-project
+inside a project gets a server of its own; see
+[Python sub-projects](#python-sub-projects).
+An HTML page with no project, and no `package.json` or `.git` above it (one in
+your home folder or above it does not count), is rooted at its site root, by
+the one rule HTML Live Preview uses too: the nearest folder with an
+`index.html`, then on up while the folder above holds one too, never into your
+home folder, Downloads, Desktop, Documents or a temporary folder. So the whole
+static site shares one server, its `/css/…` links resolve, and Ctrl-click and
+the browser agree. A page with a `package.json` or `.git` above it is rooted
+there instead, while the preview still serves its site root, so the two agree
+only when that folder is the site root (see
+[What is served](/docs/html#what-is-served)). Go to Definition on a `/…` link
+and the markup checks use the server's root for a page outside the project
+even when no server is running.
 
 A file directly in your home folder, the temporary-files folder or at the top of
 a drive (`~/.bashrc`, `/tmp/x.sh`) has that whole folder as its root. Editora
@@ -878,29 +945,57 @@ errors are not reported. A script in a remote folder is not given a copy.
 
 JavaScript and TypeScript files use **typescript-language-server**, which runs
 TypeScript's own `tsserver`. **Install…** on its card (or *Install: TypeScript
-/ JavaScript (Node.js) Language Support*, `install.jsSupport`) installs the
-server with **TypeScript 6** beside it. The server runs on the same Node.js as
+/ JavaScript (Node.js) Language Support*, `install.jsSupport`) installs
+typescript-language-server **5.3.0** and TypeScript **5.9.3** with npm into
+`plugins/lsp/typescript` under Editora's config folder. Nothing is installed
+globally, so your own `tsc` stays as it is. With the server's command left
+blank, Editora runs that copy. The server runs on the same Node.js as
 [Run](/docs/run-debug#nodejs-scripts).
 
-**Why TypeScript 6.** TypeScript 7 is a new compiler written in Go. It has no
-`tsserver`, so typescript-language-server cannot run on it. npm's newest
-TypeScript is now 7, so Editora asks for TypeScript 6, the last version with a
-`tsserver`. When the only TypeScript found has no `tsserver`, or there is none,
-Editora does not start the server and says why, with the fix:
-`npm install -g typescript@6`, or **Install…** on the card. It does not try
-again each time you open another tab. [Doctor](/docs/troubleshooting#doctor)
-and the card's **TypeScript** line show the version in use, or that it has no
-`tsserver`. In that case the Doctor row is a warning with an **Update…** button,
-which installs typescript-language-server again with TypeScript 6 beside it.
+**Why TypeScript 5.9.** TypeScript 6 leaves out the installed `@types`
+packages, such as `@types/node`, unless a tsconfig lists them. Node.js code
+then shows false errors such as *Cannot find name 'process'*, and plain
+JavaScript gets no types for Node's APIs. TypeScript 7 is a new compiler
+written in Go and has no `tsserver`, so typescript-language-server cannot run
+on it. TypeScript 5.9 has neither problem.
+
+**Which TypeScript runs**, in this order:
+
+1. The folder's own `node_modules/typescript`, in a
+   [trusted folder](/docs/workspace#trusted-folders).
+2. Editora's own TypeScript 5.9.3, when it is installed, even for a server
+   you installed yourself or a command you set.
+3. The TypeScript installed beside the server.
+
+The card's **TypeScript** line shows the one in use, such as *Editora's own,
+…*. While a JavaScript or TypeScript file is active, the status bar's LSP
+segment names it too, for example **LSP: TypeScript 5.9.3**.
+
+When the only TypeScript found is 6 or newer, the card's TypeScript line and
+[Doctor](/docs/troubleshooting#typescript-features-are-off-or-show-false-errors)
+warn about it: *TypeScript 6.0.3: leaves out @types packages*, or *TypeScript
+7.0.2 has no tsserver*. With no TypeScript that has a `tsserver` (only a
+TypeScript 7, or none at all), Editora does not start the server. The status
+bar says so, the fix first: *Install TypeScript 5.9 (Settings → LSP): TypeScript
+7.0.2 has no tsserver*. The file's install banner offers **Install**, which adds
+Editora's own TypeScript 5.9.3 and typescript-language-server 5.3.0 to its own
+folder with npm; your own TypeScript is not changed. The banner's **Not now**
+and the install-prompts switch work as they do for a missing server. Editora
+does not try again each time you open another tab.
 
 **A folder's own TypeScript runs only once you trust the folder.** Many projects
 have their own `node_modules/typescript`. That is code from the folder, so
-Editora uses it only in a [trusted folder](/docs/workspace#trusted-folders),
-and the trust prompt lists it. Until then, the TypeScript installed beside the
-server is used. When the folder's own copy is the only one, the server waits
-until you run *Project: Trust This Project's Settings*
-(`lsp.trustProjectSettings`). On a remote host, the server still picks its
-TypeScript itself.
+Editora uses it only in a trusted folder, and the trust prompt asks about it
+(see [the prompt](#a-folders-own-typescript-and-the-trust-prompt)). Until then,
+Editora's own TypeScript is used, else the one beside the server. When the
+folder's own TypeScript has another major version than the one running, the
+status bar says so once, when the server is ready: *This folder has TypeScript
+5.4.5, but Editora runs 5.9.3 here until the folder is trusted*, since results
+can differ from the folder's own `tsc`. When the folder's own copy is the only
+one, the server waits until you run *Project: Trust This Project's Settings*
+(`lsp.trustProjectSettings`). Without a project, the status bar says that only
+a project can be trusted, and points to **Install…**. On a remote host, the
+server still picks its TypeScript itself.
 
 **Type definitions are not downloaded.** Left to itself, the server downloads
 `@types` packages from the npm registry for the libraries your JavaScript uses.
@@ -908,23 +1003,138 @@ Editora turns that off. To turn it on, use **Download type definitions
 automatically** on the TypeScript / JavaScript card in **Settings → LSP**. When
 a folder has no Node.js types, the status bar suggests
 `npm install --save-dev @types/node`, so hover and completion know Node's APIs.
+The hint replaces the server's ready line and stays in the status bar.
 
 **What it adds:**
 
 - **Organize Imports** (`lsp.organizeImports`) sorts the imports and removes
-  unused ones. The code-action menu also offers **Fix all**, **Add missing
-  imports** and **Remove unused**, and quick fixes follow the file's own
-  indentation.
+  unused ones. On a line with a problem, the code-action menu also offers
+  **Fix all**, **Add all missing imports** and **Remove unused**, and quick
+  fixes follow the file's own indentation.
+- **Imports follow moved files.** Moving or renaming a `.ts` or `.js` file in
+  the Project tree updates the imports that name it, in open and closed files,
+  and saves them. A renamed folder does the same, unless a Java server serves
+  it.
+- **Completion details**: the documentation pane beside a completion shows
+  the signature, such as the method's parameters or where an auto-import
+  comes from.
 - **Inlay hints** for parameter names, return types and enum values, when
   [inlay hints](#reading-the-code) are on.
 - **Code lenses**: a references count on each function, when code lenses are
   on.
 
+A `tsserver` that dies restarts the server, within the
+[crash cap](#while-the-server-works), and the status bar says it stopped
+unexpectedly. JavaScript and TypeScript files keep their server up to
+**50,000 lines**, even above the **Disable minimap & LSP above** limit.
+
 **Workspace roots.** Without a project open, a file's server root is the
 nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
-`package.json`, then the Git repository. This gives each package in a monorepo
-its own root. Scripts with none of these above them share one server, wherever
-they are, instead of starting one each.
+`package.json`, then the Git repository. A monorepo still gets **one server**:
+the root widens to the outermost folder above that is a workspace's root, one
+with a `package.json` that lists `"workspaces"`, a `pnpm-workspace.yaml`, or a
+`tsconfig.json` with `"references"`. It never widens to your home folder or
+above, and never outside an open project. Scripts with none of these above
+them share one server, wherever they are, instead of starting one each.
+
+### A folder's own TypeScript and the trust prompt
+
+When a folder brings nothing to trust but its own TypeScript, the trust prompt
+asks about that alone: **Run the folder *name*'s own TypeScript?** It says that,
+once trusted, the JavaScript and TypeScript features run that copy instead of
+Editora's, and that its code runs with your privileges. Each copy is listed on
+one line, for example *TypeScript 5.9.3 in node_modules/typescript, run by the
+TypeScript / JavaScript server*. When the folder also has an
+`.editora/settings.json` with settings to trust, the prompt is the usual
+**Use the settings of the folder *name*?**, with the TypeScript lines in its
+list.
+
+The Astro server loads a TypeScript too. Its line (*… loaded by the Astro
+server*) appears only when the folder has an `astro.config.*` or an `.astro`
+file is open. Trust is remembered for the folder and the folders inside it;
+revoke it in Settings → Advanced, under Trusted folders.
+
+### ESLint
+
+A project's own **ESLint** checks JavaScript and TypeScript files (`.js`,
+`.jsx`, `.mjs`, `.cjs`, `.ts`, `.tsx`, `.mts` and `.cts`) when the project has an ESLint
+configuration (`eslint.config.*`, an `.eslintrc*` file, or an `eslintConfig`
+key in `package.json`) and ESLint installed in `node_modules`. It checks a
+file when its tab is shown, 0.8 s after you stop typing, and on save. Its
+problems join the TypeScript server's in the squiggles, the problem counter and
+the Problems window, with **eslint** as their source. ESLint runs from its
+configuration's folder, on the project's Node.js, and only from the project's
+`node_modules`: a global or `PATH` copy is never used.
+
+- **Code Actions** lists each problem's fixes and suggestions, such as *Fix
+  this no-var problem*, and *Fix all auto-fixable ESLint problems*. They show
+  while the TypeScript server runs; the lightbulb does not light for a line
+  with only ESLint problems.
+- **ESLint: Fix All Problems** (`eslint.fixAll`) applies every automatic fix
+  to the active file. The status bar says how many problems are left. A fix
+  from a check older than your last edit is refused with *The file changed
+  since ESLint checked it*; try again a moment later.
+
+ESLint loads the project's configuration and plugins, which are code, so it
+runs only in a [trusted folder](/docs/workspace#trusted-folders). In an
+untrusted one, the first JavaScript or TypeScript file of the project says so
+once per window, with **Trust Folder** and **Not now**. A project with a
+configuration but no ESLint installed stays quiet; Doctor's **ESLint** row
+says *configuration found, but ESLint is not installed*.
+
+ESLint's problems are shown only while **Enable LSP (language servers)** is on.
+**ESLint: Fix All Problems**, fixes on save and Prettier or Biome work with it
+off. To stop ESLint, turn off **Check with ESLint** (see
+[the settings](#eslint-and-formatting-settings)).
+
+### Formatting JavaScript and TypeScript
+
+**Format Document** (`lsp.formatDocument`) on a JavaScript or TypeScript file
+uses the **Formatter** setting:
+
+- **Automatic** (the default): the project's **Prettier** when the project uses
+  it (a Prettier configuration file, a `prettier` key in `package.json`, or
+  Prettier among its dependencies) and has it installed; else its **Biome**
+  when it has a `biome.json` or `biome.jsonc` and Biome installed; else the
+  TypeScript server.
+- **Prettier** or **Biome**: that tool, when it is installed in the project,
+  whatever the configuration says.
+- **TypeScript server**: always the server.
+
+Prettier and Biome run from the project's `node_modules` on the project's
+Node.js, and only in a trusted folder. With **Automatic**, an untrusted folder
+or a missing tool leaves the file to the server. With **Prettier** or
+**Biome**, a tool that cannot run shows why in the status bar and leaves the
+text as it is. The result is one undoable edit, and the status bar names the
+tool, for example *Formatted with Prettier*. When the tool fails, the status
+bar shows its first error line and the text stays as it was.
+
+With a selection, Format Document gives Prettier the selection's range. Biome,
+or no tool, leaves the range to the server.
+
+### Actions on save
+
+Three switches tidy a JavaScript or TypeScript file after you save it, in this
+order: **Organize imports on save**, **Apply ESLint fixes on save** and
+**Format on save**. They run after an explicit save, never after autosave.
+When they change the file, Editora saves it again, and one undo takes all
+their changes back. A step is skipped when you type in the file while it runs.
+Organize imports needs the TypeScript server. All three are off by default.
+
+### ESLint and formatting settings
+
+The **ESLint and formatting** group on the TypeScript / JavaScript card in
+**Settings → LSP** holds:
+
+| Setting | Values | Default |
+|---|---|---|
+| **Check with ESLint** | On · Off | On |
+| **Formatter** | Automatic · Prettier · Biome · TypeScript server | Automatic |
+| **Organize imports on save** | On · Off | Off |
+| **Apply ESLint fixes on save** | On · Off | Off |
+| **Format on save** | On · Off | Off |
+
+They apply to every window at once.
 
 ## HTML, CSS and JSON
 
@@ -945,13 +1155,35 @@ DOM and standard library in `<script>`. With the three commands left blank,
 Editora runs that copy first, then one on your `PATH`.
 [Doctor](/docs/troubleshooting#doctor) checks the installed version against
 4.10.0, and warns, with **Update**, about a copy that cannot load the
-TypeScript libraries.
+TypeScript libraries; the first HTML page a window opens offers the same
+**Update** on a banner.
+
+The three servers run on the Node.js chosen on the **Node.js** card under
+**Settings → Build Tools**, else `node` on your `PATH`. A project's `.nvmrc` or
+`.node-version` does not change them; it picks only the TypeScript server's
+Node.js. When a Node.js is chosen there, Install uses the npm beside it.
+
+**JSON with comments.** These files allow comments and trailing commas:
+`tsconfig.json` and `jsconfig.json` (and their `tsconfig.*.json` variants),
+`.eslintrc`, `.eslintrc.json`, `.babelrc`, `.babelrc.json`, `.swcrc`,
+`deno.json`, `bun.lock`, any `.json` file in a `.vscode` folder, and `*.jsonc`
+and `*.code-workspace` files. Other `.json` files are strict JSON.
+
+**package.json and tsconfig.json** are checked and completed against schemas
+bundled with Editora, so they work offline. The JSON server flags a misspelt
+compiler option such as `"strictt"`, a wrong value such as `"type": "modul"`,
+or `"scripts"` that is not an object, and completes and explains the keys and
+values inside `compilerOptions`. The tsconfig schema covers `tsconfig.json`,
+`tsconfig.*.json`, `tsconfig-*.json`, `jsconfig.json` and `jsconfig.*.json`.
+Unknown top-level keys in `package.json` are allowed, since tools add their own.
 
 What the HTML server adds, its settings on the HTML card (wrap column,
-attribute wrapping, content kept as written, attribute quotes, checking
-embedded scripts and styles), the `html` object a project can commit, and what
+attribute wrapping, content kept as written, checking embedded scripts and
+styles), the `html` object a project can commit, and what
 it does not do (markup validation, Emmet) are on the
-[HTML](/docs/html#the-html-language-server) page. The HTML and CSS servers also
+[HTML](/docs/html#the-html-language-server) page. The quotes an attribute gets
+after its `=` are chosen in Settings → Editor, not on the card (see
+[Attribute quotes](/docs/html#editing-tags)). The HTML and CSS servers also
 draw a small swatch before each colour.
 
 ## Shell scripts
@@ -1135,7 +1367,8 @@ Python files use **Pyright** (`pyright-langserver --stdio`). Language servers
 are off by default, so the first Python file a window opens asks **Turn on
 Python code intelligence?** with **Turn on** and **Not now**. The offer comes
 once per window and follows the same switch as the install banners
-(`view.toggleInstallPrompts`).
+(`view.toggleInstallPrompts`). It is not shown while **Enable Python (Pyright)**
+is off in Settings → LSP.
 
 ### The Python interpreter
 
@@ -1152,57 +1385,111 @@ The first match wins:
    Editora works;
 4. a virtual environment in the project: a `.venv`, `venv`, `env` or `.env`
    folder with a `pyvenv.cfg`, looked for from the file's folder up to the
-   project root;
-5. **Settings → Debugging → Python interpreter (fallback for Run, Debug and code
-   intelligence)**;
+   project root. Pyright and the status-bar item look from the folder Pyright
+   is rooted at, so a [Python sub-project](#python-sub-projects) finds its own;
+5. **Settings → LSP → Python → Python interpreter (fallback for Run, Debug and
+   code intelligence)**, which may be a path or a bare name such as python3.12
+   that is looked up on `PATH`;
 6. the system Python on `PATH` (`python3`, then `python`; on Windows `py -3`,
    then `python`, never the Microsoft Store stub).
 
 A status-bar item on Python files shows the result and why, for example
 `Python 3.13.5 (.venv)`, `Python 3.12.4 (PATH)` or `Python 3.13.5 (picked)`.
-Hover it for the full command. Click it, or run **Python: Select Interpreter**
-(`python.selectInterpreter`), to choose another one: **Detect automatically**
-(the order above), the one in use, the project's environments, every Python on
-`PATH`, or **Browse…** for any file. The pick is kept per project; inside the
-project folder it is stored as a relative path. In a window without a project
-it applies to every loose Python file in that window.
+It is the interpreter Pyright analyses with. Hover it for the full command.
+Click it, press Enter on it after reaching it with Tab, or run **Python: Select
+Interpreter** (`python.selectInterpreter`), to choose another one: **Detect
+automatically** (the order above), the one in use, the project's environments,
+every Python on `PATH`, or **Browse…** for any file. An environment's row names
+its folder, for example `Python 3.13.5 — .venv` or
+`Python 3.13.5 — services/api/venv`, with a long path shortened in the middle, and typing
+filters the rows by path as well as by name. An interpreter found twice on
+`PATH` is listed once. **Browse…** checks that the file answers `--version` as
+Python does and changes nothing when it does not. The pick keeps the whole
+command, arguments included. It is kept per project; inside the project folder
+it is stored as a relative path. In a window without a project it applies to
+every loose Python file in that window.
+
+The **Python** card on Settings → LSP holds the fallback interpreter, a
+**Python: Select Interpreter** row whose **Choose…** button opens the same
+picker for this window's project, and **Format on save (Ruff/Black)**. The card
+can be edited with language servers and debugging off.
 
 Pyright is told the interpreter, so the packages in a project's `.venv` resolve
 with no `pyrightconfig.json`. A changed pick reaches the running server at once.
+So does a virtual environment created while the project is open, as soon as its
+`pyvenv.cfg` is written, and a package installed into it with `pip install`:
+its imports resolve within seconds, with no restart.
 A `pyrightconfig.json` or a `[tool.pyright]` section with `venvPath` and `venv`
 still wins inside Pyright, and settings such as `pythonVersion` or
 `typeCheckingMode` belong there too.
 [Doctor](/docs/troubleshooting#doctor) shows the same interpreter in its
-**Python interpreter** row.
+**Python interpreter** row, whose **Settings…** opens the Python card.
+
+### Python sub-projects
+
+The Python server's root is the nearest folder with a `pyproject.toml`,
+`setup.py`, `setup.cfg` or `pyrightconfig.json`, else the repository (`.git`),
+else the nearest `requirements.txt` or `Pipfile`. A `docs/requirements.txt`
+therefore does not split the documentation off from the package it documents.
+
+In a project window the project root is the root, except for a Python
+sub-project: a folder inside the project with its own `pyproject.toml`,
+`setup.py`, `setup.cfg` or `pyrightconfig.json`, such as a `backend/` beside a
+`frontend/`. It gets a Pyright of its own, with its own `.venv`, its own `src/`
+and its own `[tool.pyright]` settings, and the status-bar item on its files
+names that `.venv`. A member of a uv workspace (under a `pyproject.toml` with
+`[tool.uv.workspace]`) shares the workspace's server and its one `.venv`.
+Without a project, a uv workspace member still finds the workspace's `.venv`.
+Remote projects keep one server at the project root.
 
 ### What Pyright adds
 
 - **Unused names are faded** (an import or a variable nothing reads) and
   **calls to a deprecated function are struck through**. These marks are drawn
-  in the editor but not listed in the Problems window, where they would bury
-  the real errors.
+  in the editor but not listed in the Problems window or counted by the problem
+  counter, where they would bury the real errors.
 - **Organize Imports** (`lsp.organizeImports`) sorts and groups the imports
   with Pyright's own command. It leaves unused ones in place; they are the
   faded ones.
-- **Go to Definition** into the standard library, site-packages or Pyright's
-  bundled stubs opens that file in View mode, on the project's server, and
-  without the library's own type errors. **Enable Editing** in the View mode
+- **Find References** from a call lists that call with the others, and on a
+  function's only call it stays there rather than jumping to the definition.
+- **Go to Definition** into the standard library, site-packages (the project's
+  own `.venv` included) or Pyright's bundled stubs opens that file in View
+  mode, on the project's server, and without the library's own type errors.
+  The status bar says **Read-Only**, and **Enable Editing** in the View mode
   bar makes it editable.
 - An **untitled** buffer set to Python is analysed too. In a project window it
   sees the project's modules. Once you save it, its file takes over.
 - A Python file keeps its server up to **50,000 lines**, even above the
   **Disable minimap & LSP above** limit (10,000 lines by default), which then
-  turns off only the minimap.
+  turns off only the minimap. Pyright can take several seconds to answer on a
+  file that large; completion says **Waiting for Pyright…** meanwhile.
 
-The Python server's root is the nearest folder with a `pyproject.toml`,
-`setup.py` or `setup.cfg`, else the repository (`.git`), else the nearest
-`requirements.txt` or `Pipfile`. A `docs/requirements.txt` therefore does not
-split the documentation off from the package it documents. In a project window
-the project root is the root.
+Pyright gives no inlay hints, semantic highlighting or code lenses. Turning one
+of them on in a Python file says so in the status bar. basedpyright, set as the
+Python server below, gives inlay hints and semantic highlighting.
 
 To use another server, set the Python command in **Settings → LSP**, for example
 `basedpyright-langserver --stdio`. If that command is not found, the banner
 names it and offers **Settings…**, rather than installing Pyright.
+
+### Python quick fixes
+
+Pyright answers a request for code actions with nothing, so Editora adds its
+own to **Code Actions** and the lightbulb on a Python problem:
+
+- **Import Path from pathlib** (or **Import os**) on a name that is not
+  defined. Pyright's own import suggestions come first; when it has none, a
+  built-in list of common standard-library names and modules supplies the
+  import. The new line goes after the file's imports, or into its existing
+  one-line `from pathlib import …`. A module of your project that nothing in
+  the file reaches yet is not offered.
+- **Remove unused import sys** on a faded import, one name at a time.
+- **Ignore reportAssignmentType on this line**, listed under **Suppress**, on
+  an error, warning or information that names its Pyright rule. It adds
+  `# pyright: ignore[reportAssignmentType]` at the end of the line, or adds the
+  rule to the line's existing ignore comment. It is not offered on a line that
+  ends inside a string or with a backslash.
 
 ### Formatting Python
 
@@ -1218,7 +1505,28 @@ undoable edit, and the status bar names the tool, for example
 If neither is installed, the status bar says so; install one into the project's
 environment (`pip install ruff`). A Python server that formats by itself, such
 as `ruff server`, keeps the job. Doctor's **Python formatter** row shows which
-tool Format Document will use.
+tool Format Document will use. A missing formatter is optional there, and a
+warning only while Format on save is on.
+
+The text is left as it was, and the status bar says why, when:
+
+- the formatter prints nothing for a file that is not blank, which usually means
+  the file matches its `force-exclude` setting;
+- the result is larger than 10 MB;
+- the buffer is narrowed (*Widen the buffer to format it*) or read-only;
+- the file is on another machine (*Ruff and Black cannot format a file on
+  another machine yet*). A Python server that formats by itself still formats
+  remote files.
+
+A formatter that writes CRLF line endings adds no blank lines, and the file is
+saved with its own line endings. A format that finishes after you switch tabs
+still lands in its own file.
+
+**Format on save (Ruff/Black)** on the Python card of Settings → LSP formats a
+Python file with Ruff or Black after you save it, then saves it again. It is
+off by default, runs after an explicit save only (never after auto-save), and
+uses Ruff or Black even when a Python server that formats is running. With no
+formatter found, a save says so in the status bar.
 
 ## XML
 
@@ -1269,9 +1577,13 @@ every file opens without its language server (see
   of an `xsl:include` or `xsl:import` (or an XInclude `xi:include`) it opens
   that file, resolved against the document's folder. A percent-encoded href
   (`sub%20dir/lib.xsl`), a `file:` URI and an XInclude in the default namespace
-  work too; when the file is missing, the status line says *lib.xsl does not
-  exist*. On an element or
-  attribute bound to an XSD, it goes to the declaration in the XSD.
+  work too, as do `file://localhost/…` and an href with a `?query`. On a
+  `schemaLocation` inside an XSD (`xs:include`, `xs:import`) it opens the
+  included schema. When the file a link names is missing (an include, a schema
+  location, a DOCTYPE), the status line says *lib.xsl does not exist*. On an
+  element or attribute bound to an XSD, it goes to the declaration in the XSD.
+  A `pom.xml` on the Maven server gets the same: F12 on its schema location or
+  on an element the Maven extension does not handle goes to the POM schema.
 - **Show Documentation** and **Show Problem at Caret** show the whole problem
   at the caret above any documentation, including lemminx's list of the
   elements or values allowed there.
@@ -1316,11 +1628,14 @@ Both binding commands leave a file that is already bound alone: the status
 line says what it is bound to and by what (an external DOCTYPE, an
 `xml-model`, or a schema location on the root), so remove that binding first.
 A DOCTYPE that holds only an internal subset is not a binding; a DTD is then
-bound with `xml-model` rather than a second DOCTYPE.
+bound with `xml-model` rather than a second DOCTYPE. For a document whose root
+element is in a namespace, the two XSD choices are left out: the schema lemminx
+generates has no namespace and would fail the document at once.
 
-A schema, DTD or RELAX NG file changed outside Editora (edited elsewhere or
-regenerated by a build) revalidates the open XML files that use it, also when
-its folder is collapsed in the Project tree.
+A schema, DTD or RELAX NG file changed outside Editora (edited elsewhere,
+regenerated by a build, or changed by a pull or checkout) revalidates the open
+XML files that use it, also when its folder is collapsed in the Project tree,
+when the schema itself is open in a background tab, and after you reload it.
 
 ### XML settings
 
@@ -1394,11 +1709,13 @@ size and folder, with **Clear**.
   lines in a row are kept, a comment on the line of what it follows stays
   there, and the caret stays on the character it was on. A file whose tags do
   not nest is left alone, with a "not well-formed" message. It formats in the
-  background, so a large file does not freeze the window; if you edit the file
-  or switch tabs meanwhile, nothing is changed and the status line says to run
-  it again. A second Format Document while one runs says so and waits for
-  the first. In large-file mode it asks before a format that would more than
-  double the line count. This formatter ignores the formatting settings above,
+  background, so a large file does not freeze the window. If you switch tabs
+  meanwhile, the result still goes into that file and the status line names
+  it; if you edit the file meanwhile, nothing is changed and the status line
+  says to run it again. Format Document on the same file while it formats says
+  so; another tab can format at once. In large-file mode it asks first
+  (*Format big.xml?*) before a format that would more than double the line
+  count. This formatter ignores the formatting settings above,
   which apply through lemminx only.
 - **Structure** lists every element, leaves included, named by its qualified
   name and its `name`, `id`, `match` or `ref` attribute, for example
@@ -1413,9 +1730,13 @@ size and folder, with **Clear**.
   but only when it is the end tag of the element you are closing. Typing
   `</b>` inside `<p>Hello <b>world|</p>` writes `</b>` before the `</p>`, and a
   typo such as `</itme>` becomes a tag of its own instead of renaming the end
-  tag after it. While it steps over the end tag, Backspace takes back only what
-  you typed, a space before `>` is fine, and moving the caret ends the step-over.
-  The same holds in HTML, where tag names match in any case.
+  tag after it. While it steps over the end tag, every key acts on what you
+  typed, not on the end tag: Backspace, Ctrl/Shift/Alt+Backspace, Delete,
+  Enter, Tab, a paste and the Emacs kills. A space before `>` is fine, and
+  moving the caret ends the step-over. The same holds in HTML, where tag names
+  match in any case. With auto-rename on, the Emacs word kills (M-DEL, M-d) on
+  a tag name keep the caret in that tag, so retyping a closing tag's name
+  renames its own element.
 
 ### Installing lemminx
 
@@ -1438,10 +1759,15 @@ than installing over it.
 lemminx's native build needs **glibc 2.34** or later on Linux. On an older
 system Install says so and installs nothing; if the
 [Maven `pom.xml` server](#pomxml-and-the-maven-server) is
-installed, XML files run its Java lemminx instead. That fallback is plain XML:
-it never loads the Maven extension, so a pom in an untrusted folder stays
-schema-only. An XML command of your own that would load lemminx-maven is not
-started, and the status bar says why. A server that exits as soon
+installed, XML files run its Java lemminx instead, shown as *Java lemminx
+0.30.1 (fallback)* in Settings and Doctor. That fallback is plain XML: it never
+loads the Maven extension, so a pom in an untrusted folder stays schema-only,
+and it validates and completes RELAX NG too. Editora removes the signature
+files from the server's jars when it installs them (and fixes an earlier
+install the next time it starts), which the RELAX NG support needs. An XML
+command of your own that would load lemminx-maven is not started: the status
+bar says why, Settings → LSP shows it as a problem and Doctor as an error.
+Updating the Maven server also stops XML while XML runs on its Java lemminx. A server that exits as soon
 as it starts shows its own error message in the status line, Settings and
 Doctor, rather than *found* and *OK*.
 
@@ -1482,7 +1808,7 @@ default) and then trusts the open project when the file is in it, else the
 pom's own reactor. For any other file outside the project it trusts nothing:
 open that file's folder as a project first. In every window, the folder's open
 poms, background tabs included, then move to the Maven server at once. Revoking
-that trust (Settings → Workspace → Trusted folders) stops the Maven server on
+that trust (Settings → Advanced → Trusted folders) stops the Maven server on
 the folder and moves its poms back to the XML server, with their diagnostics.
 While the Maven server is not installed, a pom in an untrusted folder instead
 offers to install it, saying it runs only in folders you trust.
@@ -1498,10 +1824,12 @@ Editora's config folder; Doctor's **Clear** on the XML schema cache leaves them.
 Maven Central when completing pom.xml coordinates**, on the server's card under
 Settings → LSP and off by default, also asks search.maven.org as you type, so
 what you type is sent to it; nothing is downloaded up front. Changing the
-setting restarts the server. lemminx-maven keeps what it resolves in
-`.lemminx-maven` beside your local Maven repository: `~/.m2/.lemminx-maven` by
-default, or next to the folder `<localRepository>` names in
-`~/.m2/settings.xml`. [Doctor](/docs/troubleshooting#doctor) lists it as the
+setting restarts the server. Editora tells the server which local repository
+to use, expanding `${env.…}` and system properties in `<localRepository>` as
+Maven does. lemminx-maven keeps what it resolves in `.lemminx-maven` beside
+that repository: `~/.m2/.lemminx-maven` by default, or next to the folder
+`<localRepository>` names in `~/.m2/settings.xml`. `${env.*}` property
+completions list the variable names but never show their values. [Doctor](/docs/troubleshooting#doctor) lists it as the
 **lemminx-maven artifact store** with **Clear**.
 
 **Installing it.** While the Maven server is not installed, a `pom.xml` in a
@@ -1522,7 +1850,9 @@ server, the Settings → LSP card reads *lemminx-maven: incomplete — Install�
 repairs it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars
 beside an **Install…** button. If you installed this server with an earlier
 release, click **Install…** once: that bundle lacked the three libraries and
-could not answer a request.
+could not answer a request. The same goes for an install with a jsoup newer than
+1.14, which failed every hover on a schema-documented element: Editora now
+installs jsoup 1.14.3, the line the server's documentation renderer needs.
 
 **While you edit a pom:**
 
@@ -1543,11 +1873,19 @@ could not answer a request.
   keeps working, and the status bar names it: *Left out broken/pom.xml (not
   well-formed XML, line 11)…*. It looks at the files the Maven server reads:
   `pom*.xml`, `*pom.xml` and `*.pom` up to ten folders deep, `node_modules` and
-  `build` included, but not hidden folders or `target`. An empty answer with
-  nothing malformed on disk changes nothing.
-- Once that pom is well-formed again (saved in Editora, or fixed by a checkout
-  or another editor), Editora restarts the Maven server for that project only,
-  and its open poms move to the new server at once.
+  `build` included, but not hidden folders or `target`. Editora acts only when
+  the Maven server itself reports the failure, so an honest empty answer
+  changes nothing.
+- lemminx-maven also fails on some poms that are well-formed XML: a tag given
+  twice or misspelled, or a DOCTYPE that declares entities, under a parent it
+  cannot resolve offline. Then the status bar says once that Maven completion
+  is off and names the likely pom and line, for example *…probably
+  dup/pom.xml (`<dependencies>` appears twice, line 13)*; the Application Log has
+  the server's own message.
+- Once that pom is fixed (saved in Editora, or fixed by a checkout or another
+  editor, in any folder), Editora restarts the Maven server for that project
+  only, and its open poms move to the new server at once. Each project's Maven
+  server reports *Loaded and ready* on its own.
 - **XML: Revalidate File** validates the pom again.
 
 ## Language servers on a remote host
@@ -1578,6 +1916,10 @@ than a path on this machine.
 - **Java** works too: jdtls runs on the host with the host's JDKs and keeps its
   index in `~/.cache/editora` there.
   *LSP: Clear Java Index Caches* clears only the indexes on this machine.
+- Files changed on the host, by `git pull` in a terminal for example, reach the
+  server when the Editora window comes back to the front, and every minute while
+  it stays there. Each check lists up to 300 folders and 5,000 files, and skips
+  virtual environments.
 - Losing the connection stops the host's servers without reporting a crash, and
   reconnecting starts them again.
 - The Astro server does not run on a host yet.
@@ -1598,6 +1940,8 @@ set in Settings → LSP is used there only when it is a bare program name.
   on this machine.
 - **Python**: Pyright inside is told the project's virtual environment by the
   name it has inside, as on a remote host.
+- Files changed inside reach the server the same way as on a remote host: when
+  the window comes back to the front, and every minute while it stays there.
 - The Astro server does not run in a container or distribution yet.
 
 ## Finding the server's binary
@@ -1621,7 +1965,10 @@ transfers only what changed on servers that support token deltas. Diagnostics fo
 files that aren't open are dropped by default, to keep the Problems window
 focused on what you're editing, and the whole-project selector above lifts that
 when you want it. Java can [organize imports and format on
-save](#java-only-assists); other languages cannot yet.
+save](#java-only-assists), JavaScript and TypeScript have their own
+[actions on save](#actions-on-save), and Python can
+[format on save](#formatting-python) with Ruff or Black; other languages cannot
+yet.
 
 The protocol library is **LSP 3.18 / DAP 1.70**. Two fields it widened affect
 Editora. A diagnostic's message may be markup rather than plain text;

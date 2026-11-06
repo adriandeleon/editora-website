@@ -56,9 +56,41 @@ package.
 
 ### First launch
 
-The installers are currently **unsigned**, so macOS Gatekeeper and Windows
-SmartScreen stop the first launch until you allow it. The steps are in
+The macOS app is signed with a Developer ID certificate and notarized by Apple,
+so it opens on first launch with no Gatekeeper warning. The Windows installer is
+**unsigned**, so SmartScreen stops the first launch until you allow it. The
+steps are in
 [Troubleshooting](/docs/troubleshooting#a-launcher-is-blocked-on-first-run).
+
+### Checking a download
+
+Each release lists the SHA-256 of every file in `checksums_sha256.txt`:
+
+```bash
+sha256sum --ignore-missing -c checksums_sha256.txt
+```
+
+The Linux downloads (`.deb`, `.rpm`, `.AppImage` and `.tar.gz`) each come with
+an OpenPGP signature beside them (`.asc`), made with the release key attached
+to the release as `editora-signing-key.asc` (fingerprint
+`8486 A7AF 4FC8 FEE9 3D83 CDB4 EA5F A138 C2C0 9C4A`):
+
+```bash
+gpg --import editora-signing-key.asc
+gpg --verify Editora-<version>-linux-x64.deb.asc Editora-<version>-linux-x64.deb
+```
+
+The `.rpm` and `.deb` are also signed inside, for `rpm -K`, dnf and
+`debsig-verify`.
+
+Every release file also has a build provenance attestation: a signed record
+that the file was built by the Editora repository's release workflow from the
+tagged commit. With the [GitHub CLI](https://cli.github.com/):
+
+```bash
+gh attestation verify Editora-<version>-linux-x64.deb \
+  --repo adriandeleon/Editora --source-ref refs/tags/v<version>
+```
 
 ### Or run from source
 

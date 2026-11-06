@@ -10,6 +10,8 @@ see it in the editor, and the **rendered preview** of a file that has one
 (Markdown, a diagram, a data tree, a CSV table). Printed pages and exported PDFs
 are always light, whatever theme the editor uses.
 
+![The print preview of a Java file: the first page with line numbers and wrapped lines, page navigation showing Page 1 of 5, and Print and Close buttons](/screenshots/features/export-pdf-print.png "The print preview, light whatever the editor theme.")
+
 ## Commands
 
 | Action | Command | Default key |

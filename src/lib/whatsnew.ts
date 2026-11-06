@@ -5,10 +5,10 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "A reworked Project Map", detail: "The project's own files first, compact folder chains, Reveal Active File, Hide unmatched, and Personal Notes on preview cards." },
-  { title: "A terminal theme of its own", detail: "Solarized, Dracula, Nord, Gruvbox and more for the terminal alone, plus Nerd Font icons bundled so prompts show on any machine." },
-  { title: "Terminal programs talk back", detail: "The kitty keyboard protocol, desktop notifications, clipboard copy over SSH, and tabs that name the program running in them." },
-  { title: "XML that is safe by default", detail: "Generate Grammar, no schema downloads from any host, a schema cache in Doctor, and Maven-aware pom editing only in trusted folders." },
-  { title: "HTML links and markup checks", detail: "Go to Definition on href and src, warnings for unclosed elements and missing files, colour swatches, and a preview that serves the whole site." },
-  { title: "Java library sources", detail: "A library class opens with its real source when a repository has it; a decompiled one offers Download Sources and Choose Sources." },
+  { title: "Signed downloads", detail: "The macOS app is signed and notarized by Apple, the Linux downloads carry OpenPGP signatures, and every release file has a build provenance attestation." },
+  { title: "Explore code on the Project Map", detail: "Working sets, guided trails you can commit, recent-change heat with owners, and references and callers opened as cards." },
+  { title: "A Structure column on every card", detail: "Click a method or type in a preview card's outline to open it beside the card; its Open opens the file narrowed to it." },
+  { title: "ESLint, Prettier and Biome", detail: "The project's own ESLint checks JavaScript and TypeScript as you work, Prettier or Biome formats, and fixes can run on save." },
+  { title: "Python quick fixes and format on save", detail: "Import X and Remove unused import from the lightbulb, Ruff or Black on save, and each sub-project analysed by its own Pyright." },
+  { title: "Java debugging shows toString()", detail: "Objects show their toString() text within a per-stop budget, and plain-folder projects with several packages debug again." },
 ];

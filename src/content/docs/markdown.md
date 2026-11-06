@@ -25,6 +25,8 @@ top-right of the editor:
 - **Split**: source on the left, preview on the right.
 - **Preview**: the rendered page only.
 
+![A Markdown file in Split mode: the source on the left and the rendered preview on the right with a heading, a task list, a table and a code block, and the Editor / Split / Preview control at the top right](/screenshots/docs/markdown-preview.png "Split mode: source on the left, the live preview on the right.")
+
 A file opens in the view it was last shown in. A file with no remembered view,
 and a new untitled Markdown buffer, opens in the default view set in
 **Settings → Markdown** (*Open Markdown files in*, Editor by default).
@@ -502,16 +504,26 @@ diagram in the preview, and standalone `.mmd` files get the same 3-mode preview.
 Inside a Mermaid fence, completion offers Mermaid keywords, and diagrams are
 drawn for the preview's own light or dark theme.
 
+![A Mermaid flowchart file in Split mode: the source on the left and the rendered flowchart on the right, with a decision node branching yes and no](/screenshots/features/mermaid.png "A Mermaid flowchart rendered in the preview.")
+
 Mermaid is **on by default**, self-gating on detection, so it stays inert until
 the `mmdc` (mermaid-cli) command is found. Install it with
 `npm i -g @mermaid-js/mermaid-cli` (it needs Node.js) or the in-app
 **Install…** button in **Settings → Mermaid** (`install.mermaidSupport`). The
 same page holds the toggle and the two tool paths: a blank `mmdc` path resolves
 `mmdc` on your `PATH`, and a blank `maid` path (the optional linter) runs it
-through `npx`. Under each path a **Detected** line says whether the tool is
-there, for example *mmdc: found (/usr/local/bin/mmdc)* or *maid: found (via npx,
-fetched on first use)*. Editora keeps that answer until a path changes, so after
-installing `mmdc` in a terminal press **Check again**.
+as `npx -y @probelabs/maid`. Install maid with `npm i -g @probelabs/maid`.
+With that default, Editora finds maid by its files and never runs `npx` to ask,
+since `npx` would download a missing package. It looks for a global install
+(beside the Node.js set in Settings, `node` on your `PATH`, or your npm
+prefix), a `maid` on your `PATH` that is that package, and `npx`'s own cache.
+A `maid` path of your own is run to check it. Under each path a **Detected**
+line says whether the tool is there, for example
+*mmdc: found (/usr/local/bin/mmdc)* or
+*maid: found (0.0.29 · /usr/local/lib/node_modules/@probelabs/maid)*. Without
+maid, Mermaid files are not linted; diagrams still render. Editora keeps that
+answer until a path changes, so after installing a tool in a terminal press
+**Check again**.
 
 `mmdc` drives a headless Chrome. If rendering fails with *"Could not find
 Chrome"*, install it once with

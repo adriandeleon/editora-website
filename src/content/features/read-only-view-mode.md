@@ -8,4 +8,4 @@ summary: "Toggle a buffer read-only to browse without editing; pager-style <kbd>
 
 Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident: typing and edit commands are blocked while highlighting, folding, search, and copy keep working.
 
-A file that isn't writable on disk opens read-only automatically, and the per-file state is remembered. A Word-style **View Mode banner** docks above the editor with an *Enable Editing* button (when the file is writable), and while read-only, **Space pages down / Backspace pages up** like a pager.
+A file that isn't writable on disk opens read-only automatically, and the per-file state is remembered. A Word-style **View Mode banner** docks above the editor with an *Enable Editing* button (when the file is writable), and while read-only, **Space pages down / Backspace pages up** like a pager. Files of 5 MB or more, files with a line of 64K characters, and minified code also open in View Mode, with a banner that says why.

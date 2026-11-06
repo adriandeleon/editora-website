@@ -34,7 +34,9 @@ set also applies to JSX and TSX files.
 
 A trigger can be a word (`fori`), a token with punctuation (`#include`), or up to
 three words (`else if`). Tab does not expand a trigger inside a comment or a
-string, or in a CSV/TSV file; there it indents as usual.
+string, or in a CSV/TSV file; there it indents as usual. A name typed right
+after a `.` is a member, not a trigger, so Tab after `self.property`,
+`re.match` or `os.s` never expands a snippet, in any language.
 
 In Markdown and plain text, where triggers like `code`, `link`, `bold` or
 `note` are also ordinary words, Tab is careful not to expand one in the middle
@@ -95,6 +97,12 @@ method with `self`), `deft` and `defst` (with a return type), `class`, `classd`
 `fromim`. The `except` bodies re-raise with a bare `raise`, which keeps the
 original traceback. `#env` writes a `#!/usr/bin/env python3` line, and `#cell`
 and `#mark` write `# %%` cell markers.
+
+A few write a piece of a line: `self` writes `self.`, `dunder` a
+`__init__`-style name with the name selected, `doc` a docstring whose closing
+quotes sit on the next line and `##` a one-line one, and `#ignore` a `# pyright: ignore[]` comment
+with the caret in the brackets. No Python trigger is a single character, so
+Tab after a lone `s` or `#` indents.
 
 Several of these are named after a keyword (`try`, `if`, `for`). When the
 popup lists a snippet that only repeats the word you typed, Enter ends the line
@@ -296,7 +304,11 @@ Editora ships 37 templates:
   `.editorconfig`, GitHub issue and pull request templates, and a multi-stage
   Java Dockerfile, on its own or with a `compose.yaml` and `.dockerignore`.
 - **Projects:** a Python project and a Node.js TypeScript project (which installs
-  TypeScript 6; see [why](/docs/lsp#typescript-and-javascript)).
+  TypeScript 5.9; see [why](/docs/lsp#typescript-and-javascript)). The
+  TypeScript project's `npm start` runs `tsx src/index.ts`, and its `npm test`
+  runs `node --import tsx --test` on the `src/**/*.test.ts` files; `tsx`,
+  `typescript` and `@types/node` are its dev dependencies, and `npm run build` compiles to
+  `dist/` with `tsc`.
 
 Every field the wizard shows starts filled in, so pressing **Create** without
 changing anything gives a working file.

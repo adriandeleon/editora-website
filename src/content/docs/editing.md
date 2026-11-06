@@ -61,7 +61,9 @@ into an indented stanza with the closer dropped below. Typing a closer such as
 `)`, `]`, `}`, or a keyword like `end` / `fi` / `done` re-aligns the line to its
 opener. Inside an HTML page's `<script>` or `<style>`, Enter follows the brace
 rules of the code there: it indents after `{`, and a typed `}` lines up with its
-opener (see [HTML](/docs/html#comments-and-indentation)).
+opener. Enter between `<style>` and `</style>` puts the end tag on its own line,
+and Tab inside `<pre>` or `<textarea>` keeps the line as written (see
+[HTML](/docs/html#comments-and-indentation)).
 
 In brace languages (JavaScript, TypeScript, Java, C, Go and the others), Enter
 also follows these shapes:
@@ -81,6 +83,11 @@ also follows these shapes:
 - **Doc comments.** Enter inside a `/** … */` comment (JSDoc, Javadoc) starts
   the new line with ` * `. Enter right after a new `/**` also adds the closing
   ` */` below.
+- **JSX tags.** In JavaScript, JSX and TSX files, Enter after an opening tag
+  such as `<div className="x">` indents the next line one level. Enter between
+  `<div>` and `</div>` puts the caret on an indented line, with the closing tag
+  below at the opening tag's indent. Fragments (`<>` and `</>`) work the same
+  way.
 
 **Smart backspace** clears a line's indentation in one press. On a blank,
 auto-indented line, a single Backspace jumps back to the end of the previous
@@ -88,8 +95,11 @@ line. In Python and YAML, where indentation is syntax, Backspace in the
 indentation removes one indent level instead and never joins the line above.
 The indent unit (tabs or spaces) is inferred from the file, including its
 width: a 2-space file gets 2-space Tab, Enter, and Shift-Tab whatever the tab
-size setting says. A tab character is drawn at the configured tab size (the
-setting or `.editorconfig`), 4 columns by default.
+size setting says. A file with nothing indented yet, such as a new one, takes
+its language's own unit: 2 spaces in JavaScript, TypeScript, JSON and YAML, the
+tab size elsewhere. An `.editorconfig` indent rule, or an **Indent style** of
+spaces or tabs, still comes first. A tab character is drawn at the configured
+tab size (the setting or `.editorconfig`), 4 columns by default.
 
 ### Shell scripts
 
@@ -149,19 +159,37 @@ by line comes out nested the way Python reads it:
   Enter steps out one level, since nothing more runs in that block.
 - Typing the `:` of `else`, `elif …`, `except …`, `finally` or `case …` moves
   the line to the statement it belongs to: the `if`, `for`, `while` or `try` of
-  an `else`, the `try` of an `except`, the previous `case`.
+  an `else`, the `try` of an `except` or `finally`, the previous `case`. A
+  `finally` after an `if`/`else` inside the `try` body still goes to the `try`.
+- A clause with nothing above it to line up with stays where you typed it. The
+  first `case` under a `match` stays one level inside the `match`, and Enter at
+  the end of a `case` line that is already right leaves it there.
 - Inside an open bracket that ends its line, the next line hangs one level in.
   When an argument follows the bracket (`result = some_function(arg_one,`), the
   next line lines up with that argument, as PEP 8 shows. After the closing
   bracket the next line goes back to the statement's indent.
 - A trailing `\` continues the statement one level in.
 - Inside a docstring or another triple-quoted string, Enter keeps the line's own
-  indent.
+  indent. Enter between an opening `"""` and its closing `"""` puts the
+  caret on an indented line of its own, with the closing quotes below it.
+- Quotes inside an f-string's `{ }` are read as code, so an f-string that
+  reuses its own quote (`f"{d["key"]}"`) does not throw the indent off.
+- **Tab** in a line's leading whitespace indents it to where Enter would have
+  put it.
 - Backspace in the indentation removes one level.
 
 The indent size is guessed from the lines that start a statement, so the hanging
 indents of wrapped calls and signatures do not make a 4-space file look like an
 8-space one.
+
+A file that mixes tabs and spaces in a way Python rejects with a `TabError`
+shows it on the status bar: the indent segment reads `Tab 4 · mixed indent` in
+the warning colour, and its tooltip names the line to fix.
+
+**Narrow to Defun** (`C-x n d`) in a Python file narrows to the innermost `def`
+or `class` around the caret, with its decorators, as Emacs's python-mode does.
+**Go: Beginning of Defun** and **Go: End of Defun** (`C-M-a`, `C-M-e`) use the
+same rule.
 
 Python blocks [fold](/docs/navigation#folding) by indentation, with or without
 a language server. A statement that ends in `:` folds over its body, and a
@@ -174,19 +202,29 @@ end it. Sticky scroll pins the same blocks.
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps
 the caret between them. Type the closer when it's already next to the caret and
 Editora types over it. Type an opener with a selection and it wraps the
-selection. Backspace inside an empty pair deletes both halves. Quotes aren't
-auto-paired next to a word character, so the apostrophe in `don't` is left
-alone. Whenever the caret sits next to a bracket, it and its match are
-highlighted.
+selection. Backspace inside an empty pair deletes both halves. A bracket pairs
+only where its closer can sit: before whitespace, a closing bracket, a
+separator (`;`, `:`, `.`, `,`, `=`, `>`), a quote, or at the end of the line.
+Typing `(` just before `foo` gives `(foo`, so you can type the closer where it
+belongs. This holds in every language. Quotes aren't auto-paired next to a word
+character, so the apostrophe in `don't` is left alone. Whenever the caret sits
+next to a bracket, it and its match are highlighted.
 
 In Python a quote after a string prefix pairs too (`f`, `r`, `b`, `u`, `t`, and
 pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
 `'''` adds the closing triple quote, with the caret between them. A backtick is
 not Python syntax, so it is not paired there.
 
-In an HTML start tag, typing `=` after an attribute name inserts `""` with the
-caret inside, while **Auto-close HTML/XML tags** is on; a `"` typed straight
-after is taken as the opening quote. See [HTML](/docs/html#editing-tags).
+In an HTML start tag, typing `=` after an attribute name inserts the quotes
+chosen in **Quotes after a typed or completed =** (Settings → Editor → Editing,
+beside **Auto-close HTML/XML tags**: double by default, single, or none) with
+the caret inside, while **Auto-close HTML/XML tags** is on. The setting works
+with language servers off, and also decides what an attribute chosen from
+completion gets. Angular bindings such as `(click)`, `[value]`,
+`[(ngModel)]` and `*ngIf` get the quotes too. The same quote typed straight
+after is taken as the opening quote, the other quote replaces the pair, and a
+space or `>` takes the empty pair back. Template tags get no quotes. See
+[HTML](/docs/html#editing-tags).
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
@@ -254,8 +292,16 @@ In an HTML page the syntax follows where the selection is: `/* */` inside a
 `<style>`, `//` inside a `<script>`, and `<!-- -->` in the markup. A selection
 that runs from the markup into a script or style is refused, with *The
 selection runs from the HTML into a script, style or PHP block: comment each
-part on its own*. In a PHP file the HTML part gets `<!-- -->`. See
+part on its own*. In a template, a line with template code gets the engine's
+own comment (`{# #}`, `{% comment %}`, `<%#`, `{{!-- --}}`), since an HTML
+comment does not stop it. In a PHP file the HTML part gets `<!-- -->`, and a
+line that opens a PHP block is commented inside it. See
 [HTML](/docs/html#comments-and-indentation).
+
+In JavaScript, JSX and TSX files, a line of JSX markup (between an opening and
+a closing tag, where `//` would be page text) gets `{/* … */}`, and toggling
+again removes it. A multi-line selection of markup is wrapped in one
+`{/* … */}`. Lines of code in the same file keep `//`.
 
 ## Small operations
 
@@ -554,6 +600,24 @@ automatically, and is never replaced silently: Save asks first (once per file),
 and auto-save reports that it cannot write. A Word-style **View Mode banner** docks above the editor with an
 *Enable Editing* button when the file is writable, and while read-only,
 **Space** pages down and **Backspace** pages up like a pager.
+
+Some files are slow or risky to type into, so the first time a tab loads one it
+opens in View Mode, and the banner says why:
+
+- **A file of 5 MB or more.** It opens in
+  [large-file mode](/docs/troubleshooting#performance), which keeps no undo.
+- **A file with a line of 64K characters or more** (65,536). Such a line is too
+  wide to lay out quickly, so the file also opens without undo.
+- **Minified or generated code**: a file of at least 100,000 characters whose
+  lines average 500 characters or more, such as `dist/bundle.min.js`. It keeps
+  undo. Markdown, Typst, plain text, logs, CSV and TSV, Markwhen and diffs never
+  count as minified, since their long lines are paragraphs or records.
+
+**Enable Editing** makes the file editable, and reloading it does not put it
+back in View Mode. While an editable file has no undo, the status bar says
+**Editable, No Undo**; its tooltip says why, and clicking it makes the file
+read-only again. See [Files without undo](/docs/undo-history#files-without-undo)
+for how bulk edits are kept safe there.
 
 For existing local files, Save writes a staged replacement and only swaps it
 into place after the complete new content is ready. If Editora cannot create a

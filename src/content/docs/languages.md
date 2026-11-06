@@ -16,6 +16,15 @@ thread. Token colors come from the active editor theme.
 
 Files without a bundled grammar are left unstyled rather than guessed at.
 
+Long lines are coloured only while that stays cheap. A line of 2,000 characters
+or more that splits into more than 400 tokens, or that does not finish within
+the half second a highlighting pass gives long lines, is shown as plain text,
+with its brackets uncoloured. A long comment, string or Markdown paragraph has
+few tokens, so it keeps its colours. A language server's semantic colours are
+not drawn on lines of 2,000 characters or more, and a line over 20,000
+characters is never highlighted. Files that are mostly long lines open in
+[View Mode](/docs/editing#read-only-and-view-mode).
+
 ### Supported languages
 
 Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
@@ -63,7 +72,8 @@ file) takes it from its own first lines:
   PyPy), Node, Deno, Bun, Ruby, PHP, Lua, Groovy and PowerShell interpreters,
   and `kotlin`, `scala`, `scala-cli` (`#!/usr/bin/env -S scala-cli shebang`),
   `clojure`, `clj` and Babashka's `bb`. A version or build suffix is ignored
-  (`python3.12`, the free-threaded `python3.14t` and `python3-dbg` are Python).
+  (`python3.12`, the free-threaded `python3.14t` and `python3-dbg` are Python),
+  and `ipython`, `graalpy`, `micropython` and `pythonw` are Python too.
   A Python runner counts too: `#!/usr/bin/env -S uv run --script` (a script
   with inline dependencies), `pipx run`, and `poetry`, `pdm`, `hatch`, `rye` or
   `pipenv` running `python`. A `java` shebang counts when a `--source N` follows
@@ -178,14 +188,33 @@ f-strings with nested quotes and format specs (`f"{when:%Y-%m-%d}"`), t-strings
 or call stays a name), type parameters (`def first[T](items: list[T])`,
 `class Box[T]:`) and the `type` alias statement. A name after `def` or `class`
 is coloured as a declaration, including `__init__` and a method named like a
-builtin (`def open`), and decorators such as `@property` read as decorators.
+builtin (`def open`), and decorators read as decorators, from `@property` to
+any expression after the `@` (`@buttons[0].clicked.connect`).
 Number prefixes and suffixes (`0x`, `0b`, `3j`) are part of the number.
+
+Some files open as Python under another name. They get the Python grammar,
+`#` comments, indentation and folding, but no Pyright and no Run:
+
+- **Starlark** (Bazel, Buck and Tilt build files): `.bzl` and `.star` files,
+  `BUILD.bazel`, `WORKSPACE.bazel`, `MODULE.bazel`, `Tiltfile`, and `BUILD`
+  and `WORKSPACE` spelled in capitals (a lower-case `build` is left to the
+  shell).
+- **Cython:** `.pyx`, `.pxd` and `.pxi` files.
+
+SCons build scripts (`SConstruct`, `SConscript`) and a Python startup file
+(`.pythonrc`, `.pythonstartup`) open as Python itself.
 
 Without a [language server](/docs/lsp), Python files still fold by indentation
 and get sticky scroll (see [Editing](/docs/editing#python)), the Structure tool
 window lists classes, functions and methods nested by indentation, and
 [Go to Symbol in Project](/docs/code-navigation#go-to-symbol-in-project) finds
-them across the project.
+them across the project. Structure also lists the names a module or a class body
+assigns: a name in capitals as a constant, other module names as variables, and
+class-body names as fields. Names assigned inside a function or a block are
+left out. A def's row carries a small marker for the kind of def it is, with or
+without a server: `async`, `property`, `classmethod`, `staticmethod`,
+`abstract`, `setter`, `deleter` or `overload`, read from the `async` keyword and
+the decorators above it.
 
 The other files of a Python project open with a format too:
 
@@ -199,6 +228,41 @@ The other files of a Python project open with a format too:
 - **JSON:** `Pipfile.lock` and Jupyter notebooks (`.ipynb`). A notebook opens as
   its JSON text; there is no notebook view.
 
+### JavaScript and TypeScript
+
+`.js`, `.mjs` and `.cjs` files open as JavaScript, `.jsx` as JSX, `.ts`,
+`.mts` and `.cts` as TypeScript, and `.tsx` as TSX. JavaScript, JSX and TSX
+share one grammar, so JSX markup is coloured in a plain `.js` file too. VS Code
+workspace files (`.code-workspace`) and Bun's text lockfile (`bun.lock`) open
+as JSON.
+
+Without a [language server](/docs/lsp):
+
+- **Folding.** Braces fold in every JavaScript and TypeScript file. In
+  JavaScript, JSX and TSX files, parentheses that span lines fold too (a
+  `return (` … `);` block or a wrapped call), and so does every JSX element
+  written over several lines, from its opening tag to the closing tag at the
+  same indent.
+- **Structure.** The Structure window lists functions, classes and methods, and
+  top-level constants whose value spans lines, such as `const routes = { … }`.
+  An assignment like `module.exports.formatBytes = …` is listed by its name.
+- **Go to Definition** resolves a name by scope. A
+  parameter, a local `const`, `let` or `var` (destructured ones too) or a
+  `catch` binding goes to its declaration in the enclosing scope, and an
+  imported name goes to its `import` line. Only a name no enclosing scope
+  declares falls back to the file's top-level declarations and the
+  [symbol index](/docs/code-navigation#go-to-definition-without-a-language-server).
+- **Related File** pairs a TypeScript source with the JavaScript compiled from
+  it and its declaration file: `util.ts`, `util.js` and `util.d.ts` (and the
+  `.mts` / `.mjs` / `.d.mts` and `.cts` / `.cjs` / `.d.cts` families). A `.tsx`
+  file pairs with the `.jsx` of the same name. See
+  [Go to Related File](/docs/code-navigation#go-to-related-file).
+- **Editing.** Toggle Comment writes `{/* … */}` in JSX markup, and Enter after
+  an opening tag indents one level (see
+  [Editing](/docs/editing#auto-indent)). A new file indents with 2 spaces.
+- **Spell check** reads the text between JSX tags as well as comments and
+  strings.
+
 ## Autocomplete
 
 Completion appears as you type, debounced and kept off the hot path. Java member
@@ -208,7 +272,10 @@ prefix.
 
 - **Code buffers** get a popup that merges sources and ranks them: language-server
   results (when [LSP](/docs/lsp) is on), then snippets.
-  Press **Enter** or **Tab** to accept. Complete result lists filter locally and
+  Press **Enter** or **Tab** to accept. Every item the server sends is listed
+  (`os.` in Python lists all of the module's members). While a slow server is
+  still answering, the popup shows a row that names it, such as **Waiting for
+  Pyright…**, after a moment. Complete result lists filter locally and
   obsolete server requests are cancelled as you keep typing. Accepting a snippet
   starts a tab-stop session; accepting a Java LSP item can safely add its import
   after continued typing, grouped with the completion as one undo/redo action.
@@ -224,6 +291,8 @@ The code popup is IntelliJ-style: per-kind icons (class, method, keyword,
 snippet, and so on), the matched characters highlighted, deprecated items struck
 through, and a **documentation popup** beside the list. The docs popup shows
 automatically and toggles with `C-q` (*Edit: Toggle Completion Documentation*).
+It widens to fit a long signature, and narrows beside the list where the screen
+is tight.
 
 Toggles live in **Settings → Code Completion**: a master switch plus per-source switches
 for words (prose), snippets, and Mermaid keywords. Palette equivalents are
@@ -247,7 +316,9 @@ What is checked depends on the file type:
   `aria-description` values. Tags, other attributes and the content of
   `<script>`, `<style>`, `<pre>`, `<code>`, `<kbd>`, `<samp>` and `<var>` are
   left alone; the rest of a line that holds an inline `<script>` is still
-  checked. See [HTML](/docs/html#spell-checking).
+  checked. Template expressions and tags (`{{ }}`, `{% %}`, `<% %>`) are left
+  alone too, in `title` and `alt` values as well, and so are tag names
+  mentioned in comments. See [HTML](/docs/html#spell-checking).
 - **Typst** has the document's text checked, plus comments. Typst math and
   lines that open with a `#` instruction are left alone.
 - **Source code** has only comments and string literals checked, so identifiers
@@ -255,7 +326,8 @@ What is checked depends on the file type:
   (`pipefail`, package names, `-xzf`) are not checked; quoted strings, here-doc
   text and comments are. In Python the first word of a prefixed string
   (`f"…"`, `rb'…'`) is checked like the rest, without its prefix, and in a pip
-  requirements file only the comments are checked.
+  requirements file only the comments are checked. In JavaScript, JSX and TSX
+  the text between JSX tags is checked too.
 - **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.

@@ -245,6 +245,4 @@ format, the capabilities declared at `initialize`, session lifetime, diagnostics
 routing, and the rename path that writes and moves files, with a regression test
 for each defect above.
 
-The complete list is on the [What's New](/whats-new) page, and there is a
-[0.9.10 blog post](/blog/editora-0-9-10) on the ones worth explaining rather than
-listing.
+The complete list is on the [What's New](/whats-new) page.

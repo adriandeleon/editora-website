@@ -14,6 +14,8 @@ Both rasterize to PNG natively, so there's no headless browser, and results are
 cached by source hash so an unchanged diagram isn't re-rendered. Zoom resizes the
 image.
 
+![A Graphviz DOT file in Split mode: the source on the left and the rendered graph on the right, with a cluster labelled cache](/screenshots/features/diagrams.png "A DOT graph rendered beside its source.")
+
 PlantUML runs with `PLANTUML_SECURITY_PROFILE=SANDBOX`, so a diagram cannot
 `!include` local files or URLs. Export that variable yourself before starting
 Editora to choose another profile. The renderers also start without

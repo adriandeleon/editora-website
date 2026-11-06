@@ -8,6 +8,8 @@ order: 6
 `.csv` and `.tsv` files open with spreadsheet-style tooling on top of proper
 CSV/TSV syntax highlighting.
 
+![people.csv in the CSV Grid preview: a header row, six rows of names, departments and salaries, a filter field and the row and column count](/screenshots/features/csv.png "The CSV Grid preview of a small file.")
+
 ## In the editor
 
 - **Rainbow columns**: each column is colored distinctly (cycling every eight),

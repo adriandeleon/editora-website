@@ -23,7 +23,6 @@ The headline additions:
 - **[Build tools](/docs/build-tools)**: Maven, npm, Cargo, Go, and Gradle each
   get a toolbar icon with an actions popup and a streaming console.
 
-There's more in the full [What's New](/whats-new), and the story of the release
-is in the [0.9.3 blog post](/blog/editora-0-9-3). Installers are still unsigned,
+There's more in the full [What's New](/whats-new). Installers are still unsigned,
 so on first launch you may need a right-click → *Open* (macOS) or "More info →
 Run anyway" (Windows).

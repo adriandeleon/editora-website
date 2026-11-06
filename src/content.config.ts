@@ -43,19 +43,6 @@ const news = defineCollection({
   }),
 });
 
-// Longer-form articles.
-const blog = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    date: z.coerce.date(),
-    author: z.string().default("Adrián De León"),
-    tags: z.array(z.string()).default([]),
-    beta: z.boolean().default(false),
-  }),
-});
-
 // One page per feature — drives both the home grid and /features/<slug>.
 const features = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/features" }),
@@ -85,4 +72,4 @@ const commandDocs = defineCollection({
   }),
 });
 
-export const collections = { docs, docsArchive, news, blog, features, commandDocs };
+export const collections = { docs, docsArchive, news, features, commandDocs };

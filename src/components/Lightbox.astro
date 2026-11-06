@@ -1,0 +1,299 @@
+---
+// A full-window viewer for screenshots. Any link marked data-lb="<group>" opens
+// here instead of navigating to the bare image; ← and → step through the other
+// links in the same group, in page order, and Esc closes.
+//
+// The link's href is the light capture; data-lb-dark names its dark twin, which
+// every site theme but Primer Light shows (as the docs figures do). Optional:
+// data-lb-caption, data-lb-alt, and data-lb-more / data-lb-more-label for a
+// link to the page about what the picture shows.
+//
+// Opening and closing fire `lightbox:open` / `lightbox:close` on document, with
+// { group, index }, so a slideshow can pause and land on the last picture seen.
+---
+
+<dialog class="lb" aria-label="Screenshot viewer" autofocus>
+  <div class="lb-stage">
+    <img class="lb-img" alt="" />
+  </div>
+  <div class="lb-bar">
+    <span class="lb-count"></span>
+    <p class="lb-cap"></p>
+    <span class="lb-links">
+      <a class="lb-more" hidden></a>
+      <a class="lb-open" target="_blank" rel="noopener">Open the original ↗</a>
+    </span>
+  </div>
+  <button type="button" class="lb-btn lb-prev" aria-label="Previous screenshot">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+  </button>
+  <button type="button" class="lb-btn lb-next" aria-label="Next screenshot">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+  </button>
+  <button type="button" class="lb-btn lb-close" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+  </button>
+</dialog>
+
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>("dialog.lb")!;
+  const stage = dlg.querySelector<HTMLElement>(".lb-stage")!;
+  const img = dlg.querySelector<HTMLImageElement>(".lb-img")!;
+  const count = dlg.querySelector<HTMLElement>(".lb-count")!;
+  const cap = dlg.querySelector<HTMLElement>(".lb-cap")!;
+  const more = dlg.querySelector<HTMLAnchorElement>(".lb-more")!;
+  const open = dlg.querySelector<HTMLAnchorElement>(".lb-open")!;
+  const prev = dlg.querySelector<HTMLButtonElement>(".lb-prev")!;
+  const next = dlg.querySelector<HTMLButtonElement>(".lb-next")!;
+
+  let items: HTMLAnchorElement[] = [];
+  let group = "";
+  let at = 0;
+
+  const isLight = () => document.documentElement.dataset.theme === "primer-light";
+  const srcOf = (a: HTMLAnchorElement) =>
+    (!isLight() && a.dataset.lbDark) || a.getAttribute("href")!;
+
+  function show(n: number) {
+    at = (n + items.length) % items.length;
+    const a = items[at];
+    dlg.classList.remove("is-zoomed", "can-zoom");
+    img.style.width = "";
+    img.src = srcOf(a);
+    img.alt = a.dataset.lbAlt ?? "";
+    cap.textContent = a.dataset.lbCaption ?? "";
+    count.textContent = items.length > 1 ? `${at + 1} / ${items.length}` : "";
+    more.hidden = !a.dataset.lbMore;
+    if (a.dataset.lbMore) {
+      more.href = a.dataset.lbMore;
+      more.textContent = `${a.dataset.lbMoreLabel ?? "Read more"} →`;
+    }
+    open.href = img.src;
+    prev.hidden = next.hidden = items.length < 2;
+    // Fetch the neighbours now so stepping through feels instant.
+    if (items.length > 1)
+      for (const k of [at + 1, at - 1]) new Image().src = srcOf(items[(k + items.length) % items.length]);
+  }
+
+  // Captures are 2x; clicking the picture shows it pixel for pixel when that is
+  // bigger than the window fits, and scrolls.
+  function fitZoom() {
+    const native = img.naturalWidth / (window.devicePixelRatio || 1);
+    dlg.classList.toggle("can-zoom", native > img.clientWidth * 1.15);
+  }
+  img.addEventListener("load", () => {
+    if (!dlg.classList.contains("is-zoomed")) fitZoom();
+  });
+  img.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!dlg.classList.contains("can-zoom") && !dlg.classList.contains("is-zoomed")) return;
+    const r = img.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / r.width;
+    const fy = (e.clientY - r.top) / r.height;
+    const zoomed = dlg.classList.toggle("is-zoomed");
+    if (zoomed) {
+      img.style.width = `${img.naturalWidth / (window.devicePixelRatio || 1)}px`;
+      // Keep the spot that was clicked under the pointer.
+      stage.scrollLeft = fx * img.offsetWidth - (e.clientX - stage.getBoundingClientRect().left);
+      stage.scrollTop = fy * img.offsetHeight - (e.clientY - stage.getBoundingClientRect().top);
+    } else {
+      img.style.width = "";
+      fitZoom();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!(e.target instanceof Element)) return;
+    const a = e.target.closest<HTMLAnchorElement>("a[data-lb]");
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    group = a.dataset.lb!;
+    items = [...document.querySelectorAll<HTMLAnchorElement>(`a[data-lb="${CSS.escape(group)}"]`)];
+    show(items.indexOf(a));
+    // Before showModal moves focus, so a listener can see what had it.
+    document.dispatchEvent(new CustomEvent("lightbox:open", { detail: { group, index: at } }));
+    dlg.showModal();
+  });
+
+  prev.addEventListener("click", () => show(at - 1));
+  next.addEventListener("click", () => show(at + 1));
+  dlg.querySelector(".lb-close")!.addEventListener("click", () => dlg.close());
+  // A click on the dark surround closes, as on most viewers.
+  dlg.addEventListener("click", (e) => {
+    if (e.target === dlg || e.target === stage) dlg.close();
+  });
+  dlg.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" && items.length > 1) show(at - 1);
+    else if (e.key === "ArrowRight" && items.length > 1) show(at + 1);
+    else return;
+    e.preventDefault();
+  });
+  dlg.addEventListener("close", () => {
+    img.removeAttribute("src");
+    document.dispatchEvent(new CustomEvent("lightbox:close", { detail: { group, index: at } }));
+  });
+
+  // Swipe left and right on touch screens, unless zoomed in.
+  let sx = 0;
+  let sy = 0;
+  stage.addEventListener("touchstart", (e) => {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener("touchend", (e) => {
+    if (dlg.classList.contains("is-zoomed") || items.length < 2) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(dx < 0 ? at + 1 : at - 1);
+  });
+</script>
+
+<style>
+  .lb {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(6, 8, 12, 0.98);
+    color: #e6edf3;
+    overflow: hidden;
+  }
+  .lb[open] {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .lb:focus {
+    outline: none;
+  }
+  .lb::backdrop {
+    background: transparent;
+  }
+  :global(html:has(dialog.lb[open])) {
+    overflow: hidden;
+  }
+  .lb-stage {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding: 3.75rem 4.5rem 0.75rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .lb-img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  }
+  .lb.can-zoom .lb-img {
+    cursor: zoom-in;
+  }
+  .lb.is-zoomed .lb-stage {
+    place-items: start;
+  }
+  .lb.is-zoomed .lb-img {
+    max-width: none;
+    max-height: none;
+    cursor: zoom-out;
+  }
+  .lb-bar {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.6rem 1.5rem 1.1rem;
+    font-size: 0.92rem;
+  }
+  .lb-count {
+    color: #8b949e;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .lb-cap {
+    flex: 1;
+    margin: 0;
+    color: #c9d1d9;
+    line-height: 1.45;
+  }
+  .lb-links {
+    display: flex;
+    gap: 1.1rem;
+    white-space: nowrap;
+  }
+  .lb-links a {
+    color: #79c0ff;
+  }
+  .lb-btn {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(22, 27, 34, 0.75);
+    color: #e6edf3;
+    cursor: pointer;
+  }
+  .lb-btn:hover,
+  .lb-btn:focus-visible {
+    background: rgba(48, 54, 61, 0.95);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+  .lb-btn[hidden] {
+    display: none;
+  }
+  .lb-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .lb-prev,
+  .lb-next {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .lb-prev {
+    left: 1rem;
+  }
+  .lb-next {
+    right: 1rem;
+  }
+  .lb-close {
+    top: 0.85rem;
+    right: 1rem;
+  }
+  @media (max-width: 700px) {
+    .lb-stage {
+      padding: 3.5rem 0.5rem 0.5rem;
+    }
+    .lb-prev,
+    .lb-next {
+      top: auto;
+      bottom: 0.9rem;
+      transform: none;
+    }
+    .lb-prev {
+      left: auto;
+      right: 4.25rem;
+    }
+    .lb-bar {
+      flex-wrap: wrap;
+      gap: 0.35rem 0.9rem;
+      padding: 0.5rem 1rem 4.25rem;
+    }
+    .lb-cap {
+      flex-basis: 100%;
+      order: -1;
+    }
+  }
+</style>

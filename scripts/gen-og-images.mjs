@@ -24,7 +24,6 @@ const cards = [
   { slug: "compare", kicker: "Comparison", title: "How Editora compares" },
   { slug: "features", kicker: "Features", title: "Every feature, one keystroke away" },
   { slug: "docs", kicker: "Documentation", title: "Editora documentation" },
-  { slug: "blog", kicker: "Blog", title: "Notes from building Editora" },
   { slug: "news", kicker: "News", title: "What's new in Editora" },
   { slug: "plugins", kicker: "Plugins", title: "Extend Editora with plugins" },
   // No command count here: this string is baked into a PNG, so it cannot track

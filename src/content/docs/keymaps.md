@@ -63,13 +63,15 @@ The CUA and Sublime Text keymaps use VS Code's function keys:
 | F10 | Step over |
 | F11 | Step into while the program is paused, otherwise Full Screen |
 | Shift+F11 | Step out |
+| Ctrl+Shift+Y | Open the Debug window (⌘⇧Y on macOS) |
 
 Because F11 steps into only while a program is paused, Full Screen also has
 Ctrl+Alt+F in these two keymaps (Ctrl+⌘F on macOS). The VS Code keymap has the
-same keys, with F11 always Step Into.
+same keys, with F11 always Step Into and Ctrl+Shift+D (⌘⇧D) for the Debug
+window.
 
 The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
-Show Value at Caret, Ctrl+Shift+F9 Breakpoints, Shift+F7 Smart Step Into and
+Show Value at Caret, Ctrl+Shift+F8 Breakpoints, Shift+F7 Smart Step Into and
 Ctrl+F9 Apply Code Changes to its usual debugger keys.
 
 Some debugger keys are the same in every keymap. While the program is paused,
@@ -124,17 +126,20 @@ finds commands by IntelliJ's and VS Code's names for them: **Optimize Imports**,
 **Copy Reference**, **Show Call Hierarchy**, **Find Action**, **Super Method** and others; typed
 in full, such a name comes first. Menus in this keymap show Alt+Enter for Code Actions. The
 **VS Code** keymap binds Ctrl+F12 Go to Implementation, Alt+F12 Peek Definition,
-Ctrl+T Go to Symbol in Workspace and Shift+Alt+F Format Document (⌘F12, ⌥F12,
-⌘T and ⇧⌥F on macOS). The **CUA** keymap has the same language-server keys
+Ctrl+T Go to Symbol in Workspace, Shift+Alt+F Format Document, Shift+Alt+O
+Organize Imports and Ctrl+Shift+Space Signature Help (⌘F12, ⌥F12, ⌘T, ⇧⌥F, ⇧⌥O
+and ⇧⌘Space on macOS). The **CUA** keymap has the same language-server keys
 as VS Code: F2 Rename, F12 Go to Definition, Shift+F12 Find References, Ctrl+.
-Code Actions (⌘. on macOS) and Shift+Alt+F Format Document. **Sublime Text**
+Code Actions (⌘. on macOS) and Shift+Alt+F Format Document. Ctrl+Space opens
+the completion list in every keymap but Emacs, where it sets the mark and
+`C-M-i` or `M-/` completes. **Sublime Text**
 adds Ctrl+Shift+R Go to Symbol in Workspace (⌘⇧R) and Shift+Alt+F Format
 Document. The default **Emacs** keymap gathers the language-server
 commands under a `C-c l` prefix (`C-c l a` code actions, `C-c l g` generate,
 `C-c l t` refactor this, `C-c l r` rename, `C-c l f` format, `C-c l o` organize
 imports, `C-c l e` problem at caret, `C-c l u` undo last refactoring, and
 others), `M-g s` for Go to Symbol in Workspace, with `M-g M-n` / `M-g M-p` for the next and previous problem and `M-,` /
-`C-M-,` for back and forward. Every keymap now binds Back and Forward. The
+`C-M-,` for back and forward. Every keymap binds Back and Forward. The
 [Keybindings](/keybindings) page lists them all.
 
 ## Rebinding commands

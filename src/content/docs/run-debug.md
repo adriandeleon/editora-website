@@ -56,6 +56,8 @@ no file to open.
 The console's first line, drawn muted, is the command that started a script or
 a test run: which interpreter ran, with which options, on which file.
 
+![hello.py with a green run arrow in the gutter on its __main__ guard, and the Run tool window below showing the Python 3.13 runtime chip, Process finished with exit code 0, the muted command line and the script's output](/screenshots/docs/run-file.png "A Python script after a run: the ▶ in the gutter, the runtime chip, and the command line above the output.")
+
 The console reads the terminal codes programs print: colours are drawn in the
 theme's colours, a carriage return (`\r`) rewrites the current line so a
 progress bar stays on one line, and `clear` empties the console. Other cursor
@@ -125,7 +127,10 @@ JDK** selects the toolchain used by Run, Debug, Maven classpath resolution,
 Maven tasks, and before-launch steps. Installed JDKs are discovered from the
 usual platform locations and common version managers. A run configuration's
 **JDK** field can inherit that choice or override it for one configuration. The
-Default JDK also applies to standalone Java Run and Debug.
+Default JDK also applies to standalone Java Run and Debug. A Java file or folder
+without Maven or Gradle runs on the Default JDK, else on the `java` on your
+`PATH`, and the Java language server builds it for that same JDK. A changed
+Default JDK reaches a running language server at once, with no restart.
 
 ### Python scripts
 
@@ -143,7 +148,7 @@ these wins:
    `$CONDA_PREFIX`);
 4. a `.venv`, `venv`, `env` or `.env` folder holding a `pyvenv.cfg`, looked for
    from the script's folder up to the project root;
-5. **Settings → Debugging → Python interpreter**;
+5. the **Python interpreter** on the Python card of **Settings → LSP**;
 6. `python3`, then `python`, on your `PATH`. On Windows: the `py` launcher
    (`py -3`), then `python`, never the Microsoft Store shortcut.
 
@@ -228,15 +233,40 @@ start them.
 **Which Node.js runs.** Run, run configurations, Debug, npm scripts and the
 TypeScript language server all use the same Node.js. The first of these wins:
 
-1. a run configuration's **Interpreter** field;
-2. the **Node.js** field under **Settings → Debugging → JavaScript**;
-3. the version that a `.nvmrc` or `.node-version` file names, when nvm has that
-   version installed (the file is looked for from the script's folder up to its
-   package folder). A version such as `20` or `20.11` picks the newest matching
-   install; an alias such as `lts/*` is not followed;
+1. a run configuration's **Node.js** field;
+2. the version that a `.nvmrc` or `.node-version` file names, when nvm has that
+   version installed. The file is looked for from the script's folder up to the
+   project root, so a monorepo's root `.nvmrc` counts for each of its packages
+   (with no project open, the search stops at the package folder). nvm's
+   versions are looked for in `$NVM_DIR` (or `$XDG_CONFIG_HOME/nvm`), then in
+   `~/.nvm`. A version such as
+   `20` or `20.11` picks the newest matching install; an alias such as `lts/*`
+   is not followed;
+3. the **Node.js** field in the **Node.js** card under **Settings → Build
+   Tools**;
 4. `node` on your `PATH` (the login shell's `PATH`, so the default of nvm, fnm
    or Volta counts).
 
+When a `.nvmrc` asks for a version that nvm does not have, the run goes on with
+the next Node.js in the list, and the Run console says so first, for example
+*.nvmrc asks for Node.js 18, which nvm does not have: using the Node.js setting
+instead*.
+
+On a remote host, in WSL or in a container, Run, a test file's ▶ and Debug
+choose in the same order, with that host's answers. The `.nvmrc` or
+`.node-version` is read on the host, from the script's folder up to the project
+(or the package folder, with no project). The version comes from the host's
+nvm (`$NVM_DIR`, else `$XDG_CONFIG_HOME/nvm`, then `~/.nvm` there). Step 3 is
+the **Node.js** set for that host in Settings → Remote → This Host, and step 4
+the host's `node`. A version the host's nvm does not have, or an alias such as
+`lts/*`, falls back to those two, and the Run console says so.
+
+Editora's other npm language servers (HTML, CSS, JSON, YAML, Bash, Pyright…)
+skip step 2: they run on the **Node.js** setting, else `node` on your `PATH`, so
+an old Node.js a project pins cannot break them.
+
+The tooltip of the Run window's runtime chip ends with where that Node.js was
+chosen from, such as *Chosen from: .nvmrc, via nvm*, on a host too.
 [Doctor](/docs/troubleshooting#doctor) has a **Node.js** row that names the
 Node.js in use and why it was chosen, for example *Node.js setting* or
 *.nvmrc, via nvm*.
@@ -252,15 +282,36 @@ shebang keeps its flags, such as `#!/usr/bin/env -S node --no-warnings`, but
 runs under the Node.js chosen above. A shebang that names `deno`, `bun`, `tsx`
 or `ts-node` runs with that program, as written.
 
-**TypeScript** runs on plain Node.js 22.18 or newer, which removes the types
-itself; no `tsx` or build step is needed. On an older Node.js, Run says that
-the file needs 22.18 or newer instead of showing a syntax error.
+**TypeScript** runs the first way that works for the file:
+
+1. **The project's tsx.** When `node_modules/tsx` is in the file's folder or a
+   folder above it (up to the project root), Node.js runs the file with
+   `--import tsx`. It is still the Node.js chosen above, with its flags.
+2. **The compiled file.** When the nearest `tsconfig.json` has an `outDir` and
+   the file it compiles to exists (`src/index.ts` → `dist/index.js`), that file
+   runs, with source maps. The console's first line says so: *Running the
+   compiled dist/index.js (built from src/index.ts)*. When the compiled file is
+   older than its source, the line says to build again to run your latest
+   changes.
+3. **Plain Node.js** 22.18 or newer, which removes the types itself. On an
+   older Node.js, Run says that the file needs 22.18 or newer (or tsx) instead
+   of showing a syntax error. Plain Node.js cannot map an import of `./greet.js`
+   to `greet.ts`, which is how a `"module": "NodeNext"` project writes its
+   imports; when that import fails, a hint follows the error: add tsx to the
+   project (`npm install -D tsx`), or build it so Run uses the compiled file.
+
+A TypeScript test file's ▶ takes the same route.
 
 **Test files.** The ▶ of a test file runs `node --test` and shows the results
 in [Test Results](/docs/build-tools#test-runner). A test file is a
 `*.test.*` or `*.spec.*` file, or any script under a `test/`, `tests/` or
-`__tests__/` folder. **Rerun Failed** and **Rerun This Test** work on these
-results.
+`__tests__/` folder. The Run console shows node's own readable report, while
+Test Results reads a TAP report of the same run. A test file that fails to
+load, for example on a missing module, is a failed row named after the file,
+with the error and its stack. A skipped or todo test shows as skipped under its
+own name, with or without a reason. **Rerun Failed** and **Rerun This Test**
+work on these results; Rerun Failed on a file that failed to load runs the
+whole file again.
 
 While the program runs, the Run window names its runtime, such as
 **Node.js 24.18.1** (see
@@ -395,12 +446,17 @@ A Python script or configuration runs under the configuration's
 **Interpreter**, the interpreter picked for the project, or the project's venv
 on the host (a `.venv`, `venv`, `env` or `.env` folder there). Without one, it
 uses the host's **Python for Run and tests** from Settings → Remote → This Host
-(see [Remote](/docs/remote#what-runs-on-the-host)), then
-**Settings → Debugging → Python interpreter** when that is a plain command name
+(see [Remote](/docs/remote#what-runs-on-the-host)), then the **Python
+interpreter** on **Settings → LSP → Python** when that is a plain command name
 rather than a path on this machine, then the host's `python3`. `PYTHONPATH` gets
 the project root and its `src/` folder; the host's own `PYTHONPATH` is not
 kept, because Editora does not know it. Stop ends a remote program straight
 away, without the Ctrl-C a local Python program gets first.
+
+A Node.js script runs from its package folder there, the nearest folder above
+it on the host with a `package.json`, as it does locally. This holds in a
+container and in WSL too. A `.nvmrc` or `.node-version` on the host picks its
+Node.js from the host's nvm (see [Node.js scripts](#nodejs-scripts)).
 
 A project on this machine can run on a host too: set a configuration's **Run
 on** to a [deployment](/docs/deployments), and Editora copies what changed in the
@@ -544,11 +600,14 @@ method the file declares, or else from the file's package and name. A
 configuration still named "New Configuration", or named after the class it
 launched before, is renamed after the new class; a name you typed is kept.
 
-A **Node.js script** configuration has the script, **Node.js arguments** (such
-as `--max-old-space-size=4096`), **Interpreter**, program arguments and
-environment. Left blank, **Interpreter** uses the Node.js that Run uses (see
+A **Node.js script** configuration has **Script**, **Node.js options** (such
+as `--max-old-space-size=4096`), **Node.js**, program arguments and
+environment. Left blank, **Node.js** is picked the way Run picks it (see
 [Node.js scripts](#nodejs-scripts)), and a blank working directory is the
-package folder, the nearest one with a `package.json`.
+package folder, the nearest one with a `package.json`. A **Node.js** path that
+does not exist stops the run with a message that names it, and the
+configuration opens so you can fix it. **Before launch** can run a command
+first, such as `npm run build`.
 
 An **npm script** configuration runs `<manager> run <name>`, with its arguments
 after `--`. The manager is the one the project uses (npm, pnpm, yarn or bun), as
@@ -665,6 +724,8 @@ list, and
 **Run: Run Configuration…** runs one and **Run: Delete Run Configuration…**
 removes one.
 
+![The Run Configurations window with a hello.py entry in the list and its form: Name, Type (Python script), Script, Interpreter, Interpreter options, Program arguments, Working directory, Environment, Before launch, Console and Run on](/screenshots/docs/run-configurations.png "Add starts from the open file: here a Python script configuration, prefilled from hello.py.")
+
 **Add** starts from the file you are looking at rather than a blank entry. For
 an active Python, Node.js or shell script it adds a configuration of that type
 for the script, named after the file. For a Java file it
@@ -724,7 +785,10 @@ script as it runs.
 
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
-buttons in the Debug window, and the **Run** menu lists every debugger action.
+buttons in the Debug window, and every debugger action is in the **Run** menu.
+Its top level has Start / Continue, Debug Main Class, Attach, Stop, Restart and
+Toggle Breakpoint. Stepping, evaluate, watches, breakpoints and exception
+breakpoints are in its **Debugger** submenu (**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -746,8 +810,11 @@ italics instead.
 Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
 message** (which turns it into a logpoint that logs and never suspends), and an
-**enabled** toggle. The hit count makes it stop only on that hit: `5` stops on
-the fifth, and Python also takes forms such as `>= 3` or `% 2`. A breakpoint
+**enabled** toggle. Its title names the file and line, such as *Edit
+Breakpoint — Main.java:27*, and the line's code is shown above the fields, since
+the form can cover that line. The hit count makes it stop only on that hit: `5`
+stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
+debuggers take only a number, and the field's hint says which. A breakpoint
 with a condition or a hit count is drawn as conditional. Breakpoints in closed
 files are honored too.
 
@@ -765,15 +832,18 @@ the session ends.
 
 When the panel is wide enough, the call stack, variables, and console sit side
 by side; they stack when it is narrow. The call stack lists the innermost 1,000
-frames when the adapter supports partial stacks. The console is cleared at each
-launch and kept after the session ends, and its right-click menu has **Clear
-Console**. **Restart** is disabled for a debugger attached to a test or build
+frames when the adapter supports partial stacks. The console wraps long lines.
+It is cleared at each launch and kept after the session ends, and its
+right-click menu has **Clear Console**. It keeps the last 200,000 characters;
+when older output was dropped, the Debug window's state line says so. **Restart** is disabled for a debugger attached to a test or build
 run (its tooltip says why); a session started with *Debug → Attach* can still be
 restarted.
 
 A spinner beside the Debug window's status turns while the before-launch build,
 the session start, or the program is running, and stops while the program is
-paused (at a breakpoint, a step, or Pause).
+paused (at a breakpoint, a step, or Pause). Pause works only on a running
+program, so it is greyed out while the program is paused, starting or being
+built.
 
 Beside that status, the Debug window names the runtime the debugged program
 runs under, as the [Run window does](#which-runtime-a-program-runs-under): the
@@ -825,8 +895,8 @@ A script whose shebang hands it to a runner (`uv run --script`, `pipx run`,
 the debugger needs an interpreter, not a runner.
 
 The debugger itself (debugpy) runs under the same interpreter when that
-interpreter can import debugpy, else under the **Python interpreter** set in
-Settings → Debugging. A program that starts child Python processes, for example
+interpreter can import debugpy, else under the **Python interpreter** set on
+the Python card of Settings → LSP. A program that starts child Python processes, for example
 with `multiprocessing`, runs them without the debugger: breakpoints stop in the
 main process only.
 
@@ -869,7 +939,8 @@ unbuffered, so a prompt shows before the program waits. Lines written to stdout
 and stderr at almost the same moment can appear in either order.
 
 It is **on by default**. The switch, **Run the debugged program in the Debug
-console (program input)**, is under **Settings → Debugging → Java** (or use
+console (program input)**, is on the **Debugged programs** card of
+**Settings → Debugging** (or use
 *Debug: Toggle Program Input in the Debug Console*,
 `debug.toggleProgramConsole`) and takes effect at the next launch. It applies
 to a launched Java program, and to a Python or JavaScript program started on
@@ -882,12 +953,16 @@ in a tab of the [Terminal](/docs/terminal#run-and-debug-programs-in-a-terminal)
 tool window rather than the Debug console. Use it for a program that draws on
 the screen, reads single keys or asks for a password. Its output and input are
 then in that tab, which is titled *Debug: <file>* and stays when the program
-ends. The program's exit still ends the session, and Stop ends the program. It
-is off by default and needs the program console switch on.
+ends. The Debug console's first line names the tab. The program's exit still
+ends the session, and Stop ends the program. It is off by default and needs the
+program console switch on.
 
-With the switch off, the debugger starts a Java program itself. The console
-still reports the program's exit code on Linux and macOS when the program runs
-on this machine. On Windows, and on a remote host, in WSL or in a container, it
+With the switch off, the debugger starts a Java program itself. A program that
+prints a lot then gets its output to the console well after it writes it; the
+session ends, and the exit line shows, once the last of it has arrived. Until
+then the Debug window's state reads *Program ended, output still arriving*. The
+console still reports the program's exit code on Linux and macOS when the
+program runs on this machine. On Windows, and on a remote host, in WSL or in a container, it
 says "The program ended." instead. A JavaScript program's output, including
 `process.stdout.write`, still reaches the console, but the program cannot read
 input.
@@ -900,7 +975,8 @@ breakpoints and stack frames to the original file and removes its temporary
 compiled files after the session. Java debugging needs the Java language server
 and debug adapter described below.
 
-JUnit tests are debugged from their gutter icon or with *Debug Test at Caret*,
+JUnit tests are debugged from their gutter icon, with *Debug Test at Caret*, or
+with Debug in the test file (see [Starting a Java session](#starting-a-java-session)),
 including tests inside `@Nested` classes; see the
 [test runner](/docs/build-tools#test-runner).
 
@@ -914,19 +990,34 @@ class, so its arguments, VM options, environment, working directory and JDK
 apply, as they do for Run ▶. Before a Java launch, Editora saves every unsaved
 Java file of the project.
 
+In a JUnit test file of a Maven or Gradle project, Debug debugs the test at the
+caret, or the whole class when the caret is outside a test, the way Debug Test
+does. The caret on a test's annotations, such as `@Test`, counts as in that
+test. A file with a `main` of its own is launched as a program instead.
+
 In a Maven or Gradle project, Debug builds first, so the program runs the code
-you see. With **Build before Run and Debug** on (the default), the build tool
-compiles in the Debug console (Maven `compile`, or `test-compile` for a class
-under `src/test`; Gradle `compileJava` or `compileTestJava`), through the same
-Maven or Gradle the tasks tree runs, and a failed build aborts the launch. With
-the setting off, Debug asks the Java language server to build the project
-instead: if that build finds compile errors, nothing is launched, the Debug
-console lists the errors as links to their lines, and the status bar gives
-their number; if it cannot run, the program starts anyway, and the console
-warns you when a class file is missing or older than its source. Stop during
-either build cancels the launch. A run configuration with a
-[before-launch step](#a-step-before-the-launch) uses that step as its build
-instead. A Java configuration's step runs in the project root, whatever the
+you see. Debug on a file builds the project with the Java language server: if
+that build finds compile errors, nothing is launched, the Debug console lists
+the errors as links to their lines (with paths relative to the project), the
+status bar gives their number, and the Debug window reads "Not started: the
+build failed". If the project could not be imported, the console says so
+instead; when its errors name a Java version, choose another Default JDK in
+**Settings → Build Tools**. If the build cannot run, the program starts anyway,
+and the console warns you when a class file is missing or older than its
+source.
+
+*Debug Main Class* and Debug on a saved configuration compile with the build
+tool when **Build before Run and Debug** is on (the default): Maven `compile`,
+or `test-compile` for a class under `src/test`; Gradle `compileJava` or
+`compileTestJava`. The build runs in the Debug console, through the same Maven
+or Gradle the tasks tree runs, and a failed build aborts the launch. With the
+setting off, they build with the Java language server, as Debug on a file does.
+In a Gradle project the Java language server builds after Gradle as well, since
+the program runs from the class files it writes, so the program runs the code
+you edited. The Gradle daemon that this build starts stops after 10 minutes
+without work. Stop during either build cancels the launch. A run configuration
+with a [before-launch step](#a-step-before-the-launch) uses that step as its
+build instead. A Java configuration's step runs in the project root, whatever the
 configuration's working directory.
 
 A class with a `package` line in a folder that has no `pom.xml` or Gradle build
@@ -935,8 +1026,42 @@ right-click menu. In a project window for such a folder, *Debug Main Class* and
 Debug on a saved Java configuration work, and the program runs in the project
 root.
 
-Debug in another Java tab while a session runs asks before it stops that
-session. When Java debugging can't start, the status bar names the missing
+A loose `.java` file, or a project folder without Maven or Gradle, is built by
+the Java language server before every Debug, so the program always runs the
+code you saved. When that build reports errors or cannot run (a folder with
+several packages can be more than the language server works out without a
+build tool), Editora compiles the file with `javac` from the source root its
+`package` line names. `javac` compiles only the code the program uses, so only
+errors there stop the launch, listed in the Debug console as in a Maven
+project; a broken file the program never uses, or a JUnit test without JUnit,
+does not. Code that does not compile never runs. A configuration's
+before-launch step runs first, and the build after it. The program runs on the
+Default JDK, else on the `java` on your `PATH` (see
+[Which runtime a program runs under](#which-runtime-a-program-runs-under)).
+When the Default JDK's folder no longer exists, the Debug console says so and
+the `java` on your `PATH` runs the program. A compact source file is always
+compiled by `javac`.
+
+While the language server builds before a launch, the Debug window reads
+*Building…* from the moment you press Debug, and Stop cancels the launch.
+
+**Start / Continue** (and the Debug window's green ▶), **Debug File** in the
+editor's right-click menu and Debug Test make one check before they launch.
+Start / Continue on a paused session continues it. For another file, a session
+that is paused, running or still starting (building, compiling, waiting for a
+test to start, or waiting for you to choose a main class) is replaced only
+after you agree, for example to *Main.java is paused in the debugger. Stop it
+and debug App.java instead?* For the same file, the status bar says that it is
+already being debugged and whether it is running, paused or still starting. Esc
+on the main-class chooser cancels the launch.
+
+**Debug: Attach to Running Program…** (`debug.attach`) on a Java file attaches
+to a JVM listening for a debugger. It asks for the `host:port`, and offers the
+address you used last in the window (at first `localhost:5005`). When nothing
+listens there, the Debug console shows the `-agentlib:jdwp` option that starts a
+JVM listening on that address.
+
+When Java debugging can't start, the status bar names the missing
 piece: LSP is off, the Java language server is turned off, or jdtls or
 java-debug was not found. The Java card of **Settings → Debugging** has an
 **Install…** button for what is missing.
@@ -953,13 +1078,14 @@ When you step into JDK or library code anyway, or click such a frame in the
 call stack, its source opens in a read-only tab. A stop at a breakpoint, a
 Pause or an exception still selects the nearest frame of your own code.
 
-**Debug: Smart Step Into…** (`C-c C-d s`, also in the Run menu) lists the
-calls on the current line, for example `add(twice(1), twice(2))`, `twice(1)`
-and `twice(2)`. Pick one to step into it. On a line with a single call it
-steps straight in.
+**Debug: Smart Step Into…** (`C-c C-d s`, also in Run ▸ Debugger) lists the
+calls on the current line in the order they run, for example `twice(1)`,
+`twice(2)` and `add(twice(1), twice(2))`. Pick one to step into it. On a line
+with a single call it steps straight in. The list closes when the program runs
+on.
 
 **Debug: Restart Frame** (`C-c C-d f`, the call stack's right-click menu, or
-the Run menu) runs the method of the selected frame again from its first line
+Run ▸ Debugger) runs the method of the selected frame again from its first line
 and pauses there. It is greyed out on the bottom frame.
 
 If the connection to the debugger is lost, Editora ends the program at once and
@@ -971,10 +1097,12 @@ The running program keeps the code it was started with. When you edit a file
 during a session, Editora matches breakpoints and the stopped line to the code
 the program runs, so they stay on the right lines. At a stop in an edited file,
 the status bar says that the program still runs the code it started with. A
-breakpoint on a line you added during the session is kept, and its hover says
-that it takes effect in the next session. To run the new code, restart the
-session, or let [hot code replace](#hot-code-replace) load a change to a
-method body.
+breakpoint on a line you change in place, re-indent or wrap in a block (such as
+an `if`) keeps working and stopping there; when you split a line in two, the
+breakpoint stays on its first half. A breakpoint on a line you added during
+the session is kept, and its hover says that it takes effect in the next
+session. To run the new code, restart the session, or let
+[hot code replace](#hot-code-replace) load a change to a method body.
 
 ### Hot code replace
 
@@ -988,8 +1116,21 @@ was:
 - the program refused the change, with its reason. A change to a method's body
   can be loaded; a change such as adding or removing a method or a field needs
   a restart, and the console tells you so;
+- for a file without Maven or Gradle, the program runs an older Java than the
+  code was built for ("the program runs Java N, but the code was built for
+  Java M"): choose the program's JDK as the Default JDK in **Settings → Build
+  Tools**, or restart the session;
 - the Java language server could not build the project;
+- the session runs classes compiled with `javac`, because the Java language
+  server cannot build the folder: restart the session to run your edits;
 - the program already runs this code.
+
+A change to a method that is running when you save is applied too. That method
+goes on with its old code until it returns, and its frame in the call stack
+reads "old code (replaced while it ran)". To run it again with the new code,
+select its frame and use **Debug: Restart Frame**. The first method of a
+thread, such as `main`, has no caller to run it again, so it keeps its old code
+until the program restarts, and the console says so.
 
 Choose when this happens with **Apply code changes to a running Java program**
 on the Java card of **Settings → Debugging**:
@@ -997,7 +1138,7 @@ on the Java card of **Settings → Debugging**:
 | Choice | What a save does |
 | --- | --- |
 | **On save** (default) | loads the change when you save a file yourself; autosave does not |
-| **Only with Debug: Apply Code Changes** | shows a hint in the status bar; run **Debug: Apply Code Changes** (`C-c C-d h`, Run menu) to load the saved changes |
+| **Only with Debug: Apply Code Changes** | shows a hint in the status bar; run **Debug: Apply Code Changes** (`C-c C-d h`, Run ▸ Debugger) to load the saved changes |
 | **Never** | nothing; Debug: Apply Code Changes says that it is off |
 
 Debug: Apply Code Changes loads only what is saved. When the active Java tab
@@ -1011,45 +1152,58 @@ accept; the console then tells you to restart.
 ### Debugging JavaScript and TypeScript
 
 **Debug** on a JavaScript or TypeScript file (`.js`, `.mjs`, `.cjs`, `.ts`,
-`.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug with
-the same Node.js, folder and flags as Run (see
-[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js**
-field under **Settings → Debugging → JavaScript**; left blank, Editora uses the
-version a project's `.nvmrc` or `.node-version` names (when nvm has it), else
-`node` on your `PATH`. The card's **Detected** line names that Node.js version
-and where vscode-js-debug was found.
+`.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug,
+started exactly as Run starts it: the same Node.js, flags, environment and
+folder, and for TypeScript the project's tsx or the compiled file (see
+[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js** card
+under **Settings → Build Tools**; left blank, Editora uses the version a
+project's `.nvmrc` or `.node-version` names (when nvm has it), else `node` on
+your `PATH`. The Debug console's first line is the command that runs. When that
+is a compiled file older than its source, a red line says so: build the project
+first to debug your latest changes. The **JavaScript** card under **Settings →
+Debugging** has a link to the Node.js card, and its **Detected** line names the
+vscode-js-debug version and the Node.js it runs on, such as *found (1.117.0 ·
+Node.js v24.18.1)*.
 
-- **TypeScript** files are debugged directly on Node.js 22.18 or newer. With an
-  older Node.js, Debug says so. In a project that compiles its TypeScript, a
-  breakpoint in a `.ts` source stops there when the compiled JavaScript runs,
-  through its source maps.
+- **TypeScript** files without tsx or a compiled file are debugged on plain
+  Node.js 22.18 or newer. With an older Node.js, Debug says so. In a project
+  that compiles its TypeScript, a breakpoint in a `.ts` source stops there when
+  the compiled JavaScript runs, through its source maps.
 - **JSX and TSX** files can't be run by Node.js. Debug the compiled JavaScript
   instead; a breakpoint in the `.jsx` or `.tsx` file still stops there through
   its source map.
-- **Output and input.** All output reaches the Debug console, including
-  `process.stdout.write` and `readline` prompts, and the program can read lines
-  you type there (see
+- **Output and input.** All output reaches the Debug console in the order the
+  program wrote it, with its colours, including `process.stdout.write` and
+  `readline` prompts. Output to stderr is not shown in red, because it shares
+  stdout's stream to keep that order. The program can read lines you type there
+  (see
   [Program input in the Debug console](#program-input-in-the-debug-console)).
-- Node.js's own modules are skipped, so they don't fill the call stack and Step
-  Into doesn't enter them.
+- Node.js's own modules are skipped, so Step Into doesn't enter them. In the
+  call stack, Node.js's own frames fold into one row, such as *… 7 frames of
+  runtime or library code (click to show)*; click it to see them.
 - A breakpoint condition that isn't valid JavaScript marks the breakpoint as
   rejected, and the console says why, once.
-- Child processes and worker threads show all their threads.
+- Child processes and worker threads show all their threads. The status line
+  names the file a thread stopped in, such as *Suspended in worker.js —
+  parent.js*.
 - **Debug Test at Caret** (`test.debugAtCaret`) on a `node:test` test runs that
   test under `node --test` and stops at its breakpoints.
 - **Node.js script** and **npm script** [run configurations](#run-configurations)
   can be debugged, started the way Run starts them.
 
 **Attach to a running program.** Start Node.js with `--inspect` (for example
-`node --inspect server.js`), then run **Debug: Attach to JVM…** (`debug.attach`)
-on a JavaScript or TypeScript file. It asks for the inspector's `host:port`,
-such as `localhost:9229`. A program started with `--inspect-brk` waits before its
-first line; attaching does not start it, so press Continue.
+`node --inspect server.js`), then run **Debug: Attach to Running Program…**
+(`debug.attach`) on a JavaScript or TypeScript file. It asks for the
+inspector's `host:port`, such as `localhost:9229`. Once attached, the console
+names the address, such as *Attached to 127.0.0.1:9229.* A program started with `--inspect-brk` waits
+before its first line; attaching does not start it, so press Continue.
 
-vscode-js-debug itself needs Node.js 18 or newer to run. When it can't start,
-or the Node.js is too old, Debug says so instead of stopping without a word.
-**Install…** on the JavaScript card installs vscode-js-debug v1.117.0, a version
-tested with Editora.
+vscode-js-debug itself needs Node.js 18 or newer to run. An older Node.js
+chosen for a project still runs the program, while vscode-js-debug runs on the
+newest Node.js 18 or newer that nvm has, else `node` on your `PATH`. When
+vscode-js-debug can't start, or no Node.js new enough is found, Debug says so
+instead of stopping without a word. **Install…** on the JavaScript card
+installs only vscode-js-debug v1.117.0, a version tested with Editora.
 
 ### Managing breakpoints
 
@@ -1059,8 +1213,8 @@ a condition or a hit count, and grey for a disabled one. Its hover names the
 condition, log message and hit count, and says when it is disabled. A hit
 count stops on that hit in Java too: `3` stops the third time the line runs.
 
-Right-click a glyph for **Edit…**, **Enable Breakpoint** or **Disable
-Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
+Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
+**Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
 right-click menu has Toggle Breakpoint and Edit Breakpoint, and while the
 program is paused also Run to Cursor, Show Value at Caret and Add to Watches.
 
@@ -1068,28 +1222,35 @@ A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
 only a closing `}` takes a breakpoint.
 
-**Debug: Breakpoints…** (`C-c C-d l`) lists every breakpoint. Type to filter
-it; Enter jumps to the selected breakpoint, Alt+E enables or disables it,
-Alt+D removes it, and Alt+M mutes them all. **Debug: Mute Breakpoints**
-(`C-c C-d m`) turns every breakpoint off without removing it, until you run it
-again. While breakpoints are muted, every glyph is faded, a glyph's hover says
-that none of them stops the program, Mute Breakpoints is checked in the Run
-menu, and the Debug window's state line says "breakpoints muted". Editora keeps
-the choice for each project, so a muted project is still muted when you open it
-again. **Debug: Enable / Disable
-Breakpoint** (`C-c C-d t`) switches the breakpoint on the caret line. These
-commands are in the Run menu's **Breakpoints** submenu.
+**Debug: Breakpoints…** (`C-c C-d l`; Ctrl+Shift+F8 in the IntelliJ keymap)
+lists every breakpoint. Each row has the gutter's glyph for its kind, its file,
+line and code, and below them what it does (its condition or log message) and
+its folder, relative to the project (none for a file at the project root), or with
+your home folder shortened to `~`. With no breakpoints, the list says how to set
+one. Type to filter it; Enter jumps to the selected breakpoint, Alt+E enables
+or disables it, Alt+D removes it, and Alt+M mutes them all.
+
+**Debug: Mute Breakpoints** (`C-c C-d m`) turns every breakpoint off without
+removing it, until you run it again. It also stops exception breakpoints from
+stopping the program; your caught and uncaught choices come back when you turn
+it off. While breakpoints are muted, every glyph is faded, a glyph's hover says
+that none of them stops the program, Mute Breakpoints is checked in
+Run ▸ Debugger, and the Debug window's state line says "breakpoints muted".
+Editora keeps the choice for each project, so a muted project is still muted
+when you open it again. **Debug: Enable / Disable Breakpoint** (`C-c C-d t`)
+switches the breakpoint on the caret line. These commands are in
+**Run ▸ Debugger**.
 
 **Debug: Break on Caught Exceptions** stops wherever an exception is thrown,
 even one the program catches. **Debug: Break on Uncaught Exceptions** stops on
-an exception that nothing catches. Both are in the Run menu, checked when on,
-and are the **Caught** and **Uncaught** buttons in the Debug window's toolbar.
+an exception that nothing catches. Both are in Run ▸ Debugger, checked when on,
+and in the menu of the ⚠ button in the Debug window's toolbar. While either is
+on, the ⚠ is drawn in the accent colour, and its tooltip says which are on.
 They act on the running session's language, or else on the active file's, and
 Editora keeps your choice for each project. To stop only on some Java exception
 classes, list them, separated by commas, in **Exception breakpoints: only these
 classes** on the Java card of **Settings → Debugging** (for example
-java.lang.IllegalStateException). Left blank, Caught and Uncaught stop on every
-exception.
+java.lang.IllegalStateException). Left blank, both stop on every exception.
 
 At an exception stop, the line that threw is drawn red, and the exception's
 type and message are the top row of Variables.
@@ -1104,10 +1265,10 @@ Caret** (`C-c C-d v`) does the same from the keyboard.
 
 A plain value, such as a number, shows on one line. An object, array or
 collection shows as a tree that opens with its first level unfolded; unfold a
-row to see its fields or elements. A Java `String` is an object to the
-debugger, so it shows as a tree too: its value, then its fields. A big array comes a page at a time: its
-last row is "Show N more…". Right-click a row for **Copy Value** and **Add to
-Watches**. The popup closes with Esc or when the mouse leaves it. When you open
+row to see its fields or elements. A Java `String` shows its whole text,
+wrapped, under a line that gives its length, with a **Copy Value** button. A
+big array comes a page at a time: its last row is "Show N more…". Right-click a
+row for **Copy Value** and **Add to Watches**. The popup closes with Esc or when the mouse leaves it. When you open
 it with Show Value at Caret, the keyboard works it while it is open:
 
 | Key | Action |
@@ -1124,10 +1285,37 @@ Any other key closes the popup and does its usual thing in the editor. When the
 popup was opened by the mouse, any key closes it.
 
 In the Variables tree, the right-click menu has **Copy Value** (a string is
-copied without its quotes and escapes), **Copy Name** and **Add to Watches**,
-which adds the row's whole expression, such as `order.items`. Ctrl+C (⌘C on
+copied without its quotes and escapes), **Copy Name**, **Add to Watches**,
+which adds the row's whole expression, such as `order.items`, and **Set
+Value…**. Ctrl+C (⌘C on
 macOS) copies the selected value, and Delete removes the selected watch. In
 the evaluate field, Up and Down bring back the expressions you typed before.
+An expression that throws says what it threw, such as *The expression threw
+NullPointerException in length()*. After an evaluation, Variables, watches and
+inline values are fetched again, so an assignment such as `count = 5` in the
+console shows at once.
+
+In Java, **Set Value…** sets a number, boolean, character or String directly,
+and an `Integer`, a record or an enum variable by assigning what you type as an
+expression, such as `Color.RED`.
+
+In Java, an object whose class has its own `toString()`, such as a record, an
+enum or a date, shows that text after its type, for example
+`Main$Point@17 "Point[x=3, y=4]"`, and still unfolds to its fields. A boxed
+number, such as an `Integer`, shows just its value: `42`. A lambda reads
+`lambda@19`. Variables, watches, inline values and the hover popup all show
+values this way. A Variables row shows at most 200 characters of a value; Show
+Value and Copy Value give the whole text.
+
+Each `toString()` is your program's own code, run once per object at each stop,
+so a stop gives them 1.5 seconds in all. A row whose `toString()` has not
+answered by then reads *(toString() not loaded yet: click to load)*, and loads
+when you click it, press Enter on it or unfold it. After Pause, objects read
+`Type@id` with *(toString() not available after Pause)*. While a `toString()`
+has not returned, the debugger takes no other request, and the status bar says
+so: wait, or press Stop. **Show toString() values** on the Java card of
+**Settings → Debugging** (on by default) turns these calls off: objects then
+read `Type@id`, from the next debug session.
 
 While the program is paused, **completion** works in the Debug console's
 evaluate field, the Add Watch and Edit Watch prompts, and a breakpoint's
@@ -1224,8 +1412,8 @@ arguments, folder, environment, JDK and VM arguments.
 - **Hover and Watch** read a variable or a field path such as `order.total`.
   They never call a method, so looking cannot change the program.
 - **Exceptions**: an exception that leaves your code uncaught stops where it was
-  thrown. This is on by default for Groovy; the **Caught** toggle also stops on
-  exceptions your own code catches. Exceptions Groovy throws and catches inside
+  thrown. This is on by default for Groovy; **Break on Caught Exceptions** also
+  stops on exceptions your own code catches. Exceptions Groovy throws and catches inside
   its runtime never stop.
 
 Not supported yet: conditions, hit counts and log messages on a breakpoint (such
@@ -1250,13 +1438,13 @@ JDK and VM arguments.
   the elements of an array. **Hover and Watch** read a variable or a field
   path; they never call a method.
 - **Exceptions**: an exception that leaves your code uncaught stops where it is
-  thrown, on by default; the **Caught** toggle also stops on exceptions your
-  code catches.
+  thrown, on by default; **Break on Caught Exceptions** also stops on
+  exceptions your code catches.
 
 For a Gradle project, open a Kotlin file and use
 [Debug via Build Tool](#debug-via-the-build-tool): Gradle starts the app under
 a suspended JVM and Editora's Kotlin debugger attaches to it, so breakpoints in
-`.kt` files bind. **Debug: Attach to JVM…** (`debug.attach`) from a Kotlin file attaches the same
+`.kt` files bind. **Debug: Attach to Running Program…** (`debug.attach`) from a Kotlin file attaches the same
 way to any JVM listening for a debugger.
 
 Not supported yet: conditions, hit counts and log messages on a breakpoint (such
@@ -1329,8 +1517,9 @@ Breakpoints of a remote file are kept across reconnects.
   Run and tests**, with the project root and `src/` on `PYTHONPATH`. debugpy
   runs under the host's **Python for debugging**. The program's output reaches
   the Debug console, but it can't read typed input there.
-- **JavaScript** runs vscode-js-debug and `node` on the host. The program's
-  output reaches the Debug console, but it can't read typed input there.
+- **JavaScript** runs vscode-js-debug and `node` on the host, from the
+  script's package folder there, as Run does. The program's output reaches the
+  Debug console, but it can't read typed input there.
 - **Java** in a Maven or Gradle project goes through the host's `jdtls`: Debug,
   Debug Main Class, Attach (where `localhost` is the host), Debug Test, and a
   saved configuration. Editora copies its java-debug plugin to
@@ -1369,11 +1558,12 @@ palette commands:
 | Command | Installs | Needs |
 | --- | --- | --- |
 | **Install: Java Language Support** (`install.javaSupport`) | jdtls and the Microsoft java-debug plugin | `tar`, and a JDK to run `jdtls` |
-| **Install: Python Language Support** (`install.pythonSupport`) | Pyright and debugpy | Python with `pip` for debugpy; Node.js with `npm` for Pyright |
-| **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` with TypeScript 6, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
+| **Install: Python Language Support (Pyright, debugpy)** (`install.pythonSupport`) | Pyright and debugpy | Python with `pip` for debugpy; Node.js with `npm` for Pyright |
+| **Install: TypeScript / JavaScript (Node.js) Language Support** (`install.jsSupport`) | `typescript-language-server` 5.3.0 with TypeScript 5.9.3, and vscode-js-debug v1.117.0 | Node.js with `npm`, and `tar` |
 
-Each language's card on the **Settings → Debugging** page has the same
-**Install…** button. An install fetches only what is missing. When one tool's
+The Java and Python cards on the **Settings → Debugging** page have the same
+**Install…** button; the JavaScript card's **Install…** installs only
+vscode-js-debug. An install fetches only what is missing. When one tool's
 runtime is missing, the others still install and the status bar names the one
 that waits (debugpy installs without Node.js, for example). When Python has no
 `pip`, the error says so. After a debugger installs while debugging is off, the
@@ -1393,15 +1583,18 @@ script for each:
 - **Python**: `debugpy`, `scripts/install-debugpy.sh`.
 - **JavaScript**: vscode-js-debug, `scripts/install-js-debug.sh`.
 
-Each card on **Settings → Debugging** has the adapter's path field with
-**Browse…** and a **Detected** line, for example *debugpy: found
-(/usr/bin/python3)* (the interpreter that has debugpy) or *js-debug: not
-found*, also while that language's debugging is switched off. While **Enable
-debugging (DAP)** is off, the cards are greyed and a note says to turn it on.
-Python's path field is the **Python interpreter (fallback for Run, Debug and
-code intelligence)**: the Python used when a project has no interpreter of its
-own, and the one that runs debugpy when the project's interpreter cannot import
-it.
+Each card on **Settings → Debugging** has a **Detected** line, for example
+*debugpy: found (/usr/bin/python3)* (the interpreter that has debugpy) or
+*js-debug: not found*, also while that language's debugging is switched off.
+The Java and JavaScript cards also have the adapter's path field with
+**Browse…**. While **Enable debugging (DAP)** is off, the cards are greyed and
+a note says to turn it on. Python has no path field there: debugpy runs under
+a Python interpreter, and the **Python interpreter (fallback for Run, Debug and
+code intelligence)** is on the Python card of **Settings → LSP**, which stays
+editable with debugging off. It is the Python used when a project has no
+interpreter of its own, and the one that runs debugpy when the project's
+interpreter cannot import it. A link at the top of the Debugging page leads
+there.
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, npm, Cargo, Go, and Gradle tasks,

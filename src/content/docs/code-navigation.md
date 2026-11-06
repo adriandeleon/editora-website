@@ -21,6 +21,8 @@ carries its own declaration scanner, so the command works on a first run and in
 every language that ships a grammar but has no server. A project in a
 [remote folder](/docs/remote) has no symbols.
 
+![The Go to Symbol in Project picker listing classes and methods whose names match Keymap, each with its file and line](/screenshots/features/code-navigation.png "Go to Symbol in Project, with no language server running.")
+
 Nineteen language ids are covered: Java, Kotlin, Groovy, Scala, Clojure, C#,
 Python, JavaScript, JSX, TypeScript, TSX, Go, Rust, C, C++, Ruby, PHP, shell and
 Lua. It records
@@ -73,7 +75,10 @@ It honours your `.gitignore` the same way Find in Files and the project tree do,
 skips `node_modules` even without a `.gitignore` (see
 [Find in files](/docs/navigation#find-in-files)),
 skips files over 2 MB, and is bounded at 20,000 files and 400,000 symbols so
-that it cannot grow without limit in the background.
+that it cannot grow without limit in the background. With **Exclude .gitignore
+files and folders from search** off, `node_modules` is walked too, but only
+after the project's own files, so a large `node_modules` cannot fill the index
+and leave your own code out.
 
 ### It under-reports on purpose
 
@@ -97,7 +102,12 @@ name at the caret itself: first in the file's own declarations, then in the
 project's symbol index. One match jumps there; several open the symbol picker.
 The status bar says when the index answered, or that no declaration was found.
 
-This works for the languages the index reads (see the list above). In other
+This works for the languages the index reads (see the list above). In
+JavaScript and TypeScript the file's own lookup goes by scope: a parameter, a
+local variable or a `catch` binding goes to its declaration in the enclosing
+function or block, and an imported name to its `import` line, rather than to a
+top-level name that happens to match (see
+[Languages](/docs/languages#javascript-and-typescript)). In other
 languages the command still needs a server. Ctrl+click on a name needs a
 running server too.
 
@@ -122,7 +132,9 @@ Two rules make it stay out of the way:
   you; the file-level type has been off screen longest.
 
 Rows are rebuilt from the highlighting the editor has already applied, so they
-match what's on screen and cost no extra tokenizing. It's on by default, and off in
+match what's on screen and cost no extra tokenizing. A pinned header starts at
+the same column as the code, past the gutter, so it lines up with the lines
+under it. It's on by default, and off in
 [large-file mode](/docs/troubleshooting#performance) along with the other per-viewport work.
 Toggle it in **Settings → Editor → Display** or with `view.toggleStickyScroll`.
 
@@ -182,8 +194,12 @@ and Ctrl+Shift+T in the IntelliJ keymap.
 | `test_foo.py` | `foo.py` |
 | `foo.c` | `foo.h` |
 | `foo.cpp` | `foo.hpp`, `foo.hxx`, `foo.h` |
-| `Button.tsx` | `Button.css`, `Button.scss` |
-| `app.js` | `app.css`, `app.scss`, `app.html` |
+| `util.ts` | `util.d.ts`, `util.js` |
+| `util.d.ts` | `util.ts`, `util.js` |
+| `util.mts`, `util.cts` | `util.d.mts` and `util.mjs`, `util.d.cts` and `util.cjs` |
+| `Button.tsx` | `Button.jsx`, `Button.css`, `Button.scss` |
+| `Button.jsx` | `Button.tsx`, `Button.css`, `Button.scss` |
+| `app.js` | `app.ts`, `app.d.ts`, `app.css`, `app.scss`, `app.html` |
 | `index.html` | the stylesheets and scripts it loads (`<link href>`, `<script src>`) |
 | `site.css`, `main.js`, `main.mjs` | the project's pages that load it, first |
 | `x_test.go`, `x.test.ts`, `x.spec.ts` | `x.go`, `x.ts` |

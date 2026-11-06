@@ -20,6 +20,8 @@ page title has a **?** link that opens that page's documentation for the
 version of Editora you are running. The window fits its 900 px minimum width in
 every language.
 
+![The Settings window on its Appearance page: User and Project scope buttons, a search field, a sidebar of pages with icons, and the page's language, font, theme and editor theme settings above a live preview](/screenshots/docs/settings.png "The Settings window: pages in the sidebar, each with its icon.")
+
 - Changes apply as you make them. There is no OK or Save button, and the footer
   says so. Every setting is also a palette command.
 - The window opens centred on the editor window the first time. After that it
@@ -42,7 +44,9 @@ every language.
   Cancel as the default button.
 - The Editor page is grouped into Display, Editing, Clipboard, Indentation and
   Saving, followed by Performance, Logs, CSV, File previews and Export & Print.
-  Updates and Trusted folders are on the Advanced page.
+  Updates, Trusted folders and
+  [Show Application Log…](/docs/troubleshooting#seeing-errors-in-a-packaged-build)
+  are on the Advanced page.
 - A few settings apply only when Editora starts: the **Language** on the
   Appearance page, merging the menu bar into the title bar, and turning plugins
   on or off. Once you change one, its row says it applies after a restart, and
@@ -201,7 +205,7 @@ A project's `.editora/settings.json` can set only these:
 | The program of the Java, Python and JavaScript debuggers | `debugTools`, by debugger |
 | Which language server to run for a language, and whether to run it | `lspCommands`, `lspEnabled`, by server |
 | The [Bash server's options](/docs/lsp#bash-server-options) | `bashIde` |
-| The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html` |
+| The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html`, or VS Code's dotted `html.…` keys at the top level |
 
 ```json
 {
@@ -293,6 +297,74 @@ Project's Tools Here* removes the folder's entry. Whether a container or WSL
 distribution may run a project's tools is kept in `connections.json`, with the
 hosts' answers.
 
+### JavaScript and TypeScript tools
+
+`nodePath` is the Node.js that Run, run configurations, Debug, Package Scripts,
+the language servers and HTTP scripts use. It is the **Node.js** field on its
+own card under **Settings → Build Tools**, beside npm. Blank (the default) means
+automatic: a project's `.nvmrc` or `.node-version` version when nvm has it,
+else `node` on the PATH.
+
+ESLint and formatting are the **ESLint and formatting** rows of the TypeScript
+card under **Settings → LSP**. ESLint, Prettier and Biome run only in a trusted
+folder:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `eslintEnabled` | Check with ESLint | `true` |
+| `jsFormatter` | Formatter: `auto` (Automatic), `prettier`, `biome` or `server` (TypeScript server) | `auto` |
+| `jsOrganizeImportsOnSave` | Organize imports on save | `false` |
+| `eslintFixOnSave` | Apply ESLint fixes on save | `false` |
+| `jsFormatOnSave` | Format on save | `false` |
+
+**Automatic** formats with the project's own Prettier or Biome when it has one,
+else with the TypeScript server. The three on-save actions run in that order
+after a save you make yourself, never after auto-save. When they change the
+file it is saved again, and their changes undo as one step. See
+[Language servers](/docs/lsp).
+
+### Python
+
+The Python settings are on the **Python** card under **Settings → LSP**. The
+card stays editable with language servers and debugging switched off, since Run
+and tests use the interpreter too:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `pythonDebugCommand` | Python interpreter (fallback for Run, Debug and code intelligence) | blank (the first Python on the `PATH`) |
+| `pythonFormatOnSave` | Format on save (Ruff/Black) | `false` |
+
+The interpreter is the fallback: it is used when a project has no virtual
+environment (`.venv` or `venv`) and none was picked for it. A path or a bare
+name such as `python3.12` works; a bare name is looked up on the `PATH`, for
+Run and Debug and for Pyright alike. The card's **Choose…** button runs
+**Python: Select Interpreter** (`python.selectInterpreter`), which picks the
+interpreter for the window's project; that pick is kept with the project's
+session, not in `settings.json`. See
+[The Python interpreter](/docs/lsp#the-python-interpreter).
+
+**Format on save (Ruff/Black)** formats a Python file with Ruff or Black (the
+project's own first) after a save you make yourself, and saves it again when
+that changed it. Auto-save does not format.
+
+### Java debugging
+
+The Java debugger's settings are on the **Java** card under **Settings →
+Debugging**:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugHotCodeReplace` | Apply code changes to a running Java program: `auto` (On save), `manual` (Only with Debug: Apply Code Changes) or `off` (Never) | `auto` |
+| `debugStepFilters` | Step Into skips JDK classes and synthetic methods | `true` |
+| `debugShowStatics` | Show static fields in Variables | `true` |
+| `debugShowToString` | Show toString() values | `true` |
+| `debugExceptionTypes` | Exception breakpoints: only these classes (separated by commas) | blank (every exception) |
+
+**Show toString() values** shows what each object's `toString()` returns,
+which runs your program's code at each stop; off, objects read `Type@id`. It
+takes effect at the next debug session. See
+[Inspecting values](/docs/run-debug#inspecting-values).
+
 ### Rulers and indent guides
 
 These are the rows under **Settings → Editor → Display**:
@@ -341,8 +413,8 @@ governs the file in front.
 
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.23.0
-`settings.json` is at version **140**. Editora migrates older files forward
+Each structured config file carries a `schemaVersion`; in Editora 0.27.0
+`settings.json` is at version **158**. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that

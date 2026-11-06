@@ -43,6 +43,8 @@ project files and symbols**, so you can type the *name* of the thing instead of
 first deciding which of Editora's five pickers, each behind its own chord, it
 lives in.
 
+![Search Everywhere open over a Java file with the query theme, listing matching project files and then matching symbols, each with its path](/screenshots/features/search-everywhere.png "Search Everywhere: files and symbols from one query.")
+
 With a Java language server running, the symbols include the JDK's and your
 dependencies' classes (`List`, `Assertions`), listed after the project's own and
 opened as read-only library source.
@@ -79,6 +81,19 @@ than an empty query: it names what it will search and walks nothing.
 
 A single-line selection seeds the query, the same way the find bar and Find in
 Files do.
+
+**File results** come from the same list of the project's files as the
+[Project Map](/docs/workspace#project-map)'s search and the
+[Project tree's filter](/docs/workspace#projects), kept current as you work,
+and they rank the same way: the name as you typed it first, then the project's
+own source, then vendored code, then tests. So all three find the same file
+first. Deep and very large projects are searched completely, and a path such as
+`core/v1/types.go` narrows a common name.
+
+**Show in Map** selects the highlighted file, or a symbol's file, on the
+[Project Map](/docs/workspace#project-map), opening the Map window if needed.
+Its key is `Alt-Enter` where the keymap leaves it free, else `Shift-Enter` or
+`Alt-M`; the hint line names it.
 
 The symbol half is backed by Editora's own
 [project symbol index](/docs/code-navigation#go-to-symbol-in-project), so it
@@ -134,8 +149,10 @@ matched, and emboldens the characters responsible for the match.
   humps of `MainController` rather than whichever `c` comes first.
 - **Several terms, any order.** Whitespace splits the query into terms that must
   all match, in any order, so `toggle git` finds *Git: Toggle Blame*.
-- **Paths know their basename.** The Project tree's filter scores the whole
-  relative path, so a query can name a directory as well as a file.
+- **Paths know their basename.** The Project tree's filter, Search
+  Everywhere's files and the Project Map's search match a file's name, and a
+  query with a `/` in it matches the relative path, so `core/v1/types.go` or
+  `cmd/kube-scheduler` can name a directory as well as a file.
 
 Grouped and structural lists (build actions, branches, the Structure tree)
 use the same matcher but keep their own order, because a tree that reorders
@@ -165,6 +182,22 @@ same dot you see on its tab.
 autocomplete. Type and press Tab to complete, Enter to descend into a folder or
 open (or create) a file. There's a matching folder finder for picking a
 directory.
+
+**`C-d` opens a folder as a project**, the same as
+[Open Project Folder](/docs/workspace) (`project.open`), and closes the finder.
+The folder it opens is:
+
+- the highlighted folder, when you picked it: typed its name, or moved the
+  highlight onto it;
+- the folder being listed, when the field ends in a path separator and you
+  haven't moved the highlight (the first row is just the folder's first entry,
+  not a choice);
+- on a file row, the folder that file is in.
+
+The key legend shows it as "C-d open as project". It is only offered when
+projects are on (Settings → Workspace), not in the Open Project Folder picker
+(whose Enter already chooses a folder), and not in the IntelliJ macOS keymap,
+where `C-d` is Start Debugging.
 
 ## The tab switcher
 
@@ -215,7 +248,7 @@ the list further as you type.
 ## Find in files
 
 `C-S-f` opens the **Find in Files** tool window and focuses it. It searches the
-active project (skipping dot-dirs, oversize, and binary files) plus the
+active project (skipping dot-dirs, binary files and files over 2 MB) plus the
 in-memory text of open buffers, so unsaved edits are included. Results are
 grouped by file; Enter or double-click jumps to a match. Case, regex, and
 whole-word apply here too.
@@ -227,9 +260,15 @@ excludes. It also skips every `node_modules` folder, even in a project with no
 files. The symbol index, Go to File, Search Everywhere, the TODO window and the
 Project tree's filter skip it the same way. To search inside it, add
 `!node_modules/` to the `.gitignore`, or name it in an include glob such as
-`node_modules/react/**`.
+`node_modules/react/**`. With the setting off, the symbol index and Go to File
+take the project's own files first and `node_modules` after them, so their file
+limit is not used up before your own code is reached.
 
-Find in Files stops at 5,000 matches, and says so when it stops there.
+Find in Files stops at 5,000 matches, and says so when it stops there. The
+built-in search and ripgrep both skip files over 2 MB, such as a built
+`dist/bundle.min.js`, without counting them, so the results say *(truncated)*
+only when the search stopped short: at the match or file limit, or at a folder
+it could not read.
 
 **Replace in files** rewrites matches across the project after a confirmation:
 open buffers are edited in-memory (undoable) and closed files are rewritten on

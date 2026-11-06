@@ -34,5 +34,4 @@ it shows a **single-letter Git status** (M / A / D / R / U) on each changed file
 matching the Commit window. See [Projects](/docs/workspace#projects) and
 [Git](/docs/git).
 
-The complete list is on the [What's New](/whats-new) page, and there's a
-[0.9.5 blog post](/blog/editora-0-9-5).
+The complete list is on the [What's New](/whats-new) page.

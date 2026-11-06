@@ -57,6 +57,8 @@ snippets and templates can contain private text.
    in.
 3. Click **Connect**.
 
+![The Sync page of the Settings window: a Repository URL field, a Branch field with Connect and Create on GitHub buttons, a Status row, switches for snippets, abbreviations, templates and the personal dictionary, and the automatic sync interval](/screenshots/docs/settings-sync.png "Settings → Sync before connecting.")
+
 The **Repository** field does not take a URL with a password or token in it
 (`https://me:TOKEN@host/…`, or a token used as the user name): the field turns
 red, says why, and nothing is saved. Such a URL would sit in plain text in your

@@ -14,6 +14,8 @@ export const docsBase = `/docs/v-${version}`;
 export const repo = "https://github.com/adriandeleon/Editora";
 export const latestRelease = `${repo}/releases/latest`;
 
-// How many language servers the app registers (LspServerRegistry in the Editora
-// repo). One number for every page that quotes it, so they cannot disagree.
-export const lspServerCount = 23;
+// How many language servers the app registers (ServerDef in LspServerRegistry in
+// the Editora repo), not counting MAVEN_POM, the Maven-aware variant of the XML
+// server for pom.xml. Matches "Twenty-six servers" in docs/lsp.md. One number for
+// every page that quotes it, so they cannot disagree.
+export const lspServerCount = 26;

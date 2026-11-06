@@ -8,10 +8,10 @@ summary: "As-you-type completion: a popup for code (LSP + snippets) and inline g
 
 Completion appears as you type, debounced and off the hot path.
 
-**Code** buffers get a popup that merges LSP results and snippets, Enter or Tab to accept. Java member completion appears immediately; identifier completion waits for a short pause, filters complete lists locally, and cancels obsolete requests as you keep typing. Overloads stay distinct, method calls reuse existing parentheses, and commit characters behave as the server intended.
+**Code** buffers get a popup that merges LSP results and snippets, Enter or Tab to accept. It holds the server's whole list (`os` in Python lists all its members), and while a slow server is still answering, a row names it ("Waiting for Pyright…"). The documentation beside the list widens to fit a long signature. Java member completion appears immediately; identifier completion waits for a short pause, filters complete lists locally, and cancels obsolete requests as you keep typing. Overloads stay distinct, method calls reuse existing parentheses, and commit characters behave as the server intended.
 
 Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its import even after safe continued typing; completion plus import undo and redo as one action, while later typing remains separate.
 
 **Prose** buffers get inline **ghost text**, a muted suffix you accept with Tab.
 
-Trigger manually with `C-M-i` or `M-/`. Per-source toggles (words, snippets, Mermaid) live in Settings → Code Completion.
+Trigger manually with `C-M-i` or `M-/` in the Emacs keymap, Ctrl+Space in the others. Per-source toggles (words, snippets, Mermaid) live in Settings → Code Completion.
