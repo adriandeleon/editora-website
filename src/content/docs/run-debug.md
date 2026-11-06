@@ -772,6 +772,7 @@ script as it runs.
 | Run to cursor | `debug.runToCursor` | `C-c C-d u` |
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
 | Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
+| Toggle temporary breakpoint | `debug.toggleTemporaryBreakpoint` | `C-c C-d 1` |
 | Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
 | Choose exception breakpoints | `debug.toggleExceptionBreakpoints` | (palette) |
 | Debug a project main class | `debug.mainClass` | (palette) |
@@ -807,8 +808,9 @@ italics instead.
 
 Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
-message** (which turns it into a logpoint that logs and never suspends), and an
-**enabled** toggle. Its title names the file and line, such as *Edit
+message** (which turns it into a logpoint that logs and never suspends), an
+**Enabled** toggle, and **Remove once hit**, which makes it a
+[temporary breakpoint](#temporary-breakpoints). Its title names the file and line, such as *Edit
 Breakpoint — Main.java:27*, and the line's code is shown above the fields, since
 the form can cover that line. The hit count makes it stop only on that hit: `5`
 stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
@@ -841,7 +843,8 @@ A spinner beside the Debug window's status turns while the before-launch build,
 the session start, or the program is running, and stops while the program is
 paused (at a breakpoint, a step, or Pause). Pause works only on a running
 program, so it is greyed out while the program is paused, starting or being
-built.
+built. In Java, Pause stops every thread of the program, and Continue resumes
+them all (see [Threads in a Java program](#threads-in-a-java-program)).
 
 Beside that status, the Debug window names the runtime the debugged program
 runs under, as the [Run window does](#which-runtime-a-program-runs-under): the
@@ -1089,6 +1092,19 @@ and pauses there. It is greyed out on the bottom frame.
 If the connection to the debugger is lost, Editora ends the program at once and
 says so in the Debug console and the status bar.
 
+### Threads in a Java program
+
+**Pause** stops the whole Java program: every thread is suspended, not only the
+one on screen. **Continue** after a Pause resumes every thread. A step between
+the two runs only the thread you step, and the next Continue still resumes them
+all.
+
+By default, a breakpoint, an exception or a step stops only the thread that
+hit it, and the program's other threads keep running. To stop them all, turn on
+**Suspend all threads when one stops** on the Java card of **Settings →
+Debugging** (off by default). Continue then resumes every thread. The setting
+takes effect at the next debug session.
+
 ### Editing during a session
 
 The running program keeps the code it was started with. When you edit a file
@@ -1207,14 +1223,17 @@ installs only vscode-js-debug v1.117.0, a version tested with Editora.
 
 A breakpoint's glyph shows its kind by shape as well as colour: a dot for a
 plain breakpoint, a diamond for a logpoint, two "=" bars for a breakpoint with
-a condition or a hit count, and grey for a disabled one. Its hover names the
-condition, log message and hit count, and says when it is disabled. A hit
+a condition or a hit count, a "1" for a
+[temporary breakpoint](#temporary-breakpoints), and grey for a disabled one.
+Its hover names the condition, log message and hit count, and says when it is
+disabled or removed once hit. A hit
 count stops on that hit in Java too: `3` stops the third time the line runs.
 
 Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
 **Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
-right-click menu has Toggle Breakpoint and Edit Breakpoint, and while the
-program is paused also Run to Cursor, Show Value at Caret and Add to Watches.
+right-click menu has Toggle Breakpoint, Edit Breakpoint and Toggle Temporary
+Breakpoint, and while the program is paused also Run to Cursor, Show Value at
+Caret and Add to Watches.
 
 A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
@@ -1253,6 +1272,30 @@ java.lang.IllegalStateException). Left blank, both stop on every exception.
 At an exception stop, the line that threw is drawn red, and the exception's
 type and message are the top row of Variables.
 
+### Temporary breakpoints
+
+A temporary breakpoint is removed once the program stops on it, so it stops
+the program only once. **Debug: Toggle Temporary Breakpoint**
+(`C-c C-d 1`; Ctrl+Alt+Shift+F8 in the IntelliJ keymap, ⌥⇧⌘F8 on macOS) works
+on the caret line:
+
+- on a line without a breakpoint, it adds a temporary one;
+- on a line with an ordinary breakpoint, it makes that breakpoint temporary,
+  keeping its condition and hit count;
+- on a line with a temporary breakpoint, it removes it.
+
+The command is also in **Run ▸ Debugger** and the editor's right-click menu.
+In **Edit Breakpoint**, **Remove once hit** turns any breakpoint into a
+temporary one, or back.
+
+A temporary breakpoint's dot carries a "1" (one with a condition or a hit count
+shows the "=" bars instead), and its hover and its row in **Debug: Breakpoints…**
+say *Removed once hit*. When the program stops on it, Editora removes it, also
+from the running session, and the status bar says *Temporary breakpoint on line
+N hit and removed.* A temporary breakpoint with a condition or a hit count is
+removed only when it actually stops the program. A logpoint never stops the
+program, so it is never removed.
+
 ### Inspecting values
 
 The line the program is stopped on is amber, with an arrow in the gutter, and
@@ -1281,6 +1324,15 @@ it with Show Value at Caret, the keyboard works it while it is open:
 
 Any other key closes the popup and does its usual thing in the editor. When the
 popup was opened by the mouse, any key closes it.
+
+After a step or any other stop, a value in Variables or Watches that changed
+since the previous stop is **highlighted**: its row is tinted and the value is
+bold, keeping its colours. Each frame is compared with what that same frame
+showed at the previous stop, so after you step out of a call, the caller's
+variables are compared with what they were before the call. A variable that
+was not there before, such as one just declared, is not highlighted, and a new
+session starts with nothing to compare. Choosing another frame and coming back,
+or setting a value, keeps the highlights of the current stop.
 
 In the Variables tree, the right-click menu has **Copy Value** (a string is
 copied without its quotes and escapes), **Copy Name**, **Add to Watches**,
@@ -1335,6 +1387,20 @@ text inside a `toString()` result can still show such characters garbled.
 The thread list leaves out the JVM's own housekeeping threads and puts the
 stopped thread first, marked "(paused)". After the program ends, the state line
 keeps "Exited with code N".
+
+**Copy Call Stack**, in the call stack's right-click menu, copies the shown
+thread's whole stack as text, ready to paste into a bug report or a chat.
+Ctrl+C (⌘C on macOS) in the call stack does the same. Frames folded into one
+row are copied too. The text reads like a Java stack trace: the thread's name,
+then one line per frame, top frame first:
+
+```text
+Thread "main"
+    at Main.total(Main.java:12)
+    at Main.main(Main.java:5)
+```
+
+A frame without a source file is copied with its name only.
 
 ### Keys in the Debug window
 

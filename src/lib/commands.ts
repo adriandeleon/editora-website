@@ -637,6 +637,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Debug: Enable / Disable Breakpoint", id: "debug.toggleBreakpointEnabled", keys: "C-c C-d t", bindings: { "emacs": "C-c C-d t" }, desc: "Enable or disable the breakpoint on the caret line without removing it." },
       { title: "Debug: Exception Breakpoints…", id: "debug.toggleExceptionBreakpoints", desc: "Choose which exceptions stop the debugger: raised, uncaught, …" },
       { title: "Debug: Toggle Program Input in the Debug Console", id: "debug.toggleProgramConsole", desc: "Start the debugged Java, Python or JavaScript program from Editora, so that it can read lines typed in the Debug console." },
+      { title: "Debug: Toggle Temporary Breakpoint", id: "debug.toggleTemporaryBreakpoint", keys: "C-c C-d 1", bindings: { "emacs": "C-c C-d 1", "intellij": "C-M-S-f8" }, desc: "Add a breakpoint on the caret line that is removed once the program stops on it." },
       { title: "Debug: Debug via Build Tool", id: "debug.viaBuild", desc: "Start a Gradle or Spring Boot app through its build tool, with its JVM waiting for the debugger on a free port, and attach the debugger." },
     ],
   },
