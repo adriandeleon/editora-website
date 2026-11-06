@@ -14,7 +14,7 @@ edit by hand.
 Open it with **View: Settings** (`view.settings`, `Ctrl+,` in the CUA, Sublime
 and VS Code keymaps). The sidebar groups the pages, each with an icon before
 its name (pages with an icon elsewhere in Editora, such as Git or Terminal,
-use the same one); a page whose feature is still in beta (AI, AI Agent, AI Actions, LSP, Debugging, Remote, Sync, MCP
+use the same one); a page whose feature is still in beta (AI, AI Agent, AI Actions, Remote, Sync, MCP
 Server) carries a **Beta** pill in the sidebar and beside its title. Every
 page title has a **?** link that opens that page's documentation for the
 version of Editora you are running. The window fits its 900 px minimum width in

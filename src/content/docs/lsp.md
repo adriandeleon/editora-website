@@ -3,7 +3,6 @@ title: Language servers (LSP)
 description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 26 language servers.
 category: Code intelligence
 order: 2
-beta: true
 ---
 
 Editora speaks the **Language Server Protocol**, so with a server installed you
