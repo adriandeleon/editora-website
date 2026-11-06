@@ -66,8 +66,15 @@ there (or in the Markdown, then port it back).
 The docs are versioned: every docs page and per-command page lives under
 `/docs/v-<version>/…` (e.g. `/docs/v-1.0.0/editing`), where `<version>` comes
 from the committed `src/lib/version.ts`. Bare `/docs` redirects to the current
-version; unversioned doc/command URLs are not served, so each app version pins
-its own `/docs/v-<appVersion>/…` links.
+version, and so does the unversioned slug of every current docs page:
+`/docs/<slug>` (e.g. `/docs/editing`) redirects to `/docs/v-<version>/<slug>`
+(`/docs/introduction` to the version's landing page, `/docs/v-<version>/`).
+Those are the stable links for places outside the site — the Editora README,
+blog posts — that should always reach the newest text. The redirect list is
+generated in `astro.config.mjs` from the files in `src/content/docs/`, so a new
+page gets one automatically and a removed page's stops. Only the versioned URLs
+are real pages, and each app version pins its own `/docs/v-<appVersion>/…`
+links; unversioned per-command URLs are not served.
 
 The routes live under `src/pages/docs/[version]/` (`index.astro`,
 `[...slug].astro`, `commands/[id].astro`); each emits one path per served
