@@ -142,22 +142,22 @@ const aroundShots: Shot[] = [
     alt: "The M-x command palette over the editor, filtered to bookmark commands, each row showing its key binding",
     more: { href: "/features/command-driven-core", label: "More about commands" },
   }),
-  shot("/screenshots/bookmarks-panel.webp", {
+  shot("/screenshots/docs/bookmarks.png", {
     title: "Bookmarks",
-    caption: "The Bookmarks tool window lists bookmarks across every file.",
-    alt: "The Bookmarks tool window beside the editor, listing bookmarks grouped by project and file with their lines",
-    more: { href: "/features/bookmarks-notes", label: "More about bookmarks and notes" },
+    caption: "The Bookmarks tool window groups bookmarks by project and file.",
+    alt: "The Bookmarks tool window beside Shelf.java: bookmarks grouped under the current project and then by file, each with its line text and number; the editor gutter marks the bookmarked line",
+    more: { href: `${docsBase}/bookmarks-notes/`, label: "Read the bookmarks notes docs" },
   }),
   shot("/screenshots/file-information.webp", {
     title: "File information",
     caption: "File Information: dates, size, encoding, line endings, counts and the character under the caret.",
     alt: "The File Information tool window beside a Java file, with File, Text Settings, Count and Character sections",
   }),
-  shot("/screenshots/doctor.webp", {
+  shot("/screenshots/docs/doctor.png", {
     title: "Doctor",
-    caption: "The Doctor lists every external tool Editora can use, and whether it was found.",
-    alt: "The Doctor tab: version control, search, preview and diagram tools, language servers and debuggers, each with its status and version",
-    more: { href: "/features/doctor", label: "More about the Doctor" },
+    caption: "The Doctor puts what needs attention first and folds the sections where everything is OK.",
+    alt: "The Doctor tab: a summary line of 1 warning, 23 OK, 9 not installed and 3 off, a Needs Attention section with the GitHub CLI not signed in, then Version Control, Search and Encryption folded to one line and the Preview & Diagrams rows",
+    more: { href: `${docsBase}/troubleshooting/`, label: "Read the troubleshooting docs" },
   }),
   shot("/screenshots/docs/git-commit.png", {
     title: "Commit",
@@ -203,6 +203,124 @@ const aroundShots: Shot[] = [
   }),
 ];
 
+/** Docs captures for the pages that show one feature each. */
+const docsShots: Shot[] = [
+  shot("/screenshots/docs/multiple-cursors.png", {
+    title: "Multiple cursors",
+    caption: "Select all occurrences turns every Item in the file into a cursor.",
+    alt: "Shelf.java with every occurrence of Item selected at once: each occurrence highlighted with its own caret, down the sample list and in the methods below",
+    more: { href: `${docsBase}/editing/`, label: "Read the editing docs" },
+  }),
+  shot("/screenshots/docs/hex-viewer.png", {
+    title: "Hex viewer",
+    caption: "A binary file opens as an offset, hex and ASCII dump.",
+    alt: "sample.bin open read-only in the hex viewer: an offset column, sixteen bytes per row in hex, and the printable characters on the right",
+    more: { href: `${docsBase}/editing/`, label: "Read the editing docs" },
+  }),
+  shot("/screenshots/docs/theme-picker.png", {
+    title: "Themes",
+    caption: "Set App Theme lists every theme; type to filter.",
+    alt: "The Set App Theme picker over the editor: a filter field above a list that starts with Editora Light, Editora Dark, Primer, Nord, Cupertino, Dracula and the Army and Autumn themes",
+    more: { href: `${docsBase}/themes-fonts/`, label: "Read the themes fonts docs" },
+  }),
+  shot("/screenshots/docs/snippet-picker.png", {
+    title: "Snippets",
+    caption: "Snippet: Insert… lists the snippets for the file's language, each with its trigger and a preview.",
+    alt: "The Insert Snippet picker over a Java file: each trigger (main, psvm, cmain, class, interface, record, enum, sealed, package, import, ctor, method) with its description and a preview of its body",
+    more: { href: `${docsBase}/snippets-templates/`, label: "Read the snippets templates docs" },
+  }),
+  shot("/screenshots/docs/template-picker.png", {
+    title: "File templates",
+    caption: "New File From Template shows where each template comes from and what it makes.",
+    alt: "The New File From Template picker: Java Class, Java Compact Source, HTML Page, Markdown Document, Python Script, Node.js Script, Shell Script, Zsh Script, JUnit 5 Test and more, each marked Bundled with a description",
+    more: { href: `${docsBase}/snippets-templates/`, label: "Read the snippets templates docs" },
+  }),
+  shot("/screenshots/docs/notes.png", {
+    title: "Personal notes",
+    caption: "A personal note on a line: tinted in the editor, listed in the Personal Notes tool window.",
+    alt: "The Personal Notes tool window beside Shelf.java listing a note on line 48, Check the discount rounding before the release; the noted line is tinted in the editor and marked in the gutter",
+    more: { href: `${docsBase}/bookmarks-notes/`, label: "Read the bookmarks notes docs" },
+  }),
+  shot("/screenshots/docs/html-structure.png", {
+    title: "HTML structure",
+    caption: "Structure without the language server: elements labelled tag, then #id, then .class.",
+    alt: "widget.html with the Structure tool window open and no language server: html, head, body, main.widget, h1, p#count.count and div.buttons, each with its line",
+    more: { href: `${docsBase}/html/`, label: "Read the HTML docs" },
+  }),
+  shot("/screenshots/docs/spell-check.png", {
+    title: "Spell checking",
+    caption: "In code, spell checking reads comments and strings, not identifiers.",
+    alt: "A Java file whose comments and string contain misspelled words underlined in red, while identifiers and keywords are left alone",
+    more: { href: `${docsBase}/languages/`, label: "Read the languages docs" },
+  }),
+  shot("/screenshots/docs/openapi-preview.png", {
+    title: "API docs preview",
+    caption: "An OpenAPI spec previews as API docs beside its source.",
+    alt: "petstore.yaml in Split view: the YAML on the left and, on the right, API docs titled Pet Store 1.0.0 with its server and GET and POST endpoint cards listing parameters and responses",
+    more: { href: `${docsBase}/previews/`, label: "Read the previews docs" },
+  }),
+  shot("/screenshots/docs/crontab-preview.png", {
+    title: "Crontab preview",
+    caption: "A crontab decoded: each schedule in plain English with its next runs, and a malformed line flagged.",
+    alt: "deploy.crontab in Split view: each schedule decoded on the right, such as Every 15 minutes and At 02:30, Monday through Friday, with its next run times, and a bad line flagged with minute 99 out of range",
+    more: { href: `${docsBase}/previews/`, label: "Read the previews docs" },
+  }),
+  shot("/screenshots/docs/encrypt-recipients.png", {
+    title: "Encryption",
+    caption: "The recipient picker with two people chosen; a key that can only sign is listed last.",
+    alt: "The Encrypt README.md picker in Public keys mode: Ada Lovelace and Sam Rivera ticked and shown as chips, Release Team unticked, a signing-only key greyed at the bottom, a Format menu and an Encrypt for 2 People button",
+    more: { href: `${docsBase}/encrypted-files/`, label: "Read the encrypted files docs" },
+  }),
+  shot("/screenshots/docs/settings-keymaps.png", {
+    title: "Keymaps",
+    caption: "Settings → Keymaps: pick a keymap, then rebind any command in the list below.",
+    alt: "Settings on the Keymaps page: the keymap menu set to Emacs, and below it a filterable list of every command with its chord or Unbound",
+    more: { href: `${docsBase}/keymaps/`, label: "Read the keymaps docs" },
+  }),
+  shot("/screenshots/docs/settings-ai.png", {
+    title: "AI settings",
+    caption: "Settings → AI: the master switch for every AI feature.",
+    alt: "Settings on the AI page: the Enable AI master switch turned on, with its description, and the AI Agent and AI Actions pages listed under AI in the sidebar",
+    more: { href: `${docsBase}/ai/`, label: "Read the AI docs" },
+  }),
+  shot("/screenshots/docs/settings-mcp.png", {
+    title: "MCP server",
+    caption: "Settings → MCP Server while the server runs, with the button that copies the connect command.",
+    alt: "Settings on the MCP Server page: the Enable MCP server switch on, and the Server row reading Running at an http://127.0.0.1 endpoint with Copy Endpoint Command and New Token buttons",
+    more: { href: `${docsBase}/mcp/`, label: "Read the MCP server docs" },
+  }),
+  shot("/screenshots/docs/settings-external-tools.png", {
+    title: "External tools",
+    caption: "A tool that runs Prettier on the current file.",
+    alt: "Settings on the External Tools page with one tool, Prettier: Command npx, Arguments prettier --write $FilePath$, a blank working directory, Standard input None, Output Show in console and Enabled on, with the list of macros below",
+    more: { href: `${docsBase}/external-tools/`, label: "Read the external tools docs" },
+  }),
+  shot("/screenshots/docs/settings-plugins.png", {
+    title: "Plugins",
+    caption: "Settings → Plugins with plugins turned on and none installed yet.",
+    alt: "Settings on the Plugins page: Enable plugins on, the Installed Plugins section with Reload Plugins and the plugins folder, Browse plugins and Install from file buttons, and the Registry URL",
+    more: { href: `${docsBase}/plugins/`, label: "Read the plugins docs" },
+  }),
+  shot("/screenshots/docs/lsp-references.png", {
+    title: "Find references",
+    caption: "Find references in a Java project, grouped by file.",
+    alt: "Shelf.java with the caret on discountFor and the References tool window below: 2 references to discountFor in 2 files, one in Shelf.java at 48:41 with its line, and one in ShelfTest.java",
+    more: { href: `${docsBase}/lsp/`, label: "Read the language server docs" },
+  }),
+  shot("/screenshots/docs/lsp-hover.png", {
+    title: "Hover docs",
+    caption: "Hover docs: the signature and Javadoc at the caret.",
+    alt: "A hover popup over discountFor in Shelf.java showing the signature Discount com.example.shelf.Pricing.discountFor(Item item), its Javadoc and its parameter",
+    more: { href: `${docsBase}/lsp/`, label: "Read the language server docs" },
+  }),
+  shot("/screenshots/docs/deployments.png", {
+    title: "Deployments",
+    caption: "A deployment to a staging host, filled in.",
+    alt: "The Deployments window with one deployment, staging: Host staging.example.com, port 22, User ada, Automatic authentication, Folder on host /srv/apps/shelf, an empty Leave out list and the Options checkboxes, with Deploy Now and Close buttons",
+    more: { href: `${docsBase}/deployments/`, label: "Read the deployments docs" },
+  }),
+];
+
 const stripTags = (html: string) => html.replace(/<[^>]+>/g, "");
 const hashOf = (src: string) => createHash("sha1").update(readFileSync(pub(src))).digest("hex");
 
@@ -226,6 +344,12 @@ export async function gallerySections(): Promise<ShotSection[]> {
       title: "Around the editor",
       lead: "More of the app: tool windows, Git, running code, remote files and settings.",
       shots: aroundShots,
+    },
+    {
+      id: "from-the-docs",
+      title: "From the docs",
+      lead: "Editing, previews, language servers, encryption and the settings pages, as the user docs show them.",
+      shots: docsShots,
     },
   ];
   // A feature whose picture is one of the above (the Project Map's is the

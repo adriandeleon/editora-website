@@ -17,6 +17,8 @@ the gutter does not toggle a bookmark, because the breakpoint strip and the Run 
 are narrow targets inside that same gutter and a slightly-off click would add a
 stray bookmark instead of hitting what you aimed at.
 
+![The Bookmarks tool window beside Shelf.java: bookmarks grouped under the current project and then by file, each with its line text and number; the editor gutter marks the bookmarked line](/screenshots/docs/bookmarks.png "The Bookmarks tool window groups bookmarks by project and file.")
+
 The Project Tree and Map menus can add a bookmark to a file's first line without
 opening it first, or attach a bookmark directly to a folder. Both surfaces show
 a compact bookmark indicator after the file or folder name.
@@ -67,6 +69,8 @@ folder**, stored *outside* the file. They're built for read-only, generated, or
 shared code, and for project context that does not belong in a source file.
 Notes are **on by default**; toggle them in **Settings → Workspace → Features**
 (*Enable Personal Notes*).
+
+![The Personal Notes tool window beside Shelf.java listing a note on line 48, Check the discount rounding before the release; the noted line is tinted in the editor and marked in the gutter](/screenshots/docs/notes.png "A personal note on a line: tinted in the editor, listed in the Personal Notes tool window.")
 
 | Action | Command | Emacs key |
 | --- | --- | --- |

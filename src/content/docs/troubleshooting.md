@@ -35,6 +35,8 @@ installer), **Turn on** for a switched-off feature, **How to install**, and
 **Settings…** straight to the right page. All probes run off the UI thread, and
 only when you open or refresh the screen.
 
+![The Doctor tab: a summary line of 1 warning, 23 OK, 9 not installed and 3 off, a Needs Attention section with the GitHub CLI not signed in, then Version Control, Search and Encryption folded to one line and the Preview & Diagrams rows](/screenshots/docs/doctor.png "The Doctor puts what needs attention first and folds the sections where everything is OK.")
+
 Start here when something that should work doesn't: it answers "is the tool
 installed, is it the version I think, and is Editora looking at the right one" in
 one pass. **Copy Report** puts the whole report on the clipboard, ready to paste

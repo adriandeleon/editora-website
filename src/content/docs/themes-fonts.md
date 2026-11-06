@@ -34,6 +34,8 @@ members of a family next to each other. Your own themes are listed last, under
 **Your themes**. The headings are titles only: the mouse and the arrow keys pass
 over them.
 
+![The Set App Theme picker over the editor: a filter field above a list that starts with Editora Light, Editora Dark, Primer, Nord, Cupertino, Dracula and the Army and Autumn themes](/screenshots/docs/theme-picker.png "Set App Theme lists every theme; type to filter.")
+
 The [terminal](/docs/terminal#colors-and-font) follows the editor theme too,
 unless you give it a color scheme of its own in **Settings → Terminal →
 Theme**.

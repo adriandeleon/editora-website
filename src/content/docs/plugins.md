@@ -30,6 +30,8 @@ windows, editor-menu items, and status-bar segments. Browse the
 You can also copy a plugin folder into `plugins/<id>/` in your config folder
 yourself, click **Reload Plugins**, and tick it (behind the same dialog).
 
+![Settings on the Plugins page: Enable plugins on, the Installed Plugins section with Reload Plugins and the plugins folder, Browse plugins and Install from file buttons, and the Registry URL](/screenshots/docs/settings-plugins.png "Settings → Plugins with plugins turned on and none installed yet.")
+
 Browse marks each registry entry: **Install**, **Installed**, **Update
 available** (with the version you have), **Newer version installed**,
 **Requires Editora ≥** a version (greyed, not installable), or **Deprecated**

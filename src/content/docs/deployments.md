@@ -40,6 +40,8 @@ deletes one. Each field is saved when you leave it; there is no Save button.
 | **Leave out** | Patterns for files not to send, one per line ([see below](#what-is-sent)). |
 | **Options** | **Send only what Git tracks or would track (.gitignore)**, **Remove files deleted from the project**, and **Upload on save**. The first two are on for a new deployment. |
 
+![The Deployments window with one deployment, staging: Host staging.example.com, port 22, User ada, Automatic authentication, Folder on host /srv/apps/shelf, an empty Leave out list and the Options checkboxes, with Deploy Now and Close buttons](/screenshots/docs/deployments.png "A deployment to a staging host, filled in.")
+
 Deployments belong to a project on this machine. In a remote project, or in the
 No Project window, the deployment commands say to open a local project's
 window.

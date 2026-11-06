@@ -26,6 +26,8 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Next / previous problem | `lsp.nextProblem`, `lsp.previousProblem` | `M-g M-n`, `M-g M-p` |
 | Show problem at caret | `lsp.problemAtCaret` | `C-c l e` |
 
+![Shelf.java with the caret on discountFor and the References tool window below: 2 references to discountFor in 2 files, one in Shelf.java at 48:41 with its line, and one in ShelfTest.java](/screenshots/docs/lsp-references.png "Find references in a Java project, grouped by file.")
+
 The goto, references and hover commands are also in the editor right-click menu
 while a server is active, under a single **LSP** submenu, and you can
 **Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**
@@ -121,6 +123,8 @@ man page bash-language-server shows for a command like `ls`, scrolls inside a
 popup no taller than part of the window. **Page Down** and **Page Up** scroll it
 from the keyboard (and `C-v` / `M-v` in the Emacs keymap); Escape closes it. A
 man page gets its full 80 columns.
+
+![A hover popup over discountFor in Shelf.java showing the signature Discount com.example.shelf.Pricing.discountFor(Item item), its Javadoc and its parameter](/screenshots/docs/lsp-hover.png "Hover docs: the signature and Javadoc at the caret.")
 
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
