@@ -263,9 +263,9 @@ the folder it runs in when that is not the active file's.
 The **Run ▸ Build** submenu holds *Show Actions*, *Run Custom Goal(s)…*,
 *Rerun Last*, *Stop* and *Refresh pom.xml*, then the Maven and Output tool
 windows, so the stripe icon and the palette are no longer the only ways in.
-The IntelliJ keymap binds **Rerun Last** to `Ctrl+Shift+F10` (`⌃⇧R` on macOS)
-and the Output window to `Alt+Shift+B` (`⌥⇧B`), as IntelliJ IDEA does; the
-other keymaps bind nothing by default, and any `maven.*` command can be bound
+**Rerun Last** has no default key in any keymap. The IntelliJ keymap binds the
+Output window to `Alt+Shift+B` (`⌥⇧B`), as IntelliJ IDEA does; the other
+keymaps bind nothing by default, and any `maven.*` command can be bound
 in [Keymaps](/docs/keymaps).
 
 ### The Output console

@@ -79,7 +79,7 @@ Notes are **on by default**; toggle them in **Settings → Workspace → Feature
 | Resolve / reopen the note | `notes.toggleResolved` | (palette) |
 | Next / previous | `notes.next` / `previous` | (palette) |
 | Jump (cross-file) | `notes.jump` | `M-g n` |
-| Full-text search | `notes.search` | `M-g s` |
+| Full-text search | `notes.search` | (palette) |
 | Delete note on the line | `notes.delete` | (palette) |
 | Export notes to JSON | `notes.export` | (palette) |
 

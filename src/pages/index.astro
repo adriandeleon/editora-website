@@ -6,7 +6,6 @@ import { getCollection } from "astro:content";
 import { groupedFeatures, groupId } from "../lib/features";
 import { version, repo, lspServerCount, docsBase } from "../lib/editora";
 import { whatsNew } from "../lib/whatsnew";
-import { commandGroups } from "../lib/commands";
 import PaletteDemo from "../components/PaletteDemo.astro";
 import PageToc from "../components/PageToc.astro";
 import SpeedChart from "../components/SpeedChart.astro";
@@ -24,10 +23,6 @@ import { tourShots, gallerySections } from "../lib/screenshots";
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 const logo = url("editora-icon.svg");
-
-// Total registered commands — shown in the hero so the number stays accurate
-// as commands.ts is regenerated.
-const commandCount = commandGroups.reduce((n, g) => n + g.commands.length, 0);
 
 // The "see-it" section plays a real screen capture when one is present (drop
 // screenshots/hero-demo.mp4|webm into public/). Without one it shows the editor
@@ -116,21 +111,25 @@ const platforms = [
   <section id="top" class="hero">
     <div class="hero-inner">
       <img class="hero-logo" src={logo} alt="Editora logo" width="96" height="96" />
-      <h2 class="hero-name">Editora</h2>
+      <p class="hero-name">Editora</p>
       <h1 class="hero-title">IDE power at text-editor speed</h1>
       <p class="tagline">
         A keyboard-driven editor where every action is a command, a keystroke
-        or a fuzzy <kbd>M-x</kbd> search away. Pick your keymap (Emacs,
-        VS&nbsp;Code, Sublime, IntelliJ, CUA) or bind your own. Fast,
-        cross-platform, and quiet: no accounts, no telemetry.
+        or a fuzzy command-palette search away. Pick your keymap (Emacs,
+        VS&nbsp;Code, Sublime, IntelliJ, CUA) or bind your own. Fast and
+        quiet: no accounts, no telemetry.
       </p>
       <div class="cta">
-        <a class="btn btn-primary" href="#download">Download</a>
+        <a id="dl-hero" class="btn btn-primary" href="#download">Download</a>
         <a class="btn btn-ghost" href="#see-it">See the editor</a>
       </div>
+      <p class="hero-free">
+        Free and open source for macOS, Windows and Linux.
+        <a href="#download">Other platforms and packages</a>
+      </p>
 
       <div class="badges">
-        <a id="badge-stars" class="badge" href={`${repo}/stargazers`} hidden>
+        <a id="badge-stars" class="badge" href={repo} hidden>
           <span class="badge-icon">★</span>
           <span id="badge-stars-count">—</span>
         </a>
@@ -390,7 +389,8 @@ const platforms = [
       <h2>Download</h2>
       <p class="section-lead">
         Native installers for macOS, Windows, and Linux are attached to each
-        release, along with self-contained runnable jars for Windows and Linux.
+        release, along with runnable jars for Windows and Linux (they need
+        JDK&nbsp;25).
       </p>
       <div class="platforms">
         {
@@ -429,11 +429,11 @@ const platforms = [
       </div>
       <p id="dl-sub" class="note">
         Native installer (bundles a Java runtime, nothing else to install), or a
-        self-contained <code>java -jar</code> on JDK&nbsp;25.
+        runnable jar for <code>java -jar</code> on JDK&nbsp;25.
       </p>
       <p class="note">
-        The macOS app is signed and notarized by Apple, and the Linux downloads
-        come with OpenPGP signatures
+        The macOS app is signed and notarized by Apple, and the Linux packages
+        (.deb, .rpm, AppImage, tar.gz) come with OpenPGP signatures
         (<a href={`${docsBase}/getting-started/#checking-a-download`}>checking a download</a>).
         The Windows installer is unsigned: if SmartScreen appears, choose
         <em>More info → Run anyway</em>.
@@ -492,7 +492,18 @@ const platforms = [
           os = "Windows";
           exts = [".msi", ".exe"];
         }
-        btn.textContent = "Download for " + os;
+        // The hero button mirrors this one, so a newcomer gets the right
+        // installer from the first screen instead of scrolling to #download.
+        var hero = document.getElementById("dl-hero");
+        function setLabel(text, href) {
+          btn.textContent = text;
+          if (href) btn.href = href;
+          if (hero) {
+            hero.textContent = text;
+            if (href) hero.href = href;
+          }
+        }
+        setLabel("Download for " + os);
 
         // Detect CPU arch. Browsers report "MacIntel"/"Intel" even on Apple
         // Silicon, so beyond the UA/platform string (which catches Linux/Windows
@@ -559,10 +570,10 @@ const platforms = [
                 }
               }
               if (pick) {
-                btn.href = pick.browser_download_url;
-                var sub = document.getElementById("dl-sub");
-                if (sub && rel.tag_name)
-                  btn.textContent = "Download for " + os + " (" + rel.tag_name + ")";
+                setLabel(
+                  "Download for " + os + (rel.tag_name ? " (" + rel.tag_name + ")" : ""),
+                  pick.browser_download_url
+                );
               }
               buildMenu(rel);
             })
@@ -703,13 +714,19 @@ const platforms = [
         .catch(function () {});
 
       // --- CI status (latest run on default branch) ---
-      fetch(api + "/actions/workflows/ci.yml/runs?per_page=1")
+      // Finished runs on master only: a PR branch's run (or one still going)
+      // says nothing about the code people download. Cancelled and skipped
+      // runs (superseded pushes) are passed over for the last real result.
+      fetch(api + "/actions/workflows/ci.yml/runs?branch=master&status=completed&per_page=10")
         .then(function (r) {
           return r.ok ? r.json() : null;
         })
         .then(function (d) {
-          if (!d || !d.workflow_runs || !d.workflow_runs.length) return;
-          var run = d.workflow_runs[0];
+          if (!d || !d.workflow_runs) return;
+          var run = d.workflow_runs.filter(function (r) {
+            return r.conclusion === "success" || r.conclusion === "failure";
+          })[0];
+          if (!run) return;
           var ok = run.conclusion === "success";
           var el = document.getElementById("badge-ci");
           document.getElementById("badge-ci-text").textContent = ok
@@ -925,6 +942,12 @@ const platforms = [
     line-height: 1.1;
     margin: 0 0 1rem;
     letter-spacing: -0.02em;
+  }
+
+  .hero-free {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 1rem 0 0;
   }
 
   .tagline {

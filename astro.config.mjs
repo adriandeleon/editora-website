@@ -69,6 +69,22 @@ function rehypeVersionDocs() {
   };
 }
 
+// A Markdown table scrolls inside its own box on a narrow screen instead of
+// widening the page (a docs page must never scroll sideways on a phone).
+function rehypeTableWrap() {
+  return (tree) => {
+    const wrap = (node) => {
+      if (!node.children) return;
+      node.children = node.children.map((c) =>
+        c.type === "element" && c.tagName === "table"
+          ? { type: "element", tagName: "div", properties: { className: ["table-wrap"] }, children: [c] }
+          : (wrap(c), c),
+      );
+    };
+    wrap(tree);
+  };
+}
+
 export default defineConfig({
   site: "https://editora-project.dev",
   // pagefind() runs the Pagefind indexer inside `astro build` (so it works no
@@ -83,7 +99,7 @@ export default defineConfig({
     },
   },
   markdown: {
-    rehypePlugins: [rehypeVersionDocs, rehypeDocFigures],
+    rehypePlugins: [rehypeVersionDocs, rehypeDocFigures, rehypeTableWrap],
   },
   // Bare /docs lands on the current version, and so does /docs/<slug> for
   // every current doc page: a stable link (the Editora README, a blog post)

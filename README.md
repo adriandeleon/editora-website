@@ -16,14 +16,19 @@ npm install
 npm run dev       # http://localhost:4321
 npm run build     # production build to dist/
 npm run preview   # serve the build
+npm run check:docs   # command ids and Emacs chords quoted in the docs
+npm run check:links  # internal links and anchors in dist/ (after a build)
 ```
+
+Every pull request runs `.github/workflows/check.yml`: the feature pages must
+match `scripts/GenFeatures.java`, then `check:docs`, the build, and
+`check:links`.
 
 ## Content
 
 Most content is Markdown under `src/content/`:
 
 - `docs/` — documentation pages (sidebar grouped by `category` + `order`)
-- `blog/` — blog posts
 - `news/` — release-style announcements
 - `features/` — one page per feature (also drives the home-page grid)
 
@@ -70,7 +75,7 @@ version, and so does the unversioned slug of every current docs page:
 `/docs/<slug>` (e.g. `/docs/editing`) redirects to `/docs/v-<version>/<slug>`
 (`/docs/introduction` to the version's landing page, `/docs/v-<version>/`).
 Those are the stable links for places outside the site — the Editora README,
-blog posts — that should always reach the newest text. The redirect list is
+news posts — that should always reach the newest text. The redirect list is
 generated in `astro.config.mjs` from the files in `src/content/docs/`, so a new
 page gets one automatically and a removed page's stops. Only the versioned URLs
 are real pages, and each app version pins its own `/docs/v-<appVersion>/…`

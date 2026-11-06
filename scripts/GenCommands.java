@@ -129,14 +129,16 @@ String jsonUnescape(String s) {
 }
 
 // command id -> first chord this keymap binds to it (file order, first wins).
+// A chord listed twice in one file is bound to its LAST command, as the app's
+// JSON parser keeps the last duplicate key; the earlier entry binds nothing.
 Map<String, String> firstChordPerCommand(String json) {
-    Map<String, String> out = new LinkedHashMap<>();
+    Map<String, String> commandByChord = new LinkedHashMap<>();
     Matcher m = JSON_PAIR.matcher(json);
     while (m.find()) {
-        String chord = jsonUnescape(m.group(1));
-        String cmd = jsonUnescape(m.group(2));
-        out.putIfAbsent(cmd, chord);
+        commandByChord.put(jsonUnescape(m.group(1)), jsonUnescape(m.group(2)));
     }
+    Map<String, String> out = new LinkedHashMap<>();
+    commandByChord.forEach((chord, cmd) -> out.putIfAbsent(cmd, chord));
     return out;
 }
 

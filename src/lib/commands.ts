@@ -821,7 +821,7 @@ export const commandGroups: CmdGroup[] = [
       { title: "Jump to Note…", id: "notes.jump", keys: "M-g n", bindings: { "emacs": "M-g n" }, desc: "Jump to a personal note across files." },
       { title: "Next Note", id: "notes.next", desc: "Move the caret to the next personal note." },
       { title: "Previous Note", id: "notes.previous", desc: "Move the caret to the previous personal note." },
-      { title: "Search Notes", id: "notes.search", keys: "M-g s", bindings: { "emacs": "M-g s" }, desc: "Search note bodies, tags, and files." },
+      { title: "Search Notes", id: "notes.search", desc: "Search note bodies, tags, and files." },
       { title: "Toggle Note Resolved", id: "notes.toggleResolved", desc: "Resolve or reopen the personal note at the caret." },
     ],
   },

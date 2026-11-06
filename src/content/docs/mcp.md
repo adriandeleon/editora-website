@@ -65,9 +65,12 @@ agent like any other open buffer, with one exception: `edit_buffer` and
 run commands, so they are not written on an agent's behalf. The
 [AI Agent](/docs/ai#ai-agent) has the same limit.
 
-### Plugins
+### Plugins and trust
 
-Turning plugins on and installing them are your decisions, never an agent's.
+Turning plugins on and installing them are your decisions, never an agent's,
+and so is trusting a folder. `execute_command` refuses every command whose id
+mentions trust (such as `workspace.trustFolder` and
+`lsp.trustProjectSettings`) and leaves them out of `list_commands`.
 `execute_command` refuses **View: Toggle Plugins** (`view.togglePlugins`) and
 every **Plugins:** command: browsing and installing (`plugins.browse`,
 `plugins.installFromDisk`), the signed-registry requirement
@@ -109,8 +112,10 @@ token, stays off until you enable it, and shows a security notice first.
 `open_file` is confined to the window's project and the write tools refuse the
 config folder and version-control metadata (see
 [Which files an agent can reach](#which-files-an-agent-can-reach)). Even so,
-`execute_command` can run almost any command (not the plugin ones; see
-[Plugins](#plugins)), so only connect agents you trust. Simple
+`execute_command` can run almost any command (not the plugin or trust ones;
+see [Plugins and trust](#plugins-and-trust)), so only connect agents you trust.
+No MCP tool can read the text of an open
+[encrypted file](/docs/encrypted-files#what-editora-keeps-out-of-an-encrypted-file). Simple
 UI mode turns it off.
 
 `mcp-endpoint.json` holds the endpoint URL **and the bearer token**. Where the

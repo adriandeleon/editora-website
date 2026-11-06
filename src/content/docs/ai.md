@@ -185,6 +185,10 @@ the active file's path, the cursor line, and the first 200 characters of any
 selection. Anything else the agent reads, it requests itself, within the limits
 listed under [AI Agent](#ai-agent).
 
+The text of an open [encrypted file](/docs/encrypted-files#what-editora-keeps-out-of-an-encrypted-file)
+is never sent: AI actions refuse it, and the agent's editor context leaves its
+selection out.
+
 ## Related
 
 For letting an external agent drive Editora (rather than Editora calling a

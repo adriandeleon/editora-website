@@ -358,12 +358,12 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Find references**: `M-?`, listed in a browsable **References** tool window that shows each line with the editor's syntax highlighting
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
-- **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings. Python gets Editora's own fixes, which Pyright does not give: **Import** for a missing name, **Remove unused import**, and **Ignore on this line** (`# pyright: ignore[rule]`)
+- **Code actions and quick fixes**: `Ctrl+.` (`Cmd+.` on macOS) in the CUA, VS Code, Sublime and IntelliJ keymaps (also `Alt+Enter` in IntelliJ), `C-c l a` in Emacs, opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings. Python gets Editora's own fixes, which Pyright does not give: **Import** for a missing name, **Remove unused import**, and **Ignore on this line** (`# pyright: ignore[rule]`)
 - **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, getters and setters, delegate methods, and override/implement methods, each with a checkbox picker
 - **Java refactorings that ask where to, or what**: Move, Extract Interface, and Change Signature, where the signature is edited as one line
 - **Code lenses**: reference and implementation counts after a declaration; click one to open what it counts, a references lens always in the **References** tool window (off by default)
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
-- **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
+- **Rename symbol**: `F2` in the CUA, VS Code and Sublime keymaps, `Shift+F6` in IntelliJ, `C-c l r` in Emacs, across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
 - **Library sources**: a Maven library class opens with its real source when a repository has it; one that has none is shown decompiled, with **Download Sources** and **Choose Sources…** in its tab
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
@@ -682,7 +682,7 @@ A local folder is listed whole, up to 50,000 entries, so a folder of thousands o
 
 ## Cards for a glance
 
-Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way the map flows, past its row's column, and never pans the map or covers the folders that lead to the file. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
+Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way a new column does, past its row's column the way the map flows, and the map pans to centre it with its row still in sight. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
 
 ![A read-only preview card for Shelf.java on the Project Map, opened past the file's column and joined to its row by a connector, showing syntax-highlighted Java, with the file's last change and the card's buttons in its header](/screenshots/docs/project-map-card.png "A preview card opens past the file's column, joined to its row.")
 
@@ -976,11 +976,11 @@ Drop a stylesheet into `themes/` in your config directory for a full app theme, 
 """),
     new Feature("plugins", CE, 2, false,
         "Plugins",
-        "Extend the editor with commands, tool windows, and integrations. Install from a built-in registry of 19 plugins, or write your own (Java or a simple manifest).",
+        "Extend the editor with commands, tool windows, and integrations. Install from the built-in signed registry, or write your own (Java or a simple manifest).",
         """
 Extend Editora without forking it. A plugin adds commands, keybindings, tool windows, editor-menu items, and status-bar segments, written in Java against a small exported API, or declared in a simple `plugin.json` manifest (with snippets and templates folders).
 
-Install from the built-in **registry** of 19 plugins (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
+Install from the built-in **registry** (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
 
 Off by default. Plugins aren't sandboxed, so only install ones you trust, and Editora asks first: the consent dialog lists a plugin's code, its external commands and the chords it replaces, an install or update is staged and put in place only once you agree, and a plugin whose code, commands or chords differ from what you agreed to waits until you agree again. A plugin's commands stay in its own namespace, so it cannot replace a built-in one. Start with `--disable-plugins` to run a session without any, and the [Doctor](/features/doctor) lists any plugin that failed to load or start, or started slowly.
 """),

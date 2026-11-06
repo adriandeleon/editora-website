@@ -151,7 +151,7 @@ change the same setting or entry, the one saved last wins.
 | `dictionary.txt` | Your added spell-check words |
 | `macros.json` | Saved keyboard macros (format version 2; an older file is converted when it is read, and its key bindings are kept) |
 | `abbreviations.json` | Your abbreviations |
-| `trusted-folders.json` | Folders you have trusted to run their build wrappers |
+| `trusted-folders.json` | Folders you have trusted: their builds, project settings, JavaScript tools and HTTP scripts may run ([what trust allows](/docs/workspace#trusted-folders)) |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
 | `history/` | [Local History](/docs/workspace#local-file-history) |
 | `http-history/` | The [HTTP client](/docs/http-client)'s last responses and chosen environment for each `.http` file |

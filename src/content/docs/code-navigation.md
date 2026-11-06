@@ -90,7 +90,7 @@ The index is a **fallback** for when no language server is running. Where a
 [language server](/docs/lsp) is running it is better at this in every respect,
 so use **LSP: Go to Symbol in Workspace** (`lsp.gotoSymbol`) there.
 
-Turn it off in **Settings → Editor → Display** ("Project symbol index"), or with
+Turn it off in **Settings → Editor → Editing** ("Project symbol index"), or with
 `view.toggleSymbolIndex`. Disabling it releases the project's symbols.
 
 ## Go to Definition without a language server
@@ -239,8 +239,9 @@ Three things work together here, and each is documented where it lives:
 - [**Bookmarks**](/docs/bookmarks-notes) mark places you want to return to
   deliberately, and a **mnemonic** turns one into a single chord.
 
-Bookmarks have default chords, and every keymap binds Back and Forward. Go to
-Symbol in Project, Peek Definition and Related File are bound in the
-[IntelliJ keymap](/docs/keymaps#java-chords), and Related File also in Emacs
-(`C-c S-t`). Recent Locations and Go to Definition in Split have no default
-chord. Bind the ones you use from **Settings → Keymaps**.
+Every keymap binds Back and Forward; bookmarks have default chords in the
+Emacs keymap only. Peek Definition is bound in the
+[IntelliJ keymap](/docs/keymaps#java-chords) (`Ctrl+Shift+I`) and the VS Code
+keymap (`Alt+F12`), and Related File in IntelliJ (`Ctrl+Shift+T`) and Emacs
+(`C-c S-t`). Go to Symbol in Project, Recent Locations and Go to Definition in
+Split have no default chord. Bind the ones you use from **Settings → Keymaps**.
