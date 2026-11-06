@@ -204,8 +204,6 @@ would fix it.
 **Off until you turn them on** are the features that run code or reach the
 network. Enable the ones you want in Settings:
 
-- **[Language servers](/docs/lsp)** for definitions, references, and diagnostics.
-- **[Debugging](/docs/run-debug)**.
 - **[Plugins](/docs/plugins)**.
 - **[AI assistance](/docs/ai)** and the **[MCP server](/docs/mcp)**.
 - **[Settings sync](/docs/settings-sync)**, to share snippets, abbreviations,
@@ -213,11 +211,19 @@ network. Enable the ones you want in Settings:
 
 **On, but dormant until their tool is installed** is the larger group:
 **[Git](/docs/git)**, **[GitHub](/docs/github)**,
+**[language servers](/docs/lsp)**, **[debugging](/docs/run-debug)**,
 **[Mermaid](/docs/markdown#mermaid-diagrams)**,
 **[diagrams](/docs/diagrams)**, and **[Typst](/docs/typst)** are enabled by
 default, and their buttons and panels appear once Editora finds the command they
-need (`git`, `gh`, `mmdc`, and so on). Run *View: Doctor* to see what was found;
-see [Troubleshooting](/docs/troubleshooting#doctor).
+need (`git`, `gh`, a language server, a debug adapter, `mmdc`, and so on). A file
+whose language server is missing shows a banner that offers to install it. Run
+*View: Doctor* to see what was found; see
+[Troubleshooting](/docs/troubleshooting#doctor).
+
+In a folder you have not [trusted](/docs/workspace#trusted-folders), a language
+server that would have to run the project's build to load it waits: Java starts
+without its Maven or Gradle build, and the Kotlin, Scala, Rust, Ruby, C# and
+Clojure servers start once you click **Trust Folder**.
 
 Projects, the **[HTTP client](/docs/http-client)**,
 **[HTML preview](/docs/html#live-preview)**, and

@@ -206,8 +206,10 @@ filter, Show hidden and lock only while the pointer is over it, it holds the
 selection, or one of them is set.
 
 Hidden (dot) files follow **Settings → Workspace → Show hidden files in the
-project tree**. A column's **Show hidden** checkbox overrides the setting for
-that folder only.
+project tree**, which is on by default: `.github/`, `.editorconfig`,
+`.gitignore` and `.env` are project files. The repository's own `.git` is never
+listed, with the setting on or off. A column's **Show hidden** checkbox
+overrides the setting for that folder only.
 
 Preview and note cards sit on the map like columns: panning carries them along,
 zooming scales them with the columns around them, and you can drag a card past
@@ -649,8 +651,10 @@ file you rename or move inside Editora.
 **Print…** and **PDF…** in the options menu, or *Project Map: Print…*
 (`projectMap.print`) and *Project Map: Export to PDF…*
 (`projectMap.exportPdf`), output the **whole map**, not only the part on screen,
-with the current flow, filters, open branches and column positions. The output
-is light whatever the theme. A map that is wider than tall goes on a landscape
+with the current flow, filters, open branches and column positions. The columns
+are light whatever the theme. Open preview, note and Overview cards, what is
+stuck on them and their connectors are printed where they stand on the map,
+as they look on screen; the pages grow to take in a card beyond the columns. A map that is wider than tall goes on a landscape
 page. A map slightly too big for one page is shrunk a little, with labels no
 smaller than 6 pt; a larger one is split across several pages, and the status bar
 says how many. One print or PDF makes at most 40 pages: a bigger map is shrunk to
@@ -665,7 +669,7 @@ the Save dialog.
 - **PNG…** saves the map area exactly as you see it, at twice its size, with the cards and their
   connectors but not the zoom bar or the overview.
 - **SVG…** saves the whole map, laid out as Print and PDF lay it out, with every
-  name as text you can search and copy.
+  name as text you can search and copy. It leaves the open cards out.
 
 The Save dialog opens over the Map window in the project folder, and the status
 line says where the file went.
@@ -1234,6 +1238,7 @@ each waits until you trust the folder. Trust is one list, shared by all of them:
 | --- | --- |
 | A [Maven or Gradle build](#builds) run (wrapper or not), including the build before Run and Debug | The first build asks; declining runs no build |
 | The project's [committed settings](#settings-a-project-can-commit) (`.editora/settings.json`) apply, including language-server commands, build commands and debugger paths | Your own settings apply |
+| Language servers [load the project's build](/docs/lsp#servers-that-load-a-projects-build) (Java, Kotlin, Scala, Rust, Ruby, C#, Clojure) | Java starts without its Maven or Gradle build; the others wait |
 | The [Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server) resolve parents, plugins and repositories | The pom is edited with the plain XML server |
 | The XML server download the schemas a file names (with *Download schemas* at *Only in trusted folders*) | No schemas are fetched |
 | [ESLint](/docs/lsp#eslint) load the project's configuration and plugins, and Prettier or Biome format | ESLint says once that it is not running; the *Auto* formatter uses the TypeScript server, and an explicit Prettier or Biome choice says it needs trust |
@@ -1274,17 +1279,22 @@ either: each offers **Trust Folder** where it applies.
 
 ### Language servers and schemas
 
-The same trust covers two language-server features. The
+The same trust covers language servers that run a project's build to load it:
+in an untrusted folder, Java's jdtls starts without its Maven or Gradle build,
+and the Kotlin, Scala, Rust, Ruby, C# and Clojure servers wait. See
+[Servers that load a project's build](/docs/lsp#servers-that-load-a-projects-build).
+
+It also covers two XML features. The
 [Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server) resolves the
 parents, plugins and repositories a pom names and can run their code, so a
 `pom.xml` in an untrusted folder is edited with the plain XML server until you
 trust it. With [Download schemas](/docs/lsp#xml-settings) left at *Only in
 trusted folders*, the XML server fetches the schemas a file names only in a
-trusted folder. In both cases the file offers **Trust Folder**, and
+trusted folder. In each of these cases the file offers **Trust Folder**, and
 **Workspace: Trust This Folder** in the palette trusts the active file's folder:
 the open project when the file is in it, else a pom's own Maven project. It
 asks first, with Cancel as the default, and covers builds too. Revoking the
-folder turns both off again.
+folder turns them off again.
 
 Review or revoke trust in **Settings → Advanced → Trusted folders**, with the
 **Revoke** button in the Maven or Gradle window's header (which shows

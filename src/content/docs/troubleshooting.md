@@ -249,6 +249,16 @@ server answered with no edits, or with edits that change nothing together
 server did not answer in time*, *Format failed: the language server stopped
 before it answered*, or *Format failed:* with the server's own error.
 
+## Java shows errors on every import, or a server never starts
+
+In a folder you have not [trusted](/docs/workspace#trusted-folders), language
+servers that would run the project's build to load it are held back. Java's
+jdtls starts without the Maven or Gradle build, so the project's dependencies
+and other modules don't resolve; the Kotlin, Scala, Rust, Ruby, C# and Clojure
+servers don't start at all. The file says so, with **Trust Folder**. Trusting
+the folder restarts the server with the build. See
+[Servers that load a project's build](/docs/lsp#servers-that-load-a-projects-build).
+
 ## JavaScript in an HTML page completes nothing
 
 If completion after `document.` in a `<script>` offers nothing and there is no

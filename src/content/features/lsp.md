@@ -41,4 +41,4 @@ Document sync is incremental, semantic highlighting transfers only what changed 
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
-Off by default. Enable it under Settings → LSP; the first Python file you open offers to turn it on.
+On by default: each server starts once it is installed. In a folder you have not trusted, a server that would run the project's build to load it waits (Kotlin, Scala, Rust, Ruby, C#, Clojure), and Java starts without its Maven or Gradle build; the file offers **Trust Folder**. The master switch is in Settings → LSP.
