@@ -6,7 +6,7 @@ beta: false
 summary: "Save how a Java main class, Python, Node.js, shell, Groovy, Clojure or Scala script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file."
 ---
 
-A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands), an optional JDK override, a shell or Python script's interpreter, and a working directory (relative to the project root; a Python script runs in its own folder when it is blank). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
+A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands, and `@.env` loads a `.env` file), an optional JDK override, a shell or Python script's interpreter, and a working directory (relative to the project root; a Python script runs in its own folder when it is blank). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
 
 ## Six kinds
 

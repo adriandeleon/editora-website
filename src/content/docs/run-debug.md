@@ -553,6 +553,27 @@ the program would get anyway, so `PATH=/opt/tools/bin:$PATH` adds a folder to
 the real `PATH`. Single quotes keep `$` as it is. In a remote project, a
 variable that is not set earlier in the field is passed to the host as written.
 
+An entry `@path`, with no `=`, loads a **`.env` file**, as VS Code's `envFile`
+does: `@.env`, or `"@config/dev env/.env"` in quotes when the path has spaces.
+A relative path is relative to the configuration's working directory. The file
+holds one `NAME=value` per line, read the way dotenv tools read it:
+
+- blank lines and lines starting with `#` are skipped, and an `export` before
+  the name is dropped;
+- a value in single quotes is taken as written;
+- a value in double quotes expands `$NAME` and `${NAME}`, and reads `\n`, `\t`,
+  `\"` and `\\` as escapes;
+- an unquoted value ends at a ` #` comment, is trimmed, and expands `$NAME` and
+  `${NAME}`.
+
+A name expands to a variable set earlier in the file or the field, else to the
+environment the program would get anyway. The file's variables are set where
+the entry stands, so a later `NAME=value` overrides one of them and can use it
+as `$NAME`: `@.env DEBUG=1` keeps the file's values but turns `DEBUG` on. When
+the file cannot be read, Run and Debug stop before launching, and the status
+bar names the configuration and the file, such as *Run configuration "API":
+cannot read the environment file /home/me/api/.env*.
+
 A relative **Working directory** is relative to the project root, and a blank
 one means the project root, except for a Python script: that runs in the
 script's own folder, as its gutter ▶ does. A relative script path is relative
@@ -770,6 +791,7 @@ script as it runs.
 | Step into | `debug.stepInto` | `C-c C-d i` |
 | Step out | `debug.stepOut` | `C-c C-d o` |
 | Run to cursor | `debug.runToCursor` | `C-c C-d u` |
+| Run to cursor past every breakpoint | `debug.forceRunToCursor` | `C-c C-d S-u` |
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
 | Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
 | Toggle temporary breakpoint | `debug.toggleTemporaryBreakpoint` | `C-c C-d 1` |
@@ -779,19 +801,30 @@ script as it runs.
 | Debug a saved run configuration | `debug.config` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
+| Attach again to the last address | `debug.reattach` | `C-c C-d S-a` |
+| Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and every debugger action is in the **Run** menu.
-Its top level has Start / Continue, Debug Main Class, Attach, Stop, Restart and
-Toggle Breakpoint. Stepping, evaluate, watches, breakpoints and exception
-breakpoints are in its **Debugger** submenu (**Run ▸ Debugger**).
+Its top level has Start / Continue, Debug Main Class, Attach, Reattach, Stop,
+Restart and Toggle Breakpoint. Stepping, evaluate, watches, hexadecimal values,
+breakpoints and exception breakpoints are in its **Debugger** submenu
+(**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
 and JavaScript debuggers cannot, and Jump to Line then says it is not supported.
+
+**Force Run to Cursor** runs to the caret line as Run to Cursor does, but no
+breakpoint or logpoint on the way stops it, in any file. Exception breakpoints
+still stop the program. The breakpoints are back at the next stop, wherever
+that is: the caret line, an exception, or Pause. Its keys are `C-c C-d S-u` in
+the Emacs keymap and Ctrl+Alt+F9 (⌥⌘F9 on macOS) in the IntelliJ IDEA keymap;
+it is also in **Run ▸ Debugger** and, while the program is paused, in the
+editor's right-click menu.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
 **set-value**, **watches**, and an evaluate console. While suspended, **inline
@@ -1057,10 +1090,18 @@ already being debugged and whether it is running, paused or still starting. Esc
 on the main-class chooser cancels the launch.
 
 **Debug: Attach to Running Program…** (`debug.attach`) on a Java file attaches
-to a JVM listening for a debugger. It asks for the `host:port`, and offers the
-address you used last in the window (at first `localhost:5005`). When nothing
-listens there, the Debug console shows the `-agentlib:jdwp` option that starts a
-JVM listening on that address.
+to a JVM listening for a debugger. The first time in a project, it asks for the
+`host:port`, offering `localhost:5005`. After that it lists the addresses this
+project attached to, at most eight and the most recent first, with **Another
+address…** last, which asks for one, offering the most recent. The list is kept
+with the project, so it is there after a restart. When nothing listens at the
+address, the Debug console shows the `-agentlib:jdwp` option that starts a JVM
+listening on it.
+
+**Debug: Reattach** (`debug.reattach`, `C-c C-d S-a`) attaches again to the
+address this project attached to last, without asking. Before the first attach,
+the status bar says to use Attach to Running Program. Reattach is in the
+**Run** menu, under Attach.
 
 When Java debugging can't start, the status bar names the missing
 piece: LSP is off, the Java language server is turned off, or jdtls or
@@ -1210,7 +1251,9 @@ Node.js v24.18.1)*.
 (`debug.attach`) on a JavaScript or TypeScript file. It asks for the
 inspector's `host:port`, such as `localhost:9229`. Once attached, the console
 names the address, such as *Attached to 127.0.0.1:9229.* A program started with `--inspect-brk` waits
-before its first line; attaching does not start it, so press Continue.
+before its first line; attaching does not start it, so press Continue. The
+list of earlier addresses is for a JVM only: on a JavaScript or TypeScript
+file, Attach and **Debug: Reattach** both ask for the inspector's address.
 
 vscode-js-debug itself needs Node.js 18 or newer to run. An older Node.js
 chosen for a project still runs the program, while vscode-js-debug runs on the
@@ -1232,8 +1275,8 @@ count stops on that hit in Java too: `3` stops the third time the line runs.
 Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
 **Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
 right-click menu has Toggle Breakpoint, Edit Breakpoint and Toggle Temporary
-Breakpoint, and while the program is paused also Run to Cursor, Show Value at
-Caret and Add to Watches.
+Breakpoint, and while the program is paused also Run to Cursor,
+[Force Run to Cursor](#debugging), Show Value at Caret and Add to Watches.
 
 A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
@@ -1336,8 +1379,9 @@ or setting a value, keeps the highlights of the current stop.
 
 In the Variables tree, the right-click menu has **Copy Value** (a string is
 copied without its quotes and escapes), **Copy Name**, **Add to Watches**,
-which adds the row's whole expression, such as `order.items`, and **Set
-Value…**. Ctrl+C (⌘C on
+which adds the row's whole expression, such as `order.items`, **Set Value…**,
+[Go to Index…](#long-lists-and-arrays) on a long list or array, and **Show
+Numbers as Hexadecimal**. Ctrl+C (⌘C on
 macOS) copies the selected value, and Delete removes the selected watch. In
 the evaluate field, Up and Down bring back the expressions you typed before.
 An expression that throws says what it threw, such as *The expression threw
@@ -1401,6 +1445,38 @@ Thread "main"
 ```
 
 A frame without a source file is copied with its name only.
+
+### Filtering Variables
+
+The **Filter** field beside the Variables heading narrows each scope to the
+variables whose name contains what you type, ignoring case: `id` keeps `id`,
+`userId` and `ID_PREFIX`. Rows that arrive later, such as the next page of a
+scope, are filtered as they come. Watches are never filtered. In the field, Esc
+clears it and Down moves into the Variables tree.
+
+### Long lists and arrays
+
+A list or array opens 100 elements at a time in Variables and Watches; the last
+row reads *Show N more… (M remaining)*. Once a list or array with more than
+100 elements is open, its right-click menu has **Go to Index…**, which asks for
+an index from 0 to the last one and shows the elements from there, still 100 at
+a time. The index can be written `250`, `[250]`, `1_000` or `1,000`. Go to
+Index 0 goes back to the start. While you look at a part of a list this way,
+its other children, such as a Java list's fields, are left out.
+
+### Hexadecimal values
+
+**Debug: Show Numbers as Hexadecimal** (`debug.toggleHex`), also in
+**Run ▸ Debugger** and as a check item in the Variables tree's right-click
+menu, shows
+integer values in hexadecimal in Variables, watches, the hover popup and inline
+values, so `255` reads `0xff`. Run it again to go back to decimal. The values
+are fetched again at once, and the switch holds for later sessions until you
+turn it off or quit Editora. Switching does not mark every number as
+[changed](#inspecting-values).
+
+The debugger formats the numbers: the Java and Python debuggers do,
+JavaScript's does not, so a JavaScript program's numbers stay decimal.
 
 ### Keys in the Debug window
 
