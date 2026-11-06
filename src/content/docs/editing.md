@@ -13,6 +13,8 @@ the rest is a command away. See the full list on the [Commands](/commands) page.
 
 Edit many places at once, VS Code style.
 
+![Shelf.java with every occurrence of Item selected at once: each occurrence highlighted with its own caret, down the sample list and in the methods below](/screenshots/docs/multiple-cursors.png "Select all occurrences turns every Item in the file into a cursor.")
+
 - **Add a caret at the next occurrence** of the selection
   (`edit.addCaretNextOccurrence`: `Ctrl+D` in the VS Code and Sublime keymaps,
   `Alt+J` in IntelliJ), or **above** / **below** the current line
@@ -590,6 +592,8 @@ are the exception: they open in their own page and image viewers. Binaries
 are detected by content, and large files show their first slice with a
 truncation note. *View: Open as Hex* (`view.openAsHex`) force-opens any file's
 bytes as hex, and *View: Open as Text* switches back.
+
+![sample.bin open read-only in the hex viewer: an offset column, sixteen bytes per row in hex, and the printable characters on the right](/screenshots/docs/hex-viewer.png "A binary file opens as an offset, hex and ASCII dump.")
 
 ## Read-only and View mode
 

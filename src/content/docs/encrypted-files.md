@@ -121,6 +121,8 @@ search by name, email or key ID, move with ↑ and ↓, select with Space, accep
 with Enter, and cancel with Esc. You can choose several people at once; each
 can open the file with their own secret key.
 
+![The Encrypt README.md picker in Public keys mode: Ada Lovelace and Sam Rivera ticked and shown as chips, Release Team unticked, a signing-only key greyed at the bottom, a Format menu and an Encrypt for 2 People button](/screenshots/docs/encrypt-recipients.png "The recipient picker with two people chosen; a key that can only sign is listed last.")
+
 - **Your own key is included by default**, so you can open the file again.
   Turn this off in [Settings ▸ Encryption](#settings) (**Always include my
   key**). If you leave your key out, the picker warns *You won't be able to

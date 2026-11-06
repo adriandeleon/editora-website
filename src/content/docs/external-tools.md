@@ -19,6 +19,8 @@ first, with Cancel as the default, and drops the tool's key binding. Renaming a
 tool keeps its key binding. A name that would give the same command as another
 tool's is refused.
 
+![Settings on the External Tools page with one tool, Prettier: Command npx, Arguments prettier --write $FilePath$, a blank working directory, Standard input None, Output Show in console and Enabled on, with the list of macros below](/screenshots/docs/settings-external-tools.png "A tool that runs Prettier on the current file.")
+
 ## Macros
 
 A tool's command and arguments expand `$Name$` macros from the active file:

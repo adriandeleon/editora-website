@@ -30,6 +30,8 @@ number), `${1|a,b|}` choices, and [variables](#snippet-variables). Snippets ship
 for 32 languages, plus a global set that applies to every file. The TypeScript
 set also applies to JSX and TSX files.
 
+![The Insert Snippet picker over a Java file: each trigger (main, psvm, cmain, class, interface, record, enum, sealed, package, import, ctor, method) with its description and a preview of its body](/screenshots/docs/snippet-picker.png "Snippet: Insert… lists the snippets for the file's language, each with its trigger and a preview.")
+
 ### Expanding with Tab
 
 A trigger can be a word (`fori`), a token with punctuation (`#include`), or up to
@@ -278,6 +280,8 @@ or a whole set of files, from a reusable template. A picker chooses the
 template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
+
+![The New File From Template picker: Java Class, Java Compact Source, HTML Page, Markdown Document, Python Script, Node.js Script, Shell Script, Zsh Script, JUnit 5 Test and more, each marked Bundled with a description](/screenshots/docs/template-picker.png "New File From Template shows where each template comes from and what it makes.")
 
 Editora ships 37 templates:
 

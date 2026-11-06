@@ -32,6 +32,8 @@ the active file previews as, so there's nothing per-type to remember. A floating
   params, responses, and schemas. Toggle between the tree and the docs with
   `structured.toggleView`.
 
+![petstore.yaml in Split view: the YAML on the left and, on the right, API docs titled Pet Store 1.0.0 with its server and GET and POST endpoint cards listing parameters and responses](/screenshots/docs/openapi-preview.png "An OpenAPI spec previews as API docs beside its source.")
+
 ## Maven poms
 
 A `pom.xml` previews as a **summary** rather than as the generic XML tree, which
@@ -84,6 +86,8 @@ Poms also carry a [Maven submenu](/docs/build-tools#the-maven-submenu) on their
 right-click menu.
 
 ## Config files, decoded to plain English
+
+![deploy.crontab in Split view: each schedule decoded on the right, such as Every 15 minutes and At 02:30, Monday through Friday, with its next run times, and a bad line flagged with minute 99 out of range](/screenshots/docs/crontab-preview.png "A crontab decoded: each schedule in plain English with its next runs, and a malformed line flagged.")
 
 - **crontab** (`crontab`, `*.cron`, `cron.d/*`): each schedule in plain English
   (`30 2 * * 1-5` becomes "At 02:30, Monday through Friday"), the next fire times,

@@ -23,6 +23,8 @@ comes in two parts: quick one-shot actions, and a full embedded agent.
 4. Inline completion has its own switch under AI Actions
    (`view.toggleAiCompletion`) and stays off until you turn it on.
 
+![Settings on the AI page: the Enable AI master switch turned on, with its description, and the AI Agent and AI Actions pages listed under AI in the sidebar](/screenshots/docs/settings-ai.png "Settings → AI: the master switch for every AI feature.")
+
 ## AI actions
 
 These call the model directly (streamed), enabled under **Settings → AI

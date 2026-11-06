@@ -164,6 +164,8 @@ would run the command everywhere you type, so Editora refuses it and asks you to
 add Ctrl, Alt or another modifier. When a new chord collides with existing
 bindings, Editora lists them and asks before binding it.
 
+![Settings on the Keymaps page: the keymap menu set to Emacs, and below it a filterable list of every command with its chord or Unbound](/screenshots/docs/settings-keymaps.png "Settings → Keymaps: pick a keymap, then rebind any command in the list below.")
+
 The **Filter commands…** field matches every word you type, in any order, so
 `save file` finds **File: Save**. You can also type a chord in any notation:
 `Ctrl+S`, `C-s`, `⇧⌘S` or a sequence like `Ctrl+K Ctrl+W` lists the commands on

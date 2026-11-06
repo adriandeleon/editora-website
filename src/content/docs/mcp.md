@@ -100,6 +100,8 @@ Every tool validates its arguments before doing anything:
 3. The endpoint is also written to `mcp-endpoint.json` in your
    [config folder](/docs/configuration) for discovery.
 
+![Settings on the MCP Server page: the Enable MCP server switch on, and the Server row reading Running at an http://127.0.0.1 endpoint with Copy Endpoint Command and New Token buttons](/screenshots/docs/settings-mcp.png "Settings → MCP Server while the server runs, with the button that copies the connect command.")
+
 ## Security
 
 The server binds to loopback only (never the network), requires the bearer

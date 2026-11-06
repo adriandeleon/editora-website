@@ -183,6 +183,8 @@ running, its folding ranges are used (see
   [XML settings](/docs/lsp#xml-settings), 5,000 by default) caps how many are
   listed.
 
+![widget.html with the Structure tool window open and no language server: html, head, body, main.widget, h1, p#count.count and div.buttons, each with its line](/screenshots/docs/html-structure.png "Structure without the language server: elements labelled tag, then #id, then .class.")
+
 ## Spell checking
 
 In an HTML page the text visitors read is checked, and comments. Tags and

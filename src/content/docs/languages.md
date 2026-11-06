@@ -305,6 +305,8 @@ one to replace), **Add to Dictionary**, or **Ignore**. **Ignore** stops flagging
 the word in every open file until Editora is closed; **Add to Dictionary** keeps
 it for good.
 
+![A Java file whose comments and string contain misspelled words underlined in red, while identifiers and keywords are left alone](/screenshots/docs/spell-check.png "In code, spell checking reads comments and strings, not identifiers.")
+
 What is checked depends on the file type:
 
 - **Plain text and Markdown** are checked in full, apart from inline code and
