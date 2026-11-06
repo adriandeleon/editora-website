@@ -1,5 +1,8 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
 import { version } from "./src/lib/version.ts";
@@ -13,6 +16,28 @@ import rehypeDocFigures from "./src/lib/rehype-doc-figures.mjs";
 // /docs/... paths; this rewrites them to the versioned base at build time, so
 // content never hardcodes the version (bumping it just regenerates version.ts).
 const docsBase = `/docs/v-${version}`;
+
+// The slugs of the current docs, read from the same directory the `docs`
+// content collection globs (src/content/docs/**/*.md). The collection itself
+// is not importable here, so this mirrors its id derivation: the path relative
+// to that directory, extension dropped, forward slashes. Used to give every
+// current page a stable unversioned URL (see `redirects` below).
+const DOCS_DIR = fileURLToPath(new URL("./src/content/docs", import.meta.url));
+const docSlugs = readdirSync(DOCS_DIR, { recursive: true, withFileTypes: true })
+  .filter((d) => d.isFile() && d.name.endsWith(".md"))
+  .map((d) =>
+    join(d.parentPath, d.name)
+      .slice(DOCS_DIR.length + 1)
+      .replace(/\.md$/, "")
+      .split(/[\\/]/)
+      .join("/"),
+  )
+  .sort();
+
+// Where a current doc page lives. The introduction is the version's landing
+// page (src/pages/docs/[version]/index.astro); everything else is /<slug>.
+const currentDocPath = (slug) =>
+  slug === "introduction" ? docsBase : `${docsBase}/${slug}`;
 
 // An archived page under src/content/docs-archive/<version>/ resolves its links
 // against *its own* version. Otherwise a 0.9.10 page would link out into the
@@ -60,10 +85,14 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [rehypeVersionDocs, rehypeDocFigures],
   },
-  // Bare /docs lands on the current version; every served version's command
-  // index points at the searchable command list. Unversioned doc/command URLs
-  // are not served — each app version pins its own /docs/v-<version>/ links,
-  // and past versions stay served from their archived copy.
+  // Bare /docs lands on the current version, and so does /docs/<slug> for
+  // every current doc page: a stable link (the Editora README, a blog post)
+  // can point at /docs/cli and always reach the newest text. The versioned
+  // URLs are what is actually served — each app version pins its own
+  // /docs/v-<version>/ links, and past versions stay served from their
+  // archived copy — so these are redirects, not duplicate pages, and a slug
+  // that no longer exists simply stops redirecting. Every served version's
+  // command index points at the searchable command list.
   redirects: {
     // The blog was folded into News (2026-11-03). Old post URLs land on the
     // release's news post or the closest feature page, or on /news.
@@ -99,6 +128,7 @@ export default defineConfig({
     "/blog/the-black-window-bounding-gpu-textures": "/news",
     "/blog/why-your-app-cant-find-git": "/news",
     "/docs": docsBase,
+    ...Object.fromEntries(docSlugs.map((slug) => [`/docs/${slug}`, currentDocPath(slug)])),
     ...Object.fromEntries(
       docVersions.map((v) => [`${v.base}/commands`, "/commands"]),
     ),
