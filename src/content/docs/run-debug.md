@@ -753,8 +753,6 @@ file in the project serves, and it reports an error only when there isn't one.
 
 ## Debugging
 
-<span class="beta-pill">Beta</span>
-
 Editora debugs **Java**, **Python**, **JavaScript and TypeScript (Node.js)**,
 **Groovy**, **Kotlin**, **Clojure** and **Scala** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **off by default**; enable it in **Settings → Debugging**. Shell scripts

@@ -347,7 +347,7 @@ Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am
 
 Brackets inside strings and comments are skipped, as is the `)` that ends a shell `case` pattern, because a stray `{` in a string would otherwise shift the colour of every bracket below it. The depth pass runs as part of tokenizing, so it costs no extra repaint. On by default; Settings → Editor turns it off.
 """),
-    new Feature("lsp", CI, 2, true,
+    new Feature("lsp", CI, 2, false,
         "Language servers (LSP)",
         "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
         """
@@ -472,7 +472,7 @@ A configuration can name a command to run first, such as a build or a codegen st
 - The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python, Node.js, shell, Groovy and Clojure scripts can be picked with **Browse…**, a Java configuration's Main class **Browse…** takes a `.java` file and fills in its fully qualified class name, and an npm configuration's **Browse…** lists the `package.json` scripts.
 - Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
 """),
-    new Feature("debugging", RD, 3, true,
+    new Feature("debugging", RD, 3, false,
         "Debugging (DAP)",
         "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure and Scala: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console.",
         """
@@ -1035,7 +1035,7 @@ The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, t
 Some features work as soon as you open a folder, and some wait for you to switch them on:
 
 - **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [Local History](/features/local-file-history).
-- **Switched on in Settings (both Beta):** [language servers](/features/lsp) and [debugging](/features/debugging).
+- **Switched on in Settings:** [language servers](/features/lsp) and [debugging](/features/debugging).
 
 Every piece of the interface can be shown or hidden on its own from the View menu or Settings → Interface. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode) and [Expert mode](/features/expert-mode) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode) hides more and also switches the heavier features off.
 """),

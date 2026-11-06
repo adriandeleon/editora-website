@@ -2,7 +2,7 @@
 title: "Debugging (DAP)"
 group: "Run & debug"
 order: 3
-beta: true
+beta: false
 summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure and Scala: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
 ---
 

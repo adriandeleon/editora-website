@@ -2,7 +2,7 @@
 title: "Language servers (LSP)"
 group: "Code intelligence"
 order: 2
-beta: true
+beta: false
 summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
 ---
 
