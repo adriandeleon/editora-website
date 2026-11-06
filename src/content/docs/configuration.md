@@ -358,12 +358,18 @@ Debugging**:
 | `debugStepFilters` | Step Into skips JDK classes and synthetic methods | `true` |
 | `debugShowStatics` | Show static fields in Variables | `true` |
 | `debugShowToString` | Show toString() values | `true` |
+| `debugSuspendAllThreads` | Suspend all threads when one stops | `false` |
 | `debugExceptionTypes` | Exception breakpoints: only these classes (separated by commas) | blank (every exception) |
 
 **Show toString() values** shows what each object's `toString()` returns,
 which runs your program's code at each stop; off, objects read `Type@id`. It
 takes effect at the next debug session. See
 [Inspecting values](/docs/run-debug#inspecting-values).
+
+**Suspend all threads when one stops** makes a breakpoint, an exception or a
+step stop every thread of the program, and Continue resume them all; off, only
+the thread that hit it stops. It takes effect at the next debug session. See
+[Threads in a Java program](/docs/run-debug#threads-in-a-java-program).
 
 ### Rulers and indent guides
 
