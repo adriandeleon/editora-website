@@ -143,12 +143,16 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   resizable, syntax-highlighted read-only preview card in the editor's font. The
   preview uses unsaved buffer text when available, says so, and follows later
   edits; **Open** promotes it to a normal editor tab. A code card opens past the
-  file's licence header. A card opens the way the map flows: past its row's
-  column, as a new column would (right of it when the map flows left to right,
-  below it when it flows down, and so on). When there is no room there, it
-  opens beside the column, level with its row; opening a card never pans the
-  map. It never covers the folders that lead to the file, where its next column
-  will open, or the zoom bar and the overview. A declaration card
+  file's licence header. A card, code or note, opens the way a new column does:
+  past its row's column the way the map flows (right of it when the map flows
+  left to right, below it when it flows down, and so on), level with its row,
+  and past any column or card already open there. The map then pans to put the
+  card in the middle of the window, with its row still in sight. This follows
+  **Focus new column** in the options (⋯) menu, as columns do. With it off, the
+  map never pans for a card: a card opens past its column when there is room in
+  the window, and otherwise beside the column, level with its row, without
+  covering the folders that lead to the file, the place where its next column
+  will open, the zoom bar or the overview. A declaration card
   opened from a card's Structure column opens right of it, level with its
   row, and one opened from the map's Structure column opens past that column.
   **Move to Free Space** in a card's menu places it again.
@@ -195,7 +199,7 @@ zoom, Focus new column, Single-click opens files and Compact folder chains are
 on by default; every on/off option except Hide all open Personal Notes is
 remembered per workspace. With Keep current zoom and Focus new
 column, opening a folder preserves the current scale and brings its new column
-into view; turning zoom preservation off restores fit-to-content when the map
+into view, and a new card is centred in the window; turning zoom preservation off restores fit-to-content when the map
 expands. **Compact rows** fits more rows on screen; each column then shows its
 filter, Show hidden and lock only while the pointer is over it, it holds the
 selection, or one of them is set.

@@ -18,7 +18,7 @@ A local folder is listed whole, up to 50,000 entries, so a folder of thousands o
 
 ## Cards for a glance
 
-Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way the map flows, past its row's column, and never pans the map or covers the folders that lead to the file. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
+Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way a new column does, past its row's column the way the map flows, and the map pans to centre it with its row still in sight. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
 
 ![A read-only preview card for Shelf.java on the Project Map, opened past the file's column and joined to its row by a connector, showing syntax-highlighted Java, with the file's last change and the card's buttons in its header](/screenshots/docs/project-map-card.png "A preview card opens past the file's column, joined to its row.")
 
