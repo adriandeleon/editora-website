@@ -19,7 +19,7 @@ There are two exceptions:
 
 - **The update check.** Once a day at startup Editora asks GitHub whether a
   newer release exists. It sends nothing about you or your files, and it's a
-  checkbox in **Settings → Workspace** if you'd rather it didn't. **About
+  checkbox in **Settings → Advanced → Updates** if you'd rather it didn't. **About
   Editora** shows the answer under the version ("You are up to date." or the
   release available), when the last check answered, and a **Check now** link
   that asks again.
@@ -45,10 +45,6 @@ Not for the regular platform installers; they bundle their own Java runtime.
 The portable fat jar does need JDK 25 (`java -jar`). Running a Java file from
 the gutter ▶ needs JDK 25 or newer, either selected in Settings as the Default
 JDK or available as `java` on your `PATH`.
-
-The separately labeled experimental GraalVM Native Image archives do not bundle
-a JVM. They use separate settings and have feature and performance limitations;
-the regular installers remain the recommended downloads.
 
 ## The installer says it's from an unidentified developer.
 

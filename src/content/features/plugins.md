@@ -3,11 +3,11 @@ title: "Plugins"
 group: "Customization & extensibility"
 order: 2
 beta: false
-summary: "Extend the editor with commands, tool windows, and integrations. Install from a built-in registry of 19 plugins, or write your own (Java or a simple manifest)."
+summary: "Extend the editor with commands, tool windows, and integrations. Install from the built-in signed registry, or write your own (Java or a simple manifest)."
 ---
 
 Extend Editora without forking it. A plugin adds commands, keybindings, tool windows, editor-menu items, and status-bar segments, written in Java against a small exported API, or declared in a simple `plugin.json` manifest (with snippets and templates folders).
 
-Install from the built-in **registry** of 19 plugins (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
+Install from the built-in **registry** (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
 
 Off by default. Plugins aren't sandboxed, so only install ones you trust, and Editora asks first: the consent dialog lists a plugin's code, its external commands and the chords it replaces, an install or update is staged and put in place only once you agree, and a plugin whose code, commands or chords differ from what you agreed to waits until you agree again. A plugin's commands stay in its own namespace, so it cannot replace a built-in one. Start with `--disable-plugins` to run a session without any, and the [Doctor](/features/doctor) lists any plugin that failed to load or start, or started slowly.

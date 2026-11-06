@@ -161,7 +161,18 @@ const isActive = (href: string) => {
           <span>Editora</span>
           <span class="version">v{version}</span>
         </a>
-        <nav class="nav-links">
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+          <span>Menu</span>
+        </button>
+        <nav class="nav-links" id="site-links" aria-label="Site">
           {
             nav.map((item) => (
               <a
@@ -207,6 +218,29 @@ const isActive = (href: string) => {
         </nav>
       </div>
     </header>
+
+    <script is:inline>
+      // Narrow screens: the links fold behind a Menu button so the sticky
+      // header stays one row tall instead of wrapping to four.
+      (function () {
+        var header = document.querySelector(".site-nav");
+        var btn = header && header.querySelector(".nav-toggle");
+        if (!btn) return;
+        function set(open) {
+          header.classList.toggle("nav-open", open);
+          btn.setAttribute("aria-expanded", String(open));
+        }
+        btn.addEventListener("click", function () {
+          set(!header.classList.contains("nav-open"));
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && header.classList.contains("nav-open")) {
+            set(false);
+            btn.focus();
+          }
+        });
+      })();
+    </script>
 
     <script is:inline>
       // Sync the picker with the active theme and persist changes.
@@ -755,11 +789,18 @@ const isActive = (href: string) => {
     font-size: 0.85rem;
     color: var(--text);
   }
+  .doc .table-wrap {
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
   .doc table {
     width: 100%;
     border-collapse: collapse;
     margin: 1rem 0;
     font-size: 0.92rem;
+  }
+  .doc .table-wrap > table {
+    margin: 0;
   }
   .doc th,
   .doc td {
@@ -829,11 +870,52 @@ const isActive = (href: string) => {
     }
   }
 
-  @media (max-width: 600px) {
-    .nav-links {
-      gap: 0.9rem;
-      font-size: 0.85rem;
+  .nav-toggle {
+    display: none;
+  }
+
+  /* Below this width the eight links, search and theme picker no longer fit
+     one row, so they fold behind the Menu button. */
+  @media (max-width: 860px) {
+    .nav-inner {
+      flex-wrap: wrap;
+      row-gap: 0.5rem;
     }
+    .nav-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.85rem;
+      cursor: pointer;
+    }
+    .nav-links {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.1rem;
+      font-size: 1rem;
+      padding: 0.25rem 0 0.5rem;
+    }
+    .site-nav.nav-open .nav-links {
+      display: flex;
+    }
+    .nav-links a {
+      padding: 0.45rem 0.25rem;
+    }
+    .nav-links > :not(a) {
+      align-self: flex-start;
+      margin-top: 0.35rem;
+    }
+  }
+
+  @media (max-width: 600px) {
     .brand .version {
       display: none;
     }

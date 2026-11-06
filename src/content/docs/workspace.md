@@ -1227,6 +1227,24 @@ because Windows cannot watch the `\\wsl.localhost` share.
 
 ## Trusted folders
 
+Opening a folder never runs code that came with it. Several features would, so
+each waits until you trust the folder. Trust is one list, shared by all of them:
+
+| Trusting a folder lets… | Until then |
+| --- | --- |
+| A [Maven or Gradle build](#builds) run (wrapper or not), including the build before Run and Debug | The first build asks; declining runs no build |
+| The project's [committed settings](#settings-a-project-can-commit) (`.editora/settings.json`) apply, including language-server commands, build commands and debugger paths | Your own settings apply |
+| The [Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server) resolve parents, plugins and repositories | The pom is edited with the plain XML server |
+| The XML server download the schemas a file names (with *Download schemas* at *Only in trusted folders*) | No schemas are fetched |
+| [ESLint](/docs/lsp#eslint) load the project's configuration and plugins, and Prettier or Biome format | ESLint says once that it is not running; the *Auto* formatter uses the TypeScript server, and an explicit Prettier or Biome choice says it needs trust |
+| An `.http` file's [response handlers](/docs/http-client#response-handlers) run, and read [secrets](/docs/http-client#secrets-and-trusted-folders) from the environment or `.env` | Editora asks before the first run |
+| Git's [background auto-fetch](/docs/git) run (also after you fetch, pull or push there yourself) | No background fetch |
+
+An MCP client can't trust a folder for you: every trust command is
+[refused to agents](/docs/mcp#plugins-and-trust).
+
+### Builds
+
 A Maven or Gradle build runs code that lives in the repository rather than on
 your machine: a shipped wrapper (`./mvnw`, `./gradlew`), the pom's plugins and
 extensions, the files under `.mvn/`, every Gradle build script. A repository
@@ -1249,9 +1267,12 @@ Declining means **no build** runs at all. Editora does not fall back to the
 `build.gradle` executes code through those too, since build plugins and Gradle
 scripts run in-process.
 
-Only Maven and Gradle are gated. Every other build tool (npm, Cargo, Go) launches
+Only Maven and Gradle builds ask. Every other build tool (npm, Cargo, Go) launches
 your own toolchain, and Run and Debug always invoke a `PATH` interpreter, so
-none of them prompt.
+none of them prompt. The other gated features in the table above don't prompt
+either: each offers **Trust Folder** where it applies.
+
+### Language servers and schemas
 
 The same trust covers two language-server features. The
 [Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server) resolves the

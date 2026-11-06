@@ -189,7 +189,8 @@ file, notes included, and clicking the counts shows or hides Problems. It hides 
 pane is narrower than 520 pixels. When the caret rests on a line where the
 server can **fix an error**, a red **lightbulb** with a `!` appears in the
 gutter; an amber one marks other quick actions, a warning's fixes included.
-Click it for the list **Code Actions** (Alt+Enter) shows, for its own line.
+Click it for the list **Code Actions** (`C-c l a` in Emacs, `Ctrl+.` in the
+other keymaps, also `Alt+Enter` in IntelliJ) shows, for its own line.
 Refactorings, source actions and Add Javadoc, which a server offers almost
 everywhere, light no bulb, and the bulb goes as soon as you edit its line. In a
 split it shows only in the view you are typing in; a tab you come back to keeps

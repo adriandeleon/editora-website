@@ -66,6 +66,15 @@ const latestHref = !archived
     ? currentDocVersion.base
     : `${currentDocVersion.base}/${thisSlug}`;
 
+// Each version in the switcher links to this same page in that version when
+// it has one (so switching keeps your place), else to that version's root.
+const archiveIds = new Set((await getCollection("docsArchive")).map((d) => d.id));
+const versionHref = (v: DocVersion) => {
+  if (thisSlug === "introduction") return v.base;
+  const has = v.archive === null ? currentSlugs.has(thisSlug) : archiveIds.has(`${v.archive}/${thisSlug}`);
+  return has ? `${v.base}/${thisSlug}` : v.base;
+};
+
 const reference = [
   { href: "/commands", label: "Commands" },
   { href: "/keybindings", label: "Keybindings" },
@@ -128,9 +137,14 @@ const faqJsonLd =
       <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
     )
   }
-  <div class="docs-wrap">
+  <main class="docs-wrap">
     <aside class="docs-sidebar">
-      <nav>
+      <details class="docs-menu" open>
+        <summary>
+          <span class="docs-menu-label">Docs menu</span>
+          <span class="docs-menu-page">{entry.data.title}</span>
+        </summary>
+      <nav aria-label="Documentation">
         {
           cats.map((c) => (
             <div class="docs-cat">
@@ -155,21 +169,37 @@ const faqJsonLd =
         </div>
         {
           docVersions.length > 1 && (
-            <div class="docs-cat docs-versions">
-              <h3>Version</h3>
+            <details class="docs-cat docs-versions">
+              <summary>
+                <h3>Version</h3>
+                <span class="docs-version-now">
+                  {docVersion.version}
+                  {docVersion.current && <span class="docs-version-tag">latest</span>}
+                </span>
+              </summary>
               {docVersions.map((v) => (
                 <a
-                  href={v.base}
+                  href={versionHref(v)}
                   class={v.slug === docVersion.slug ? "active" : ""}
+                  aria-current={v.slug === docVersion.slug ? "page" : undefined}
                 >
                   {v.version}
                   {v.current && <span class="docs-version-tag">latest</span>}
                 </a>
               ))}
-            </div>
+            </details>
           )
         }
       </nav>
+      </details>
+      <script is:inline>
+        // On a phone the menu starts closed, so the page's own text comes
+        // first instead of four screens of links. Without script it stays open.
+        (function () {
+          var d = document.currentScript && document.currentScript.previousElementSibling;
+          if (d && window.matchMedia && window.matchMedia("(max-width: 760px)").matches) d.open = false;
+        })();
+      </script>
     </aside>
 
     <article
@@ -213,7 +243,7 @@ const faqJsonLd =
         }
       </nav>
     </article>
-  </div>
+  </main>
 </Layout>
 
 <style>
@@ -352,16 +382,83 @@ const faqJsonLd =
     color: var(--muted);
   }
 
+  /* The sidebar's own disclosure only exists on a phone; on a wide screen the
+     menu is always open and its summary row is hidden. */
+  .docs-menu > summary {
+    display: none;
+  }
+
+  .docs-versions > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .docs-versions > summary::-webkit-details-marker {
+    display: none;
+  }
+  .docs-versions > summary h3 {
+    margin: 0;
+  }
+  .docs-versions > summary::after {
+    content: "▾";
+    color: var(--faint);
+    font-size: 0.75rem;
+  }
+  .docs-versions[open] > summary::after {
+    content: "▴";
+  }
+  .docs-version-now {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-right: auto;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .docs-versions[open] > summary {
+    margin-bottom: 0.4rem;
+  }
+
   @media (max-width: 760px) {
     .docs-wrap {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
+      padding-top: 1.25rem;
     }
     .docs-sidebar {
       position: static;
     }
     .docs-cat {
       margin-bottom: 1rem;
+    }
+    .docs-menu {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-soft);
+    }
+    .docs-menu > summary {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      padding: 0.65rem 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .docs-menu > summary .docs-menu-page {
+      font-weight: 400;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .docs-menu > nav {
+      padding: 0.25rem 0.9rem 0.5rem;
     }
   }
 </style>

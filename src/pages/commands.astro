@@ -98,6 +98,32 @@ import { docsBase } from "../lib/editora";
     vertical-align: top;
   }
 
+  /* On a phone each command is a two-row card: title and keys, then the
+     description, so the table never widens the page. */
+  @media (max-width: 600px) {
+    table,
+    tbody {
+      display: block;
+    }
+    tr {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 0.75rem;
+      padding: 0.55rem 0;
+    }
+    td {
+      padding: 0;
+    }
+    td.cmd-desc {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      margin-top: 0.2rem;
+    }
+    .cmd-id {
+      overflow-wrap: anywhere;
+    }
+  }
+
   .cmd {
     width: 30%;
     min-width: 12rem;
