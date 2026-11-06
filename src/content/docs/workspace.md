@@ -140,7 +140,8 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   Every non-root column also has a fuzzy name filter and a **Show hidden**
   checkbox.
 - Click a file's **eye** (or select it and press `Shift-Enter`) for a movable,
-  resizable, syntax-highlighted read-only preview card in the editor's font. The
+  resizable, syntax-highlighted read-only preview card in the editor's font; click
+  the eye again, or press `Shift-Enter` again, to close it. The
   preview uses unsaved buffer text when available, says so, and follows later
   edits; **Open** promotes it to a normal editor tab. A code card opens past the
   file's licence header. A card opens the way the map flows: past its row's
@@ -409,7 +410,9 @@ editor colours them. The column belongs to the card: it works even when the
 file's row is filtered or scrolled off the map, moves, zooms and closes with the
 card, and does not count toward the eight cards. It always sits on the card's
 right, so the declarations read on from the code; opened on a card near the
-right edge, the card first steps left to make room for it.
+right edge, the card first steps left to make room for it. It is only as wide as
+the rows you can see need, from 200 to 360 pixels, so a long name inside a
+closed row does not widen it; opening or closing a row fits it again.
 
 - **Click a declaration**, or press `Enter` on it, to open it in a card of its
   own, right of the column, level with its row and connected to it. When there
