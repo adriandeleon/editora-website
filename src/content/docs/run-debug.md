@@ -252,12 +252,21 @@ the next Node.js in the list, and the Run console says so first, for example
 *.nvmrc asks for Node.js 18, which nvm does not have: using the Node.js setting
 instead*.
 
+On a remote host, in WSL or in a container, Run, a test file's ▶ and Debug
+choose in the same order, with that host's answers. The `.nvmrc` or
+`.node-version` is read on the host, from the script's folder up to the project
+(or the package folder, with no project). The version comes from the host's
+nvm (`$NVM_DIR`, else `$XDG_CONFIG_HOME/nvm`, then `~/.nvm` there). Step 3 is
+the **Node.js** set for that host in Settings → Remote → This Host, and step 4
+the host's `node`. A version the host's nvm does not have, or an alias such as
+`lts/*`, falls back to those two, and the Run console says so.
+
 Editora's other npm language servers (HTML, CSS, JSON, YAML, Bash, Pyright…)
 skip step 2: they run on the **Node.js** setting, else `node` on your `PATH`, so
 an old Node.js a project pins cannot break them.
 
 The tooltip of the Run window's runtime chip ends with where that Node.js was
-chosen from, such as *Chosen from: .nvmrc, via nvm*.
+chosen from, such as *Chosen from: .nvmrc, via nvm*, on a host too.
 [Doctor](/docs/troubleshooting#doctor) has a **Node.js** row that names the
 Node.js in use and why it was chosen, for example *Node.js setting* or
 *.nvmrc, via nvm*.
@@ -446,7 +455,8 @@ away, without the Ctrl-C a local Python program gets first.
 
 A Node.js script runs from its package folder there, the nearest folder above
 it on the host with a `package.json`, as it does locally. This holds in a
-container and in WSL too. A `.nvmrc` on the host is not read.
+container and in WSL too. A `.nvmrc` or `.node-version` on the host picks its
+Node.js from the host's nvm (see [Node.js scripts](#nodejs-scripts)).
 
 A project on this machine can run on a host too: set a configuration's **Run
 on** to a [deployment](/docs/deployments), and Editora copies what changed in the
@@ -822,16 +832,18 @@ the session ends.
 
 When the panel is wide enough, the call stack, variables, and console sit side
 by side; they stack when it is narrow. The call stack lists the innermost 1,000
-frames when the adapter supports partial stacks. The console is cleared at each
-launch and kept after the session ends, and its right-click menu has **Clear
-Console**. It keeps the last 200,000 characters; when older output was dropped,
-the Debug window's state line says so. **Restart** is disabled for a debugger attached to a test or build
+frames when the adapter supports partial stacks. The console wraps long lines.
+It is cleared at each launch and kept after the session ends, and its
+right-click menu has **Clear Console**. It keeps the last 200,000 characters;
+when older output was dropped, the Debug window's state line says so. **Restart** is disabled for a debugger attached to a test or build
 run (its tooltip says why); a session started with *Debug → Attach* can still be
 restarted.
 
 A spinner beside the Debug window's status turns while the before-launch build,
 the session start, or the program is running, and stops while the program is
-paused (at a breakpoint, a step, or Pause).
+paused (at a breakpoint, a step, or Pause). Pause works only on a running
+program, so it is greyed out while the program is paused, starting or being
+built.
 
 Beside that status, the Debug window names the runtime the debugged program
 runs under, as the [Run window does](#which-runtime-a-program-runs-under): the
@@ -947,7 +959,8 @@ program console switch on.
 
 With the switch off, the debugger starts a Java program itself. A program that
 prints a lot then gets its output to the console well after it writes it; the
-session ends, and the exit line shows, once the last of it has arrived. The
+session ends, and the exit line shows, once the last of it has arrived. Until
+then the Debug window's state reads *Program ended, output still arriving*. The
 console still reports the program's exit code on Linux and macOS when the
 program runs on this machine. On Windows, and on a remote host, in WSL or in a container, it
 says "The program ended." instead. A JavaScript program's output, including
@@ -979,7 +992,8 @@ Java file of the project.
 
 In a JUnit test file of a Maven or Gradle project, Debug debugs the test at the
 caret, or the whole class when the caret is outside a test, the way Debug Test
-does. A file with a `main` of its own is launched as a program instead.
+does. The caret on a test's annotations, such as `@Test`, counts as in that
+test. A file with a `main` of its own is launched as a program instead.
 
 In a Maven or Gradle project, Debug builds first, so the program runs the code
 you see. Debug on a file builds the project with the Java language server: if
@@ -998,9 +1012,12 @@ or `test-compile` for a class under `src/test`; Gradle `compileJava` or
 `compileTestJava`. The build runs in the Debug console, through the same Maven
 or Gradle the tasks tree runs, and a failed build aborts the launch. With the
 setting off, they build with the Java language server, as Debug on a file does.
-Stop during either build cancels the launch. A run configuration with a
-[before-launch step](#a-step-before-the-launch) uses that step as its build
-instead. A Java configuration's step runs in the project root, whatever the
+In a Gradle project the Java language server builds after Gradle as well, since
+the program runs from the class files it writes, so the program runs the code
+you edited. The Gradle daemon that this build starts stops after 10 minutes
+without work. Stop during either build cancels the launch. A run configuration
+with a [before-launch step](#a-step-before-the-launch) uses that step as its
+build instead. A Java configuration's step runs in the project root, whatever the
 configuration's working directory.
 
 A class with a `package` line in a folder that has no `pom.xml` or Gradle build
@@ -1011,19 +1028,32 @@ root.
 
 A loose `.java` file, or a project folder without Maven or Gradle, is built by
 the Java language server before every Debug, so the program always runs the
-code you saved. Compile errors stop the launch and are listed in the Debug
-console, as in a Maven project. In a window with no project, only errors in the
-file's own folder count; a broken file in another folder does not stop it. A
-configuration's before-launch step runs first, and the language server's build
-after it. The program runs on the Default JDK, else on the `java` on your
-`PATH` (see [Which runtime a program runs under](#which-runtime-a-program-runs-under)).
-A compact source file is compiled by `javac` instead.
+code you saved. When that build reports errors or cannot run (a folder with
+several packages can be more than the language server works out without a
+build tool), Editora compiles the file with `javac` from the source root its
+`package` line names. `javac` compiles only the code the program uses, so only
+errors there stop the launch, listed in the Debug console as in a Maven
+project; a broken file the program never uses, or a JUnit test without JUnit,
+does not. Code that does not compile never runs. A configuration's
+before-launch step runs first, and the build after it. The program runs on the
+Default JDK, else on the `java` on your `PATH` (see
+[Which runtime a program runs under](#which-runtime-a-program-runs-under)).
+When the Default JDK's folder no longer exists, the Debug console says so and
+the `java` on your `PATH` runs the program. A compact source file is always
+compiled by `javac`.
 
-Debug in another Java tab while a session runs, or while a launch is still
-starting (building, compiling or waiting for you to choose a main class), asks
-before it replaces that session. Debug in the same file while its build runs
-says that it is already being debugged. Esc on the main-class chooser cancels
-the launch.
+While the language server builds before a launch, the Debug window reads
+*Building…* from the moment you press Debug, and Stop cancels the launch.
+
+**Start / Continue** (and the Debug window's green ▶), **Debug File** in the
+editor's right-click menu and Debug Test make one check before they launch.
+Start / Continue on a paused session continues it. For another file, a session
+that is paused, running or still starting (building, compiling, waiting for a
+test to start, or waiting for you to choose a main class) is replaced only
+after you agree, for example to *Main.java is paused in the debugger. Stop it
+and debug App.java instead?* For the same file, the status bar says that it is
+already being debugged and whether it is running, paused or still starting. Esc
+on the main-class chooser cancels the launch.
 
 **Debug: Attach to Running Program…** (`debug.attach`) on a Java file attaches
 to a JVM listening for a debugger. It asks for the `host:port`, and offers the
@@ -1067,12 +1097,12 @@ The running program keeps the code it was started with. When you edit a file
 during a session, Editora matches breakpoints and the stopped line to the code
 the program runs, so they stay on the right lines. At a stop in an edited file,
 the status bar says that the program still runs the code it started with. A
-breakpoint on a line you change in place keeps working and stopping there; when
-you split a line in two, the breakpoint stays on its first half. A breakpoint on
-a line you added during the session is kept, and its hover says that it takes
-effect in the next session. To run the new code, restart the
-session, or let [hot code replace](#hot-code-replace) load a change to a
-method body.
+breakpoint on a line you change in place, re-indent or wrap in a block (such as
+an `if`) keeps working and stopping there; when you split a line in two, the
+breakpoint stays on its first half. A breakpoint on a line you added during
+the session is kept, and its hover says that it takes effect in the next
+session. To run the new code, restart the session, or let
+[hot code replace](#hot-code-replace) load a change to a method body.
 
 ### Hot code replace
 
@@ -1091,12 +1121,16 @@ was:
   Java M"): choose the program's JDK as the Default JDK in **Settings → Build
   Tools**, or restart the session;
 - the Java language server could not build the project;
+- the session runs classes compiled with `javac`, because the Java language
+  server cannot build the folder: restart the session to run your edits;
 - the program already runs this code.
 
 A change to a method that is running when you save is applied too. That method
 goes on with its old code until it returns, and its frame in the call stack
 reads "old code (replaced while it ran)". To run it again with the new code,
-select its frame and use **Debug: Restart Frame**.
+select its frame and use **Debug: Restart Frame**. The first method of a
+thread, such as `main`, has no caller to run it again, so it keeps its old code
+until the program restarts, and the console says so.
 
 Choose when this happens with **Apply code changes to a running Java program**
 on the Java card of **Settings → Debugging**:
@@ -1257,14 +1291,31 @@ Value…**. Ctrl+C (⌘C on
 macOS) copies the selected value, and Delete removes the selected watch. In
 the evaluate field, Up and Down bring back the expressions you typed before.
 An expression that throws says what it threw, such as *The expression threw
-NullPointerException in length()*.
+NullPointerException in length()*. After an evaluation, Variables, watches and
+inline values are fetched again, so an assignment such as `count = 5` in the
+console shows at once.
+
+In Java, **Set Value…** sets a number, boolean, character or String directly,
+and an `Integer`, a record or an enum variable by assigning what you type as an
+expression, such as `Color.RED`.
 
 In Java, an object whose class has its own `toString()`, such as a record, an
 enum or a date, shows that text after its type, for example
 `Main$Point@17 "Point[x=3, y=4]"`, and still unfolds to its fields. A boxed
 number, such as an `Integer`, shows just its value: `42`. A lambda reads
-`lambda@19`. Variables, inline values and the hover popup all show values this
-way.
+`lambda@19`. Variables, watches, inline values and the hover popup all show
+values this way. A Variables row shows at most 200 characters of a value; Show
+Value and Copy Value give the whole text.
+
+Each `toString()` is your program's own code, run once per object at each stop,
+so a stop gives them 1.5 seconds in all. A row whose `toString()` has not
+answered by then reads *(toString() not loaded yet: click to load)*, and loads
+when you click it, press Enter on it or unfold it. After Pause, objects read
+`Type@id` with *(toString() not available after Pause)*. While a `toString()`
+has not returned, the debugger takes no other request, and the status bar says
+so: wait, or press Stop. **Show toString() values** on the Java card of
+**Settings → Debugging** (on by default) turns these calls off: objects then
+read `Type@id`, from the next debug session.
 
 While the program is paused, **completion** works in the Debug console's
 evaluate field, the Add Watch and Edit Watch prompts, and a breakpoint's

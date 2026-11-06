@@ -347,6 +347,24 @@ session, not in `settings.json`. See
 project's own first) after a save you make yourself, and saves it again when
 that changed it. Auto-save does not format.
 
+### Java debugging
+
+The Java debugger's settings are on the **Java** card under **Settings →
+Debugging**:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugHotCodeReplace` | Apply code changes to a running Java program: `auto` (On save), `manual` (Only with Debug: Apply Code Changes) or `off` (Never) | `auto` |
+| `debugStepFilters` | Step Into skips JDK classes and synthetic methods | `true` |
+| `debugShowStatics` | Show static fields in Variables | `true` |
+| `debugShowToString` | Show toString() values | `true` |
+| `debugExceptionTypes` | Exception breakpoints: only these classes (separated by commas) | blank (every exception) |
+
+**Show toString() values** shows what each object's `toString()` returns,
+which runs your program's code at each stop; off, objects read `Type@id`. It
+takes effect at the next debug session. See
+[Inspecting values](/docs/run-debug#inspecting-values).
+
 ### Rulers and indent guides
 
 These are the rows under **Settings → Editor → Display**:
@@ -395,8 +413,8 @@ governs the file in front.
 
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.23.0
-`settings.json` is at version **140**. Editora migrates older files forward
+Each structured config file carries a `schemaVersion`; in Editora 0.27.0
+`settings.json` is at version **158**. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that
