@@ -147,7 +147,9 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   past its row's column the way the map flows (right of it when the map flows
   left to right, below it when it flows down, and so on), level with its row,
   and past any column or card already open there. The map then pans to put the
-  card in the middle of the window, with its row still in sight. This follows
+  card in the middle of the window, with its row still in sight. If the card's
+  sticky notes or a trail's note would then have to cover it, the map moves
+  across just enough to show them beside the card, when both fit. This follows
   **Focus new column** in the options (⋯) menu, as columns do. With it off, the
   map never pans for a card: a card opens past its column when there is room in
   the window, and otherwise beside the column, level with its row, without
