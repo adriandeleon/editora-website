@@ -52,10 +52,13 @@ the regular installers remain the recommended downloads.
 
 ## The installer says it's from an unidentified developer.
 
-Installers are currently unsigned, so macOS Gatekeeper and Windows SmartScreen
-stop the first launch until you allow it. The steps for both are in
+The Windows installer is unsigned, so Windows SmartScreen stops the first
+launch until you allow it; the steps are in
 [Troubleshooting](/docs/troubleshooting#a-launcher-is-blocked-on-first-run).
-Signing is on the roadmap.
+The macOS app is signed and notarized by Apple, and opens without a Gatekeeper
+warning. The Linux downloads carry OpenPGP signatures, and every release file
+has a build provenance attestation:
+[Checking a download](/docs/getting-started#checking-a-download).
 
 ## Which features are off by default?
 

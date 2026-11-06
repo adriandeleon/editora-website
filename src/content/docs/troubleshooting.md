@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Doctor, unsigned installers, finding external tools, the application log, recovering after a crash, performance, and resetting config.
+description: Doctor, a blocked first launch, finding external tools, the application log, recovering after a crash, performance, and resetting config.
 category: Help
 order: 3
 ---
@@ -188,16 +188,20 @@ date, such as rust-analyzer through rustup, are not looked up either.
 
 ## A launcher is blocked on first run
 
-Installers are currently unsigned, so the operating system stops the first
-launch until you allow it. You only do this once.
+The Windows installer is unsigned, so Windows stops the first launch until you
+allow it. You only do this once.
 
-- **macOS** (15 and later): open Editora once and dismiss the warning, then go
-  to **System Settings → Privacy & Security**, scroll to the Security section,
-  and click **Open Anyway** next to the Editora message. Confirm, and it
-  launches normally from then on. On macOS 14 and earlier, Control-click the app
-  in Finder and choose *Open* instead.
 - **Windows**: in the SmartScreen dialog, click **More info**, then **Run
   anyway**.
+- **macOS**: the app is signed and notarized by Apple, so Gatekeeper opens it
+  without asking. Releases before 0.27.0 were unsigned; to open one of those on
+  macOS 15 and later, open it once and dismiss the warning, then go to **System
+  Settings → Privacy & Security**, scroll to the Security section, and click
+  **Open Anyway** next to the Editora message. On macOS 14 and earlier,
+  Control-click the app in Finder and choose *Open* instead.
+
+To check that a download is the one the release workflow built, see
+[Checking a download](/docs/getting-started#checking-a-download).
 
 ## External tools aren't found
 
