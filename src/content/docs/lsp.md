@@ -638,7 +638,10 @@ a moment; for jdtls that is after the project import, not at its own earlier
 "Ready". After that, background work (diagnostics after an edit, a search) is
 shown only when it is still running after that moment, and work that was shown
 ends with another ready line, so the last line never reads as a job left
-unfinished. A line that repeats the one just shown is skipped.
+unfinished. Work that a ready server began but never reported as done counts as
+over once the server has been silent for 30 seconds, so the ready line, and the
+end of the loading bar, always come. A line that repeats the one just shown is
+skipped.
 
 External file changes are forwarded to the running servers, so a server's
 project model stays current after a `git checkout`, a branch switch, a CLI build
@@ -971,10 +974,14 @@ segment names it too, for example **LSP: TypeScript 5.9.3**.
 When the only TypeScript found is 6 or newer, the card's TypeScript line and
 [Doctor](/docs/troubleshooting#typescript-features-are-off-or-show-false-errors)
 warn about it: *TypeScript 6.0.3: leaves out @types packages*, or *TypeScript
-7.0.2 has no tsserver*. With no TypeScript that has a `tsserver`, Editora does
-not start the server and says why in the status bar, with the fix: **Install…**
-on the TypeScript card in Settings → LSP. It does not try again each time you
-open another tab.
+7.0.2 has no tsserver*. With no TypeScript that has a `tsserver` (only a
+TypeScript 7, or none at all), Editora does not start the server. The status
+bar says so, the fix first: *Install TypeScript 5.9 (Settings → LSP): TypeScript
+7.0.2 has no tsserver*. The file's install banner offers **Install**, which adds
+Editora's own TypeScript 5.9.3 and typescript-language-server 5.3.0 to its own
+folder with npm; your own TypeScript is not changed. The banner's **Not now**
+and the install-prompts switch work as they do for a missing server. Editora
+does not try again each time you open another tab.
 
 **A folder's own TypeScript runs only once you trust the folder.** Many projects
 have their own `node_modules/typescript`. That is code from the folder, so

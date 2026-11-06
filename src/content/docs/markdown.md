@@ -512,10 +512,18 @@ the `mmdc` (mermaid-cli) command is found. Install it with
 **Install…** button in **Settings → Mermaid** (`install.mermaidSupport`). The
 same page holds the toggle and the two tool paths: a blank `mmdc` path resolves
 `mmdc` on your `PATH`, and a blank `maid` path (the optional linter) runs it
-through `npx`. Under each path a **Detected** line says whether the tool is
-there, for example *mmdc: found (/usr/local/bin/mmdc)* or *maid: found (via npx,
-fetched on first use)*. Editora keeps that answer until a path changes, so after
-installing `mmdc` in a terminal press **Check again**.
+as `npx -y @probelabs/maid`. Install maid with `npm i -g @probelabs/maid`.
+With that default, Editora finds maid by its files and never runs `npx` to ask,
+since `npx` would download a missing package. It looks for a global install
+(beside the Node.js set in Settings, `node` on your `PATH`, or your npm
+prefix), a `maid` on your `PATH` that is that package, and `npx`'s own cache.
+A `maid` path of your own is run to check it. Under each path a **Detected**
+line says whether the tool is there, for example
+*mmdc: found (/usr/local/bin/mmdc)* or
+*maid: found (0.0.29 · /usr/local/lib/node_modules/@probelabs/maid)*. Without
+maid, Mermaid files are not linted; diagrams still render. Editora keeps that
+answer until a path changes, so after installing a tool in a terminal press
+**Check again**.
 
 `mmdc` drives a headless Chrome. If rendering fails with *"Could not find
 Chrome"*, install it once with

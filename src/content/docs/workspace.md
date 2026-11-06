@@ -542,8 +542,9 @@ same tour.
   you close the stop's card, the bar's title says *(card closed)* and clicking
   it shows the stop again. The bar's **×**, or `Escape` on the map or in the bar,
   ends the tour before any card closes, and leaves the last card open. The
-  palette commands *Project Map: Next Trail Stop*, *Previous Trail Stop* and
-  *Close Trail* do the same and can be bound to keys.
+  palette commands *Project Map: Next Trail Stop* (`projectMap.trailNext`),
+  *Previous Trail Stop* (`projectMap.trailPrevious`) and *Close Trail*
+  (`projectMap.trailClose`) do the same and can be bound to keys.
 - **Edit it.** **Edit** in the bar or in ⋯ → **Trails** opens the trail's
   stops in a card over the map. **Move Up** and **Move Down** (`Alt-Up` /
   `Alt-Down`), **Remove** (`Delete`), **Rename…** and **Note…** change a stop;
