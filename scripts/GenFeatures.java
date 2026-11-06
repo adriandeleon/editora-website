@@ -696,7 +696,7 @@ Right-click a declaration, or a name in a card, and choose **Show Callers as Car
 
 ## Search and filter
 
-![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
+![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 60 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
 
 The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only or `@` for declarations. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked or noted files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
 

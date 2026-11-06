@@ -117,7 +117,7 @@ export const mapShots: Shot[] = [
   shot("/screenshots/map/filters.png", {
     title: "Filters",
     caption: "Filters narrow the map and count what they hide.",
-    alt: "Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge and shown/total counts on each column",
+    alt: "Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 60 rows hidden badge and shown/total counts on each column",
   }),
 ].map((s) => ({ ...s, more: { href: "/features/project-map", label: "More about the Project Map" } }));
 

@@ -18,7 +18,7 @@ A local folder is listed whole, up to 50,000 entries, so a folder of thousands o
 
 ## Cards for a glance
 
-Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way a new column does, past its row's column the way the map flows, and the map pans to centre it with its row still in sight. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
+Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way the map flows, past its row's column, and never pans the map or covers the folders that lead to the file. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
 
 ![A read-only preview card for Shelf.java on the Project Map, opened past the file's column and joined to its row by a connector, showing syntax-highlighted Java, with the file's last change and the card's buttons in its header](/screenshots/docs/project-map-card.png "A preview card opens past the file's column, joined to its row.")
 
@@ -32,7 +32,7 @@ Right-click a declaration, or a name in a card, and choose **Show Callers as Car
 
 ## Search and filter
 
-![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
+![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 60 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
 
 The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only or `@` for declarations. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked or noted files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
 
