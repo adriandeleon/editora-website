@@ -36,6 +36,8 @@ matches rank below every match on a title.
 A command that can't run right now stays listed and dimmed, with an explanation
 of what would enable it, rather than disappearing.
 
+![The command palette over a Java file with fold typed: View: Fold, Fold All, Toggle Fold and Fold Level 1 to 5, each with its chord, the highlighted row's description below and a hint line naming the keys](/screenshots/docs/command-palette.png "The palette after typing fold: every matching command, its key, and what the highlighted one does.")
+
 ## Search Everywhere
 
 **Search Everywhere** (`search.everywhere`) is one picker over **commands,
@@ -253,6 +255,8 @@ in-memory text of open buffers, so unsaved edits are included. Results are
 grouped by file; Enter or double-click jumps to a match. Case, regex, and
 whole-word apply here too.
 
+![The Find in Files tool window beside a Java file: the query discountFor, case, regex and whole-word toggles, replace and include and exclude fields, then 4 matches in 4 files grouped under Pricing.java, Shelf.java, ShelfTest.java and README.md](/screenshots/docs/find-in-files.png "Find in Files: matches grouped by file, with a ripgrep badge when it did the search.")
+
 While **Exclude .gitignore files and folders from search** is on (Settings →
 Search, on by default), Find in Files skips what the project's `.gitignore`
 excludes. It also skips every `node_modules` folder, even in a project with no
@@ -305,6 +309,8 @@ it:
 | Fold all block comments | `view.foldAllBlockComments` | (palette) |
 | Fold / unfold all `#region` markers | `view.foldAllMarkerRegions` | (palette) |
 | Fold / unfold all except the caret | `view.foldAllExcept` / `view.unfoldAllExcept` | (palette) |
+
+![Shelf.java after Fold All: every method and the javadoc comments folded to one line each, with a fold chevron in the gutter beside each region](/screenshots/docs/fold-all.png "Fold All collapses every region; the chevrons in the gutter open them one at a time.")
 
 **Fold Level *n*** collapses everything at that nesting depth, like VS Code's
 `Ctrl+K Ctrl+1..7`. **Fold Recursively** collapses the region at the caret *and*

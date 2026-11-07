@@ -203,6 +203,8 @@ The bar counts the matches, up to 1,000; past that it says *1000+* and keeps
 the newest. Matches stay on their text as more output scrolls in. Text
 selected on one line, when there is some, is what the bar starts with.
 
+![The Terminal tool window after git log --oneline, with the find bar open over it: map typed, every match highlighted in the commit subjects, 4 of 4, an Aa toggle, up and down arrows and a close button](/screenshots/docs/terminal-find.png "Find in the terminal highlights every match in the scrollback and counts them.")
+
 ## Keys
 
 While a terminal has focus, keys go to the shell, not to Editora:

@@ -813,6 +813,8 @@ script as it runs.
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
+![A Java program paused at a breakpoint in Shelf.java with the Debug tool window below: the call stack, a variables tree with the items list unfolded, and the console](/screenshots/features/debugging.png "Paused at a breakpoint: call stack, variables and console in the Debug window.")
+
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and every debugger action is in the **Run** menu.
@@ -857,6 +859,8 @@ stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
 debuggers take only a number, and the field's hint says which. A breakpoint
 with a condition or a hit count is drawn as conditional. Breakpoints in closed
 files are honored too.
+
+![The Edit Breakpoint form for Shelf.java line 50 over the editor: the line's code above the fields, a Condition field with item.price() > 1.0 typed, an empty Log message, a Hit count field whose hint reads Every hit, or a number: 5 stops on the fifth hit, Enabled ticked, Remove once hit, and Cancel and OK buttons](/screenshots/docs/edit-breakpoint.png "Edit Breakpoint: a condition, a hit count, or a log message that turns it into a logpoint.")
 
 The debugger may set a breakpoint on another line than the one you chose: in
 Python, a breakpoint on a blank or comment line goes to a nearby line with code.

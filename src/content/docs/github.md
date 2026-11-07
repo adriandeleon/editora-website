@@ -89,6 +89,8 @@ single-file pull request opens the same tab, so its description and those links
 stay reachable. Re-running the command on a pull request you already have open
 re-selects and refreshes that tab rather than opening a second one.
 
+![A Files changed tab for a pull request: the description rendered as Markdown in a card, Open on GitHub, Submit review… and Refresh links, and the changed files listed with their status letters and plus and minus counts](/screenshots/docs/github-pr-review.png "Review Pull Request Diff: the description, the file list, and a read-only diff a click away.")
+
 Inside any read-only diff, `n` and `p` step to the next and previous change, so
 you can read a file end to end without reaching for the mouse. Each hunk is shown
 at its real line numbers, and a missing final newline is marked.
@@ -174,6 +176,8 @@ The **GitHub** tool window (`M-g p`, or `tool.github`) has three segments:
 open the window on a given segment. The row menus also open with the Menu key,
 and the segment buttons can be reached with Tab. A spinner in the toolbar shows
 while `gh` is working.
+
+![The GitHub tool window on its Runs segment: Pull Requests, Issues and Runs buttons, an info row with the repository URL, the master branch and the adriandeleon account, a filter field, and recent workflow runs each with a state glyph, workflow name and commit subject](/screenshots/docs/github-tool-window.png "The GitHub tool window: pull requests, issues and workflow runs, straight from gh.")
 
 The window is **repo-scoped, not file-scoped**, so it stays put as you switch
 tabs, including onto the Welcome tab.

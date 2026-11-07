@@ -119,6 +119,8 @@ in:
 Every one of these is also a command in the palette. Reopen the page any time
 with *View: Welcome Page*.
 
+![The Welcome tab with the Editora logo, a Start list (New File, Open File, Open Folder as a Project, Clone Git Repository, Command Palette) with shortcuts, and Recent Projects and Recent Files lists](/screenshots/docs/welcome.png "The Welcome page: open a folder or a file, and change the keymap or theme from the same page.")
+
 The page also shows the keymap and theme in use; click either to change it.
 Editora starts with the Emacs keymap, so shortcuts read like `C-x C-f`
 (Ctrl+X, then Ctrl+F) and `M-x` (Alt+X). Pick the VS Code, IntelliJ, Sublime
@@ -172,6 +174,8 @@ Don't memorize these. Open the palette, type a few letters of what you want,
 and run it. Each entry shows its key, so you pick up shortcuts as you go. The
 full list lives on the [Commands](/commands) and [Keybindings](/keybindings)
 pages.
+
+![The command palette over a Java file with fold typed: View: Fold, Fold All, Toggle Fold and Fold Level 1 to 5, each with its chord, the highlighted row's description below and a hint line naming the keys](/screenshots/docs/command-palette.png "Type a few letters in the palette and the matching commands come up with their keys.")
 
 If you don't yet know *which* picker holds the command, file or symbol you
 want, run **Search Everywhere** and type its name. See
