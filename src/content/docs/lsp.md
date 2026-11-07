@@ -181,6 +181,8 @@ is drawn faded, and a call the server marks as deprecated is struck through.
 Those unused and deprecated marks are not listed in the Problems window or
 counted by the problem counter.
 
+![Shelf.java with a red squiggle under a type error on line 44, a red marker in the gutter, the problem counter at the top right of the editor reading 1, and the Problems tool window below: 1 problem in 1 file, grouped under Java and Shelf.java](/screenshots/docs/lsp-problems.png "Diagnostics: a squiggle in the editor, a counter at the top right, and the Problems window with the list.")
+
 The **problem counter** at the top right of the editor shows the file's errors
 and warnings, and a muted count of notes (information and hints, such as
 ShellCheck's quoting advice). The green check means the server found no
@@ -341,6 +343,8 @@ is interrupted in the middle of an edit that moves or deletes files, the next
 time the project is opened an **Interrupted Refactoring** dialog offers to put
 the files back.
 
+![Shelf.java with the caret on a line whose type is wrong and the code actions list open at the caret: two Fix rows, Change type of label to double and Change type of total to String, then an Assist row, Add final modifier for label, each labelled in words](/screenshots/docs/lsp-code-actions.png "Code actions open at the caret: fixes first, then assists and refactorings.")
+
 **Java code generation** has its own list, **Generate…** (`lsp.generate`,
 Alt+Insert in the IntelliJ keymap): **Generate toString()**, **Generate
 hashCode() and equals()**, **Generate Constructors**, **Generate Getters and
@@ -352,6 +356,8 @@ hashCode() and equals() starts with every field ticked, and Enter with nothing
 ticked says so. Delegate Methods asks for the field to delegate to first, then
 lists that field's methods. The server offers these only when the editor
 declares that it can drive the picker, and Editora does.
+
+![The Generate… list over Shelf.java: Generate Getters, Generate Constructors…, Generate hashCode() and equals()…, Generate toString()…, Override/Implement Methods… and Generate Delegate Methods…, each labelled Generate](/screenshots/docs/lsp-generate.png "Generate… on a Java class.")
 
 **Refactorings have commands of their own**, in the **Code ▸ Refactor** submenu
 and the palette: **Refactor This…** (`lsp.refactorThis`) lists the ones at the
@@ -451,6 +457,8 @@ follow to the new path. Renaming a `.java` file or a package folder in the
 **Project** tree renames the class or package too, so references, `package`
 lines and imports follow. `F2` is bound in the VS Code and Sublime keymaps, and
 `Shift+F6` in the IntelliJ keymap.
+
+![The Rename Symbol prompt over Shelf.java: a New name field pre-filled with discountFor, the symbol under the caret, with Cancel and OK buttons](/screenshots/docs/lsp-rename.png "Rename symbol: the prompt comes pre-filled, and the server has already checked the spot.")
 
 <a id="rename-preview"></a>A rename that reaches **beyond the file you're looking at** shows you what it
 will do first: every affected file, its change count, and where it moves to, with

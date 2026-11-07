@@ -611,6 +611,8 @@ back in View Mode. While an editable file has no undo, the status bar says
 read-only again. See [Files without undo](/docs/undo-history#files-without-undo)
 for how bulk edits are kept safe there.
 
+![A text file that is read-only on disk, open with the View Mode banner above it: This file is open for viewing, Space pages down, Backspace pages up, and Read-only on disk (no write permission) at the right; the status bar reads Read-Only](/screenshots/docs/view-mode.png "A file without write permission opens in View Mode, and the banner says why.")
+
 For existing local files, Save writes a staged replacement and only swaps it
 into place after the complete new content is ready. If Editora cannot create a
 safe staging file, Save fails without touching the existing bytes. A

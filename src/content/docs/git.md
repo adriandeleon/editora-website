@@ -221,6 +221,8 @@ Enter, ← or →. A folded header shows how many rows it hides, and the choice 
 remembered with the workspace. Typing in the search field looks through every
 section, folded or not.
 
+![The Branches popup over a Java file: a search field, an Actions section with New Branch, Update Project (Pull), Fetch, Push, Stash Changes, Unstash and Commit with their chords, then Local with master ticked and its origin/master upstream, and Remote with origin/master](/screenshots/docs/git-branches.png "The branch popup: actions first, then local and remote branches, each section foldable.")
+
 | Action | Command |
 | --- | --- |
 | New branch from any branch or tag, with or without switching to it | `git.newBranchFrom` |
@@ -283,6 +285,8 @@ Next and previous wrap around at the ends of the file and report the position
 ("Change 2 of 5"). Clicking a change bar, or **Peek Change at Caret**, opens a
 card showing the old and new lines with **Revert Hunk**, **Stage Hunk**, **Copy
 Old Text**, **Open Diff**, and Previous / Next.
+
+![Shelf.java with two changed lines marked in the gutter and the peek card for the one at the caret: Added, change 2 of 2, the working-tree line in green, and Previous, Next, Revert Hunk, Stage Hunk, Copy Old Text and Open Diff buttons](/screenshots/docs/git-peek-change.png "Peek Change at Caret shows one hunk against HEAD with the buttons to revert or stage it.")
 
 **Revert Hunk** puts the HEAD lines back into the buffer as an ordinary
 undoable edit; nothing is written to disk. **Stage Hunk** saves the file first

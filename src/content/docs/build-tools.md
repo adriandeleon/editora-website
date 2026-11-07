@@ -456,6 +456,8 @@ project run npm.
 The window always shows the project's own `package.json`: opening a file inside
 `node_modules` does not switch it to that dependency's scripts.
 
+![package.json open beside the Package Scripts tool window: Build root npm, a filter field, the Scripts section with start, build, test and lint, and a Common section with install and ci](/screenshots/docs/package-scripts.png "Package Scripts lists the scripts of the project's package.json, plus install and ci; double-click runs one.")
+
 **When something is missing,** the Output console says how to fix it instead of
 showing an error from Java:
 
@@ -512,6 +514,8 @@ For an unfiltered JVM run, Editora scans the project's test sources up front and
 red as results land, so a long run reads like a progress bar rather than classes
 appearing already finished. Parameterized and dynamic tests are left out of the
 seed, since their case ids are generated at runtime.
+
+![The Test Results tool window after a Maven run: 9 of 9 tests passed with a full green bar and 2.0 s, a filter field, the tree of ShelfTest's methods each ticked with its time, and the run summary on the right: 9 passed, 0 failed, 0 skipped](/screenshots/docs/test-results.png "Test Results after a Maven test run: counts in the header, each test in the tree.")
 
 A test that Surefire re-ran (`rerunFailingTestsCount`) shows its retries: a
 test that passed on a retry is marked **flaky ×n**, one that failed every try

@@ -135,6 +135,8 @@ the first run of a file already goes out in it:
   keyboard, before any run too. The arrow keys and Enter pick; Escape goes back
   to the editor.
 
+![environments.http open with the environment menu dropped from its Env pill: dev, prod and local, No environment ticked, and Open http-client.env.json and Open http-client.private.env.json](/screenshots/docs/http-environments.png "The Env pill's menu: pick an environment, or open the files that define them.")
+
 The choice is remembered with the file's history, so it comes back when you
 reopen the file. Each response records the environment it was sent in: the
 response view shows it beside the time and size ("env dev"), and History keeps
