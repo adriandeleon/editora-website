@@ -9,7 +9,8 @@ summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotli
 Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure** and **Scala** (through Metals for a build's file, Editora's own debugger for a script) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
 - Breakpoints (conditional, with a hit count, **temporary** ones removed once hit, and logpoints; in Java also **method breakpoints** and **field watchpoints**), step in / over / out, **run-to-cursor** (or **force run-to-cursor** past every breakpoint), and **jump-to-line** (Python)
-- A threads + call-stack view you can **copy as text**, and a lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme, and **changed values highlighted** after each step
+- A threads + call-stack view you can **copy as text**, and a **Threads view** listing every thread, running or suspended and why, where you can **pause or resume one thread** alone
+- A lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme, and **changed values highlighted** after each step
 - A **filter** for the Variables tree, **Go to Index** in a long list or array, and integers shown in **hexadecimal** on demand (Java and Python)
 - **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
 - A hover **value popup** that unfolds objects, arrays and collections as a tree

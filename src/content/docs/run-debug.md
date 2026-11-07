@@ -810,6 +810,7 @@ script as it runs.
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
 | Attach again to the last address | `debug.reattach` | `C-c C-d S-a` |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
+| Show every thread ([Threads view](#threads-view)) | `debug.threads` | (palette) |
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
@@ -820,7 +821,7 @@ The keys are the Emacs keymap's; the other keymaps' keys are listed under
 buttons in the Debug window, and every debugger action is in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Reattach, Stop,
 Restart and Toggle Breakpoint. Stepping, evaluate, watches, hexadecimal values,
-breakpoints and exception breakpoints are in its **Debugger** submenu
+breakpoints, the Threads view and exception breakpoints are in its **Debugger** submenu
 (**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
@@ -1160,6 +1161,9 @@ hit it, and the program's other threads keep running. To stop them all, turn on
 Debugging** (off by default). Continue then resumes every thread. The setting
 takes effect at the next debug session.
 
+To pause or resume one thread and leave the others as they are, use the
+[Threads view](#threads-view).
+
 ### Editing during a session
 
 The running program keeps the code it was started with. When you edit a file
@@ -1483,7 +1487,8 @@ debugger: a string that an evaluation builds, such as `name + "!"`, and the
 text inside a `toString()` result can still show such characters garbled.
 
 The thread list leaves out the JVM's own housekeeping threads and puts the
-stopped thread first, marked "(paused)". After the program ends, the state line
+stopped thread first, marked "(paused)". The [Threads view](#threads-view)
+shows every thread at once. After the program ends, the state line
 keeps "Exited with code N".
 
 **Copy Call Stack**, in the call stack's right-click menu, copies the shown
@@ -1499,6 +1504,45 @@ Thread "main"
 ```
 
 A frame without a source file is copied with its name only.
+
+### Threads view
+
+The call stack shows one thread at a time, the one picked in the thread
+dropdown above it. The **Threads** switch beside that dropdown replaces the
+frames and the dropdown with every thread of the program. **Debug: Threads**
+(`debug.threads`, also in **Run ▸ Debugger**) opens the Debug window on it.
+Turn the switch off to see the frames again.
+
+Each row names a thread and its state: **Running**, or suspended and why:
+
+- **Suspended at a breakpoint**
+- **Suspended after a step**
+- **Suspended on an exception**
+- **Paused**
+- **Suspended at its start**
+- **Suspended on entering a method**
+- **Suspended on a field access**
+
+The thread on screen, whose frames and variables the Debug window shows, is in
+bold and marked ▶. The JVM's own housekeeping threads are left out, unless one
+of them is suspended.
+
+Right-click a thread to act on it alone:
+
+- **Pause Thread**, on a running thread, suspends that thread alone; the others
+  keep running. Its stop is shown, as any stop is.
+- **Resume Thread**, on a suspended thread, resumes that thread alone; the
+  others stay suspended. If it was the thread on screen, the next suspended
+  thread is shown.
+- **Show Frames**, on a suspended thread, turns the switch off and shows that
+  thread's call stack and variables. Enter or a double-click on the row does the
+  same.
+
+The list follows each stop and Continue, and threads that start or end while
+the program runs update it.
+
+With Python (debugpy), Pause Thread and Resume Thread pause or resume the whole
+program, not one thread.
 
 ### Filtering Variables
 
