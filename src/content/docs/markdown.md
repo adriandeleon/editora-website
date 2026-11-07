@@ -162,6 +162,8 @@ The bar shows the current heading level and which styles are active, and its
 tooltips name each command's key binding when the keymap has one. The same
 actions are commands with Emacs `markdown-mode` chords:
 
+![A Markdown file with three words selected and the format bar above them: bold, italic, strikethrough, code, link, bulleted, numbered and task lists, block quote, table, and a heading level picker reading Normal](/screenshots/docs/markdown-format-bar.png "Select text and the format bar appears above it.")
+
 | Action | Command | Emacs key |
 | --- | --- | --- |
 | Bold / italic / strike / code | `markdown.bold` … | `C-c C-s b` / `i` / `s` / `c` |
@@ -272,6 +274,8 @@ size picker of *Table: Insert…* opens at the caret and works from the keyboard
 Items that need a table are disabled when the caret is not in one, and a table
 command that cannot apply says why.
 
+![The Insert Table prompt over a Markdown file asking for a size in rows x columns, with 3x3 filled in, Cancel and OK buttons](/screenshots/docs/markdown-insert-table.png "Table: Insert… asks for the size and builds the table at the caret.")
+
 | Action | Command | Emacs key |
 | --- | --- | --- |
 | Insert a row above | `markdown.tableAddRowAbove` | (palette) |
@@ -380,6 +384,8 @@ The **Backlinks** tool window (`markdown.showBacklinks`, or *Tool Window:
 Backlinks*) lists every link in the project's Markdown files that points at the
 active file, grouped by file.
 
+![ideas.md open with the Backlinks tool window below: 6 links to this file, grouped under archive/old-plan.md and index.md, each with its line number and the link text](/screenshots/docs/markdown-backlinks.png "The Backlinks window lists every note that links to the open one.")
+
 ### When a file is renamed or moved
 
 Renaming or moving a file in the project offers to update the Markdown links that
@@ -411,6 +417,8 @@ window, as one undo step.
   `[selection](url)`.
 - **Table editing**: **Tab** / **Shift-Tab** move between pipe-table cells, and
   **Enter** on the last row adds a row, reflowing as you go.
+
+![lint.md with squiggles under its deliberate problems and the Markdown Lint tool window below: lint.md 18 issues, then rows such as Ln 1:1 MD041 First line in a file should be a top-level heading and Ln 6:1 MD001 Heading levels should increment by one level at a time; the status bar counts 18 lint issues](/screenshots/docs/markdown-lint.png "Lint problems as squiggles, a count in the status bar, and the Markdown Lint window with the rule behind each one.")
 
 ### Lint rules
 

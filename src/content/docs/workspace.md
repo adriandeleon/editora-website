@@ -878,6 +878,8 @@ All five are bindable in Settings → Keymaps like any other command.
 - The layout is **saved with the session** and restored on the next launch. A
   file that has since disappeared does not leave a blank pane behind.
 
+![Two editor groups side by side: Shelf.java on the left and ShelfTest.java on the right, each with its own tab strip, caret and scrollbar](/screenshots/docs/editor-groups.png "Split Editor Right: a test beside what it tests, each group with its own tabs.")
+
 ### Two views of one file
 
 Separately from editor groups, you can split the *current file* into two views
@@ -949,6 +951,8 @@ says that the layout is saved per project (or per window when no project is
 open), so other projects keep theirs, and that **Reset to Defaults** does not
 change it. Its **Restore Default Layout** button puts every window back on its
 own side, shown or hidden as on a fresh install, in the default order.
+
+![Settings on the Tool Windows page: a Layout row with Restore Default Layout, then the windows listed under Left and Right, each row with a switch, a side menu and up and down arrows](/screenshots/docs/settings-tool-windows.png "Settings → Tool Windows: show or hide each window's button, pick its side, and order the stripes.")
 
 ## The Welcome page
 
@@ -1131,6 +1135,8 @@ row).
 | Put Label | `history.putLabel` | (palette) | (palette) |
 | Recent Changes | `history.recentChanges` | (palette) | (palette) |
 
+![The Local History tool window beside a Java file: the file's revisions newest first under day captions, each with its time and reason, the selected one shown as a side-by-side diff against the current text with Restore](/screenshots/features/local-file-history.png "Local History: every save and auto-save of the file, each one a diff away.")
+
 The same three are under **VCS ▸ Local History**, and *Show Local History* is in
 a tab's right-click menu and in the Project tree. Git's per-file log is a
 separate command, [Show Git History](/docs/git#git-log).
@@ -1266,6 +1272,8 @@ silently covers a script one level up. The default is always untrusted,
 including when the trust file can't be read. The same question fronts
 Gradle's *Load all tasks…*, the build before Run and Debug, and Maven's
 classpath fallback.
+
+![The Build in the folder java? dialog: a build in this folder runs code the folder supplies itself, the pom.xml plugins it would run listed by coordinate, a warning that a build can read, change or delete your files, the folder's path, and Cancel and Trust folder and run buttons](/screenshots/docs/trust-folder.png "Before the first build in a folder, Editora lists what would run and asks.")
 
 Declining means **no build** runs at all. Editora does not fall back to the
 `mvn` or `gradle` on your `PATH`, because that would not be safer: a hostile `pom.xml` or

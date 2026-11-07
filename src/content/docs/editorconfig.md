@@ -49,6 +49,8 @@ Editor**, per language if you like). A `max_line_length` replaces only the
 adds one), and `max_line_length = off` hides them all for files the rule
 covers.
 
+![A notes.txt file in a folder whose .editorconfig sets max_line_length = 40 and end_of_line = crlf for text files: the ruler stands at column 40 and the status bar reads EditorConfig and CRLF](/screenshots/docs/editorconfig.png "A max_line_length of 40 moves the first ruler to column 40; the status bar shows the file follows an .editorconfig and its CRLF endings.")
+
 ## Files with mixed line endings
 
 A file that uses more than one kind of line ending (a CRLF file with a few bare
