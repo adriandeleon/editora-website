@@ -852,6 +852,7 @@ script as it runs.
 | Toggle field watchpoint (Java) | `debug.toggleFieldWatchpoint` | `C-c C-d S-w` |
 | Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
 | Choose exception breakpoints | `debug.toggleExceptionBreakpoints` | (palette) |
+| Show the [exception card](#exception-card) again | `debug.showException` | (palette) |
 | Debug a project main class | `debug.mainClass` | (palette) |
 | Debug a saved run configuration | `debug.config` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
@@ -869,8 +870,8 @@ The keys are the Emacs keymap's; the other keymaps' keys are listed under
 buttons in the Debug window, and most debugger actions are in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Reattach, Stop,
 Restart and Toggle Breakpoint. Stepping, evaluate, watches, hexadecimal values,
-breakpoints, the Threads view and exception breakpoints are in its **Debugger** submenu
-(**Run ▸ Debugger**).
+breakpoints, the Threads view, exception breakpoints and Show Exception are in
+its **Debugger** submenu (**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -971,6 +972,36 @@ Python, `sys.exit()` with a non-zero code also counts as an uncaught exception;
 Continue then ends the program. Editora keeps your choice for each language and
 each project, as it does for **Break on Caught Exceptions** and **Break on
 Uncaught Exceptions** (see [Managing breakpoints](#managing-breakpoints)).
+
+### Exception card
+
+When the program stops on an exception, a card opens under the line that threw
+it, once per stop. Its title says what kind of stop it is:
+
+- **Uncaught exception**, in red, for an exception that nothing catches;
+- **Exception (caught)** for one the program catches;
+- **Exception** when the debugger doesn't say which. The Java debugger says
+  which.
+
+Below the title are the exception's type and its message. When the debugger
+sends them, the card also lists the exceptions that caused it, each on a
+**Caused by** line, and the stack trace. The Python and JavaScript debuggers
+send them; the Java debugger sends only the type and the message.
+
+- **Copy** copies the type, the message, the causes and the stack trace.
+- **Don’t Stop on Caught Exceptions** appears on a caught exception while
+  **Break on Caught Exceptions** is on, and turns that off, so the program no
+  longer stops on exceptions it catches.
+
+The card never takes focus, so typing stays in the editor. Esc in the editor,
+the card's ✕ or a click anywhere else closes it, and so do Continue, a step,
+picking another frame in the call stack, or the session ending. It follows its
+line when you scroll, and closes when the line leaves the screen.
+
+**Debug: Show Exception** (`debug.showException`, in **Run ▸ Debugger** while
+the program is paused) opens the card again. If another frame is shown, it goes
+back to the frame that threw first. When the program did not stop on an
+exception, the status bar says so.
 
 ### Debugging Python
 
@@ -1379,8 +1410,9 @@ classes, list them, separated by commas, in **Exception breakpoints: only these
 classes** on the Java card of **Settings → Debugging** (for example
 java.lang.IllegalStateException). Left blank, both stop on every exception.
 
-At an exception stop, the line that threw is drawn red, and the exception's
-type and message are the top row of Variables.
+At an exception stop, the line that threw is drawn red, the
+[exception card](#exception-card) opens under it, and the exception's type and
+message are the top row of Variables.
 
 ### Temporary breakpoints
 
