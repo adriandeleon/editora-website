@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 7
 beta: false
 summary: "Toggle a buffer read-only to browse without editing; pager-style <kbd>Space</kbd>/<kbd>Backspace</kbd> paging and a Word-style View Mode banner."
+alt: "A Java file in View mode, with an amber banner and an Enable Editing button"
 ---
 
 Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident: typing and edit commands are blocked while highlighting, folding, search, and copy keep working.

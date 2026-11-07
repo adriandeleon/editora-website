@@ -5,12 +5,26 @@ category: Workspace
 order: 1
 ---
 
+**On this page:** [Projects](#projects) · [Project Map](#project-map) ·
+[Starting a project from a template](#starting-a-project-from-a-template) ·
+[Settings a project can commit](#settings-a-project-can-commit) ·
+[Multiple windows](#multiple-windows) · [Tabs](#tabs) ·
+[Saving and reverting](#saving-and-reverting) ·
+[File encodings](#file-encodings) ·
+[Editor groups](#editor-groups-two-files-at-once) ·
+[Tool window layout](#tool-window-layout) ·
+[The Welcome page](#the-welcome-page) · [Focus modes](#focus-modes) ·
+[Window chrome](#window-chrome) ·
+[Local file history](#local-file-history) ·
+[External-change detection](#external-change-detection) ·
+[Trusted folders](#trusted-folders)
+
 ## Projects
 
 A project is a VS Code-style single-folder workspace: a root folder plus its
 **own saved session** (open files with carets and pins, the active tab, folds,
-the editor-group layout, and tool-window layout). Projects are **on by default**
-since 0.10.0; Settings → Workspace turns them off.
+the editor-group layout, and tool-window layout). Projects are **on by default**;
+Settings → Workspace turns them off.
 
 | Action | Command | Default key |
 | --- | --- | --- |
@@ -67,11 +81,16 @@ Files open in any editor tab carry an accent marker in the tree; the active file
 uses a stronger marker. A file or folder menu can also add a first-line bookmark
 or Personal Note directly, with compact indicators showing both annotations.
 
+With no project open, the Project tool window becomes a
+**Current Folder** explorer rooted at the active file's parent directory, and
+follows the focused tab as you switch files. The [Project Map](#project-map)
+window does not follow it: it stays on the folder it was opened on.
+
 ### Project Map
 
 The Project Map shows the project on a spatial canvas, in a **window of its
 own**. Click **Map** beside the Project tool window's search field, press
-`Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs), or run *Project:
+`Alt+Shift+1` (`⇧⌘1` on macOS, `C-c o m` in Emacs), or run *Project:
 Open / Close Project Map Window* (`project.toggleMapView`) to open it; if it is
 open already it comes forward. The key and the command work even with the
 Project tool window closed, and close the Map window when that is the window in
@@ -139,9 +158,9 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   untracked folder. **Clear** turns the filters off and clears the search.
   Every non-root column also has a fuzzy name filter and a **Show hidden**
   checkbox.
-- Click a file's **eye** (or select it and press `Shift-Enter`) for a movable,
+- Click a file's **eye** (or select it and press `Shift+Enter`) for a movable,
   resizable, syntax-highlighted read-only preview card in the editor's font; click
-  the eye again, or press `Shift-Enter` again, to close it. The
+  the eye again, or press `Shift+Enter` again, to close it. The
   preview uses unsaved buffer text when available, says so, and follows later
   edits; **Open** promotes it to a normal editor tab. A code card opens past the
   file's licence header. A card, code or note, opens the way a new column does:
@@ -239,10 +258,10 @@ edit*.
   room, and closing its folder, **Collapse All**, **Close Other Branches**,
   `Escape` on the map or a trail moving on all leave it open. When all eight are
   pinned, a new card is refused, and the status line asks you to unpin one.
-- **Find in a card** with `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) while the
+- **Find in a card** with `Ctrl+F` (`⌘F` on macOS, `C-s` in Emacs) while the
   card has the keyboard, or **Find in Card…** in its menu. A find bar opens
   under the title bar with *k of N*, previous and next, and **Aa** for match
-  case. `Enter` and `Shift-Enter` (or `F3` and `Shift-F3`) step through the
+  case. `Enter` and `Shift+Enter` (or `F3` and `Shift+F3`) step through the
   matches. `Escape` closes the find bar with the match still selected; a second
   `Escape` closes the card.
 - **Who changed it last.** In a Git project a card's status line ends with the
@@ -254,7 +273,7 @@ edit*.
 #### Searching the map
 
 The Map window has its own search field, **Search the map…**, at the top (the
-Project tool window's field filters the tree only). `Ctrl-F` (`Cmd-F` on macOS,
+Project tool window's field filters the tree only). `Ctrl+F` (`⌘F` on macOS,
 `C-s` in Emacs) in the Map window jumps to it. The search covers **the whole
 project**, however large or deep, and answers as you type.
 
@@ -280,9 +299,9 @@ match and its folder; folders and declarations are marked.
 
 | Key (in the search field) | Result |
 | --- | --- |
-| `Enter` / `Shift-Enter` | Step to the next / previous match (both wrap) |
-| `F3` / `Shift-F3` | The same, also on the map |
-| `Ctrl-Enter` (`Cmd-Enter` on macOS) | Open the current match: a file in the editor, a declaration in its card |
+| `Enter` / `Shift+Enter` | Step to the next / previous match (both wrap) |
+| `F3` / `Shift+F3` | The same, also on the map |
+| `Ctrl+Enter` (`⌘Enter` on macOS) | Open the current match: a file in the editor, a declaration in its card |
 
 The search keeps the best 2,000 matches and opens the folders of the **best 30**
 only, so a broad search does not turn the map into a tower of columns; stepping
@@ -302,13 +321,13 @@ where you were before you searched.
 
 #### Finding your way
 
-**Back** and **Forward** (`Alt-Left` / `Alt-Right`) step through the **places**
+**Back** and **Forward** (`Alt+Left` / `Alt+Right`) step through the **places**
 you visited: files you opened or previewed, where a search landed, reveals,
 breadcrumb jumps and rows you clicked. A run of arrow keys is one step, so Back
 returns to where the run started. Right-click either button for the list of
 places.
 
-*Project Map: Reveal Active File* (`projectMap.revealActiveFile`; `Alt-F1`,
+*Project Map: Reveal Active File* (`projectMap.revealActiveFile`; `Alt+F1`,
 `C-c o r` in Emacs) opens the Map window, or brings it forward, and selects the
 file you are editing. The **crosshair** button after the breadcrumb and ⋯ →
 **Reveal Active File** do the same, and **Show in Map** in
@@ -370,7 +389,7 @@ title names the declaration with its parameter types, for example
 A declaration row's own right-click menu has **Preview**, **Open at
 Declaration** and **Open Narrowed**.
 
-A declaration card's **‹ ›** buttons, or `Alt-Page Up` / `Alt-Page Down`, show
+A declaration card's **‹ ›** buttons, or `Alt+Page Up` / `Alt+Page Down`, show
 the previous or next declaration of the same file in the same card. **Show in
 Structure**, in the card's menu, selects the declaration in the file's Structure
 column, opening the column if it is closed.
@@ -423,17 +442,17 @@ closed row does not widen it; opening or closing a row fits it again.
 - **Click a declaration**, or press `Enter` on it, to open it in a card of its
   own, right of the column, level with its row and connected to it. When there
   is no room there, the file card steps left to make some.
-- **Shift-click** or `Shift-Enter` scrolls the file card to the declaration
+- **Shift-click** or `Shift+Enter` scrolls the file card to the declaration
   instead and highlights its lines.
 - A declaration card follows the Structure column you last opened it from. If
   the file's Structure column on the map is open too, clicking the same
   declaration there moves its card beside that column, with its line from that
   row; clicking it in the card's column brings it back. A pinned card stays
   where it is, and only its line moves.
-- From the keyboard, the Structure tool window's key (`Alt-7` in the Emacs and
-  IntelliJ keymaps) or **Show this preview's Structure** in the card's menu
-  opens the column and puts the keyboard in it; the same key goes back to the
-  card. The arrows and `C-n`, `C-p`, `C-f` and `C-b` move in the column, its
+- From the keyboard, the Structure tool window's key (`Alt+7` in the Emacs and
+  IntelliJ keymaps, `⌘7` in IntelliJ on macOS) or **Show this preview's
+  Structure** in the card's menu opens the column and puts the keyboard in it;
+  the same key goes back to the card. The arrows and `C-n`, `C-p`, `C-f` and `C-b` move in the column, its
   right-click menu is a declaration row's, and `Escape` or its **×** takes it
   off.
 
@@ -443,7 +462,7 @@ From a card's or a declaration row's right-click menu, **Go to Definition**,
 **Find Usages**, **Go to Implementation**, **Type Hierarchy** and **Call
 Hierarchy** open the file in the editor at that spot and run there, bringing the
 editor window forward. Their keys work in a focused card too (`F12` and
-`Shift-F12` in the CUA and VS Code keymaps), at the card's caret.
+`Shift+F12` in the CUA and VS Code keymaps), at the card's caret.
 
 To follow the code without leaving the Map, right-click a declaration, or a name
 in a card, and choose **Show Callers as Cards** or **Show References as Cards**.
@@ -545,7 +564,7 @@ same tour.
   card's declaration, else the lines you selected, else the lines in view.
 - **Play it.** Choose ⋯ → **Trails** ▸ **Play** and the trail's name. A bar at
   the top of the map shows *Stop 3 of 9* and the stop's title, with **‹ ›** to
-  step, or `Ctrl-Right` / `Ctrl-Left` (`Cmd` on macOS) from the map, the bar
+  step, or `Ctrl+Right` / `Ctrl+Left` (`⌘` on macOS) from the map, the bar
   or a note. Each stop opens its card at the stop's lines, with your note stuck
   beside it; a card you pin during a stop stays open when the tour moves on. If
   you close the stop's card, the bar's title says *(card closed)* and clicking
@@ -555,8 +574,8 @@ same tour.
   *Previous Trail Stop* (`projectMap.trailPrevious`) and *Close Trail*
   (`projectMap.trailClose`) do the same and can be bound to keys.
 - **Edit it.** **Edit** in the bar or in ⋯ → **Trails** opens the trail's
-  stops in a card over the map. **Move Up** and **Move Down** (`Alt-Up` /
-  `Alt-Down`), **Remove** (`Delete`), **Rename…** and **Note…** change a stop;
+  stops in a card over the map. **Move Up** and **Move Down** (`Alt+Up` /
+  `Alt+Down`), **Remove** (`Delete`), **Rename…** and **Note…** change a stop;
   **Play from Here** (`Enter`, or a double-click) starts the tour at it, and
   **Rename Trail…** renames the trail. Each change is saved at once, unless
   the file changed on disk meanwhile (a pull, say): then the editor shows the
@@ -606,35 +625,35 @@ The canvas is fully keyboard-navigable.
 
 | Key | Result |
 | --- | --- |
-| `Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs) | Open or close the Map window, from anywhere |
-| `Alt-F1` (`C-c o r` in Emacs) | Reveal the active file on the Map, from anywhere |
+| `Alt+Shift+1` (`⇧⌘1` on macOS, `C-c o m` in Emacs) | Open or close the Map window, from anywhere |
+| `Alt+F1` (`C-c o r` in Emacs) | Reveal the active file on the Map, from anywhere |
 | Arrow keys | Move along the flow (into a folder, a file's structure or a declaration; back to the parent) and among siblings |
-| `Ctrl-N` / `Ctrl-P` | Select the next or previous sibling |
+| `Ctrl+N` / `Ctrl+P` | Select the next or previous sibling |
 | `Page Down` / `Page Up` | Move ten rows, stopping at the end of the column |
-| `Home` / `End` | Select the first or last row of the column (`Shift-Home`: the first row of the first column) |
+| `Home` / `End` | Select the first or last row of the column (`Shift+Home`: the first row of the first column) |
 | Typing a name | Jump to the next row in the column whose name starts with what you typed |
 | `Enter` or `Space` | Open the selected file or a declaration's card, or expand or collapse the selected folder |
-| `Shift-Enter` | Open or close the selected file's or declaration's preview card |
+| `Shift+Enter` | Open or close the selected file's or declaration's preview card |
 | `Backspace` | Select the parent (the project folder from the first column) |
-| `Alt-Left` / `Alt-Right` | Go back or forward through the places you visited |
-| `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) | Focus the Map's search field |
-| `F3` / `Shift-F3` | Step to the next / previous search match |
+| `Alt+Left` / `Alt+Right` | Go back or forward through the places you visited |
+| `Ctrl+F` (`⌘F` on macOS, `C-s` in Emacs) | Focus the Map's search field |
+| `F3` / `Shift+F3` | Step to the next / previous search match |
 | `/` | Focus the current column's filter; `Enter` there returns to the map on the first match |
-| `Ctrl-0` (`Cmd-0` on macOS) | Fit the whole map |
+| `Ctrl+0` (`⌘0` on macOS) | Fit the whole map |
 | `F2` | Rename the selected file or folder |
 | `Delete` | Delete the selection, as in the tree |
-| Menu key or `Shift-F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes, Close Column and Close Other Branches |
+| Menu key or `Shift+F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes, Close Column and Close Other Branches |
 | `Alt`+arrows / `Alt`+`Shift`+arrows | In a focused card: move it / resize it |
-| `Ctrl-F` (`Cmd-F` on macOS, `C-s` in Emacs) | In a focused card: find in the card; `Enter` / `Shift-Enter` or `F3` / `Shift-F3` step through the matches |
-| `Alt-Page Up` / `Alt-Page Down` | In a declaration card: show the previous / next declaration of the file |
-| `Ctrl-Right` / `Ctrl-Left` (`Cmd` on macOS) | While a trail plays: the next / previous stop |
-| Menu key or `Shift-F10` | In a focused card: open its menu at the caret, with Pin Card, Find in Card…, Show Callers as Cards, Annotate and Add This Card as a Stop |
-| `Alt-7` (Emacs and IntelliJ keymaps) | In a focused card: open its Structure column and move into it, or back to the card |
-| `F12` / `Shift-F12` (CUA and VS Code keymaps) | In a focused card: Go to Definition / Find Usages in the editor |
-| `Escape` | In a card: close its find bar, then the card. On the map: end a playing trail, close open cards (not pinned ones), then clear the search (your place stays; `Alt-Left` goes back to before it), then return to the editor window |
+| `Ctrl+F` (`⌘F` on macOS, `C-s` in Emacs) | In a focused card: find in the card; `Enter` / `Shift+Enter` or `F3` / `Shift+F3` step through the matches |
+| `Alt+Page Up` / `Alt+Page Down` | In a declaration card: show the previous / next declaration of the file |
+| `Ctrl+Right` / `Ctrl+Left` (`⌘` on macOS) | While a trail plays: the next / previous stop |
+| Menu key or `Shift+F10` | In a focused card: open its menu at the caret, with Pin Card, Find in Card…, Show Callers as Cards, Annotate and Add This Card as a Stop |
+| `Alt+7` (Emacs and IntelliJ keymaps; `⌘7` in IntelliJ on macOS) | In a focused card: open its Structure column and move into it, or back to the card |
+| `F12` / `Shift+F12` (CUA and VS Code keymaps) | In a focused card: Go to Definition / Find Usages in the editor |
+| `Escape` | In a card: close its find bar, then the card. On the map: end a playing trail, close open cards (not pinned ones), then clear the search (your place stays; `Alt+Left` goes back to before it), then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
-chords a keymap binds to something else, such as `Ctrl-N` or `Ctrl-0`. `Tab`
+chords a keymap binds to something else, such as `Ctrl+N` or `Ctrl+0`. `Tab`
 moves only between controls you can see.
 
 #### File management
@@ -674,24 +693,11 @@ the Save dialog.
 The Save dialog opens over the Map window in the project folder, and the status
 line says where the file went.
 
-With no project open, the Project tool window becomes a
-**Current Folder** explorer rooted at the active file's parent directory, and
-follows the focused tab as you switch files. The Map window does not follow it:
-it stays on the folder it was opened on.
-
 ### Starting a project from a template
 
-**New Project From Template** (`project.newFromTemplate`) scaffolds a whole
-project rather than pointing Editora at a folder you made yourself: pick a
-multi-file [template](/docs/snippets-templates), enter a **project name** and a
-**location**, and fill in the template's variables. The dialog shows the folder
-it will create; a folder that already exists and is not empty is refused.
-Editora creates the folder, registers it as a project, and opens it in its own
-window on the template's main file. Two project templates ship with Editora:
-**Python Project** (package layout, a test, `pyproject.toml`, README and
-`.gitignore`) and **Node.js TypeScript Project** (a module, a `node:test` test,
-`tsconfig.json`, README and `.gitignore`). Every other multi-file template, yours
-included, appears in the same picker.
+**New Project From Template** (`project.newFromTemplate`) creates a new folder
+from a multi-file template and opens it as a project in its own window; see
+[Starting a project](/docs/snippets-templates#starting-a-project).
 
 ### Settings a project can commit
 
@@ -773,8 +779,8 @@ command, *Close Others* and the other tab-menu closes, or a tab's **×**), not t
 ones that go when a window closes or you switch projects, and it brings back
 files only, not diff or preview tabs. It is `Ctrl+Shift+T` (`⇧⌘T` on macOS) in
 the VS Code, Sublime Text and CUA keymaps, and it is in the **File** menu
-under Open Project. IntelliJ IDEA's `Ctrl+Shift+T` stays Go to Test, so there it is a
-palette command.
+under Open Project. IntelliJ IDEA's `Ctrl+Shift+T` stays Go to Test, so there,
+as in the Emacs keymap, it is a palette command.
 
 ## Saving and reverting
 
@@ -806,7 +812,10 @@ Editora reads a file as UTF-8 unless a byte-order mark or a `charset` rule in an
 that encoding still opens without losing a byte: it is shown through a
 single-byte stand-in (Windows-1252 or ISO-8859-1), and the status bar draws its
 encoding in the **warning colour**, with a tooltip saying the real encoding is
-unknown.
+unknown. Until you reopen it in its real encoding, the file refuses a save that
+would re-encode it. If you type a character the stand-in cannot store, the
+status bar names the character and its line, and the file can be saved again
+once it is removed.
 
 Click the encoding in the status bar (*Buffer: Change Encoding…*,
 `buffer.chooseEncoding`) to fix it, or use the two commands it offers from the
@@ -907,7 +916,7 @@ rearrange them without leaving the keyboard or reaching for a preference.
 | Maximize / restore the tool window | `view.maximizeToolWindow` | `C-x f` |
 | Float it into its own window | `view.floatToolWindow` | (palette) |
 | Open a second window on one side | `view.splitToolWindow` | (palette) |
-| Close a focused tool window | `view.closeFocusedToolWindow` | `C-x 0`, or `M-g` |
+| Close a focused tool window | `view.closeFocusedToolWindow` | `C-x 0`, or `M-g` while the tool window has focus |
 
 Maximize and float also have a button each in the tool window's header, and the
 header's right-click menu carries all three. Each acts on the focused tool
@@ -926,8 +935,8 @@ says so rather than guessing.
   which lists only the windows that could join a side right now. Left
   and right split vertically; the bottom splits **horizontally**, so that two
   consoles side by side both stay readable. A third window evicts
-  the companion, not the primary. Opening a tool window normally still
-  *replaces*, so the stripe buttons, keybindings, and palette behave as before.
+  the companion, not the primary. Opening a tool window any other way
+  *replaces* the one on its side.
 - **Floating** puts a tool window in its own window, owned by the editor. It
   floats above the editor, minimizes with it, and closes with it. Bounds are remembered,
   and reused only when they still overlap a screen, so a window saved on a
@@ -1004,13 +1013,11 @@ Page) with their shortcuts.
   (`view.toggleSimpleMode`), or the `--simple` flag (session-only). Toggling off
   restores everything.
 
-  It **keeps a menu bar**, simplified to File, Edit, Find, View and Help. The
-  menus removed are the ones for features the mode switches off (code
-  intelligence, running and debugging, version control, tool windows), which
-  would otherwise be entirely greyed out. The menu bar stays because it shows
-  what the editor can do, and people new to the editor need that most. The
-  Simple UI mode toggle stays in the reduced View menu, so anyone who entered
-  the mode from there can leave it the same way.
+  It **keeps a menu bar**, reduced to File, Edit, Find, View and Help: the
+  menus for features the mode switches off (code intelligence, running and
+  debugging, version control, tool windows) are removed. The reduced View menu
+  keeps the Simple UI mode toggle, so you can leave the mode the way you
+  entered it.
 
   The right-click menus are trimmed the same way:
 
@@ -1042,35 +1049,31 @@ keyboard shortcuts and the palette.)
 without a system title bar, and the menus, the window title and the system
 buttons share that single row, which gives the editor a full bar of vertical
 space back. Minimise, maximise, close, drag-to-move, double-click-to-maximise,
-edge resize and snapping all stay the platform's own, so the window behaves as
-before and only the position of the menus changes. The window drags from the
+edge resize and snapping all stay the platform's own; only the position of the
+menus changes. The window drags from the
 title in the middle of the bar as well as from its empty parts.
 
 It is **experimental**, off by default, and **applies on restart**, because a
-window's style is fixed once it has been shown. **Linux and Windows only.** macOS is
-excluded because the menu belongs to the system menu bar at the top of the
-screen there, so drawing it inside the window would not make the window any
-taller. The checkbox is disabled rather than hidden, so its note still explains
-why. Also on the palette as
-`view.toggleExtendedWindow`.
+window's style is fixed once it has been shown. **Linux and Windows only:** on
+macOS the menus are in the system menu bar, so the checkbox is disabled, with a
+note saying why. Also on the palette as `view.toggleExtendedWindow`.
 
-The **breadcrumb** sits directly under the editor area and is as wide as the
-editor, rather than spanning the whole window above the status bar. It writes your home directory as a single `~` crumb, which still
-navigates there. In a Markdown file it continues with the path of headings at
+The **breadcrumb** sits directly under the editor area, as wide as the editor.
+It writes your home directory as a single `~` crumb, which still navigates
+there. In a Markdown file it continues with the path of headings at
 the caret.
 
 In the **status bar**, indent, line endings and encoding are one segment
-(`Tab 4 · LF · UTF-8`), since all three describe how the file is written to disk.
-They remain three separate click targets with three tooltips, because they run
-three different commands, and they appear only when a file is open. In a
+(`Tab 4 · LF · UTF-8`). Each part is its own click target, with its own tooltip
+and command, and the segment appears only when a file is open. In a
 Python file that mixes tabs and spaces the way Python rejects, the indent part
 reads `Tab 4 · mixed indent` in the warning colour (see
 [Editing](/docs/editing#python)). The encoding
 is drawn in the warning colour when Editora had to guess it; see
 [File encodings](#file-encodings). A file whose
 lines do not all end the same way reads **Mixed** with its dominant ending, for
-example `Mixed (LF)`. Saving such a file unchanged leaves it as it is; saving an
-edit writes the dominant ending on every line and says so.
+example `Mixed (LF)`; see
+[Files with mixed line endings](/docs/editorconfig#files-with-mixed-line-endings).
 
 ### The toolbar
 
@@ -1080,20 +1083,14 @@ one off to remove it). *Restore Default Layout* puts it back.
 
 The bar is two containers on one row. The **icon cluster** is what you
 customize, and it is what collapses into the overflow chevron when the window
-gets narrow. The **tail** is pinned to the right end and never overflows, the way an
-IDE pins its run widget. It holds the run-configuration selector with its Run,
-Debug and Stop buttons, the project switcher, Open Folder, the build badges and
-Settings. As a result, the selector and its Run, Debug and Stop buttons are not draggable items in
-Settings → Toolbar. They are pinned so that a narrow window cannot hide the
-control that starts a run, whereas every icon in the cluster is also reachable
-from the menus and the palette.
+gets narrow. The **tail** is pinned to the right end and never overflows, so a
+narrow window cannot hide the control that starts a run. It holds the
+run-configuration selector with its Run, Debug and Stop buttons, the project
+switcher, Open Folder, the build badges and Settings. The selector and its Run,
+Debug and Stop buttons are not draggable items in Settings → Toolbar.
 
-**Recent Files sits in the cluster**, between Save As and Undo. It is a file
-action, one of the ways to get a file on screen, and beside the project
-switcher it read as a project control. As a catalog item, it can be dragged
-elsewhere or removed like any other. A toolbar you had already customized keeps
-the button. Because a saved layout is used verbatim, the button is inserted
-after Save As so that it does not disappear from both halves.
+**Recent Files sits in the cluster**, between Save As and Undo, and can be
+dragged elsewhere or removed like any other icon.
 
 Its dropdown is as wide as the longest file name, up to a limit, with each
 file's project label lined up in one column. Hover a row for the file's full
@@ -1101,10 +1098,8 @@ path. A row's trash icon asks before removing that file from the list, and the
 question shows the full path, so two files with the same name are easy to tell
 apart.
 
-Cut, copy and paste are not in the default layout, because in a keyboard-driven
-editor they are rarely reached for with the mouse. They remain catalog items
-and can be dragged back onto the bar. A bar you have already arranged is otherwise
-untouched.
+Cut, copy and paste are not in the default layout. They are catalog items you
+can drag onto the bar.
 
 ## Local file history
 
@@ -1147,7 +1142,7 @@ tab has unsaved edits.
 | `Enter` | Move into the selected revision's diff |
 | `F2` | Set or edit the revision's label |
 | `F5` | Reload the list |
-| Menu key or `Shift-F10` | Open the row's menu (*Restore This Version*, *Set Label…*) |
+| Menu key or `Shift+F10` | Open the row's menu (*Restore This Version*, *Set Label…*) |
 | `Tab` | Leave the diff for the filter and the list |
 | `Escape` | Clear a typed filter, then return to the editor |
 

@@ -52,4 +52,4 @@ The release also fixes distributed multi-cursor paste undo, Replace in Files
 undo isolation and conflict handling, cross-window Save As coordination,
 read-only loading-state flashes, and sticky headers on extremely long lines.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.18/#0181---2026-09-10) page.

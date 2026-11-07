@@ -74,6 +74,19 @@ bundled**. Each client has a card with its command and a line saying whether
 it is there, for example *claude-code-acp: found (/usr/local/bin/claude-code-acp)*
 or *gemini: not found*; the card of the client in use is marked **In use**.
 
+Seven clients have cards. Pick one in the **Active agent client** list; a card's
+command field replaces its default command.
+
+| Client | Default command |
+| --- | --- |
+| Claude Code | `claude-code-acp` |
+| Gemini CLI | `gemini --acp` |
+| GitHub Copilot CLI | `copilot --acp` |
+| Codex CLI | `codex-acp` (the ACP adapter: `npm install -g @agentclientprotocol/codex-acp @openai/codex`, then `codex login`) |
+| Qwen Code | `qwen --acp` |
+| OpenCode | `opencode acp` |
+| LM Studio / Bionic (OpenCode) | `opencode acp`, pointed at the model and local API endpoint set for LM Studio / Bionic on the AI Actions page |
+
 - Its file reads see your open buffers' **unsaved** text.
 - Its edits to open files apply as **undoable buffer edits** that you review and
   save.
@@ -142,10 +155,10 @@ address, so your key never crosses the network in the clear. Plain-http on
 
 A key typed into Settings, for any provider, is kept in the **system
 keychain**: the macOS Keychain, the Windows Credential Manager, or the Secret
-Service on Linux (GNOME Keyring or KWallet, through libsecret). Keys that an
-earlier version saved in `settings.json` move to the keychain at the first
-start; each one leaves the file only after the keychain has stored it and
-given back the same text. The note under **API key** on the AI Actions page
+Service on Linux (GNOME Keyring or KWallet, through libsecret). A key found in
+`settings.json` while a keychain is available moves to the keychain at start;
+it leaves the file only after the keychain has stored it and given back the
+same text. The note under **API key** on the AI Actions page
 says where the keys are.
 
 Where no keychain answers (libsecret is not installed, or no Secret Service

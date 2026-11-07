@@ -4,6 +4,7 @@ group: "Editing"
 order: 6
 beta: false
 summary: "Honors a project's <code>.editorconfig</code>: indent style/size, tab width, end-of-line, charset, max line length, and on-save trim / final-newline. On by default."
+alt: "An .editorconfig file with sections for all files, Java, XML, JSON and YAML"
 ---
 
 Editora reads a project's `.editorconfig` so your files follow the project's conventions automatically. On opening a file it resolves the nearest config, walking up the directory tree to a `root = true` file, with the closest directory winning.

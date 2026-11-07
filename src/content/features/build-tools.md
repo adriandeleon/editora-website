@@ -4,6 +4,7 @@ group: "Run & debug"
 order: 5
 beta: false
 summary: "Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka each get a tasks tool window and a streaming console."
+alt: "A pom.xml beside the Maven tool window, listing its lifecycle phases and profiles"
 ---
 
 Each detected build tool gets its own **tasks tool window** (its stripe appears when the tool's marker file is found): a browsable tree of the tool's goals, scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…). Double-click or Enter runs a task, and the output streams to a separate per-tool console window. A searchable actions popup is also available from the command palette (*Maven: Show Actions*, and so on).

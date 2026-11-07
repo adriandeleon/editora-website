@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 7
 beta: false
 summary: "Open a data or config file and get a rendered or plain-English preview: JSON/YAML/TOML/XML trees, OpenAPI docs, and decoded systemd, ssh, Dockerfile, fstab, crontab, and GitHub Actions files."
+alt: "A PNG image open in the image viewer, with zoom and Fit controls"
 ---
 
 Many file types get the same 3-mode preview as Markdown, turning raw config and data into something readable.

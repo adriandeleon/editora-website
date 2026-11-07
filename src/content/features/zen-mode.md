@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 3
 beta: false
 summary: "Hides every bar, the line numbers, and the minimap, leaving only the text. Everything you have switched on keeps running."
+alt: "Zen mode: a Java file with no menus, tabs, toolbars or status bar around it"
 ---
 
 Zen mode leaves only the text of the file. It hides the menu bar, toolbar, tab bar, breadcrumb, tool-window stripes, and status bar, along with the line numbers, the minimap, the rulers, and the indent guides. Fold markers stay in the margin.

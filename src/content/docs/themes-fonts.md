@@ -12,8 +12,7 @@ preview that recolors as you change things.
 
 **Editora Light** and **Editora Dark** are the app's own pair, drawn from the
 palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved
-for keybindings. They are what a fresh install starts in. An existing
-install keeps whatever theme it was already on; the pair is added to the list.
+for keybindings. They are what a fresh install starts in.
 
 Twenty-eight themes ship in total:
 

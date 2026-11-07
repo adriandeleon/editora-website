@@ -1,9 +1,44 @@
 ---
 title: Troubleshooting
-description: Doctor, a blocked first launch, finding external tools, the application log, recovering after a crash, performance, and resetting config.
+description: A blocked first launch, finding external tools, Doctor, the application log, recovering after a crash, performance, and resetting config.
 category: Help
 order: 3
 ---
+
+## A launcher is blocked on first run
+
+The Windows installer is unsigned, so Windows stops it until you allow it. You
+only do this once.
+
+- **Windows**: when you run the downloaded `.msi`, SmartScreen shows *Windows
+  protected your PC*. Click **More info**, then **Run anyway**. The installer
+  installs Editora for every user of the computer, so Windows then asks for
+  administrator rights, and its prompt names the publisher as *Unknown*.
+  Once installed, Editora starts without these prompts.
+- **macOS**: the app is signed and notarized by Apple. The first time you open
+  it, macOS asks once whether to open an app downloaded from the Internet;
+  click **Open**.
+
+To check that a download is the one the release workflow built, see
+[Checking a download](/docs/getting-started#checking-a-download).
+
+## External tools aren't found
+
+Language servers, debug adapters, `git`, `mmdc`, and the file runner are
+external programs Editora launches. A GUI-launched app inherits a stripped
+`PATH` that often misses Homebrew, npm, and version-manager directories, so a
+tool that works in your terminal may look "not found" in the app.
+
+Editora rebuilds the `PATH` from your login shell plus the usual install
+locations before launching anything, which recovers most setups (including
+nvm/fnm/asdf per-version bins). A Python environment you activated before
+starting Editora (`$VIRTUAL_ENV`, `$CONDA_PREFIX`) stays first on that `PATH`.
+[Doctor](#doctor) shows the command each feature found, or that it found none.
+If a tool still isn't found:
+
+- Set its absolute path in the relevant Settings page (LSP, Debugging, Mermaid).
+- Confirm it runs from a plain login shell, since that's the `PATH` Editora reads.
+- On Windows there's no login-shell convention, so prefer setting absolute paths.
 
 ## Doctor
 
@@ -138,8 +173,8 @@ What the warning says depends on whose copy it is:
 
 - **Editora installed it.** For example *Editora installed 0.10.0; this release
   of Editora is tested with 0.11.0.* Update replaces it.
-- **Installed by an earlier Editora.** Editora now records the version of each
-  copy it installs. For a copy from before that, Doctor reads the version from
+- **Installed by an earlier Editora.** Editora records the version of each
+  copy it installs. For a copy with no record, Doctor reads the version from
   its files, or from what the program prints, where it can. Where it can't tell
   (a Kotlin server from an earlier Editora, for example), the row says the copy
   may be older and offers Update, which installs the tested release.
@@ -187,40 +222,6 @@ The pinned servers and tools [above](#update-for-servers-older-than-editoras)
 are never looked up: a new Editora release brings their newer versions, and
 **Update…** on their rows installs them. Servers that a toolchain keeps up to
 date, such as rust-analyzer through rustup, are not looked up either.
-
-## A launcher is blocked on first run
-
-The Windows installer is unsigned, so Windows stops the first launch until you
-allow it. You only do this once.
-
-- **Windows**: in the SmartScreen dialog, click **More info**, then **Run
-  anyway**.
-- **macOS**: the app is signed and notarized by Apple, so Gatekeeper opens it
-  without asking. Releases before 0.27.0 were unsigned; to open one of those on
-  macOS 15 and later, open it once and dismiss the warning, then go to **System
-  Settings → Privacy & Security**, scroll to the Security section, and click
-  **Open Anyway** next to the Editora message. On macOS 14 and earlier,
-  Control-click the app in Finder and choose *Open* instead.
-
-To check that a download is the one the release workflow built, see
-[Checking a download](/docs/getting-started#checking-a-download).
-
-## External tools aren't found
-
-Language servers, debug adapters, `git`, `mmdc`, and the file runner are
-external programs Editora launches. A GUI-launched app inherits a stripped
-`PATH` that often misses Homebrew, npm, and version-manager directories, so a
-tool that works in your terminal may look "not found" in the app.
-
-Editora rebuilds the `PATH` from your login shell plus the usual install
-locations before launching anything, which recovers most setups (including
-nvm/fnm/asdf per-version bins). A Python environment you activated before
-starting Editora (`$VIRTUAL_ENV`, `$CONDA_PREFIX`) stays first on that `PATH`.
-If a tool still isn't found:
-
-- Set its absolute path in the relevant Settings page (LSP, Debugging, Mermaid).
-- Confirm it runs from a plain login shell, since that's the `PATH` Editora reads.
-- On Windows there's no login-shell convention, so prefer setting absolute paths.
 
 ## A language server starts but does nothing
 
@@ -454,7 +455,7 @@ When the Debug window's state line reads *Not started: the import failed*, the
 Java language server could not import the Maven or Gradle project, so nothing
 was built or launched. The Debug console lists the import's errors. Fix the
 build file and debug again. When the errors name a Java version, choose
-another **Default JDK** in **Settings → Languages & Tools → Build Tools**.
+another **Default JDK** in **Settings → Build Tools**.
 
 *Not started: the build failed* means the project has compile errors; the
 Debug console lists them, with a link to each line.

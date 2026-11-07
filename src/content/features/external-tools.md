@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 9
 beta: false
 summary: "Define your own CLI commands and run them on the current file or buffer, with <code>$Name$</code> macros, stdin piping, and output to a console or back into the text."
+alt: "The External Tools: Run picker listing three tools and what each does with its output"
 ---
 
 Define your own command-line tools in **Settings → External Tools** and run them on the current file or buffer, IntelliJ-style.

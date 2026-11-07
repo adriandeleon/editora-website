@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 3
 beta: false
 summary: "Split the editor into independent groups with their own tabs to see two files at once, nest the splits, drag a tab between them, and get the whole arrangement back on the next launch."
+alt: "Two editor groups side by side: a CSV file on the left and a Markdown file on the right"
 ---
 
 The editor area splits into independent **editor groups**, each with its own tabs and its own selection, so a header can sit beside its implementation or a test beside what it tests.

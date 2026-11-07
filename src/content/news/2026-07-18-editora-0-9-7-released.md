@@ -38,4 +38,4 @@ PC no longer double-binds), plugin class loaders that no longer leak jar handles
 (and no longer block uninstall on Windows), two SFTP windows that no longer
 strand each other's remote files, text zoom that now works in diff views and on
 the Welcome page, and one Ctrl-Z that fully reverts a repeated snippet field. The
-full list is on the [What's New](/whats-new) page.
+full list is on the [What's New](/whats-new/0.9/#097---2026-07-18) page.

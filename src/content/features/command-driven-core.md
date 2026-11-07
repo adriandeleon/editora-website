@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 1
 beta: false
 summary: "Every action is a registered <code>Command</code>, bound to a chord or one <kbd>M-x</kbd> search away. There are 900+ commands and no hidden actions."
+alt: "The command palette filtered by \"git\", listing Git commands with the highlighted one's description"
 ---
 
 Editora has no hidden actions. Every capability (save, toggle a bookmark, start the debugger, switch a theme) is a registered `Command` with an id and a title. Four things are built on that registry:

@@ -122,8 +122,7 @@ Running a Java file needs JDK 25 or newer. Editora uses the selected Default JDK
 when one is configured, or `java` on your `PATH`, and checks that exact launcher
 before running. An extensionless shebang can request a newer source release.
 
-For Maven projects, **Settings → Languages & Tools → Build Tools → Default
-JDK** selects the toolchain used by Run, Debug, Maven classpath resolution,
+For Maven projects, **Settings → Build Tools → Default JDK** selects the toolchain used by Run, Debug, Maven classpath resolution,
 Maven tasks, and before-launch steps. Installed JDKs are discovered from the
 usual platform locations and common version managers. A run configuration's
 **JDK** field can inherit that choice or override it for one configuration. The
@@ -389,8 +388,8 @@ How a Scala file runs depends on the build it belongs to:
   highest folder with a `build.sbt`).
 - A file of a **Mill** build runs through Mill the same way:
   `./mill app.runMain demo.hello`, where `app` is the module whose `src` folder
-  holds the file. The project's own `./mill` launcher is used when it has one,
-  after the same [trust](/docs/build-tools) question as for `./mvnw`.
+  holds the file. The project's own `./mill` launcher is used when it has one;
+  unlike `./mvnw`, it runs without a [trust](/docs/build-tools) question.
 - A file of a **Gradle** or **Maven** build is run from that build's tool
   window; Run says so instead of running the file on its own.
 - Any other file, and a `.sc` script, runs with **Scala CLI**:
@@ -428,7 +427,7 @@ To trace a [run configuration](#run-configurations), put `-x` in its
 
 A file in a [remote folder](/docs/remote) runs on its host, when that host
 [may run commands](/docs/remote#allowing-a-host-to-run-commands); otherwise
-Run says so when you launch it. That covers Run on a file, a Java project's main
+Run says so when you launch it. Remote is in Beta. That covers Run on a file, a Java project's main
 class (the gutter ▶, *Run Main Class*, or a saved configuration, with the class
 path the host's `jdtls` or Maven gives), and script, make and npm
 configurations of a remote project. A shell script runs under the interpreter
@@ -471,7 +470,8 @@ configuration, with the `java`, interpreters and environment the container or
 distribution has. Output, input and Stop work as for a local run, and Stop ends
 what the program started inside. The files are handed over by the names they
 have inside, and a configuration's absolute working directory is read as a
-folder there.
+folder there. Containers and WSL are part of [Remote](/docs/remote), which is in
+Beta.
 
 A Python script picks its interpreter as on a remote host: the configuration's
 **Interpreter**, the project's pick, or the project's venv (one created inside
@@ -530,10 +530,10 @@ launch, through the project's wrapper once trusted, the command override, or
 the tool on your `PATH`. The Maven compile builds from the reactor root with
 `-pl <module> -am` when the root lists the module, else the module alone, and
 carries the Maven window's checked profiles and flags, as the fallback does.
-A failed build aborts the launch, so a fresh clone no
-longer dies with `ClassNotFoundException` and an edited file no longer runs
-the previous binary. **Settings → Languages & Tools → Build Tools → Build
-before Run and Debug** (on) turns it off; a run configuration with its own
+A failed build aborts the launch, so a fresh clone does
+not stop with `ClassNotFoundException` and an edited file never runs the
+previous binary. **Settings → Build Tools → Build before Run and Debug** (on)
+turns it off; a run configuration with its own
 [before-launch step](#a-step-before-the-launch) keeps that step and is not
 built twice. A launch that ran without the build prints a hint to build when
 the JVM cannot find the main class.
@@ -693,7 +693,9 @@ A configuration can name a command to run first, such as a build or a codegen
 step. A
 **non-zero exit aborts the launch**, so a stale binary is never run by accident.
 The step runs in the configuration's working directory; for a Python script
-with a blank one, it runs at the project root.
+with a blank one, it runs at the project root. A Java configuration's step
+always runs in its project root, whatever the working directory, because it is
+usually a build.
 
 The step may name a build tool instead of a program: `maven:compile` or
 `gradle:compileJava` runs that goal or task through the project's own Maven or
@@ -738,6 +740,52 @@ container or WSL distribution.
 committed alongside the project's [committed settings](/docs/workspace).
 **Import** merges them back **by name**, so importing twice doesn't duplicate and
 a colleague's edit updates a configuration rather than doubling it.
+
+#### What the file holds
+
+Export writes every configuration of the window, and the project's
+[deployments](/docs/deployments#sharing-them), replacing the file. It is plain
+JSON, one object per configuration:
+
+```json
+{
+  "configurations": [
+    {
+      "name": "App",
+      "type": "java",
+      "mainClass": "com.example.App",
+      "args": "--port 8080",
+      "vmArgs": "-Xmx512m",
+      "env": "LOG_LEVEL=debug",
+      "beforeLaunch": "maven:compile"
+    },
+    {
+      "name": "serve.py",
+      "type": "python",
+      "target": "scripts/serve.py",
+      "workingDir": ""
+    }
+  ]
+}
+```
+
+`type` is `java`, `python`, `python-module`, `shell`, `make`, `npm`, `node`,
+`groovy`, `kotlin`, `scala` or `clojure`. A field left out is blank, and a
+blank field means the default described above. Relative paths in `target` and
+`workingDir` are relative to the project root.
+
+Before you commit it:
+
+- **Machine paths travel too.** A JDK (`jdkHome`), an interpreter or Node.js
+  path (`interpreter`), or a deployment's key file is written as you set it,
+  so a path that exists only on your computer fails on a colleague's. Leave
+  these blank to use each machine's default. A Python interpreter can also be
+  a path relative to the project root, such as `.venv/bin/python`.
+- **Environment values are written as typed.** Keep secrets out of a
+  configuration you share.
+- **A file that cannot be read counts as empty.** A hand edit that breaks the
+  JSON makes Import say there are no shared configurations, rather than
+  naming the error. Unknown keys are ignored.
 
 ### Creating and editing them
 
@@ -815,7 +863,7 @@ script as it runs.
 
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
-buttons in the Debug window, and every debugger action is in the **Run** menu.
+buttons in the Debug window, and most debugger actions are in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Reattach, Stop,
 Restart and Toggle Breakpoint. Stepping, evaluate, watches, hexadecimal values,
 breakpoints and exception breakpoints are in its **Debugger** submenu
@@ -986,8 +1034,7 @@ console (program input)**, is on the **Debugged programs** card of
 `debug.toggleProgramConsole`) and takes effect at the next launch. It applies
 to a launched Java program, and to a Python or JavaScript program started on
 this computer; a Python or JavaScript file on a remote host, in WSL or in a
-container is unaffected, and so are attached sessions. It has not yet been
-confirmed on Windows.
+container is unaffected, and so are attached sessions.
 
 **Run the program in a Terminal tab instead**, just below it, runs that program
 in a tab of the [Terminal](/docs/terminal#run-and-debug-programs-in-a-terminal)
@@ -1220,10 +1267,10 @@ accept; the console then tells you to restart.
 `.mts`, `.cts`, or a `node` shebang script) runs it under vscode-js-debug,
 started exactly as Run starts it: the same Node.js, flags, environment and
 folder, and for TypeScript the project's tsx or the compiled file (see
-[Node.js scripts](#nodejs-scripts)). Choose that Node.js in the **Node.js** card
-under **Settings → Build Tools**; left blank, Editora uses the version a
-project's `.nvmrc` or `.node-version` names (when nvm has it), else `node` on
-your `PATH`. The Debug console's first line is the command that runs. When that
+[Node.js scripts](#nodejs-scripts)). That Node.js is chosen as described in
+[Which Node.js runs](#nodejs-scripts): a configuration's own, then a project's
+`.nvmrc` or `.node-version`, then the **Node.js** card under **Settings → Build
+Tools**, then `node` on your `PATH`. The Debug console's first line is the command that runs. When that
 is a compiled file older than its source, a red line says so: build the project
 first to debug your latest changes. The **JavaScript** card under **Settings →
 Debugging** has a link to the Node.js card, and its **Detected** line names the
@@ -1292,8 +1339,8 @@ A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
 only a closing `}` takes a breakpoint.
 
-**Debug: Breakpoints…** (`C-c C-d l`; Ctrl+Shift+F8 in the IntelliJ keymap)
-lists every breakpoint. Each row has the gutter's glyph for its kind, its file,
+**Debug: Breakpoints…** (`C-c C-d l`; Ctrl+Shift+F8 in the IntelliJ keymap,
+⇧⌘F8 on macOS) lists every breakpoint. Each row has the gutter's glyph for its kind, its file,
 line and code, and below them what it does (its condition or log message) and
 its folder, relative to the project (none for a file at the project root), or with
 your home folder shortened to `~`. With no breakpoints, the list says how to set
@@ -1699,7 +1746,7 @@ there yet.
 A file in a [remote folder](/docs/remote) is debugged on its host, when that
 host [may run commands](/docs/remote#allowing-a-host-to-run-commands), with
 breakpoints, stepping, variables and the call stack as for a local file.
-Breakpoints of a remote file are kept across reconnects.
+Breakpoints of a remote file are kept across reconnects. Remote is in Beta.
 
 - **Python** runs debugpy on the host, which needs its own
   (`pip install debugpy`). The program itself runs as Run runs it there: under
@@ -1736,14 +1783,15 @@ Editora's java-debug plugin copied into `~/.cache/editora`. A Java file outside
 a project is compiled there for the debugger. The debugger's port inside is
 reached from here whatever the container's network, through a relay that needs
 `nc`, `bash` or `python3` inside (see
-[Ports and debuggers](/docs/remote#ports-and-debuggers)).
+[Ports and debuggers](/docs/remote#ports-and-debuggers)). Containers and WSL
+are part of [Remote](/docs/remote), which is in Beta.
 
 ### Installing adapters
 
 Adapters are not bundled. Each language's card on **Settings → Debugging** has
-an **Install…** button that downloads what is missing, the adapter together with
-its language server, into your config folder. The same installs are three
-palette commands:
+an **Install…** button that downloads what is missing into your config folder:
+for Java and Python, the adapter together with its language server. The same
+installs are three palette commands:
 
 | Command | Installs | Needs |
 | --- | --- | --- |
@@ -1787,7 +1835,9 @@ interpreter cannot import it. A link at the top of the Debugging page leads
 there.
 
 For sending HTTP requests from `.http` files, see the
-[HTTP client](/docs/http-client). For Maven, npm, Cargo, Go, and Gradle tasks,
-see [Build tools](/docs/build-tools). A build task that would run a project's
-own `./mvnw` or `./gradlew` asks you to
-[trust the folder](/docs/workspace#trusted-folders) first.
+[HTTP client](/docs/http-client). For Maven, Gradle, npm, Cargo, Go, sbt,
+Mill, Scala CLI, Clojure CLI, Leiningen and Babashka tasks, see
+[Build tools](/docs/build-tools). The first Maven or Gradle build in a folder,
+wrapper or not, asks you to
+[trust the folder](/docs/workspace#trusted-folders) first, because the build
+runs code the repository supplies; the other tools are not asked.

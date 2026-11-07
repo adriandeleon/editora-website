@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 record Feature(String slug, String group, int order, boolean beta,
                String title, String summary, String body) {}
@@ -420,6 +421,21 @@ Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its
 
 Trigger manually with `C-M-i` or `M-/` in the Emacs keymap, Ctrl+Space in the others. Per-source toggles (words, snippets, Mermaid) live in Settings → Code Completion.
 """),
+    new Feature("structure-narrowing", CI, 5, false,
+        "Structure narrowing",
+        "Walk a file one function at a time: a toggle in the Structure tool window narrows the editor to the symbol you click, and a click on the next one moves there.",
+        """
+The **Structure** tool window (`tool.structure`) lists a file's declarations. Its **Narrow to fold region** toggle, at the end of the sort row, turns that list into a way to read a file one piece at a time. A click narrows the editor to the picked symbol's own block (on a method, the method itself), and while the toggle is on, a click or Enter on another symbol narrows to that one instead of only scrolling there. In Markdown it narrows a heading to its section.
+
+Narrowing restricts the buffer itself, as in Emacs: search, replace, macros and Select All see only the region, and saving still writes the whole file. An amber banner names the lines shown (*Narrowed to lines 32–36 of 81*) and has a **Widen** button, and the gutter, the status bar's **Ln** and the outline keep the file's own line numbers. The outline stays the whole file's, with the rows outside the region muted.
+
+- `f` flips the toggle while the outline has focus, and `structure.narrowFold` can be bound in any keymap.
+- Widening any way, from the banner, the status-bar badge or `C-x n w`, ends the mode.
+- The `C-x n` chords from [Emacs heritage](/features/emacs-heritage) narrow too, and the toggle shows when one of them did.
+- On the [Project Map](/features/project-map), a declaration card's **Open** opens its file narrowed to the declaration.
+
+While a buffer is narrowed, language-server support is suspended, and bookmarks, notes and breakpoints stop being saved until you widen. See [The Emacs editing model](/docs/editing#the-emacs-editing-model).
+"""),
     new Feature("run-files", RD, 1, false,
         "Run files & main classes",
         "Run a Java, Python, Node.js or shell script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
@@ -532,6 +548,19 @@ Each detected build tool gets its own **tasks tool window** (its stripe appears 
 - **Babashka** (`bb.edn`): one entry per task in `:tasks`.
 
 Discovery parses the marker file directly (no shell-out, no new dependency), so it's instant and offline. **On by default**, each inert until its marker is found. See the [build tools guide](/docs/build-tools).
+"""),
+    new Feature("deployments", RD, 6, true,
+        "Deployments",
+        "Keep the project here and run it on an SSH host. Before each run, Editora copies what changed to a folder there, then runs or debugs the program in that copy.",
+        """
+A **deployment** lets you edit a project on this machine and run its programs on another one: a server with the database, a GPU box, or a machine with the right operating system. The sources, language servers, Git and Local History stay here. It is the reverse of a [remote folder](/features/remote-sftp), where the project itself lives on the host.
+
+- **Run on.** In the Run Configurations window, **Run on** picks **This machine** or one of the project's deployments. Run then saves the project's edited files, copies what changed to the deployment's folder, and runs the program there, with the host's interpreters and tools, and with output, input and Stop over the same connection.
+- **Java** is built on the host with its own Maven or Gradle. **Debug** starts the program there and attaches through the SSH connection, so breakpoints and stepping work on the local files.
+- **Only what changed is sent**, as one compressed stream into the host's `tar`. Folders such as `.git/`, `target/` and `node_modules/` stay behind, so do files Git ignores (with the default options), and **Leave out** adds patterns of your own. **Upload on save** deploys after every save without running anything.
+- **Careful with the host's files.** A deploy removes only files it sent itself, asks before replacing a file changed on the host, asks before a first deploy into a folder that already has files, and refuses `/`, system folders and the home folder.
+
+**Run → Deployment** has **Deploy Now**, **Compare with Deployed** (the active file beside its copy, in the diff viewer), **Open Terminal in Deployment** and **Edit Deployments…**. A deployment uses the same SSH logins, host keys and permission to run commands as a remote folder. Nothing is installed on the host, and passwords are never stored. See [Deployments](/docs/deployments).
 """),
     new Feature("git", GD, 1, false,
         "Git integration",
@@ -936,6 +965,36 @@ Logs open in **View mode** (read-only with an *Enable Editing* banner) by defaul
 
 It builds on proper CSV/TSV syntax highlighting. Toggle rainbow and the grid in **Settings → Editor → CSV**.
 """),
+    new Feature("terminal", WF, 15, false,
+        "Terminal",
+        "Shells in a Terminal tool window, on this machine or where the project runs: an SSH host, a container or WSL. Shell integration, find, and clickable paths.",
+        """
+The **Terminal** tool window runs shells inside Editora, one per tab, below the editor. It is `M-0` in the Emacs keymap, Alt+F12 in IntelliJ IDEA's and Ctrl+\\` in the others, and **Open Terminal Here** on a tab, a folder in the Project tree or the breadcrumb starts a shell in that folder. A focused terminal owns the keyboard, so Ctrl+C, Escape and your shell's own shortcuts work as in any terminal; Shift+Escape goes back to the editor.
+
+- **Where the project runs.** A [remote project](/features/remote-sftp)'s terminal is a shell on its SSH host, and a folder whose tools run in a dev container or a WSL distribution gets a shell inside it. Each tab's chip names where its shell runs. When a connection drops, the output stays under a **Reconnect** banner.
+- **Shell integration** for bash and zsh: the tab follows the shell's folder, Ctrl+Shift+Up and Down jump between prompts, and **Copy Last Command Output** copies what the last command printed. Your own startup files run as usual and are never changed.
+- **Open what the output names.** Ctrl+click (⌘-click on macOS) a file name, a `path:line:column` from a compiler or a stack trace, a folder or a URL. Hyperlinks that programs print (OSC 8) work the same way.
+- **Find** in the scrollback with Ctrl+Shift+F (⌘F on macOS).
+- Full-screen programs such as vim, htop and less work, and programs that speak the **kitty keyboard protocol**, such as Neovim and Helix, get unambiguous keys.
+- **Type-ahead** shows what you type at once on a slow link, before the host echoes it.
+- Programs can post **desktop notifications** (OSC 9 and OSC 777) and copy to the clipboard (OSC 52), but can never read it.
+- A [run configuration](/features/run-configurations) can run its program in a terminal tab, for programs that draw on the screen or read single keys.
+
+Colours follow the editor theme, or a fixed terminal scheme such as Solarized, Dracula or Nord. The font is the editor's, and the icons of `eza` and powerline prompts show without installing a Nerd Font. Settings → Terminal holds the shell, the scrollback and the rest. See [Terminal](/docs/terminal).
+"""),
+    new Feature("encrypted-files", WF, 16, false,
+        "Encrypted files",
+        "Open, edit and save GnuPG-encrypted <code>.gpg</code>, <code>.pgp</code> and <code>.asc</code> files as the text inside them, with your own <code>gpg</code> and keyring. The plain text never reaches the disk.",
+        """
+Open `notes.md.gpg` and you edit a Markdown file, with Markdown highlighting and preview. Save encrypts it again, for the same people and in the same format, before anything reaches the disk; a save that can't be encrypted writes nothing and says why. Editora uses the `gpg` you already have, with your keyring, trust settings, smartcards and passphrase cache, and never asks you to export a key.
+
+- **Encrypt File…** writes the active file encrypted beside the original (`notes.md` → `notes.md.gpg`, or `.asc` for ASCII armor), and Save As to a `.gpg` or `.asc` name does the same. The plain original stays until you choose **Move Original to Trash** or **Keep It**.
+- The **recipient picker** chooses who can open the file: people's public keys from your keyring, your own included by default, or a passphrase. A key you haven't verified shows its fingerprint, and a folder's `.gpg-id` file, as the `pass` password manager writes it, sets the default recipients.
+- The tab has a lock, and the status bar says who the file is encrypted for. **Lock File** takes the text out of memory until you decrypt it again, and tabs restored at startup stay locked until you press Enter, so startup never asks for a run of passphrases.
+- **Encrypt Selection…** and **Decrypt Block at Caret** handle an armored message inside an otherwise plain text, and **Clear-Sign Text**, **Sign File (Detached)** and **Verify Signature** sign and check text and files.
+
+While an encrypted file is open, Editora keeps its text out of crash recovery, Local History, personal notes, Git change bars and blame, the HTML Live Preview, agents and AI actions, and language servers unless you allow them. Export, print and external tools ask first. Files in a [remote project](/features/remote-sftp) are decrypted on your computer, where your keys are. See [Encrypted files](/docs/encrypted-files).
+"""),
     new Feature("ai", CE, 0, true,
         "AI assistance",
         "One-shot AI actions (explain, rewrite, commit message, inline completion) and an embedded coding agent over ACP. Anthropic, Codex, or a local model. Off by default.",
@@ -1124,6 +1183,74 @@ Probes run fresh each time, off the UI thread, so Doctor reflects the machine as
 """)
 );
 
+// Alt text for each feature's screenshot (public/screenshots/features/<slug>.*): what the
+// picture shows, kept short. A feature with none falls back to "<Title> in Editora".
+static final Map<String, String> ALT = Map.ofEntries(
+    Map.entry("ai", "Settings → AI Agent with the agent on, Claude Code as the active client, and editor context included in prompts"),
+    Map.entry("auto-close-brackets", "A Python script whose last line has auto-closed brackets and quotes around the caret"),
+    Map.entry("bookmarks-notes", "The Personal Note dialog over a Java file, with bookmark markers in the gutter"),
+    Map.entry("build-tools", "A pom.xml beside the Maven tool window, listing its lifecycle phases and profiles"),
+    Map.entry("code-navigation", "The Go to Symbol in Project picker over a Java file, listing classes with their files and lines"),
+    Map.entry("command-driven-core", "The command palette filtered by \"git\", listing Git commands with the highlighted one's description"),
+    Map.entry("comment-toggling", "A Java method commented out as one block comment, its lines highlighted"),
+    Map.entry("crash-recovery", "Settings → Workspace with \"Keep a recovery copy of unsaved edits\" turned on"),
+    Map.entry("csv", "A CSV file shown as a table in Preview, with a filter box and a first-row-is-header switch"),
+    Map.entry("debugging", "A Java program paused at a breakpoint, with inline values and the Debug window's call stack and variables"),
+    Map.entry("diagrams", "A Graphviz DOT file in Split view, with the rendered graph beside its source"),
+    Map.entry("diff-merge", "A Java file side by side with its HEAD version, the changed line and words highlighted"),
+    Map.entry("doctor", "Doctor listing Git, the GitHub CLI, ripgrep and the diagram tools as found, with their versions"),
+    Map.entry("editor-groups", "Two editor groups side by side: a CSV file on the left and a Markdown file on the right"),
+    Map.entry("editorconfig", "An .editorconfig file with sections for all files, Java, XML, JSON and YAML"),
+    Map.entry("emacs-heritage", "The command palette filtered by \"kill\", listing the Emacs kill commands with their chords"),
+    Map.entry("expert-mode", "Expert mode: a Java file with only the menu bar, line numbers, minimap and status bar around it"),
+    Map.entry("export-pdf-print", "Print preview of a Java file, page 1 of 2, with Page Setup and Print buttons"),
+    Map.entry("external-tools", "The External Tools: Run picker listing three tools and what each does with its output"),
+    Map.entry("file-templates", "The New File From Template picker listing Java, HTML, Markdown, Python and shell templates"),
+    Map.entry("find-in-files", "Find in Files searching the project for \"theme\", with 1,617 matches grouped by file"),
+    Map.entry("full-ide", "The full IDE: a Java file with the Project tree on the right and the Git Log window below"),
+    Map.entry("git", "The Commit window beside a Java file: one changed file, two untracked, and a commit message typed"),
+    Map.entry("github", "The GitHub tool window listing a repository's pull requests, with Issues and Runs tabs"),
+    Map.entry("html-live-preview", "An HTML file in the editor, with the status bar giving the live preview's local address"),
+    Map.entry("http-client", "An .http file with two requests and a test script, beside the JSON response of a 200 OK"),
+    Map.entry("jump-to-popups", "The Jump to Structure picker listing a Java class and its methods"),
+    Map.entry("keymaps", "The Keymap: Select picker offering Emacs, CUA, Sublime Text, Visual Studio Code and IntelliJ IDEA"),
+    Map.entry("local-file-history", "The Local History window: a Java file's saved versions, with one compared against the current text"),
+    Map.entry("localized-ui", "Editora in Spanish, with translated menus, Project tree and status bar"),
+    Map.entry("log-viewer", "A .log file in View mode with levels coloured, a filter box, and an error's stack trace highlighted"),
+    Map.entry("lsp", "Quick fixes for an unresolved ArrayList in a Java file, above the Problems window listing two errors"),
+    Map.entry("macros", "The command palette filtered by \"macro\", listing the macro commands with F3, F4 and C-x e"),
+    Map.entry("markdown-preview", "A Markdown file in Split view, with headings, a task list and a table rendered beside the source"),
+    Map.entry("mcp", "Settings → MCP Server with the loopback MCP server turned on"),
+    Map.entry("menu-bar", "The VCS menu open, listing Git commands with their keybindings and submenus such as Branches and Stash"),
+    Map.entry("mermaid", "A Mermaid flowchart in Split view, with the rendered diagram beside its source"),
+    Map.entry("multiple-cursors", "Five carets in a column of Java lines, the same word typed at each"),
+    Map.entry("plugins", "The Browse Plugins picker listing registry plugins with their versions and descriptions"),
+    Map.entry("previews", "A PNG image open in the image viewer, with zoom and Fit controls"),
+    Map.entry("project-map", "The Project Map: folder columns joined by curves, a Java file selected and its Structure column"),
+    Map.entry("projects", "A Java file open in a project, with the project's folders in the Project tree on the right"),
+    Map.entry("read-only-view-mode", "A Java file in View mode, with an amber banner and an Enable Editing button"),
+    Map.entry("remote-sftp", "The Connect to SFTP form with host, port, user, authentication, key file and path fields"),
+    Map.entry("run-configurations", "A Python script run configuration: script, interpreter, arguments, working folder, console and Run on"),
+    Map.entry("run-files", "A Python script with a gutter ▶, and its output in the Run window below"),
+    Map.entry("search-everywhere", "Search Everywhere for \"theme\", with matching files and symbols in separate groups"),
+    Map.entry("settings-sync", "Settings → Sync with a repository URL, Connect and Create on GitHub buttons, and what to sync"),
+    Map.entry("simple-ui-mode", "Simple UI mode: a Java file with a short menu bar, a small toolbar, and no gutter or tool windows"),
+    Map.entry("smart-indentation", "A Python file whose new line under a for statement is indented automatically"),
+    Map.entry("snippets", "The Insert Snippet picker listing Java snippets such as main, sysout and foreach"),
+    Map.entry("spell-checking", "A Markdown paragraph with three misspelled words underlined in red"),
+    Map.entry("starting-a-project", "The New File From Template picker with two multi-file templates: HTML Page + CSS and Python Project"),
+    Map.entry("syntax-highlighting", "A Java class in the Editora Light theme, with keywords, types, strings and comments in their own colours"),
+    Map.entry("themes-fonts", "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"),
+    Map.entry("todo-highlighting", "TODO comments highlighted in a Java file, with the TODO window counting 677 matches in 90 files"),
+    Map.entry("typst", "A Typst document in Split view, with the typeset page, headings and maths beside the source"),
+    Map.entry("undo-history", "The Undo History window beside a Python file, listing each edit with its time"),
+    Map.entry("zen-mode", "Zen mode: a Java file with no menus, tabs, toolbars or status bar around it"),
+    // No feature screenshot yet: these describe the docs screenshots suggested for them.
+    Map.entry("terminal", "The Terminal tool window under the editor, running git status and git log in the project folder"),
+    Map.entry("deployments", "The Deployments window with a staging deployment: host, user, folder on the host, Leave out and options"),
+    Map.entry("encrypted-files", "The recipient picker with two people chosen, a Format menu and an Encrypt for 2 People button")
+);
+
 String yaml(String s) {
     return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
 }
@@ -1139,6 +1266,11 @@ Path outputDir() {
 void main() throws IOException {
     Path dir = outputDir();
     Files.createDirectories(dir);
+    for (String slug : ALT.keySet()) {
+        if (FEATURES.stream().noneMatch(f -> f.slug().equals(slug))) {
+            throw new IllegalStateException("Alt text for an unknown feature: " + slug);
+        }
+    }
     for (Feature f : FEATURES) {
         String fm = "---\n"
             + "title: " + yaml(f.title()) + "\n"
@@ -1146,6 +1278,7 @@ void main() throws IOException {
             + "order: " + f.order() + "\n"
             + "beta: " + f.beta() + "\n"
             + "summary: " + yaml(f.summary()) + "\n"
+            + (ALT.containsKey(f.slug()) ? "alt: " + yaml(ALT.get(f.slug())) + "\n" : "")
             + "---\n\n";
         Files.writeString(dir.resolve(f.slug() + ".md"),
             fm + f.body().strip() + "\n", StandardCharsets.UTF_8);

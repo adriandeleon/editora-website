@@ -1,6 +1,6 @@
 ---
-title: "Editora 0.24.0: Maven reworked, narrowing from the Structure window, and the Project Map in its own window"
-description: "Editora 0.24.0 reworks Maven support: the tree reads the parent chain and profiles, a module builds from its reactor root, Run and Debug build first, Debug Test attaches again, Update Versions compares versions as Maven does, and the pom.xml server answers again. The Structure window narrows the editor to a symbol's block, the Project Map opens in a window of its own, Settings pages get icons and say which project they edit, and new null checking in the build fixed about ten crashes."
+title: "Editora 0.24.0: Maven reworked, Structure narrowing, a Map window"
+description: "Maven reworked from the parent chain to Debug Test, the Structure window narrows the editor to a symbol, and the Project Map opens in its own window."
 date: 2026-10-24
 version: "0.24.0"
 ---

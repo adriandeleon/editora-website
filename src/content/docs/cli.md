@@ -145,8 +145,8 @@ differs by platform:
 
 Windows hands a file manager's chosen file to an application as a command-line
 argument, and nothing maps an extension to Editora unless the installer says
-so. Before 0.13.0 the MSI registered nothing, so no file manager could hand a
-file to the installed editor.
+so. The MSI registers Editora for those types, which is what lets a file
+manager hand it a file.
 
 **It doesn't take over your existing defaults.** On Windows 8+ the shell's
 per-user choice wins over anything an installer writes, so a type you already

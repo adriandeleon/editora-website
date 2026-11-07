@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 2
 beta: false
 summary: "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written."
+alt: "The New File From Template picker with two multi-file templates: HTML Page + CSS and Python Project"
 ---
 
 Editora can create a project as well as open one: from a Maven archetype, or from a multi-file [template](/features/file-templates) with **New Project From Template**.

@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 4
 beta: false
 summary: "Fuzzy-jump to recent files, symbols, open tabs, and tool windows, plus an Emacs <code>find-file</code>-style path finder."
+alt: "The Jump to Structure picker listing a Java class and its methods"
 ---
 
 Fuzzy pickers for moving around a project from the keyboard.

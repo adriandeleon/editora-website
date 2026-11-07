@@ -1,6 +1,6 @@
 ---
-title: "Editora 0.23.0: Kotlin, Scala, Clojure and Groovy, a terminal, Node.js Run and Debug, deployments and encrypted files"
-description: "Editora 0.23.0 brings Kotlin, Scala, Clojure and Groovy with language servers, Run and Debug, a Terminal tool window, Run and Debug for Node.js and TypeScript, one Python interpreter for everything with a pytest runner, deployments that copy a project to an SSH host and run it there, and GnuPG-encrypted files in the core. Java debugging gains hot code replace, SSH logins follow your SSH agent and ~/.ssh/config, Settings shows what you changed and takes project settings, and plugins ask before anything changes."
+title: "Editora 0.23.0: four JVM languages, a terminal, encrypted files"
+description: "Kotlin, Scala, Clojure and Groovy, a Terminal tool window, Node.js Run and Debug, deployments to an SSH host, GnuPG-encrypted files, and Java hot code replace."
 date: 2026-10-19
 version: "0.23.0"
 ---

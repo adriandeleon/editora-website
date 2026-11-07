@@ -52,6 +52,7 @@ const features = defineCollection({
     order: z.number().default(100),
     beta: z.boolean().default(false),
     summary: z.string(), // HTML — the card body on the home page
+    alt: z.string().optional(), // the hero screenshot's alt text
   }),
 });
 

@@ -27,7 +27,7 @@ stayed cached after crashing, a Typst path with a space in it, a PlantUML
 diagram that reported a successful export while writing nothing, external-tool
 output landing in the wrong tab, a personal note jumping to the wrong line, a
 crontab preview that read cron's day rule backwards. The
-[What's New](/whats-new) page has the complete list.
+[What's New](/whats-new/0.9/#096---2026-07-17) page has the complete list.
 
 **What you'll notice.** The five build tools now stream into **one tabbed Build
 Output window** instead of a console each (see [Build tools](/docs/build-tools)).
@@ -37,4 +37,4 @@ Output window** instead of a console each (see [Build tools](/docs/build-tools))
 CSS, and HTML. And **Reset to Defaults** now resets all of your settings,
 rather than the 23 out of 181 it used to.
 
-The full changelog is on [What's New](/whats-new).
+The full changelog is on [What's New](/whats-new/0.9/#096---2026-07-17).

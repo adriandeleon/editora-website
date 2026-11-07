@@ -28,14 +28,17 @@ Typst files get Markdown-style ergonomics:
   `typst.insertImage`, `typst.outline`).
 - Bundled snippets cover figures, tables, and more.
 
-Code intelligence comes from the **tinymist** language server (install
-tinymist; see [Language servers](/docs/lsp)).
+Code intelligence comes from the **tinymist** language server. Editora can
+install it for you: click **Install** on the banner that appears when you open a
+`.typ` file without it, use **Install…** beside it in **Settings → LSP**, or run
+**Install: Language Server…** (`install.languageServer`); see
+[One-click install](/docs/lsp#one-click-install). To install it yourself, use
+`brew install tinymist` or a binary from
+[tinymist's releases](https://github.com/Myriad-Dreamin/tinymist/releases) on
+your `PATH`.
 
 Editing actions are grouped under a single **Typst** submenu in the editor's
-right-click menu. Listed flat, the eight entries would push cut, copy, paste
-and the spelling suggestions well down the menu. Run and Debug stay at the top
-level, because they are the two entries people reach for without reading the
-menu.
+right-click menu. Run and Debug stay at the top level of the menu.
 
 ## Structure and folding
 
@@ -47,10 +50,9 @@ which is usually the thing you most want out of the way.
 
 `#let` and `#show` bindings join the outline in document order, each nested
 under the section it is written in (one above the first heading stays at the
-root). A template file can be almost entirely bindings, and an outline of
-headings alone would leave such a file with an empty Structure window.
+root), so a template file made mostly of bindings still has an outline.
 
-Three forms are left out, because each would add noise to the outline:
+Three forms are left out:
 
 - **`#set`**, which configures the document rather than defining anything. A
   run of `#set page` / `#set text` would top most files.

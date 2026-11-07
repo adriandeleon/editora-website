@@ -201,20 +201,9 @@ they are, in `title` and `alt` values too; template comments (`{# #}`,
 
 ## Snippets and new files
 
-The HTML snippets cover the elements by name (`div`, `ul`, `table`, `form`,
-`video`…), with `div.`, `div#` and `div.#` (and the same for `p`, `ul` and `ol`)
-for an element with a class, an id or both. `!` and `html5` insert a whole
-page, with the `lang` value (`en`) selected first (`html5` also links a
-stylesheet); `doctype` inserts `<!DOCTYPE html>`; `link` is a stylesheet link.
-Obsolete elements are not offered.
-
-Which snippets are offered follows where you are typing: CSS snippets inside a
-`<style>`, JavaScript snippets inside a `<script>`, the HTML snippets in the
-markup, and none inside a tag, so `col` in a stylesheet offers `color` rather
-than `<col>`. Where you are is read back to the `<script>` or `<style>` start
-tag, up to 100,000 characters back, so a long inline script still counts.
-HTML Templates and Handlebars files get the HTML snippets. See
-[Snippets](/docs/snippets-templates#html-snippets).
+Snippets cover the elements by name, with `div.` and `div#` forms, `!` and
+`html5` for a whole page, and CSS and JavaScript snippets inside `<style>` and
+`<script>`; see [HTML snippets](/docs/snippets-templates#html-snippets).
 
 **New File From Template** (`template.new`) has **HTML Page** (a minimal
 HTML5 page) and **HTML Page + CSS** (the page and a stylesheet it links), both
@@ -513,10 +502,9 @@ The HTML card in Settings → LSP has the server's switch, its command and
 | Check embedded styles | On | Report problems in the `<style>` elements of an HTML file |
 
 The quotes an attribute gets after its `=`, typed or chosen from completion,
-are no longer on this card: **Quotes after a typed or completed =** is in
-Settings → Editor → Editing, beside **Auto-close HTML/XML tags** (see
-[Attribute quotes](#editing-tags)). Searching Settings for *attribute
-quotes* finds it there.
+are set in Settings → Editor → Editing, with **Quotes after a typed or completed
+=** beside **Auto-close HTML/XML tags** (see [Attribute quotes](#editing-tags)).
+Searching Settings for *attribute quotes* finds it.
 
 A project can set them for everyone who opens it, with an `html` object in its
 `.editora/settings.json` (see

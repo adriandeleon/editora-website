@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 8
 beta: true
 summary: "Edit files on a remote host over SSH/SFTP, each remote folder a project in its own window, and run Git, builds, tests, language servers and debuggers on the host, in a container, or in a WSL distribution."
+alt: "The Connect to SFTP form with host, port, user, authentication, key file and path fields"
 ---
 
 Edit files on a remote host over **SSH/SFTP**. *Remote: Connect to SFTP…* opens the remote folder as a project in its own window, listed with your other projects; reopening it asks to connect, and the tabs you had open come back when it does. From there editing, syntax highlighting, search, bookmarks, notes, and preview all work over the wire, and Save writes straight back.

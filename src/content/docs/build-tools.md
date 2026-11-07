@@ -17,13 +17,10 @@ palette (`<tool>.showActions`, e.g. *Maven: Show Actions*). `tool.<tool>` opens
 the tasks window; `tool.buildOutput` opens the Output console. It's **on by
 default**, and each tool is inert until its marker file is found.
 
-The console holds more than build output, and was called "Build Output" until
-0.10.0. Alongside a tab per build tool it
+The console holds more than build output. Alongside a tab per build tool it
 carries a **CI** tab for a [failed GitHub Actions log](/docs/github), and a
 **Git** and **GitHub** tab holding a transcript of the `git` / `gh` commands
-Editora ran on your behalf, each with its output, exit code and duration. Only
-the window's label changed; its stripe placement and any keybinding you gave
-`tool.buildOutput` are unaffected.
+Editora ran on your behalf, each with its output, exit code and duration.
 
 While a build runs, a spinner turns beside its status and in its tab's title,
 so a build in a tab you are not looking at still shows it is running; a **Git**
@@ -69,11 +66,11 @@ tasks window's header shows **Trusted** or **Not trusted yet** with a
 build before Run and Debug, and Maven's classpath fallback. Declining cancels
 the run; nothing quieter runs instead. Review or revoke trust under
 [Trusted folders](/docs/workspace#trusted-folders). npm, Cargo, Go and the
-other tools launch your own toolchain and are not asked.
+other tools are not asked, and neither is a Mill build that runs the project's
+own `./mill`.
 
-Choose the JDK used for Maven under **Settings → Languages & Tools → Build
-Tools → Default JDK**. The selector finds installed JDKs in standard platform
-locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
+Choose the JDK used for Maven under **Settings → Build Tools → Default JDK**.
+The selector finds installed JDKs in standard platform locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 **System default** keeps using `JAVA_HOME` / `PATH`. The choice supplies both
 `JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
 resolution, Java Run and Debug, and before-launch commands, and the same JDK
@@ -109,8 +106,8 @@ environment found inside. The wrapper run there is the POSIX `./mvnw` or
 `./gradlew`, also when Editora itself runs on Windows.
 
 Discovery parses the marker file directly, with no shell-out and no new
-dependency, so it's instant and offline. Toggle each under **Settings →
-Languages & Tools → Build Tools**.
+dependency, so it's instant and offline. Toggle each under **Settings → Build
+Tools**.
 
 Each tool's card there has a **Command override** field with **Browse…** and a
 **Detected** line for the program a run uses when the project has no wrapper:
@@ -172,11 +169,10 @@ chain found beside it on disk**, followed through `<relativePath>` (Maven's
 default `../pom.xml`) while the file is inside the open project and its
 coordinates are the ones the child names. In the usual multi-module layout the
 profiles, plugins and `<pluginManagement>` are declared once in the parent, so
-a module read on its own offered no profile toggles and no `spring-boot:run`
-row. Now a module's tree carries its parent's profiles and plugins, a
+a module's tree carries its parent's profiles and plugins, a
 `pluginManagement` entry gets a goal group titled *(managed)*, and a plugin
 version written as `${property}` is resolved through the merged properties, so
-the goal list is read from the version the build runs. It is still not an
+the goal list is read from the version the build runs. It is not an
 effective pom: nothing is read from a repository, and a parent that is not on
 disk under the project contributes nothing.
 
@@ -242,8 +238,8 @@ In a multi-module project, the Maven tool window of a module starts with a
 **Reactor** section holding one toggle, *Build from \<root\> (-pl \<module\> -am)*.
 With it on, every task runs from the reactor root as
 `mvn -f <root>/pom.xml -pl <module> -am <task>`, so `compile` or `test` in a
-module that depends on a sibling no longer fails with "Could not find artifact"
-until the sibling is installed. The toggle is offered only when the root pom
+module that depends on a sibling builds the sibling too, instead of failing with
+"Could not find artifact" until the sibling is installed. The toggle is offered only when the root pom
 lists the module and the root is inside the open project; a top-level project
 has no Reactor section.
 
@@ -262,7 +258,8 @@ the folder it runs in when that is not the active file's.
 
 The **Run ▸ Build** submenu holds *Show Actions*, *Run Custom Goal(s)…*,
 *Rerun Last*, *Stop* and *Refresh pom.xml*, then the Maven and Output tool
-windows, so the stripe icon and the palette are no longer the only ways in.
+windows, so they can be reached from the menu as well as from the stripe and the
+palette.
 **Rerun Last** has no default key in any keymap. The IntelliJ keymap binds the
 Output window to `Alt+Shift+B` (`⌥⇧B`), as IntelliJ IDEA does; the other
 keymaps bind nothing by default, and any `maven.*` command can be bound
@@ -442,7 +439,7 @@ Stop** (`npm.stop`), **Package Scripts: Rerun Last** (`npm.rerunLast`) and
 Package Scripts** (`view.toggleNpmSupport`) turns the window, its actions popup
 and its Output tab on or off.
 
-The **Node.js** card in **Settings → Languages & Tools → Build Tools**, just
+The **Node.js** card in **Settings → Build Tools**, just
 above the npm card, has the **Node.js** field: the Node.js for Run, npm scripts,
 Debug, the language servers and HTTP scripts. Left blank, Editora uses `node`
 on your `PATH`. A project's `.nvmrc` or `.node-version` wins over the field
@@ -486,7 +483,7 @@ up.
 
 Running a build tool's **test** task, from the tasks tree, the palette
 (`test.run`), or a gutter icon, is intercepted and shown in a dedicated **Test
-Results** tool window (`M-g e`) instead of only as raw console text. The same
+Results** tool window (`M-g e` in the Emacs keymap) instead of only as raw console text. The same
 single process still runs, and its raw output still streams to the Output console.
 
 The window shows a status header with pass / fail / skip counts, a progress bar,
@@ -594,5 +591,5 @@ for JUnit; **Rerun Last** in the Run window repeats the test run too.
 [Debugging](/docs/run-debug#debugging). With the test runner turned off, Python
 tests still run, in the Run console only.
 
-Toggle the whole feature under **Settings → Languages & Tools → Build Tools**
+Toggle the whole feature under **Settings → Build Tools**
 (`view.toggleTestRunner`). It's off in [Simple UI mode](/docs/workspace).

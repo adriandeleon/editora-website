@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 6
 beta: false
 summary: "The default layout: menu bar, toolbar, tabs, tool windows, gutter, minimap, and status bar, with every feature available."
+alt: "The full IDE: a Java file with the Project tree on the right and the Git Log window below"
 ---
 
 The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, toolbar, tab bar, breadcrumb, gutter, minimap, and status bar are all on screen, and tool windows such as Project, Git Log, TODO, and Output dock around the editor.

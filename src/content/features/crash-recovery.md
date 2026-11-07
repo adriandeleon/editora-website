@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 13
 beta: false
 summary: "Unsaved edits, including untitled buffers, are kept while you work and offered back on the next launch if Editora did not close normally. Restoring never writes to your files."
+alt: "Settings → Workspace with \"Keep a recovery copy of unsaved edits\" turned on"
 ---
 
 Editora keeps a recovery copy of every buffer with unsaved edits, untitled ones included, in every window. The copies live in the config folder and are written as you work.

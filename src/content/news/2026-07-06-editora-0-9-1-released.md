@@ -14,7 +14,7 @@ It ships everything built so far: a keyboard-driven, command-first editor with
 your choice of keymap (Emacs, CUA, Sublime Text, VS Code, IntelliJ), TextMate
 syntax highlighting, language servers, debugging, Git, a Markdown preview with
 Mermaid and math, CSV tooling, snippets and templates, macros, and much more. See
-the full [What's New](/whats-new) for the complete list.
+the full [What's New](/whats-new/0.9/#091---2026-07-06) for the complete list.
 
 New in this release: **AI assistance**. One-shot AI actions (explain, rewrite,
 generate a commit message, inline completion) and an embedded coding agent over

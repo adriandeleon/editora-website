@@ -207,10 +207,12 @@ const isActive = (href: string) => {
           <label class="theme-picker" title="Editor theme">
             <span class="sr-only">Theme</span>
             <select id="theme-select" aria-label="Editor theme">
+              <option value="editora-dark">Editora Dark</option>
+              <option value="editora-light">Editora Light</option>
               <option value="primer-dark">Primer Dark</option>
               <option value="primer-light">Primer Light</option>
               <option value="dracula">Dracula</option>
-              <option value="nord">Nord</option>
+              <option value="nord">Nord Dark</option>
               <option value="cupertino-dark">Cupertino Dark</option>
               <option value="islands-dark">Islands Dark</option>
             </select>
@@ -338,6 +340,48 @@ const isActive = (href: string) => {
   /* Theme overrides — each mirrors an Editora editor theme under
      src/main/resources/com/editora/styles/editor-themes/. :root above is the
      Primer Dark default, so only the non-default themes need a block. */
+  /* Editora's own pair ("Caret & Ink"): editora-dark.css and editora-light.css. */
+  [data-theme="editora-dark"] {
+    --bg: #171a24;
+    --bg-soft: #141722;
+    --border: #2a2e3f;
+    --border-soft: #232736;
+    --text: #e8eaf3;
+    --muted: #8b949e;
+    --faint: #7c8297;
+    --accent: #43dec5;
+    --accent-soft: rgba(67, 222, 197, 0.15);
+    --on-accent: #12141d;
+    --bookmark: #e3a93c;
+    --tok-keyword: #ff7b72;
+    --tok-string: #a5d6ff;
+    --tok-comment: #8b949e;
+    --tok-number: #79c0ff;
+    --tok-function: #d2a8ff;
+    --tok-type: #ffa657;
+  }
+
+  [data-theme="editora-light"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --bg-soft: #fbfbfd;
+    --border: #dde0ea;
+    --border-soft: #eceef5;
+    --text: #1b1e2a;
+    --muted: #6e7781;
+    --faint: #6e7486;
+    --accent: #0e8577;
+    --accent-soft: rgba(14, 133, 119, 0.12);
+    --on-accent: #ffffff;
+    --bookmark: #96690a;
+    --tok-keyword: #cf222e;
+    --tok-string: #0a3069;
+    --tok-comment: #6e7781;
+    --tok-number: #0550ae;
+    --tok-function: #8250df;
+    --tok-type: #953800;
+  }
+
   [data-theme="primer-light"] {
     color-scheme: light;
     --bg: #ffffff;
@@ -818,8 +862,8 @@ const isActive = (href: string) => {
   }
 
   /* Screenshot figures in docs Markdown (src/lib/rehype-doc-figures.mjs). A
-     capture with a .dark sibling ships both; Primer Light shows the light one,
-     every other site theme the dark one. */
+     capture with a .dark sibling ships both; the light site themes (Primer Light,
+     Editora Light) show the light one, every other site theme the dark one. */
   .doc-figure {
     margin: 1.5rem 0 1.75rem;
   }
@@ -841,19 +885,23 @@ const isActive = (href: string) => {
     height: auto;
   }
   .doc-figure .doc-figure-link.doc-figure-light,
-  [data-theme="primer-light"] .doc-figure .doc-figure-link.doc-figure-dark {
+  [data-theme="primer-light"] .doc-figure .doc-figure-link.doc-figure-dark,
+  [data-theme="editora-light"] .doc-figure .doc-figure-link.doc-figure-dark {
     display: none;
   }
-  [data-theme="primer-light"] .doc-figure .doc-figure-link.doc-figure-light {
+  [data-theme="primer-light"] .doc-figure .doc-figure-link.doc-figure-light,
+  [data-theme="editora-light"] .doc-figure .doc-figure-link.doc-figure-light {
     display: block;
   }
   /* The same rule for a capture and its twin as two <img>s in one link (the
      slideshow, the gallery, the Map spotlight). */
   .v-light,
-  [data-theme="primer-light"] .v-dark {
+  [data-theme="primer-light"] .v-dark,
+  [data-theme="editora-light"] .v-dark {
     display: none !important;
   }
-  [data-theme="primer-light"] .v-light {
+  [data-theme="primer-light"] .v-light,
+  [data-theme="editora-light"] .v-light {
     display: block !important;
   }
   .doc-figure figcaption {

@@ -2,9 +2,24 @@
 // "Make it yours": live theme swatches. Each card renders a mini editor in its
 // own palette (inline CSS vars) regardless of the active site theme, and
 // clicking one recolors the whole site — reusing the same data-theme +
-// localStorage mechanism as the nav picker. Palettes mirror the six themes in
-// Layout.astro's global stylesheet; the app itself ships 25+.
+// localStorage mechanism as the nav picker. Palettes mirror the eight themes in
+// Layout.astro's global stylesheet, named as the app names them, led by the
+// app's own Editora pair; the app itself ships 25+.
 const themes = [
+  {
+    id: "editora-dark",
+    name: "Editora Dark",
+    bg: "#171a24", soft: "#141722", border: "#2a2e3f", text: "#e8eaf3",
+    faint: "#7c8297", accent: "#43dec5", kw: "#ff7b72", str: "#a5d6ff",
+    com: "#8b949e", fn: "#d2a8ff",
+  },
+  {
+    id: "editora-light",
+    name: "Editora Light",
+    bg: "#ffffff", soft: "#fbfbfd", border: "#dde0ea", text: "#1b1e2a",
+    faint: "#6e7486", accent: "#0e8577", kw: "#cf222e", str: "#0a3069",
+    com: "#6e7781", fn: "#8250df",
+  },
   {
     id: "primer-dark",
     name: "Primer Dark",
@@ -28,7 +43,7 @@ const themes = [
   },
   {
     id: "nord",
-    name: "Nord",
+    name: "Nord Dark",
     bg: "#2e3440", soft: "#353c4a", border: "#434c5e", text: "#d8dee9",
     faint: "#6c7689", accent: "#88c0d0", kw: "#81a1c1", str: "#a3be8c",
     com: "#7b88a1", fn: "#88c0d0",

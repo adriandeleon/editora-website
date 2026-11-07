@@ -48,32 +48,27 @@ JDK or available as `java` on your `PATH`.
 
 ## The installer says it's from an unidentified developer.
 
-The Windows installer is unsigned, so Windows SmartScreen stops the first
-launch until you allow it; the steps are in
+That is the Windows installer, which is unsigned. SmartScreen stops the `.msi`
+until you allow it, and the administrator prompt that follows (it installs for
+every user) names the publisher as *Unknown*. The steps are in
 [Troubleshooting](/docs/troubleshooting#a-launcher-is-blocked-on-first-run).
-The macOS app is signed and notarized by Apple, and opens without a Gatekeeper
-warning. The Linux downloads carry OpenPGP signatures, and every release file
-has a build provenance attestation:
-[Checking a download](/docs/getting-started#checking-a-download).
+
+The macOS app is signed and notarized by Apple: macOS asks once whether to open
+an app downloaded from the Internet, and nothing more. The Linux downloads
+carry OpenPGP signatures, and every release file has a build provenance
+attestation: [Checking a download](/docs/getting-started#checking-a-download).
 
 ## Which features are off by default?
 
-Fewer than you might expect. They fall into two groups.
+Fewer than you might expect: only the few that run code or reach the network,
+such as plugins and the AI features. Everything else is on. The features that
+drive an external tool, such as Git or a language server, stay out of sight
+until Editora finds that tool, so a fresh install is uncluttered and installing
+the tool later makes the feature appear on its own.
 
-**Off until you ask for them** are the features that run code, reach the
-network, or change how the editor works: plugins, the AI features, the MCP
-server, and Settings sync. Turn on what you want in Settings; each has
-its own page in these docs.
-
-**On, but invisible until their tool exists** is the larger group. Git, GitHub,
-language servers, debugging, Mermaid, the diagram tools, Typst and the rest are
-enabled by default, and
-they self-gate: the button, panel or gutter icon isn't there until Editora finds
-the command it needs. A fresh install stays uncluttered without you having to
-switch anything on, and installing `git` or `mmdc` later makes the feature
-appear on its own. [Doctor](/features/doctor) shows you what was found.
-
-Projects are on from the start too; **Settings → Workspace** turns them off.
+[Turning on the bigger features](/docs/getting-started#turning-on-the-bigger-features)
+lists both groups, with what each feature needs. Projects are on from the start
+too; **Settings → Workspace** turns them off.
 
 ## What happens to unsaved changes if Editora crashes?
 

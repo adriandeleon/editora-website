@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 2
 beta: false
 summary: "Extend the editor with commands, tool windows, and integrations. Install from the built-in signed registry, or write your own (Java or a simple manifest)."
+alt: "The Browse Plugins picker listing registry plugins with their versions and descriptions"
 ---
 
 Extend Editora without forking it. A plugin adds commands, keybindings, tool windows, editor-menu items, and status-bar segments, written in Java against a small exported API, or declared in a simple `plugin.json` manifest (with snippets and templates folders).

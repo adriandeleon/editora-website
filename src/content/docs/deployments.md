@@ -128,6 +128,10 @@ Which files count as the project's:
   `*.log`, `data/`, `/docs/*.pdf`. A line `!pattern` sends one of the always-left-out
   ones after all: `!build/` sends the `build/` folder.
 
+Secrets are files like any other: a `.env`, an `http-client.private.env.json`
+or a key file in the project is sent unless **Leave out** names it, or Git
+ignores it while **Send only what Git tracks or would track** is on.
+
 With **Remove files deleted from the project** on, a file a deploy put on the
 host that the project no longer has is removed from the host, together with any
 folder that leaves empty.
@@ -184,7 +188,9 @@ Deployments are kept with the project's run configurations, on this machine.
 **Import** (`run.importConfigs`) brings them back, as described in
 [Sharing them with your team](/docs/run-debug#sharing-them-with-your-team). A
 deployment holds no password or passphrase, only the host, user, authentication
-method, key file path and folder.
+method, key file path and folder. The key file path is this computer's, so
+check [what the file holds](/docs/run-debug#what-the-file-holds) before you
+commit it.
 
 ## What the host needs
 

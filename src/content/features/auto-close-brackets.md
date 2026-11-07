@@ -4,6 +4,7 @@ group: "Editing"
 order: 3
 beta: false
 summary: "Typing <code>([{</code> or quotes inserts the closer, type-over to skip, wrap a selection, and Backspace clears an empty pair. The bracket beside the caret is highlighted with its match."
+alt: "A Python script whose last line has auto-closed brackets and quotes around the caret"
 ---
 
 Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps the caret between them. Type the closer when it's already next to the caret and Editora types over it; type an opener with a selection and it wraps the selection; Backspace inside an empty pair deletes both halves. A bracket pairs only before whitespace, a closer, a separator, a quote or the end of the line, so `(` typed before `foo` gives `(foo`.

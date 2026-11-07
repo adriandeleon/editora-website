@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.10.0: a look of its own, and two files on screen at once"
-description: "Editora Light and Dark, a rebuilt Settings and a flatter interface; a menu bar over the command registry; independent editor groups that nest, drag and persist; run configurations for scripts and make targets, shareable with your team; per-project settings you can commit; bracket-pair colorization, the four missing fold commands, and Java paste auto-import."
+description: "Editora Light and Dark, a rebuilt Settings, a menu bar, editor groups that nest and persist, shareable run configurations, and per-project settings."
 date: 2026-08-03
 version: "0.10.0"
 ---
@@ -248,4 +248,4 @@ Java-only, and now says so instead of reporting a confusing Java error. See
   Welcome and Doctor pages and the image, hex, PDF and diff viewers, which aren't text
   buffers.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.10/#0100---2026-08-03) page.

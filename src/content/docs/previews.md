@@ -105,6 +105,25 @@ right-click menu.
 - **GitHub Actions** workflows (detected by content): a plain-English digest of
   the triggers (with `schedule:` crons decoded) and each job's runner and steps.
 
+## Markwhen timelines
+
+A [Markwhen](https://markwhen.com) file (`.mw` or `.markwhen`) previews as a
+**timeline**. Each line is an event: a date or a range, a colon, then the
+text, as in `2026-02 / 2026-04: Design and prototype #Work`. A `#` heading
+starts a group, a `#Tag: color` line in the header colours the events with that
+tag, and `title:` names the timeline. A line the preview cannot read is skipped, so a
+half-typed file still shows the rest.
+
+- **Toggle Timeline / Calendar View** (`markwhen.toggleView`, also on the
+  preview's right-click menu) switches to a month **calendar**. Editora
+  remembers the view for each file. Events that span more than ten years are
+  too wide for the calendar, which then says to use the timeline.
+- **Export Timeline to JSON…** (`markwhen.exportJson`, also on the right-click
+  menu) saves the parsed timeline: its title, tag colours, groups, and each
+  event's label, tags, line and dates.
+- The **Markwhen Timeline** [file template](/docs/snippets-templates#file-templates)
+  starts a year with groups, ranges and coloured tags.
+
 ## Viewers
 
 - `.pdf` files open in a read-only **page viewer** (rasterized via PDFBox).

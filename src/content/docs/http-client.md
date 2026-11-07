@@ -8,8 +8,7 @@ order: 2
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send
 it. It uses the JDK's built-in HTTP client, so there's no external tool to
 install. The HTTP client is **on by default**; its switch is the HTTP Client
-section of **Settings → Languages & Tools → Web** (or
-`view.toggleHttpClient`).
+section of **Settings → Web** (or `view.toggleHttpClient`).
 
 The file format is JetBrains' HTTP request format, plus some syntax from the VS
 Code REST Client extension (`$dotenv`, `$processEnv`, `$datetime`, `$shared`, and
@@ -427,8 +426,10 @@ it is, never filled in, so a script can't make a request read `$env` or
 script's value (or an earlier response's), the secrets prompt says the host is
 chosen by an earlier response or a script.
 
-**Settings → Languages & Tools → Web** turns scripts off, picks the Node.js to
-use (empty means `node` on the `PATH`) and sets the timeout. A Detected line
+**Settings → Web** turns scripts off, picks the Node.js to use and sets the
+timeout. Left empty, scripts run on the same Node.js as Run: a project's
+`.nvmrc` or `.node-version`, then the **Node.js** setting, then `node` on the
+`PATH` (see [Which Node.js runs](/docs/run-debug#nodejs-scripts)). A Detected line
 under **Node.js for HTTP scripts** says whether that node is there (*node: found
 (/usr/bin/node)* or *node: not found*), and the script rows are greyed out while
 the HTTP client or its scripts are off. The
@@ -443,7 +444,7 @@ model is on.
 | Run every request in the file | `http.runFile` | `C-c C-r` |
 | Cancel the running request | `http.cancelRequest` | `C-c C-k` |
 | Select environment | `http.selectEnvironment` | (palette, Env pill or status bar) |
-| Show or hide the results after request lines | **HTTP: Toggle Results After Request Lines** | (palette) |
+| Show or hide the results after request lines | `http.toggleInlineResults` | (palette) |
 | Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL icon) |
 | Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
 | Open the response body in its own tab | `http.openResponseInTab` | (Open in tab icon) |
@@ -495,7 +496,7 @@ a success keeps the green ▶.
   History.
 
 **Show results after each request line**, in the HTTP Client section of
-**Settings → Languages & Tools → Web**, turns them off (on by default), as does
+**Settings → Web**, turns them off (on by default), as does
 **HTTP: Toggle Results After Request Lines**.
 
 ### The response view

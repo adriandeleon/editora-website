@@ -71,9 +71,8 @@ instead of dropping a source outright.
 
 **A single-source query is not capped.** When a sigil restricts the picker to
 one source, or when the query is empty (which lists commands), there is no
-smaller source for a large one to crowd out, so you get the whole list. Before
-0.14.0 a `>` search returned at most eight commands, fewer than the command
-palette it stands in for.
+smaller source for a large one to crowd out, so you get the whole list: a `>`
+search lists as many commands as the command palette does.
 
 An **empty query lists every command** and touches no other corpus, so opening
 it is a browsable list rather than a blank box. A bare sigil is a *scope* rather
@@ -109,9 +108,8 @@ would mean reading every source file over the connection.
 
 A command whose feature is switched off is **listed, greyed, with an explanation
 naming the setting that would enable it**, the same way the
-[command palette](/docs/navigation#command-palette) treats it. In 0.13.0 such
-commands were omitted, which is tidier in a short mixed list but means you never
-learn the command exists. Greyed rows sort after everything you can run, and both the cursor and the mouse step over them.
+[command palette](/docs/navigation#command-palette) treats it, so you learn the
+command exists. Greyed rows sort after everything you can run, and both the cursor and the mouse step over them.
 
 The highlighted row's **description** appears under the list, and the docs key
 (**`C-h`** in the Emacs keymap) opens that command's documentation in your
@@ -124,9 +122,7 @@ browser. Both match the palette. The hint line along the bottom names them, alon
 | Emacs | `M-S-x` |
 | CUA, Sublime, VS Code, IntelliJ | `Ctrl`/`Cmd`+`Shift`+`E` |
 
-`M-S-x` was chosen because it sits beside `M-x`. (Through 0.13.0
-the command had no chord in any bundled keymap, so the only way to reach it was
-the palette.)
+`M-S-x` was chosen because it sits beside `M-x`.
 
 It can also **take over the command palette's shortcut**: switch on *Palette
 shortcut opens Search Everywhere* under **Settings → Interface → Pickers**, or
@@ -184,7 +180,7 @@ open (or create) a file. There's a matching folder finder for picking a
 directory.
 
 **`C-d` opens a folder as a project**, the same as
-[Open Project Folder](/docs/workspace) (`project.open`), and closes the finder.
+[*Project: Open Folder…*](/docs/workspace) (`project.open`), and closes the finder.
 The folder it opens is:
 
 - the highlighted folder, when you picked it: typed its name, or moved the
@@ -195,7 +191,7 @@ The folder it opens is:
 - on a file row, the folder that file is in.
 
 The key legend shows it as "C-d open as project". It is only offered when
-projects are on (Settings → Workspace), not in the Open Project Folder picker
+projects are on (Settings → Workspace), not in the *Project: Open Folder…* picker
 (whose Enter already chooses a folder), and not in the IntelliJ macOS keymap,
 where `C-d` is Start Debugging.
 
@@ -343,6 +339,14 @@ Jump around and step through your navigation history with **Go: Back**
 (`nav.back`) and **Go: Forward** (`nav.forward`), like a browser's back/forward
 for the caret.
 
+| Keymap | Back | Forward |
+| --- | --- | --- |
+| Emacs | `M-,` | `C-M-,` |
+| CUA | `Ctrl+Alt+Left` (`Cmd+[` on macOS) | `Ctrl+Alt+Right` (`Cmd+]` on macOS) |
+| Sublime | `Alt+-` (`Ctrl+-` on macOS) | `Alt+Shift+-` (`Ctrl+Shift+-` on macOS) |
+| VS Code | `Ctrl+Alt+-` (`Ctrl+-` on macOS) | `Ctrl+Shift+-` |
+| IntelliJ | `Ctrl+Alt+Left` (`Option+Cmd+Left` or `Cmd+[` on macOS) | `Ctrl+Alt+Right` (`Option+Cmd+Right` or `Cmd+]` on macOS) |
+
 ### Recent Locations
 
 **Go: Recent Locations…** (`nav.recentLocations`) lists the session's trail
@@ -367,7 +371,7 @@ costs one tab rather than twenty.
 `M-g j` labels every visible occurrence of the next character you type. Type a
 label to jump the caret there. **Esc** or `C-g` cancels. It's the fastest way to
 move the caret to something you can see. **Line mode** (`nav.aceJumpLine`,
-`M-g L`) labels every visible line so you can jump straight to one.
+`M-g S-l`) labels every visible line so you can jump straight to one.
 
 ## Closing tool windows
 

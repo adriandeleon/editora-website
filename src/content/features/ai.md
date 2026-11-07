@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 0
 beta: true
 summary: "One-shot AI actions (explain, rewrite, commit message, inline completion) and an embedded coding agent over ACP. Anthropic, Codex, or a local model. Off by default."
+alt: "Settings → AI Agent with the agent on, Claude Code as the active client, and editor context included in prompts"
 ---
 
 Editora has optional AI, off by default and yours to configure.

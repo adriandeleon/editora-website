@@ -360,6 +360,5 @@ instead.
 
 ## The GnuPG plugin
 
-GnuPG used to be a registry plugin (`gpg-tools`). It is built into Editora
-now: an installed copy of the plugin is removed when Editora starts (its gpg
-path and last recipient carry over), and it can no longer be installed.
+Encryption is part of Editora, not a plugin. The registry's `gpg-tools` plugin
+is retired: see [retired plugins](/docs/plugins#publishing).

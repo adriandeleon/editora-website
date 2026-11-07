@@ -151,8 +151,9 @@ only the snippets that wrap a selection; with nothing selected it wraps the
 current line, and a selection over several lines wraps the whole lines it
 touches. Esc gives back the caret and selection you had. **Snippet: Insert…**
 (Ctrl+J, ⌘J on macOS, in the IntelliJ keymap) offers the same snippets among all
-the others, and with nothing selected they expand as before. Any snippet that uses `$TM_SELECTED_TEXT` works the same way, since a
-multi-line variable value now takes the indentation of the line it sits on.
+the others, and with nothing selected they expand as usual. Any snippet that
+uses `$TM_SELECTED_TEXT` wraps a selection the same way: a multi-line variable
+value takes the indentation of the line it sits on.
 
 The Java language server offers templates of its own under some of the same
 names (`sysout`, `fori`, `try_catch` and others). A server template named like
@@ -173,9 +174,11 @@ The HTML snippets cover the elements by name (`div`, `ul`, `table`, `form`,
 
 In an HTML page, the snippets offered follow where you are typing: CSS
 snippets inside a `<style>`, JavaScript snippets inside a `<script>`, and none
-inside a tag, so `col` in a stylesheet offers `color` rather than `<col>`. HTML
-templates (Jinja, Twig, ERB…) and Handlebars files get the HTML snippets. There
-is no Emmet; see [HTML](/docs/html#snippets-and-new-files).
+inside a tag, so `col` in a stylesheet offers `color` rather than `<col>`.
+Where you are is read back to the `<script>` or `<style>` start tag, up to
+100,000 characters back, so a long inline script still counts. HTML templates
+(Jinja, Twig, ERB…) and Handlebars files get the HTML snippets. There is no
+Emmet; see [what the HTML server does not do](/docs/html#what-it-does-not-do).
 
 ### XML snippets
 
@@ -455,6 +458,10 @@ work on the fresh project: create a virtual environment with
 `python3 -m venv .venv`, install the package into it with `pip install -e .`,
 then run it with `python -m <package>.main` (or the installed command) and test
 it with `python -m unittest discover -s tests` or `pytest`.
+
+The **Node.js TypeScript Project** template writes a module, a `node:test`
+test, `package.json`, `tsconfig.json`, a `.gitignore`, and a README. Every other
+multi-file template, yours included, appears in the same picker.
 
 ## New files by type
 

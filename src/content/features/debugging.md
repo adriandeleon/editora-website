@@ -4,6 +4,7 @@ group: "Run & debug"
 order: 3
 beta: false
 summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure and Scala: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
+alt: "A Java program paused at a breakpoint, with inline values and the Debug window's call stack and variables"
 ---
 
 Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure** and **Scala** (through Metals for a build's file, Editora's own debugger for a script) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:

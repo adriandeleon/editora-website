@@ -28,4 +28,4 @@ cache landed, every Windows install failed to start with "Failed to find JVM in
 ...\runtime directory", because the build stripped the runtime's `bin/` (which,
 on Windows only, holds the JVM itself). The strip is now guarded to non-Windows.
 
-See the full [What's New](/whats-new) for the complete list.
+See the full [What's New](/whats-new/0.9/#092---2026-07-08) for the complete list.

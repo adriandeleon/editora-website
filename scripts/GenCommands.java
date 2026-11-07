@@ -4,8 +4,9 @@
 /// real sources:
 ///   - command ids from the Command.of(...) registrations in com/editora/ui
 ///   - titles + descriptions from i18n messages.properties (command.<id>[.desc])
-///   - keys from every bundled keymap (emacs/cua/sublime/vscode/intellij), the
-///     base Win/Linux (Ctrl) variant; macOS substitutes Cmd.
+///   - keys from every bundled keymap (emacs/cua/sublime/vscode/intellij): the base
+///     Win/Linux file and, where the app ships one, its macOS variant (<id>.mac.json),
+///     as raw keymap tokens (src/lib/chord-format.ts writes them out as the app does).
 /// The Editora checkout is found as a sibling directory (Editora-V2 or Editora).
 /// Override with an argument (`java scripts/GenCommands.java /path/to/Editora`)
 /// or the EDITORA_REPO environment variable.
@@ -22,7 +23,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// Every bundled keymap, in display order: {id, label}. Base (Win/Linux) files.
+// Every bundled keymap, in display order: {id, label}. On macOS the app loads <id>.mac.json
+// instead of <id>.json when the variant exists (KeymapManager.loadNamed), whole-file, not as
+// an overlay; Emacs has no variant, so macOS uses emacs.json.
 static final String[][] KEYMAPS = {
     {"emacs", "Emacs"},
     {"cua", "CUA"},
@@ -33,11 +36,19 @@ static final String[][] KEYMAPS = {
 
 static final String[] ORDER = {
     "Files", "Editing", "Navigation", "Search", "Buffers & tabs",
-    "View & display", "Folding", "Splits & zoom", "Markdown",
-    "Code intelligence (LSP)", "Run", "Debugging", "Git & diff",
-    "HTTP client", "Diagrams", "Bookmarks", "Personal notes",
-    "Snippets & templates", "Projects", "Remote (SFTP)", "Spell check",
-    "Appearance", "Tool windows", "Window", "Application",
+    "View & display", "Folding", "Splits & zoom", "Markdown", "Diagrams",
+    "Previews", "Typst", "CSV", "Log viewer",
+    "Code intelligence (LSP)", "Language support", "Run", "Build tools", "Debugging",
+    "Git & diff", "Local history", "HTTP client", "Terminal", "Bookmarks", "Personal notes",
+    "TODO highlighting", "Snippets & templates", "Macros & external tools", "Projects",
+    "Project Map", "Remote (SFTP)", "Deployments & containers", "Encrypted files",
+    "AI & agents", "Spell check", "Appearance", "Tool windows", "Window", "Plugins",
+    "Settings & sync", "Application",
+};
+
+// The build tools' command prefixes (BuildTool ids in com.editora.build).
+static final String[] BUILD_TOOLS = {
+    "maven", "npm", "cargo", "go", "gradle", "sbt", "mill", "scalacli", "clojure", "lein", "babashka",
 };
 
 // `\s*` spans the newline in a wrapped registration:
@@ -64,36 +75,85 @@ boolean in(String x, String... opts) {
 String category(String cid) {
     int dot = cid.indexOf('.');
     String p = dot == -1 ? cid : cid.substring(0, dot);
-    if (in(cid, "editor.exportPdf", "editor.print", "preview.exportPdf", "preview.print")) return "Files";
+    if (in(cid, "editor.exportPdf", "editor.print", "preview.exportPdf", "preview.print",
+            "editor.exportSelectionPdf", "editor.printSelection", "editor.setPdfPageSize")) return "Files";
     if (in(cid, "file.run", "file.runWithArgs")) return "Run";
     if (in(p, "file", "recent")) return "Files";
-    if (p.equals("edit")) return "Editing";
-    if (p.equals("nav")) return "Navigation";
+    if (in(p, "edit", "editor", "abbrev", "editorConfig")) return "Editing";
+    if (in(p, "nav", "index") || cid.equals("structure.jump")) return "Navigation";
+    if (cid.equals("structure.narrowFold")) return "Folding";
     if (in(p, "find", "search")) return "Search";
     if (in(p, "buffer", "switcher")) return "Buffers & tabs";
-    if (p.equals("markdown") || cid.startsWith("view.markdown") || p.equals("preview")
+    if (p.equals("markdown") || p.equals("markdownLint") || cid.startsWith("view.markdown") || p.equals("preview")
         || cid.equals("view.toggleMarkdownPreviewTheme")) return "Markdown";
     if (in(cid, "view.fold", "view.foldAll", "view.unfold", "view.unfoldAll", "view.toggleFold")) return "Folding";
     if (in(cid, "view.splitHorizontal", "view.splitVertical", "view.unsplit",
             "view.textZoomIn", "view.textZoomOut", "view.textZoomReset")) return "Splits & zoom";
-    if (in(cid, "view.settings", "view.welcome", "view.messageLog", "view.debugLog")) return "Application";
+    if (cid.equals("view.settings")) return "Settings & sync";
+    if (in(cid, "view.welcome", "view.messageLog", "view.debugLog")) return "Application";
     if (p.equals("view")) return "View & display";
     if (in(p, "git", "github", "diff", "merge")) return "Git & diff";
     if (p.equals("debug")) return "Debugging";
-    if (p.equals("lsp")) return "Code intelligence (LSP)";
+    if (in(p, "lsp", "eslint")) return "Code intelligence (LSP)";
+    if (cid.equals("install.typstCli") || p.equals("typst")) return "Typst";
+    if (cid.equals("install.mermaidSupport")) return "Diagrams";
+    if (in(p, "install", "python")) return "Language support";
     if (p.equals("http")) return "HTTP client";
-    if (p.equals("mermaid")) return "Diagrams";
+    if (in(p, "mermaid", "diagram")) return "Diagrams";
+    if (in(p, "htmlPreview", "structured", "markwhen")) return "Previews";
+    if (p.equals("csv")) return "CSV";
+    if (p.equals("log")) return "Log viewer";
     if (in(p, "run", "test")) return "Run";
+    if (in(p, BUILD_TOOLS) || p.equals("pom")) return "Build tools";
+    if (in(p, "history", "localHistory", "undoHistory")) return "Local history";
+    if (p.equals("terminal")) return "Terminal";
     if (p.equals("bookmarks")) return "Bookmarks";
     if (p.equals("notes")) return "Personal notes";
+    if (p.equals("todo")) return "TODO highlighting";
     if (in(p, "snippets", "template")) return "Snippets & templates";
-    if (p.equals("project")) return "Projects";
+    if (in(p, "macro", "externalTool")) return "Macros & external tools";
+    if (in(p, "project", "workspace")) return "Projects";
+    if (p.equals("projectMap")) return "Project Map";
     if (p.equals("remote")) return "Remote (SFTP)";
+    if (in(p, "deploy", "container")) return "Deployments & containers";
+    if (p.equals("crypto")) return "Encrypted files";
+    if (in(p, "ai", "agent", "mcp")) return "AI & agents";
     if (p.equals("spell")) return "Spell check";
-    if (p.equals("theme")) return "Appearance";
+    if (in(p, "theme", "appearance")) return "Appearance";
     if (p.equals("tool")) return "Tool windows";
     if (p.equals("window")) return "Window";
+    if (p.equals("plugins")) return "Plugins";
+    if (in(p, "config", "sync", "keymap", "toolbar")) return "Settings & sync";
     return "Application";
+}
+
+// ---- Which chord the app advertises: KeymapManager.chordFor + ChordFormat.typable. The chords stay
+// raw keymap tokens (C-S-p, Cmd-S-p); the pages write them out in the app's notation through
+// src/lib/chord-format.ts, as ChordFormat does.
+
+static final String[] PREFIXES = {"C-", "M-", "Cmd-", "S-"};
+static final int CMD = 1 << 2;
+
+int modifierMask(String token) {
+    int mask = 0, at = 0;
+    for (int i = 0; i < PREFIXES.length; i++) {
+        String p = PREFIXES[i];
+        // A prefix only counts while a key is left after it: "C--" is Ctrl + the minus key.
+        if (token.startsWith(p, at) && token.length() > at + p.length()) {
+            mask |= 1 << i;
+            at += p.length();
+        }
+    }
+    return mask;
+}
+
+/** ChordFormat.typable: a Cmd- chord can't be typed on a Windows/Linux keyboard. */
+boolean typable(String sequence, boolean mac) {
+    if (mac) return true;
+    for (String token : sequence.split(" ")) {
+        if ((modifierMask(token) & CMD) != 0) return false;
+    }
+    return true;
 }
 
 String js(String s) {
@@ -128,18 +188,47 @@ String jsonUnescape(String s) {
     return b.toString();
 }
 
-// command id -> first chord this keymap binds to it (file order, first wins).
+// command id -> every chord this keymap binds to it, in keymap (file) order.
 // A chord listed twice in one file is bound to its LAST command, as the app's
 // JSON parser keeps the last duplicate key; the earlier entry binds nothing.
-Map<String, String> firstChordPerCommand(String json) {
+Map<String, List<String>> chordsPerCommand(String json) {
     Map<String, String> commandByChord = new LinkedHashMap<>();
     Matcher m = JSON_PAIR.matcher(json);
     while (m.find()) {
         commandByChord.put(jsonUnescape(m.group(1)), jsonUnescape(m.group(2)));
     }
-    Map<String, String> out = new LinkedHashMap<>();
-    commandByChord.forEach((chord, cmd) -> out.putIfAbsent(cmd, chord));
+    Map<String, List<String>> out = new LinkedHashMap<>();
+    commandByChord.forEach((chord, cmd) -> out.computeIfAbsent(cmd, k -> new ArrayList<>()).add(chord));
     return out;
+}
+
+/**
+ * The chords one keymap shows for a command on one platform: the primary first, then the alternates. The primary is KeymapManager.chordFor: the first binding in keymap order that can be
+ * typed on this platform, else the first binding of any kind. An untypable alternate (a Cmd- chord
+ * on Windows/Linux) is left out, as the app never advertises one.
+ */
+List<String> shownChords(List<String> chords, boolean mac) {
+    List<String> out = new ArrayList<>();
+    if (chords == null || chords.isEmpty()) return out;
+    String primary = null;
+    for (String c : chords) {
+        if (typable(c, mac)) {
+            primary = c;
+            break;
+        }
+    }
+    if (primary == null) primary = chords.get(0);
+    out.add(primary);
+    for (String c : chords) {
+        if (!c.equals(primary) && typable(c, mac)) out.add(c);
+    }
+    return out;
+}
+
+String jsList(List<String> xs) {
+    List<String> q = new ArrayList<>();
+    for (String x : xs) q.add("\"" + js(x) + "\"");
+    return "[" + String.join(", ", q) + "]";
 }
 
 Path websiteRoot() {
@@ -237,14 +326,17 @@ void main(String[] args) throws IOException {
         }
     }
 
-    // Per-keymap chord lookup.
-    Map<String, Map<String, String>> keyForKm = new LinkedHashMap<>();
+    // Per-keymap chord lookup, for each platform. macOS reads <id>.mac.json when the app ships one.
+    Path keymapDir = root.resolve("src/main/resources/com/editora/keymaps");
+    Map<String, Map<String, List<String>>> pcChords = new LinkedHashMap<>();
+    Map<String, Map<String, List<String>>> macChords = new LinkedHashMap<>();
     for (String[] km : KEYMAPS) {
-        String json = Files.readString(
-            root.resolve("src/main/resources/com/editora/keymaps/" + km[0] + ".json"), StandardCharsets.UTF_8);
-        keyForKm.put(km[0], firstChordPerCommand(json));
+        String base = Files.readString(keymapDir.resolve(km[0] + ".json"), StandardCharsets.UTF_8);
+        Path macFile = keymapDir.resolve(km[0] + ".mac.json");
+        String mac = Files.isRegularFile(macFile) ? Files.readString(macFile, StandardCharsets.UTF_8) : base;
+        pcChords.put(km[0], chordsPerCommand(base));
+        macChords.put(km[0], chordsPerCommand(mac));
     }
-    Map<String, String> keyForEmacs = keyForKm.get("emacs"); // `keys` = the default keymap's chord.
 
     // Bucket commands into groups, sorted by id within each group.
     Map<String, List<String>> groups = new LinkedHashMap<>();
@@ -256,9 +348,21 @@ void main(String[] args) throws IOException {
     out.add("// Sources: Command.of(...) registrations in com/editora/ui, messages.properties, keymaps/*.json.");
     out.add("// Re-run the script after commands or keybindings change.");
     out.add("");
-    out.add("// `keys` is the Emacs (default) chord; `bindings` maps each keymap id to its chord");
-    out.add("// (base Win/Linux variant — macOS substitutes Cmd). Only keymaps that bind it appear.");
-    out.add("export type Cmd = { title: string; id: string; keys?: string; bindings?: Record<string, string>; desc?: string };");
+    out.add("// Chords are raw keymap tokens (C-S-p, Cmd-S-p, C-x C-s); src/lib/chord-format.ts writes them in the");
+    out.add("// app's notation. `keys` is the Emacs (default) keymap's chord. `bindings` maps each keymap id to the");
+    out.add("// chord the app shows for the command on Windows/Linux, `mac` to the one it shows on macOS (read from");
+    out.add("// <keymap>.mac.json where the app ships one); `alt` / `macAlt` list that keymap's other chords for it.");
+    out.add("// Only keymaps that bind the command appear.");
+    out.add("export type Cmd = {");
+    out.add("  title: string;");
+    out.add("  id: string;");
+    out.add("  keys?: string;");
+    out.add("  bindings?: Record<string, string>;");
+    out.add("  mac?: Record<string, string>;");
+    out.add("  alt?: Record<string, string[]>;");
+    out.add("  macAlt?: Record<string, string[]>;");
+    out.add("  desc?: string;");
+    out.add("};");
     out.add("export type CmdGroup = { title: string; commands: Cmd[] };");
     out.add("");
     out.add("export const keymaps: { id: string; name: string }[] = [");
@@ -281,18 +385,27 @@ void main(String[] args) throws IOException {
             // so the run reports them instead of shipping them silently.
             if (!props.containsKey(cid)) untitled.add(cid);
             String title = js(props.getOrDefault(cid, cid));
-            String key = keyForEmacs.getOrDefault(cid, "");
+            List<String> emacsShown = shownChords(pcChords.get("emacs").get(cid), false);
+            String key = emacsShown.isEmpty() ? "" : emacsShown.get(0);
             String desc = js(props.getOrDefault(cid + ".desc", ""));
             List<String> parts = new ArrayList<>();
             parts.add("title: \"" + title + "\"");
             parts.add("id: \"" + cid + "\"");
             if (!key.isEmpty()) parts.add("keys: \"" + js(key) + "\"");
-            List<String> binds = new ArrayList<>();
+            List<String> binds = new ArrayList<>(), macBinds = new ArrayList<>();
+            List<String> alts = new ArrayList<>(), macAlts = new ArrayList<>();
             for (String[] km : KEYMAPS) {
-                String c = keyForKm.get(km[0]).get(cid);
-                if (c != null) binds.add("\"" + km[0] + "\": \"" + js(c) + "\"");
+                List<String> pc = shownChords(pcChords.get(km[0]).get(cid), false);
+                List<String> mac = shownChords(macChords.get(km[0]).get(cid), true);
+                if (!pc.isEmpty()) binds.add("\"" + km[0] + "\": \"" + js(pc.get(0)) + "\"");
+                if (!mac.isEmpty()) macBinds.add("\"" + km[0] + "\": \"" + js(mac.get(0)) + "\"");
+                if (pc.size() > 1) alts.add("\"" + km[0] + "\": " + jsList(pc.subList(1, pc.size())));
+                if (mac.size() > 1) macAlts.add("\"" + km[0] + "\": " + jsList(mac.subList(1, mac.size())));
             }
             if (!binds.isEmpty()) parts.add("bindings: { " + String.join(", ", binds) + " }");
+            if (!macBinds.isEmpty()) parts.add("mac: { " + String.join(", ", macBinds) + " }");
+            if (!alts.isEmpty()) parts.add("alt: { " + String.join(", ", alts) + " }");
+            if (!macAlts.isEmpty()) parts.add("macAlt: { " + String.join(", ", macAlts) + " }");
             if (!desc.isEmpty()) parts.add("desc: \"" + desc + "\"");
             out.add("      { " + String.join(", ", parts) + " },");
         }
