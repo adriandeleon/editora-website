@@ -16,6 +16,7 @@ Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js)
 - **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
 - A hover **value popup** that unfolds objects, arrays and collections as a tree
 - **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start)
+- An **exception card** under the line that threw: caught or uncaught, the type and message, the causes and stack trace when the debugger sends them (Python, JavaScript), with **Copy**; it never takes focus, and *Debug: Show Exception* opens it again
 - **Debug File** next to Run File in the editor's right-click menu
 - A debugged Java, Python or JavaScript program can read **standard input** typed in the Debug console
 - The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
