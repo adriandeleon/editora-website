@@ -49,7 +49,9 @@ Every keymap binds the debugger's commands. The Emacs keymap's are listed under
 `r` restarts, `v` shows the value at the caret, `x` evaluates, `w` adds a
 watch, `l` lists the breakpoints, `m` mutes them, `t` enables or disables the
 caret line's breakpoint, `1` toggles a temporary breakpoint, `s` smart-steps
-into, `f` restarts the frame and `h` applies code changes.
+into, `f` restarts the frame and `h` applies code changes. With Shift,
+`C-c C-d S-u` runs to the cursor past every breakpoint and `C-c C-d S-a`
+attaches again to the last address.
 
 The CUA and Sublime Text keymaps use VS Code's function keys:
 
@@ -72,8 +74,9 @@ window.
 
 The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
 Show Value at Caret, Ctrl+Shift+F8 Breakpoints, Ctrl+Alt+Shift+F8 Toggle
-Temporary Breakpoint (⌥⇧⌘F8 on macOS), Shift+F7 Smart Step Into and Ctrl+F9
-Apply Code Changes to its usual debugger keys.
+Temporary Breakpoint (⌥⇧⌘F8 on macOS), Ctrl+Alt+F9 Force Run to Cursor (⌥⌘F9
+on macOS), Shift+F7 Smart Step Into and Ctrl+F9 Apply Code Changes to its usual
+debugger keys.
 
 Some debugger keys are the same in every keymap. While the program is paused,
 Ctrl+Space completes an expression in the evaluate field, a watch prompt and a
