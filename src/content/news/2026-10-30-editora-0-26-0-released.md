@@ -1,7 +1,7 @@
 ---
-title: "Editora 0.26.0: a reworked Project Map, a terminal that keeps up with modern programs, and XML, HTML and Bash reviews"
-description: "Editora 0.26.0 reworks the Project Map (compact folder chains, Reveal Active File, Hide unmatched, notes on preview cards), gives the terminal a theme of its own, bundled Nerd Font icons, the kitty keyboard protocol, notifications and clipboard copy, and closes the gaps four reviews found in XML, HTML and Bash support. Java library classes now open with their sources."
-date: 2026-10-30
+title: "Editora 0.26.0: a reworked Project Map and a modern terminal"
+description: "The Project Map gets compact folder chains, Reveal Active File and notes on cards; the terminal gets themes, Nerd Font icons and the kitty keyboard protocol."
+date: 2026-10-29
 version: "0.26.0"
 ---
 
@@ -37,7 +37,7 @@ review, and every finding was fixed. Download it from the
 
 ## Terminal
 
-- **A theme of its own.** Settings ▸ Terminal ▸ Theme picks the terminal's
+- **A theme of its own.** Settings → Terminal → Theme picks the terminal's
   colours apart from the editor's: Solarized, Dracula, Nord, Gruvbox, One Half,
   Tango, Campbell or the Editora pair. **Editor theme** keeps the colours
   derived from your syntax theme.
@@ -118,5 +118,5 @@ review, and every finding was fixed. Download it from the
   sticky row is exactly one line tall.
 
 The full list is in the
-[changelog](https://github.com/adriandeleon/Editora/blob/master/CHANGELOG.md)
-and on [What's new](/whats-new).
+[changelog](https://github.com/adriandeleon/Editora/blob/v0.26.0/CHANGELOG.md)
+and on [What's new](/whats-new/0.26/#0260---2026-10-29).

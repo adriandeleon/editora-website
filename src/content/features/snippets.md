@@ -4,6 +4,7 @@ group: "Editing"
 order: 1
 beta: false
 summary: "Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for 32 languages."
+alt: "The Insert Snippet picker listing Java snippets such as main, sysout and foreach"
 ---
 
 Expand boilerplate with interactive templates. Type a prefix and press **Tab**, or pick from the **Snippet: Insert…** list (`C-c i`).

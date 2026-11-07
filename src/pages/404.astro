@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { docsBase } from "../lib/editora";
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 ---
@@ -9,16 +10,41 @@ const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
     <p class="code">404</p>
     <h1>Page not found</h1>
     <p class="lead">
-      That page doesn't exist. Try one of these:
+      That page doesn't exist. Search the site for it, or try one of these:
     </p>
     <div class="links">
-      <a class="btn btn-primary" href={url("")}>Home</a>
+      <button class="btn btn-primary" type="button" id="search-404">Search the site</button>
+      <a class="btn btn-ghost" href={url(docsBase.slice(1))}>Docs</a>
+      <a class="btn btn-ghost" href={url("features")}>Features</a>
       <a class="btn btn-ghost" href={url("commands")}>Commands</a>
       <a class="btn btn-ghost" href={url("keybindings")}>Keybindings</a>
-      <a class="btn btn-ghost" href={url("roadmap")}>Roadmap</a>
+      <a class="btn btn-ghost" href={url("")}>Home</a>
     </div>
   </main>
 </Layout>
+
+<script is:inline>
+  // Open the site search with the missing page's name already typed in, so a
+  // stale link (/docs/old-page-name) goes straight to what it was after.
+  (function () {
+    var btn = document.getElementById("search-404");
+    var open = document.getElementById("search-open");
+    if (!btn || !open) return;
+    btn.addEventListener("click", function () {
+      open.click();
+      var input = document.getElementById("search-input");
+      var last = location.pathname.split("/").filter(Boolean).pop() || "";
+      var words = decodeURIComponent(last)
+        .replace(/^v-[\d.]+$/, "")
+        .replace(/[-_.]+/g, " ")
+        .trim();
+      if (input && words) {
+        input.value = words;
+        input.dispatchEvent(new Event("input"));
+      }
+    });
+  })();
+</script>
 
 <style>
   .page {
@@ -57,6 +83,8 @@ const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 
   .btn {
     display: inline-block;
+    font: inherit;
+    cursor: pointer;
     padding: 0.6rem 1.3rem;
     border-radius: 999px;
     font-weight: 600;

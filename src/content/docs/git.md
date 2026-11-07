@@ -28,7 +28,8 @@ inert.
   (gray), renamed (violet), untracked (olive), with changed folders tinted. The
   Commit window's rows use the same letters and colors, so the two read
   identically. It updates as you edit, stage, commit, or switch branches.
-- The **Commit** tool window (`M-4`) groups staged, changed, and untracked files
+- The **Commit** tool window (`M-4` in Emacs, Alt+0 or Ctrl+K in IntelliJ
+  IDEA) groups staged, changed, and untracked files
   with stage, unstage, discard, and a commit box (Ctrl/Cmd+Enter to commit).
   See [The Commit window](#the-commit-window).
 - A **Git Log** tool window (`C-x v S-l`), the active file's Git history
@@ -86,14 +87,20 @@ Git points it somewhere else, and a blank value goes back to the `PATH` one. The
 **Detected** row on that page shows the version found, or, when nothing runs at
 the path you set, **No git at** that path. **Enable Git** stays usable either
 way. While Git is off, the page's blame, **Pull mode** and **Fetch
-automatically** rows are greyed out; the command path stays editable. Editora never asks for a password, a key passphrase, or a host-key
-confirmation, and Git commands never start an external editor. When a remote
-refuses to sign you in, the error says what to set up (a credential helper, an
-SSH agent, or a first connection from a terminal).
+automatically** rows are greyed out; the command path stays editable.
+
+### Credentials
+
+Editora never asks for a password, a key passphrase, or a host-key
+confirmation, and Git commands never start an external editor. Set up
+authentication outside Editora first: a credential helper for HTTPS remotes, an
+SSH agent holding your key, and one connection from a terminal so the host key
+is known. When a remote refuses to sign you in, the error says what to set up.
 
 ## The Commit window
 
-The Commit window (`tool.commit`, `M-4`) lists **Staged**, **Changes**, and
+The Commit window (`tool.commit`; `M-4` in Emacs, Alt+0 or Ctrl+K in IntelliJ
+IDEA, ⌘K on macOS) lists **Staged**, **Changes**, and
 **Untracked** files, each row with its added and removed line counts. Its header
 shows how many commits are waiting to be pushed or pulled, or that the branch
 has not been published yet.
@@ -313,7 +320,7 @@ loads more as you scroll, a page at a time, so it reaches the whole history
 ### Git history of one file
 
 **Show Git History** (`git.fileHistory`; `C-x v l`, or Ctrl+Alt+Shift+H in the
-other keymaps) lists the commits that changed the active file, in the Git Log
+other keymaps, ⌃⇧⌘H on macOS) lists the commits that changed the active file, in the Git Log
 tool window under a **Git history: name** chip. It is also in a tab's menu, the
 Project tree, and **VCS ▸ History & Blame**.
 

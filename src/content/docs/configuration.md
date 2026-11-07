@@ -11,9 +11,9 @@ edit by hand.
 
 ## The Settings window
 
-Open it with **View: Settings** (`view.settings`, `Ctrl+,` in the CUA, Sublime
-and VS Code keymaps). The sidebar groups the pages, each with an icon before
-its name (pages with an icon elsewhere in Editora, such as Git or Terminal,
+Open it with **View: Settings** (`view.settings`: `Ctrl+,` in the CUA, Sublime
+and VS Code keymaps, `Ctrl+Alt+S` in IntelliJ, `⌘,` in all four on macOS). The
+sidebar groups the pages, each with an icon before its name (pages with an icon elsewhere in Editora, such as Git or Terminal,
 use the same one); a page whose feature is still in beta (AI, AI Agent, AI Actions, Remote, Sync, MCP
 Server) carries a **Beta** pill in the sidebar and beside its title. Every
 page title has a **?** link that opens that page's documentation for the
@@ -142,6 +142,8 @@ change the same setting or entry, the one saved last wins.
 | `workspace-state.json` | Session of the no-project window: open files, folds, tool-window layout, window geometry, and the [Python interpreter](/docs/lsp#the-python-interpreter) picked for loose files |
 | `windows/<id>.json` | Session of each extra no-project window |
 | `recent-files.json` | Recent files list |
+| `search-history.json` | Your recent [Find in Files](/docs/navigation#find-in-files) queries |
+| `agent-sessions.json` | Your recent [AI Agent](/docs/ai#ai-agent) chats, so you can resume them. Each one's title is taken from its first prompt |
 | `projects.json` + `projects/<id>.json` | Project index and each project's session, including the [Python interpreter](/docs/lsp#the-python-interpreter) picked for it |
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
@@ -153,8 +155,10 @@ change the same setting or entry, the one saved last wins.
 | `abbreviations.json` | Your abbreviations |
 | `trusted-folders.json` | Folders you have trusted: their builds, project settings, JavaScript tools and HTTP scripts may run, and language servers may load their builds ([what trust allows](/docs/workspace#trusted-folders)) |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
+| `themes/*.css`, `editor-themes/*.css` | Your [own themes](/docs/themes-fonts) |
 | `history/` | [Local History](/docs/workspace#local-file-history) |
 | `http-history/` | The [HTTP client](/docs/http-client)'s last responses and chosen environment for each `.http` file |
+| `cache/` | Data Editora downloads or builds and can rebuild: XML schemas, the Maven archetype catalog, compiled Kotlin scripts, the HTTP client's script runner. Settings export leaves it out |
 
 Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
 Editora converts an existing `settings.toml` automatically. Once the JSON
@@ -387,14 +391,9 @@ for files in that language; an empty list means that language has no rulers.
 Columns run from 1 to 1000. An `.editorconfig` `max_line_length` replaces the
 first ruler (see [EditorConfig](/docs/editorconfig#rulers-and-max_line_length)).
 
-The palette sets the same values: *Editor: Set Rulers…* (`editor.setRulers`),
-*Editor: Set Rulers for This Language…* (`editor.setLanguageRulers`, for the
-current file's language; leave it blank to go back to the global rulers),
-*View: Toggle Rulers* (`view.toggleColumnRuler`) and *View: Toggle Indent
-Guides* (`view.toggleIndentGuides`). Indent guides are faint vertical lines at
-each indentation level, carried through blank lines and coloured by the theme;
-they are hidden in Zen and Simple UI modes and in
-[large-file mode](/docs/troubleshooting#performance).
+The palette commands that set them, and how rulers and indent guides are
+drawn, are under
+[Whitespace and the column ruler](/docs/editing#whitespace-and-the-column-ruler).
 
 ```json
 {
@@ -419,8 +418,7 @@ governs the file in front.
 
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.27.0
-`settings.json` is at version **158**. Editora migrates older files forward
+Each structured config file carries a `schemaVersion`. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that

@@ -9,7 +9,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { docsBase } from "./editora";
-import { groupedFeatures, groupId } from "./features";
+import { featureShotAlt, groupedFeatures, groupId } from "./features";
 
 export type Shot = {
   /** Full-size capture, `/`-rooted. The light one when there is a twin. */
@@ -479,7 +479,7 @@ export async function gallerySections(): Promise<ShotSection[]> {
         shot(src, {
           title: f.data.title,
           caption: stripTags(f.data.summary),
-          alt: `${f.data.title} in Editora`,
+          alt: featureShotAlt(f),
           more: { href: `/features/${f.id}`, label: `More about ${f.data.title}` },
         }),
       ];

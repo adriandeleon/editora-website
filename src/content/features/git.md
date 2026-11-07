@@ -4,6 +4,7 @@ group: "Git & diff"
 order: 1
 beta: false
 summary: "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, merges and rebases with a conflict resolver, branches, remotes, tags, stashes and patches, a paged log with a commit graph, and blame."
+alt: "The Commit window beside a Java file: one changed file, two untracked, and a commit message typed"
 ---
 
 Native Git that shells out to your installed `git`, no bundled library. In a [remote folder](/features/remote-sftp) it is the host's own `git`, over the same SSH connection with the host's credentials, and everything below works there too, clone and init included.

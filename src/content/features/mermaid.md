@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 2
 beta: false
 summary: "Render Mermaid diagrams inline in Markdown and in standalone <code>.mmd</code> files, with live linting and export to SVG / PNG / PDF."
+alt: "A Mermaid flowchart in Split view, with the rendered diagram beside its source"
 ---
 
 Mermaid diagrams render inline. A fenced ` ```mermaid ` block in Markdown becomes a diagram in the preview, and standalone `.mmd` files get the same 3-mode preview.

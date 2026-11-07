@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.9.10: the language-server release"
-description: "Code actions, rename, signature help, inlay hints, call and type hierarchy, occurrence highlighting and server-provided folding; run and debug a real project's main class; the Emacs model completed with a kill ring, narrowing, rectangles and query-replace; and Doctor, a health screen for every external tool."
+description: "Code actions, rename, inlay hints and call hierarchy from language servers, Run and Debug for a project's main class, the Emacs editing model, and Doctor."
 date: 2026-07-26
 version: "0.9.10"
 ---
@@ -245,4 +245,4 @@ format, the capabilities declared at `initialize`, session lifetime, diagnostics
 routing, and the rename path that writes and moves files, with a regression test
 for each defect above.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.9/#0910---2026-07-26) page.

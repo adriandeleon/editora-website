@@ -1,27 +1,49 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { commandGroups, keymaps } from "../lib/commands";
+import { formatChord } from "../lib/chord-format";
+import { formatChordMac } from "../lib/chord-format-mac";
 
 // For each bundled keymap, the command groups with at least one bound command,
-// each with that keymap's chord. Derived from the same generated source as the
-// Commands page, so it stays in sync automatically.
+// each with that keymap's chords on Windows/Linux and on macOS (the app loads a
+// separate macOS file for every keymap but Emacs), written the way the app
+// writes them. Derived from the same generated source as the Commands page, so
+// it stays in sync automatically.
+type Row = { title: string; pc: string[]; mac: string[] };
 const byKeymap = keymaps.map((km) => {
   const groups = commandGroups
     .map((g) => ({
       title: g.title,
-      bindings: g.commands
-        .filter((c) => c.bindings && c.bindings[km.id])
-        .map((c) => ({ keys: c.bindings![km.id], title: c.title })),
+      rows: g.commands
+        .map(
+          (c): Row => ({
+            title: c.title,
+            pc: c.bindings?.[km.id]
+              ? [c.bindings[km.id], ...(c.alt?.[km.id] ?? [])].map((k) => formatChord(k, km.id))
+              : [],
+            mac: c.mac?.[km.id]
+              ? [c.mac[km.id], ...(c.macAlt?.[km.id] ?? [])].map((k) => formatChordMac(k, km.id))
+              : [],
+          }),
+        )
+        .filter((r) => r.pc.length > 0 || r.mac.length > 0),
     }))
-    .filter((g) => g.bindings.length > 0);
-  const count = groups.reduce((n, g) => n + g.bindings.length, 0);
-  return { ...km, groups, count };
+    .filter((g) => g.rows.length > 0);
+  const rows = groups.flatMap((g) => g.rows);
+  const pcCount = rows.filter((r) => r.pc.length > 0).length;
+  const macCount = rows.filter((r) => r.mac.length > 0).length;
+  return { ...km, groups, pcCount, macCount };
 });
+
+// Which platform a row belongs to, so the CSS can hide a row the other
+// platform doesn't bind.
+const rowClass = (r: Row) =>
+  r.pc.length === 0 ? "mac-only" : r.mac.length === 0 ? "pc-only" : undefined;
 ---
 
 <Layout
   title="Keybindings — Editora"
-  description="Editora's keymaps: Emacs (default), CUA, Sublime Text, VS Code, and IntelliJ IDEA. Every command with its default binding, grouped by area. Rebind anything in Settings → Keymaps."
+  description="Editora's keymaps: Emacs (default), CUA, Sublime Text, VS Code, and IntelliJ IDEA. Every command with its default bindings on Windows, Linux and macOS, grouped by area. Rebind anything in Settings → Keymaps."
 >
   <main class="page">
     <h1>Keybindings</h1>
@@ -30,19 +52,30 @@ const byKeymap = keymaps.map((km) => {
       default; you can switch to any of them (or rebind any command) in
       <strong>Settings → Keymaps</strong>. Every binding maps to a
       <strong>command</strong>, so the same actions are also reachable from the
-      <kbd>M-x</kbd> palette (see the full <a href="/commands">command list</a>).
+      command palette (see the full <a href="/commands">command list</a>).
     </p>
 
     <div class="legend">
-      <span><kbd>C-</kbd> Control</span>
-      <span><kbd>M-</kbd> Alt / Option (Meta)</span>
-      <span><kbd>S-</kbd> Shift</span>
-      <span>Space-separated = a chord sequence, e.g. <kbd>C-x</kbd> then <kbd
-          >C-s</kbd
-        ></span>
+      <p>
+        Chords are written the way Editora writes them. The <strong>Emacs</strong>
+        keymap uses Emacs notation on every platform:
+        <kbd>C-</kbd> Control, <kbd>M-</kbd> Alt / Option (Meta),
+        <kbd>S-</kbd> Shift, <kbd>Cmd-</kbd> Command; space-separated keys are a
+        sequence, e.g. <kbd>C-x</kbd> then <kbd>C-s</kbd>.
+      </p>
+      <p>
+        The other keymaps use the platform's notation:
+        <kbd>Ctrl+Shift+P</kbd> on Windows and Linux, and
+        <kbd>⌃</kbd> Control, <kbd>⌥</kbd> Option, <kbd>⇧</kbd> Shift,
+        <kbd>⌘</kbd> Command on macOS, as in <kbd>⇧⌘P</kbd>.
+        Where a command has more than one chord, the first is the one Editora
+        shows in its menus and palette.
+      </p>
     </div>
 
     <form class="keymaps">
+      <input type="radio" name="os" id="os-pc" class="km-radio" checked />
+      <input type="radio" name="os" id="os-mac" class="km-radio" />
       {
         byKeymap.map((km, i) => (
           <input
@@ -54,7 +87,12 @@ const byKeymap = keymaps.map((km) => {
           />
         ))
       }
-      <div class="tabs" role="tablist">
+      <div class="os-switch">
+        <span class="os-label" id="os-label">Platform</span>
+        <label for="os-pc" class="os-opt">Windows / Linux</label>
+        <label for="os-mac" class="os-opt">macOS</label>
+      </div>
+      <div class="tabs">
         {
           byKeymap.map((km) => (
             <label for={`km-${km.id}`} class="tab">
@@ -69,7 +107,9 @@ const byKeymap = keymaps.map((km) => {
           byKeymap.map((km) => (
             <section class="km-panel" id={`panel-${km.id}`}>
               <p class="km-count">
-                <strong>{km.name}</strong>: {km.count} commands with a default binding.
+                <strong>{km.name}</strong>:{" "}
+                <span class="pc">{km.pcCount} commands with a default binding on Windows and Linux.</span>
+                <span class="mac">{km.macCount} commands with a default binding on macOS.</span>
               </p>
               <div class="columns">
                 {km.groups.map((g) => (
@@ -77,14 +117,26 @@ const byKeymap = keymaps.map((km) => {
                     <h2>{g.title}</h2>
                     <table>
                       <tbody>
-                        {g.bindings.map((b) => (
-                          <tr>
+                        {g.rows.map((r) => (
+                          <tr class={rowClass(r)}>
                             <td class="keys">
-                              {b.keys.split(" ").map((tok) => (
-                                <kbd>{tok}</kbd>
+                              {[
+                                { cls: "pc", chords: r.pc },
+                                { cls: "mac", chords: r.mac },
+                              ].map((p) => (
+                                <span class={p.cls}>
+                                  {p.chords.map((chord, i) => (
+                                    <span class={i === 0 ? "chord" : "chord alt"}>
+                                      {i > 0 && <span class="or">or</span>}
+                                      {chord.split(" ").map((tok) => (
+                                        <kbd>{tok}</kbd>
+                                      ))}
+                                    </span>
+                                  ))}
+                                </span>
                               ))}
                             </td>
-                            <td class="desc">{b.title}</td>
+                            <td class="desc">{r.title}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -99,12 +151,11 @@ const byKeymap = keymaps.map((km) => {
     </form>
 
     <p class="note">
-      <strong>macOS:</strong> the CUA, Sublime Text, VS Code, and IntelliJ keymaps
-      mostly use <kbd>⌘</kbd> (Command) where the tables above show
-      <kbd>C-</kbd> (Control), but several chords differ on macOS (redo and
-      replace, for example); see <strong>Settings → Keymaps</strong> for the
-      exact bindings on your machine. In the Emacs keymap, the Option dead keys
-      (<kbd>Option</kbd>+<kbd>e</kbd>/<kbd>i</kbd>/<kbd>u</kbd>/<kbd>n</kbd>/<kbd
+      <strong>macOS:</strong> Editora reads a separate macOS keymap for CUA,
+      Sublime Text, VS Code, and IntelliJ, so a few chords differ by more than
+      <kbd>⌘</kbd> for Ctrl; pick <em>macOS</em> above to see them. The Emacs
+      keymap is the same on every platform. In the Emacs keymap, the Option dead
+      keys (<kbd>Option</kbd>+<kbd>e</kbd>/<kbd>i</kbd>/<kbd>u</kbd>/<kbd>n</kbd>/<kbd
         >`</kbd
       >) are intercepted by the OS for accent composition, so a few
       <kbd>M-</kbd> chords like <kbd>M-e</kbd> aren't reachable by keyboard there.
@@ -112,6 +163,18 @@ const byKeymap = keymaps.map((km) => {
     </p>
   </main>
 </Layout>
+
+<script is:inline>
+  // Open on the reader's own platform; the radios work without this.
+  (function () {
+    var ua = navigator.userAgentData;
+    var platform = (ua && ua.platform) || navigator.platform || "";
+    if (/mac|iphone|ipad/i.test(platform)) {
+      var mac = document.getElementById("os-mac");
+      if (mac) mac.checked = true;
+    }
+  })();
+</script>
 
 <style>
   .page {
@@ -133,9 +196,6 @@ const byKeymap = keymaps.map((km) => {
   }
 
   .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
     padding: 1rem 1.25rem;
     background: var(--bg-soft);
     border: 1px solid var(--border);
@@ -143,6 +203,74 @@ const byKeymap = keymaps.map((km) => {
     font-size: 0.9rem;
     color: var(--muted);
     margin-bottom: 1.5rem;
+  }
+
+  .legend p {
+    margin: 0;
+  }
+
+  .legend p + p {
+    margin-top: 0.6rem;
+  }
+
+  /* Platform switcher: two hidden radios drive which chord column shows. */
+  .os-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .os-label {
+    color: var(--muted);
+    margin-right: 0.35rem;
+  }
+
+  .os-opt {
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .os-opt:hover {
+    color: var(--text);
+  }
+
+  #os-pc:checked ~ .os-switch label[for="os-pc"],
+  #os-mac:checked ~ .os-switch label[for="os-mac"] {
+    color: var(--text);
+    background: var(--bg-soft);
+    font-weight: 600;
+  }
+
+  #os-pc:focus-visible ~ .os-switch label[for="os-pc"],
+  #os-mac:focus-visible ~ .os-switch label[for="os-mac"],
+  #km-emacs:focus-visible ~ .tabs label[for="km-emacs"],
+  #km-cua:focus-visible ~ .tabs label[for="km-cua"],
+  #km-sublime:focus-visible ~ .tabs label[for="km-sublime"],
+  #km-vscode:focus-visible ~ .tabs label[for="km-vscode"],
+  #km-intellij:focus-visible ~ .tabs label[for="km-intellij"] {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .mac {
+    display: none;
+  }
+
+  #os-mac:checked ~ .km-panels .mac {
+    display: inline;
+  }
+
+  #os-mac:checked ~ .km-panels .pc,
+  #os-mac:checked ~ .km-panels tr.pc-only,
+  #os-pc:checked ~ .km-panels tr.mac-only {
+    display: none;
   }
 
   /* Keymap switcher: hidden radios drive the tab bar + panels via :checked. */
@@ -235,13 +363,28 @@ const byKeymap = keymaps.map((km) => {
   }
 
   td.keys {
-    white-space: nowrap;
     padding-right: 1rem;
     width: 1%;
   }
 
   td.keys kbd + kbd {
     margin-left: 0.25rem;
+  }
+
+  /* A command's chords stack, the one the app shows first. */
+  .chord {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .chord.alt {
+    margin-top: 0.15rem;
+  }
+
+  .or {
+    color: var(--faint);
+    font-size: 0.8rem;
+    margin-right: 0.4rem;
   }
 
   td.desc {

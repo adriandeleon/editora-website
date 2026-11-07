@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 11
 beta: false
 summary: "Open a log file for severity highlighting, a <code>tail -f</code> Follow button that survives rotation, open-at-the-tail for huge logs, and live level + regex filtering."
+alt: "A .log file in View mode with levels coloured, a filter box, and an error's stack trace highlighted"
 ---
 
 `.log` files open in a dedicated log mode built for reading server output. So do rotated logs (`app.log.1`), `access_log`, `syslog`, `catalina.out`, `nohup.out`, and files such as `server.out` whose content looks like a log.

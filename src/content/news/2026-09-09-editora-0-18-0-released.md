@@ -57,4 +57,4 @@ received a broad concurrency and lifecycle pass. Editor overlays now respect
 HiDPI texture limits, and the HTML **Open in Browser** control no longer overlaps
 the minimap.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.18/#0180---2026-09-09) page.

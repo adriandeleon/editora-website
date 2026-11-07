@@ -43,17 +43,17 @@ const rows = [
   {
     what: "Keybindings",
     editora: "Five complete keymaps (Emacs, CUA, Sublime, VS Code, IntelliJ), every command rebindable",
-    others: "VS Code and IntelliJ ship keymap extensions for each other; Emacs is its own thing entirely",
+    others: "VS Code and IntelliJ can each install the other's keymap as an extension or plugin; Emacs is its own thing entirely",
   },
   {
     what: "Reaching a command",
     editora: "Everything is a registered command with an id, reachable by chord or fuzzy M-x search. No hidden actions",
-    others: "VS Code's palette is close in spirit. IntelliJ hides a lot behind menus and dialogs",
+    others: "Emacs's M-x is where the idea comes from. VS Code's Command Palette and IntelliJ's Find Action are close in spirit",
   },
   {
     what: "Interface range",
     editora: "Four modes in one app, from Zen (bare text) to a full IDE, each a palette command away (Zen and Expert also have a chord in the Emacs keymap)",
-    others: "VS Code and IntelliJ both have a Zen/distraction-free mode, but no equivalent spread",
+    others: "VS Code has a Zen mode, IntelliJ has Zen and Distraction-free modes, and Emacs can be configured down to bare text",
   },
   {
     what: "Language support",
@@ -63,7 +63,7 @@ const rows = [
   {
     what: "Account and telemetry",
     editora: "None. No sign-in, no usage reporting, no subscription",
-    others: "VS Code collects telemetry by default (it can be turned off). IntelliJ Ultimate is a paid licence",
+    others: "VS Code collects telemetry by default (it can be turned off). IntelliJ IDEA's core is free, and its Ultimate features need a paid subscription",
   },
   {
     what: "Extensibility",
@@ -110,14 +110,8 @@ const rows = [
       give different numbers.
     </p>
     <p class="note">
-      They replace a set taken in July&nbsp;2026, and the two are not
-      comparable. The old harness polled for the window through
-      <code>osascript</code>, which costs about 1.6&nbsp;seconds per poll, so
-      every figure was rounded up to the next poll — which is why Editora and VS
-      Code came out two milliseconds apart there, both simply caught on the
-      first poll. The harness now polls the window server directly every
-      5&nbsp;ms. Most of the apparent speedup across all three editors is that
-      change in resolution, not three editors getting faster.
+      They replace a set taken in July&nbsp;2026 with a much coarser harness,
+      and the two sets are not comparable.
     </p>
 
     <h3>Opening a single file</h3>

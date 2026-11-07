@@ -4,6 +4,7 @@ group: "Git & diff"
 order: 2
 beta: false
 summary: "Review and check out pull requests, submit reviews, open a file on GitHub at the caret line, and jump from a failed CI log straight to the offending line. Uses your own <code>gh</code> CLI, so Editora never handles a token."
+alt: "The GitHub tool window listing a repository's pull requests, with Issues and Runs tabs"
 ---
 
 GitHub, through the [`gh` CLI](https://cli.github.com) you already have signed in. **Editora never handles a token**: it shells out to `gh` the same way the Git support shells out to `git`, so GitHub Enterprise works with no extra setup.

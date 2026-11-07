@@ -85,11 +85,33 @@ function rehypeTableWrap() {
   };
 }
 
+// Adds the trailing slash to every redirect target (see `redirects` below).
+function withTrailingSlash(redirects) {
+  return Object.fromEntries(
+    Object.entries(redirects).map(([from, to]) => [from, to.endsWith("/") ? to : `${to}/`]),
+  );
+}
+
 export default defineConfig({
   site: "https://editora-project.dev",
   // pagefind() runs the Pagefind indexer inside `astro build` (so it works no
   // matter how CI invokes the build) and serves the index in `astro dev`.
-  integrations: [sitemap(), pagefind()],
+  // The sitemap lists canonical URLs only. An archived version's docs and
+  // command pages canonicalise to the current version (see Layout.astro's
+  // canonicalPath), so listing them — about 22,000 of them — would only point
+  // crawlers at pages they are told to skip. Redirects are never listed.
+  integrations: [
+    sitemap({
+      filter: (page) => {
+        const path = new URL(page).pathname;
+        // The newest What's New series page canonicalises to /whats-new/.
+        if (path === `/whats-new/${version.split(".").slice(0, 2).join(".")}/`) return false;
+        const m = /\/docs\/(v-[^/]+)\//.exec(path + "/");
+        return !m || m[1] === `v-${version}`;
+      },
+    }),
+    pagefind(),
+  ],
   // `astro dev` watches the whole project folder. The built site (dist/, about
   // 19,000 folders) and Claude Code worktrees under .claude/ are not sources,
   // and watching them can exhaust the system's file-watch limits.
@@ -109,7 +131,11 @@ export default defineConfig({
   // archived copy — so these are redirects, not duplicate pages, and a slug
   // that no longer exists simply stops redirecting. Every served version's
   // command index points at the searchable command list.
-  redirects: {
+  //
+  // Every target ends in a slash: the pages are emitted as directories, and
+  // GitHub Pages answers a slashless directory URL with a 301 to the slashed
+  // one, so a redirect page's canonical would otherwise point at a redirect.
+  redirects: withTrailingSlash({
     // The blog was folded into News (2026-11-03). Old post URLs land on the
     // release's news post or the closest feature page, or on /news.
     "/blog": "/news",
@@ -148,5 +174,5 @@ export default defineConfig({
     ...Object.fromEntries(
       docVersions.map((v) => [`${v.base}/commands`, "/commands"]),
     ),
-  },
+  }),
 });

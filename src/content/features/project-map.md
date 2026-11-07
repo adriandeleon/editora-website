@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 0
 beta: false
 summary: "See a project as a <strong>map</strong> in a window of its own: folders as columns on a canvas, code cards that open the way the map flows, callers and references as connected cards, recent-change heat, and trails that walk a team through the code."
+alt: "The Project Map: folder columns joined by curves, a Java file selected and its Structure column"
 ---
 
 The Project Map is a second way to look at a [project](/features/projects), beside the file tree. It opens in a **window of its own** (place it next to the editor window, or on another screen) and lays the project out on a canvas you can pan and zoom. Open it with the **Map** button in the Project tool window, `Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs), or *Project: Open / Close Project Map Window*. `Alt-F1` reveals the file you are editing on it.

@@ -71,8 +71,9 @@ The CUA and Sublime Text keymaps use VS Code's function keys:
 
 Because F11 steps into only while a program is paused, Full Screen also has
 Ctrl+Alt+F in these two keymaps (Ctrl+⌘F on macOS). The VS Code keymap has the
-same keys, with F11 always Step Into and Ctrl+Shift+D (⌘⇧D) for the Debug
-window.
+same debugger keys, with F11 always Step Into and Ctrl+Shift+D (⌘⇧D) for the
+Debug window. It has no Full Screen key; use **Window ▸ Toggle Full Screen** or the
+palette.
 
 The IntelliJ IDEA keymap adds Ctrl+F5 Restart, Alt+F8 Evaluate, Ctrl+Alt+F8
 Show Value at Caret, Ctrl+Shift+F8 Breakpoints, Ctrl+Alt+Shift+F8 Toggle
@@ -121,7 +122,7 @@ The **IntelliJ IDEA** keymap uses IntelliJ's chords for the Java tools:
 | Ctrl+Alt+F7 | Find usages |
 | Ctrl+Shift+= / Ctrl+Shift+- (also on the numpad) | Expand all / collapse all folds |
 
-So in that keymap F2 is no longer Rename, and Alt+Insert is New only in the
+So in that keymap F2 is not Rename (Shift+F6 is), and Alt+Insert is New only in the
 Project tree; New File elsewhere is Ctrl+Alt+Insert. On macOS the keymap follows
 IntelliJ's: ⌘N is Generate in the editor and New in the Project tree, New File
 is ⌃⌘N, ⌃I is Override/Implement Methods, ⌘J is Insert snippet, ⌃⇧R runs the

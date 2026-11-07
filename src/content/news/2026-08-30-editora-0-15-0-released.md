@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.15.0: printing, Typst structure, and menus that keep up"
-description: "A long Markdown file that printed as fourteen mostly blank pages now prints correctly. Typst files fold and outline by section, the Maven tree lists every goal a plugin offers, and the VCS menu is no longer greyed out inside a Git repository."
+description: "Long Markdown files print correctly, Typst files fold and outline by section, the Maven tree lists every plugin goal, and the VCS menu works inside Git."
 date: 2026-08-30
 version: "0.15.0"
 ---
@@ -178,4 +178,4 @@ Three smaller things in the same area:
   library catching up.
 
 The complete list is on the
-[What's New](/whats-new) page.
+[What's New](/whats-new/0.15/#0150---2026-08-30) page.

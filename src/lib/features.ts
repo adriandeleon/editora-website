@@ -63,3 +63,14 @@ export function featureShot(id: string): string | null {
     .find((fp) => existsSync(resolve("public", fp)));
   return p ? `/${p}` : null;
 }
+
+/**
+ * Alt text for a feature's screenshot: the page's own `alt` front matter when it
+ * has one (it describes what the picture shows), else a generic fallback.
+ * Typed loosely so it works before and after the collection schema has `alt`.
+ */
+export function featureShotAlt(f: CollectionEntry<"features">): string {
+  const d: object = f.data;
+  if ("alt" in d && typeof d.alt === "string" && d.alt.trim()) return d.alt;
+  return `${f.data.title} in Editora`;
+}

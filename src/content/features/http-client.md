@@ -4,6 +4,7 @@ group: "Run & debug"
 order: 4
 beta: false
 summary: "Run <code>.http</code> / <code>.rest</code> requests from a gutter ▶ or a key, with environments, variables, request chaining, and a response view that shows exactly what was sent. Built on the JDK HTTP client."
+alt: "An .http file with two requests and a test script, beside the JSON response of a 200 OK"
 ---
 
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send it, or press `C-c C-c` (`Ctrl+Alt+R` in the other keymaps). No external tool is needed: it uses the JDK's built-in HTTP client.

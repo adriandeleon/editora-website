@@ -133,7 +133,8 @@ remote project's terminal is a shell on its SSH host, and a folder whose tools
 run in a [dev container](/docs/remote#tools-in-a-container) or a
 [WSL distribution](/docs/remote#tools-in-wsl-windows) gets a shell inside it.
 The tab's chip names the host, container or distribution, so you can tell at a
-glance where a command will run.
+glance where a command will run. These are part of [Remote](/docs/remote),
+which is in Beta.
 
 - **It is a real terminal.** vim, htop, less and resizing work, as in `ssh`.
 - **It is the account's login shell there**: `$SHELL`, else bash, else sh.
@@ -184,8 +185,15 @@ What it gives you:
   prompts.
 
 It is on by default; turn it off with **Settings → Terminal → Shell
-integration**, which applies from the next terminal you open. Other shells,
-such as fish or PowerShell, start without it.
+integration**, which applies from the next terminal you open. A terminal
+starts without it:
+
+- with other shells, such as fish or PowerShell;
+- with a bash or zsh that runs on Windows itself, such as Git Bash (a WSL
+  terminal has it);
+- when **Settings → Terminal → Shell** gives the shell arguments of its own,
+  such as `/bin/bash --norc`. Only a shell named alone, or with just `-l`,
+  gets it.
 
 ## Find in the terminal
 
@@ -278,7 +286,7 @@ keyboard protocol**, such as Neovim, Helix, fish and nushell, ask the terminal
 for unambiguous keys, and Editora's terminal gives them: Escape on its own,
 Ctrl+I apart from Tab, Shift+Enter as a key of its own, and, when the program
 asks, key repeats and releases. Nothing needs turning on. A program that
-doesn't ask, and your shell at its prompt, get the same keys as before, and a
+doesn't ask, and your shell at its prompt, get the usual terminal keys, and a
 full-screen program's request ends with it.
 
 ### Alt and Option
@@ -510,8 +518,9 @@ integration, and scrollback apply from the next terminal you open.
   No terminal palette fixes that; use a prompt theme that suits light
   backgrounds, a dark editor theme, or a dark
   [terminal theme](#colors-and-font).
-- Without [shell integration](#shell-integration) (another shell, or the
-  setting off), Editora reads a shell's current folder on Linux and macOS only.
+- Without [shell integration](#shell-integration) (another shell, a bash or
+  zsh on Windows such as Git Bash, a Shell setting with arguments of its own,
+  or the setting off), Editora reads a shell's current folder on Linux and macOS only.
   On Windows, tab titles then don't follow the folder, and only absolute paths
   and URLs in the output become links, not relative paths. A terminal on a host
   needs shell integration for the folder at all.

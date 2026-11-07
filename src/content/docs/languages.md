@@ -27,11 +27,21 @@ characters is never highlighted. Files that are mostly long lines open in
 
 ### Supported languages
 
-Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
-Kotlin, Scala, Clojure, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML,
-YAML, INI, SQL, TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML,
-Mermaid, and the HTTP request format. The TypeScript grammar also covers plain
-JavaScript.
+Editora ships 63 grammars:
+
+| Group | Languages and file types |
+| --- | --- |
+| JVM | Java, Kotlin, Groovy (and Gradle build files), Scala (and sbt and Mill builds), Clojure (and EDN) |
+| Systems | C, C++, C#, Go, Rust |
+| Scripting | Python, Ruby, PHP, Lua, JavaScript, TypeScript, JSX and TSX |
+| Shells and builds | Bash and other shell scripts, PowerShell, DOS batch, Makefile, `justfile` |
+| Web and documents | HTML (and HTML templates), CSS, Astro, XML and its dialects, Markdown, Typst |
+| Data and config | JSON, YAML, TOML, INI, Java `.properties`, CSV and TSV, `.env`, SQL, GraphQL, Protocol Buffers, Terraform and HCL, Dockerfile, pip `requirements.txt` |
+| Diagrams and requests | Mermaid, Markwhen, Graphviz DOT, PlantUML, `.http` request files |
+| System files | systemd units, desktop entries, crontab, Caddyfile, `/etc/hosts`, `fstab`, SSH config, Git config, `.gitattributes`, `.gitignore` and the other ignore files, Debian control files and changelogs, APT sources, network `interfaces`, log files, diffs and patches |
+
+Two more work inside these: one for Javadoc comments, and one for the HTML in
+a Markdown file. JavaScript uses the TSX grammar, so JSX in a `.js` file highlights.
 
 XML covers its dialects too: DTDs (`.dtd`, `.ent`, `.mod`), RELAX NG,
 XSL-FO, Schematron, MSBuild and NuGet project files, `.resx`, XAML, XLIFF,

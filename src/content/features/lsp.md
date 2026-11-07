@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 2
 beta: false
 summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
+alt: "Quick fixes for an unresolved ArrayList in a Java file, above the Problems window listing two errors"
 ---
 
 Editora supports the **Language Server Protocol**, both the requests that read your code and the ones that change it.

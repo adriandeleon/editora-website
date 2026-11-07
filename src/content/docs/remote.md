@@ -132,7 +132,7 @@ timeout fires.
 
 Saved sites have three surfaces beyond the palette picker:
 
-- A **Remote Sites** tool window (`tool.remote`, `M-g r`) listing every saved
+- A **Remote Sites** tool window (`tool.remote`; `M-g r` in the Emacs keymap) listing every saved
   site, with New, Connect, and Remove.
 - A **Settings → Remote** page (`remote.settings`) to add, edit, and remove
   sites: label, host, port, user, auth method, and key path, and, under **This
@@ -230,9 +230,11 @@ logins never ask the agent, and the agent is never forwarded to the server.
 
 ## Host-key verification
 
-Editora verifies the server's host key against `~/.ssh/known_hosts`, the same
-file `ssh` uses, so a host you've already accepted at the terminal connects with
-no prompt. A host you've never connected to shows its fingerprint and asks you
+Editora verifies the server's host key against `~/.ssh/known_hosts`, the
+default file `ssh` uses, so a host you've already accepted at the terminal
+connects with no prompt. That is the only file read: a `UserKnownHostsFile`
+in your SSH config and the system-wide `ssh_known_hosts` are not, so a host
+known only there asks once. A host you've never connected to shows its fingerprint and asks you
 first (**Unknown Host Key**); **Connect** saves the key to `known_hosts`, so you
 are not asked again, and declining ends the connect with only a note in the
 status bar. Through a `ProxyJump`, the jump host's key is checked the same way.
@@ -377,8 +379,8 @@ on the host too.
   as for a local one.
 
 Personal notes on a remote file are stored under the path you opened it by, not
-the target of a symlink. Notes made in an earlier version on a file opened
-through a symlink may no longer be found.
+the target of a symlink, so a file opened through a symlink and by its real
+path keeps a separate set of notes for each.
 
 ## Behind the scenes
 

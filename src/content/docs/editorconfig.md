@@ -43,11 +43,10 @@ your choice, and remembers it for the file. See
 
 ### Rulers and max_line_length
 
-Editora can draw several rulers (80 by default; set your own in **Settings →
-Editor**, per language if you like). A `max_line_length` replaces only the
-**first** ruler, so the others stay where you put them (with no rulers set, it
-adds one), and `max_line_length = off` hides them all for files the rule
-covers.
+A `max_line_length` replaces only the **first**
+[ruler](/docs/editing#whitespace-and-the-column-ruler), so the others stay where
+you put them (with no rulers set, it adds one), and `max_line_length = off`
+hides them all for files the rule covers.
 
 ![A notes.txt file in a folder whose .editorconfig sets max_line_length = 40 and end_of_line = crlf for text files: the ruler stands at column 40 and the status bar reads EditorConfig and CRLF](/screenshots/docs/editorconfig.png "A max_line_length of 40 moves the first ruler to column 40; the status bar shows the file follows an .editorconfig and its CRLF endings.")
 

@@ -50,7 +50,8 @@
   let group = "";
   let at = 0;
 
-  const isLight = () => document.documentElement.dataset.theme === "primer-light";
+  const isLight = () =>
+    ["primer-light", "editora-light"].includes(document.documentElement.dataset.theme ?? "");
   const srcOf = (a: HTMLAnchorElement) =>
     (!isLight() && a.dataset.lbDark) || a.getAttribute("href")!;
 

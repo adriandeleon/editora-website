@@ -5,8 +5,8 @@ category: Editing
 order: 1
 ---
 
-The text surface is a RichTextFX `CodeArea` with line numbers, a fold gutter, a
-minimap, and a current-line highlight. Most of the editing help is automatic;
+The editor has line numbers, a fold gutter, a minimap, and a current-line
+highlight. Most of the editing help is automatic;
 the rest is a command away. See the full list on the [Commands](/commands) page.
 
 ## Multiple cursors
@@ -17,9 +17,10 @@ Edit many places at once, VS Code style.
 
 - **Add a caret at the next occurrence** of the selection
   (`edit.addCaretNextOccurrence`: `Ctrl+D` in the VS Code and Sublime keymaps,
-  `Alt+J` in IntelliJ), or **above** / **below** the current line
-  (`edit.addCaretAbove` / `Below`: `Ctrl+Alt+Up` / `Down` in the VS Code and
-  Sublime keymaps). The Emacs and CUA keymaps leave these to the palette.
+  `⌘D` on macOS; `Alt+J` in IntelliJ, `Ctrl+G` on macOS), or **above** /
+  **below** the current line (`edit.addCaretAbove` / `Below`: `Ctrl+Alt+Up` /
+  `Down` in the VS Code and Sublime keymaps, `⌥⌘↑` / `⌥⌘↓` on macOS). The
+  Emacs and CUA keymaps leave these to the palette.
 - **Select all occurrences** (`edit.selectAllOccurrences`: `Ctrl+Shift+L` in the
   VS Code keymap, `Alt+F3` in Sublime, `Ctrl+Cmd+G` on macOS Sublime) turns every
   occurrence of the selection, or of the word under the caret, into a cursor at
@@ -218,15 +219,8 @@ pairs such as `rb` or `fr`), so `f'` gives `f''`. The third quote of `"""` or
 not Python syntax, so it is not paired there.
 
 In an HTML start tag, typing `=` after an attribute name inserts the quotes
-chosen in **Quotes after a typed or completed =** (Settings → Editor → Editing,
-beside **Auto-close HTML/XML tags**: double by default, single, or none) with
-the caret inside, while **Auto-close HTML/XML tags** is on. The setting works
-with language servers off, and also decides what an attribute chosen from
-completion gets. Angular bindings such as `(click)`, `[value]`,
-`[(ngModel)]` and `*ngIf` get the quotes too. The same quote typed straight
-after is taken as the opening quote, the other quote replaces the pair, and a
-space or `>` takes the empty pair back. Template tags get no quotes. See
-[HTML](/docs/html#editing-tags).
+chosen in **Quotes after a typed or completed =** (Settings → Editor →
+Editing); see [attribute quotes](/docs/html#editing-tags).
 
 **Go: Matching Bracket** (`nav.matchingBracket`, `Ctrl+Shift+\` in the VS Code
 keymap) jumps the caret to the bracket paired with the one beside it, and press
@@ -290,15 +284,9 @@ In an INI file such as `setup.cfg`, `tox.ini` or `.flake8`, the comment
 character is the one the file already uses: `#` when most of its comments start
 with `#`, otherwise `;`.
 
-In an HTML page the syntax follows where the selection is: `/* */` inside a
-`<style>`, `//` inside a `<script>`, and `<!-- -->` in the markup. A selection
-that runs from the markup into a script or style is refused, with *The
-selection runs from the HTML into a script, style or PHP block: comment each
-part on its own*. In a template, a line with template code gets the engine's
-own comment (`{# #}`, `{% comment %}`, `<%#`, `{{!-- --}}`), since an HTML
-comment does not stop it. In a PHP file the HTML part gets `<!-- -->`, and a
-line that opens a PHP block is commented inside it. See
-[HTML](/docs/html#comments-and-indentation).
+In HTML pages, templates and PHP files the syntax follows where the selection
+is (markup, `<style>`, `<script>`, template code or a PHP block); see
+[HTML comments](/docs/html#comments-and-indentation).
 
 In JavaScript, JSX and TSX files, a line of JSX markup (between an opening and
 a closing tag, where `//` would be page text) gets `{/* … */}`, and toggling
@@ -631,16 +619,9 @@ safe staging file, Save fails without touching the existing bytes. A
 hard-linked file, or one owned by another user, is written in place instead, so
 every name of the file gets the new content and its ownership is kept.
 
-A file whose encoding Editora cannot detect (one that isn't valid UTF-8 and has
-no byte-order mark or `.editorconfig` `charset` rule, such as a Shift_JIS or GBK
-file) opens through a stand-in encoding, Windows-1252 or ISO-8859-1, that keeps
-every byte. The status bar shows that encoding in the warning colour, and
-clicking it lets you reopen the file in its real encoding
-(`buffer.reopenWithEncoding`), which Editora then remembers for that file (see
-[File encodings](/docs/workspace#file-encodings)). Until
-then, the file refuses a save that would re-encode it. If you type a character
-outside the stand-in charset, the status bar names the character and its line,
-and the file can be saved again once it is removed.
+A file whose encoding Editora cannot detect, such as a Shift_JIS or GBK file,
+opens without losing a byte, with its encoding in the warning colour; see
+[File encodings](/docs/workspace#file-encodings).
 
 ## Whitespace and the column ruler
 
@@ -667,8 +648,9 @@ rows are greyed out while **Show rulers** is off. From the palette,
 *Editor: Set Rulers…* (`editor.setRulers`) sets the global list and *Editor: Set
 Rulers for This Language…* (`editor.setLanguageRulers`) sets the current file's
 language, where a blank answer goes back to the global rulers. An
-`.editorconfig` `max_line_length` replaces the first ruler, and `off` hides them
-all. *View: Toggle Rulers* (`view.toggleColumnRuler`) shows or hides them.
+`.editorconfig` can move the first ruler or hide them all; see
+[Rulers and max_line_length](/docs/editorconfig#rulers-and-max_line_length).
+*View: Toggle Rulers* (`view.toggleColumnRuler`) shows or hides them.
 
 **Indent guides** are faint vertical lines at each indentation level, carried
 through blank lines and skipped over folded lines, in a colour that follows the

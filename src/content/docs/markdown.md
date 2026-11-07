@@ -1,5 +1,5 @@
 ---
-title: Markdown, diagrams & preview
+title: Markdown, Mermaid & preview
 description: The live Markdown preview, editing and formatting commands, wiki links and backlinks, linting, LaTeX math, Mermaid, and export to PDF, HTML, Word or OpenDocument.
 category: Editing
 order: 3
@@ -72,11 +72,9 @@ on disk is reloaded. An empty document says *Nothing to preview yet*. The
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
 
-The parser caps pathological input (table cells, block nesting and inline
-nesting), because the editor renders whatever file you open. The nesting limits degrade to plain text; the **table cap** is
-reachable by a legitimate file (a 2.3 MB Markdown table trips it, well under the
-5 MB point where the preview switches off anyway), and the preview reports that
-rather than going blank.
+The preview caps table cells and block and inline nesting. Text nested past the
+limit shows as plain text. A table past the **table cap** (a 2.3 MB table
+reaches it) is reported in the preview rather than leaving it blank.
 
 ### Working in the preview
 
@@ -260,10 +258,7 @@ default) keeps the line being typed in the middle of the window.
 ## Tables
 
 Markdown's editing actions sit under a single **Markdown** submenu in the
-editor's right-click menu. Listed flat, its entries would push cut, copy,
-paste and the spelling suggestions well down the menu, and would make file-type
-actions read as ordinary editing ones. The Table
-submenu stays nested inside it.
+editor's right-click menu, with the Table submenu nested inside it.
 
 Beyond the format bar's reflow, the right-click **Table** submenu (and the
 palette) edits the table under the cursor: **insert** a table

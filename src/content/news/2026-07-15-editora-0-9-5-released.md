@@ -34,4 +34,4 @@ it shows a **single-letter Git status** (M / A / D / R / U) on each changed file
 matching the Commit window. See [Projects](/docs/workspace#projects) and
 [Git](/docs/git).
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.9/#095---2026-07-15) page.

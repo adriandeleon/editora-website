@@ -57,7 +57,7 @@ snippets and templates can contain private text.
    in.
 3. Click **Connect**.
 
-![The Sync page of the Settings window: a Repository URL field, a Branch field with Connect and Create on GitHub buttons, a Status row, switches for snippets, abbreviations, templates and the personal dictionary, and the automatic sync interval](/screenshots/docs/settings-sync.png "Settings → Sync before connecting.")
+![The Sync page of the Settings window: a Repository URL field, a Branch field with a Connect button, a Status row reading Not connected with Sync Now and Open Sync Folder buttons, and the first What to sync switches for snippets, abbreviations, templates and the personal dictionary](/screenshots/docs/settings-sync.png "Settings → Sync before connecting.")
 
 The **Repository** field does not take a URL with a password or token in it
 (`https://me:TOKEN@host/…`, or a token used as the user name): the field turns
@@ -146,8 +146,8 @@ kept. **Open Sync Folder** on the Sync page opens the folder.
 Editora signs in to the repository with **your own Git credentials or SSH
 key**, the same ones `git` uses in a terminal, and stores none of its own.
 
-A repository URL saved with a password or token in it, before the field refused
-them, is still in your settings. The Sync page then shows a warning above the
+When the saved repository URL has a password or token in it, for example one
+written into `settings.json` by hand, the Sync page shows a warning above the
 repository with two buttons. **Remove from URL** saves the URL without the
 secret; the next sync signs in with your credential helper or SSH key, so set
 one up first. **Keep for now** hides the warning until Editora starts again.

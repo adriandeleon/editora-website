@@ -5,6 +5,11 @@ date: 2026-07-05
 beta: true
 ---
 
+*Update, November 2026: there are four providers today: Anthropic, Local
+(OpenAI-compatible), LM Studio / Bionic, and Codex with your existing login.
+The agent can also drive Gemini CLI, GitHub Copilot CLI, Codex, Qwen Code and
+OpenCode. The [AI guide](/docs/ai) has the current setup.*
+
 Editora now has optional AI, off by default and yours to configure.
 
 **AI actions** call the model directly and stream the result:

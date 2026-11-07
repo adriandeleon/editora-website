@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 8
 beta: false
 summary: "<strong>File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help</strong> menus, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke."
+alt: "The VCS menu open, listing Git commands with their keybindings and submenus such as Branches and Stash"
 ---
 
 The command palette lists everything, but it is hard to browse. It helps when you know roughly what a command is called, and less when you want to see what the editor can do. The menu bar is for that.

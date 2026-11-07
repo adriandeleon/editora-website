@@ -2,27 +2,61 @@
 import Layout from "../layouts/Layout.astro";
 import { commandGroups, commandCount } from "../lib/commands";
 import { docsBase } from "../lib/editora";
+
+// A stable anchor per group, for the jump links ("Git & diff" → "git-diff").
+const anchor = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 ---
 
 <Layout
   title="Commands — Editora"
-  description="The full list of Editora commands: every action available from the M-x command palette, with descriptions and the default (Emacs keymap) keybindings."
+  description="The full list of Editora commands: every action available from the command palette, grouped by area, with descriptions and the default (Emacs keymap) keybindings."
 >
   <main class="page">
     <h1>Commands</h1>
     <p class="lead">
       Every action in Editora is a <strong>command</strong>, and all
-      {commandCount} of them are reachable from the <kbd>M-x</kbd> command
-      palette and can be bound to a key. The chord on the right is the one in
-      the default Emacs keymap, so a command with none there may still be bound
-      in another keymap; see the <a href="/keybindings">keybindings reference</a>
-      for the CUA, Sublime Text, VS&nbsp;Code, and IntelliJ chords and the chord
-      legend.
+      {commandCount} of them are reachable from the command palette
+      (<kbd>M-x</kbd> in the default Emacs keymap) and can be bound to a key.
+      The chord on the right is the one in the Emacs keymap, so a command with
+      none there may still be bound in another keymap; see the
+      <a href="/keybindings">keybindings reference</a> for the CUA, Sublime
+      Text, VS&nbsp;Code, and IntelliJ chords on Windows, Linux and macOS.
     </p>
+
+    <div class="tools">
+      <div class="filter" id="cmd-filter-box" hidden>
+        <label for="cmd-filter">Filter commands</label>
+        <input
+          type="search"
+          id="cmd-filter"
+          placeholder="Name, id or description"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <p class="filter-status" id="cmd-filter-status" aria-live="polite"></p>
+      </div>
+      <nav class="jump" aria-label="Command groups">
+        <ul>
+          {
+            commandGroups.map((g) => (
+              <li>
+                <a href={`#${anchor(g.title)}`}>
+                  {g.title} <span class="n">{g.commands.length}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
 
     {
       commandGroups.map((g) => (
-        <section class="group">
+        <section class="group" id={anchor(g.title)}>
           <h2>{g.title}</h2>
           <table>
             <tbody>
@@ -47,8 +81,62 @@ import { docsBase } from "../lib/editora";
         </section>
       ))
     }
+    <p class="no-match" id="cmd-no-match" hidden>No command matches.</p>
   </main>
 </Layout>
+
+<script is:inline>
+  // Client-side filter over the static table. Without script the box stays
+  // hidden and the page is the full list with its jump links.
+  (function () {
+    var box = document.getElementById("cmd-filter-box");
+    var input = document.getElementById("cmd-filter");
+    var status = document.getElementById("cmd-filter-status");
+    var none = document.getElementById("cmd-no-match");
+    if (!box || !input || !status || !none) return;
+    var groups = Array.prototype.map.call(
+      document.querySelectorAll("main .group"),
+      function (section) {
+        return {
+          section: section,
+          rows: Array.prototype.map.call(section.querySelectorAll("tr"), function (tr) {
+            return { tr: tr, text: tr.textContent.toLowerCase() };
+          }),
+        };
+      },
+    );
+    var total = groups.reduce(function (n, g) {
+      return n + g.rows.length;
+    }, 0);
+    var timer = 0;
+    function apply() {
+      var words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      var shown = 0;
+      groups.forEach(function (g) {
+        var inGroup = 0;
+        g.rows.forEach(function (r) {
+          var hit = words.every(function (w) {
+            return r.text.indexOf(w) !== -1;
+          });
+          r.tr.hidden = !hit;
+          if (hit) inGroup++;
+        });
+        g.section.hidden = inGroup === 0;
+        shown += inGroup;
+      });
+      none.hidden = shown > 0;
+      status.textContent = words.length
+        ? shown + " of " + total + " commands match."
+        : "";
+    }
+    input.addEventListener("input", function () {
+      clearTimeout(timer);
+      timer = setTimeout(apply, 80);
+    });
+    box.hidden = false;
+    if (input.value) apply();
+  })();
+</script>
 
 <style>
   .page {
@@ -66,11 +154,93 @@ import { docsBase } from "../lib/editora";
   .lead {
     color: var(--muted);
     max-width: 46rem;
-    margin: 0 0 2.5rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .tools {
+    margin-bottom: 2.5rem;
+  }
+
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .filter input {
+    flex: 1 1 16rem;
+    max-width: 28rem;
+    min-width: 0;
+    padding: 0.45rem 0.7rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .filter input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .filter-status {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .filter-status:empty {
+    display: none;
+  }
+
+  .jump ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .jump a {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .jump .n {
+    color: var(--faint);
+    font-size: 0.8rem;
+  }
+
+  /* The filter hides rows and groups; the phone layout below sets rows to
+     grid, so the attribute needs to win over it. */
+  tr[hidden],
+  .group[hidden],
+  .no-match[hidden],
+  .filter[hidden] {
+    display: none !important;
+  }
+
+  .no-match {
+    color: var(--muted);
   }
 
   .group {
     margin-bottom: 2.5rem;
+    scroll-margin-top: 5rem;
   }
 
   .group h2 {

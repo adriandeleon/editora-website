@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 10
 beta: false
 summary: "A health screen for every external tool Editora can use: what was found, which version, where it lives, and what's missing that you actually need, with problems first and an <strong>Install…</strong> or <strong>Turn on</strong> button where Editora can fix it for you."
+alt: "Doctor listing Git, the GitHub CLI, ripgrep and the diagram tools as found, with their versions"
 ---
 
 Editora leans on the tools already on your machine rather than bundling its own copies, so **Doctor** tells you what it found. Open it with **Tools → View: Doctor**, `view.doctor` in the palette, the Welcome page, or the **Open Doctor** button in the message log.

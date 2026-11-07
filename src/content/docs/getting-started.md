@@ -13,7 +13,10 @@ make it feel fast.
 Grab the package for your platform from the
 [releases page](https://github.com/adriandeleon/Editora/releases) (or use the
 OS-detected button on the [home page](/)). The native packages bundle their own
-Java runtime, so there's nothing else to install.
+Java runtime, so there's nothing else to install. If you already have JDK 25,
+there is also a portable jar for Linux x64, Linux arm64 and Windows x64
+(`Editora-<version>-linux-x64.jar` and so on), run with `java -jar`; see the
+[command-line reference](/docs/cli).
 
 ### macOS
 
@@ -22,8 +25,9 @@ for Intel), open it, and drag Editora to Applications.
 
 ### Windows
 
-Run the `.msi` (x64). The installer lets you choose the folder and adds a Start
-Menu group and a desktop shortcut.
+Run the `.msi` (x64). It installs Editora for every user of the computer, so
+Windows asks for administrator rights. The installer lets you choose the folder
+and adds a Start Menu group and a desktop shortcut.
 
 ### Linux
 
@@ -42,32 +46,48 @@ chmod +x Editora-<version>-linux-x64.AppImage
 ./Editora-<version>-linux-x64.AppImage
 
 # Tarball: adds an `editora` command and a menu entry
-tar xzf Editora-<version>-linux-x64.tar.gz && cd editora-x86_64
+tar xzf Editora-<version>-linux-x64.tar.gz && cd editora-*
 ./install.sh          # per-user  -> ~/.local/editora  (+ ~/.local/bin/editora)
 sudo ./install.sh     # system    -> /opt/editora       (+ /usr/local/bin/editora)
 ./install.sh --uninstall   # remove it again
 ```
 
-The `.deb` also makes *Editora Expert Mode* the system-wide default for text and
-source files; your own per-user choice still wins, and the previous defaults are
-put back when you uninstall the package. See the
+The `.deb` also adds a second menu entry, *Editora Expert Mode*, which opens a
+file in one window with minimal chrome (see
+[focus modes](/docs/workspace#focus-modes)), and makes it the system-wide
+default for text and source files. Your own per-user choice still wins, and the
+previous defaults are put back when you uninstall the package. See the
 [command-line reference](/docs/cli) for where the launcher lives in each
 package.
 
 ### First launch
 
-The macOS app is signed with a Developer ID certificate and notarized by Apple,
-so it opens on first launch with no Gatekeeper warning. The Windows installer is
-**unsigned**, so SmartScreen stops the first launch until you allow it. The
-steps are in
+The macOS app is signed with a Developer ID certificate and notarized by Apple.
+The first time you open it, macOS asks once whether to open an app downloaded
+from the Internet; click **Open**.
+
+The Windows installer is **unsigned**, so SmartScreen stops the `.msi` until you
+allow it, and the administrator prompt that follows names the publisher as
+*Unknown*. The steps are in
 [Troubleshooting](/docs/troubleshooting#a-launcher-is-blocked-on-first-run).
 
 ### Checking a download
 
-Each release lists the SHA-256 of every file in `checksums_sha256.txt`:
+Each release lists the SHA-256 of every file in `checksums_sha256.txt`.
+Download it into the same folder as the file, then:
 
 ```bash
+# Linux
 sha256sum --ignore-missing -c checksums_sha256.txt
+
+# macOS
+grep macos-arm64.dmg checksums_sha256.txt | shasum -a 256 -c   # macos-x64.dmg on Intel
+```
+
+```powershell
+# Windows (PowerShell): prints True when the file matches
+$f = "Editora-<version>-windows-x64.msi"
+(Get-FileHash $f).Hash -eq ((Select-String $f checksums_sha256.txt).Line -split '\s+')[0]
 ```
 
 The Linux downloads (`.deb`, `.rpm`, `.AppImage` and `.tar.gz`) each come with
@@ -85,12 +105,36 @@ The `.rpm` and `.deb` are also signed inside, for `rpm -K`, dnf and
 
 Every release file also has a build provenance attestation: a signed record
 that the file was built by the Editora repository's release workflow from the
-tagged commit. With the [GitHub CLI](https://cli.github.com/):
+tagged commit. For the Windows `.msi` it is the only signature. With the
+[GitHub CLI](https://cli.github.com/), on any system:
 
 ```bash
-gh attestation verify Editora-<version>-linux-x64.deb \
+gh attestation verify Editora-<version>-windows-x64.msi \
   --repo adriandeleon/Editora --source-ref refs/tags/v<version>
 ```
+
+Use the name of the file you downloaded; the command is the same for the
+`.dmg`, the Linux packages and the jars.
+
+### Updating and removing
+
+Editora checks for a newer release at most once a day, and the status bar then
+shows **Update: X.Y.Z**; click it to open the download page. Editora does not
+update itself: download the new package and install it the same way.
+
+| Package | Update | Remove |
+| --- | --- | --- |
+| macOS `.dmg` | Drag the new Editora to Applications and replace the old one | Move Editora from Applications to the Trash |
+| Windows `.msi` | Run the new `.msi`; it replaces the installed version | In Windows Settings, **Apps → Installed apps**, then Editora's **Uninstall** |
+| `.deb` | `sudo apt install ./Editora-<version>-linux-x64.deb` | `sudo apt remove editora` |
+| `.rpm` | `sudo dnf install ./Editora-<version>-linux-x64.rpm` | `sudo dnf remove editora` |
+| `.AppImage` | Replace the file with the new one | Delete the file |
+| `.tar.gz` | Extract the new tarball and run its `./install.sh` (with `sudo` for a system install) | `./install.sh --uninstall` (with `sudo` for a system install) |
+| Portable jar | Replace the jar | Delete the jar |
+
+Removing Editora leaves your settings in the
+[config folder](/docs/configuration) (`~/.editora/`); delete that folder too to
+remove them.
 
 ### Or run from source
 

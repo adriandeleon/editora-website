@@ -57,4 +57,4 @@ No feature, command or configuration changed. 0.13.1 is
 [0.13.0](/news/2026-08-26-editora-0-13-0-released) with the adapters left out of
 the cache.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.13/#0131---2026-08-27) page.

@@ -1,6 +1,6 @@
 ---
-title: "Editora 0.27.0: signed downloads, a Project Map for exploring code, and JavaScript, Python and Java debugging reviews"
-description: "Editora 0.27.0 signs and notarizes the macOS app, signs the Linux downloads and attests every release file. The Project Map gains working sets, trails, recent-change heat, references as cards and a Structure column on each card. JavaScript and TypeScript get ESLint, Prettier/Biome and actions on save; Python gets quick fixes, format on save and per-folder Pyright; Java debugging shows toString() values and debugs plain folders again."
+title: "Editora 0.27.0: signed downloads and a Project Map for exploring code"
+description: "A signed and notarized macOS app, signed Linux downloads, Project Map working sets and trails, ESLint and Prettier, Python quick fixes, Java toString() values."
 date: 2026-11-05
 version: "0.27.0"
 ---
@@ -108,6 +108,17 @@ download](/docs/getting-started#checking-a-download) has the commands.
   work unfinished.
 - **Sticky-scroll headers keep their height** while the top line is partly
   scrolled off.
+- **"Debug Log" is now Application Log**, since it is Editora's own log.
 
-The full list is in [What's New](/whats-new) and the
-[changelog](https://github.com/adriandeleon/Editora/blob/master/CHANGELOG.md).
+## Security
+
+- **HTML Live Preview never serves an encrypted file's text.** After Save As,
+  Encrypt File or a rename, the preview kept serving the editor's text at the
+  old address until it was turned off; after Encrypt File, that was the
+  plaintext, including edits never saved. The old address now answers from
+  disk, encrypted pages get no preview, and `.gpg`, `.asc` and `.pgp` files are
+  never served. Each previewed site also has its own address, so a page
+  previewed later can't read another site's files or unsaved edits.
+
+The full list is in [What's New](/whats-new/0.27/#0270---2026-11-05) and the
+[changelog](https://github.com/adriandeleon/Editora/blob/v0.27.0/CHANGELOG.md).

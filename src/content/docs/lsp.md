@@ -695,7 +695,7 @@ Twenty-six servers are supported:
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
+  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (`gls`, from gvy), **Clojure** (`clojure-lsp`),
   **Scala** (Metals), **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML** (`vscode-html-language-server`), **CSS**
   (`vscode-css-language-server`), **JSON** (`vscode-json-language-server`),
@@ -790,14 +790,16 @@ covered through one of these channels, picked per server:
   4.10.0, installed with npm into Editora's own folder rather than globally
   (see [HTML, CSS and JSON](#html-css-and-json)). It needs Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
-  C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
+  C#, Rust, PHP, and SQL, whose `sqls` installs with `go install`), which run
+  only when that toolchain is already on your `PATH`.
 - **Binary** releases downloaded per OS/architecture (clangd, terraform-ls,
-  Lua), extracted into your config folder.
+  Lua, and tinymist for Typst), extracted into your config folder.
 - A **pinned native binary** for lemminx, the XML server, from one vscode-xml
   release, with both the zip and the program checked against the release's
   SHA-256 (see [Installing lemminx](#installing-lemminx)).
-- A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
-  into your config folder. A server installed earlier keeps its version until
+- A **pinned release** for the Java server, Eclipse JDT LS (the version is
+  under [The Java server and your project](#the-java-server-and-your-project)),
+  unpacked into your config folder. A server installed earlier keeps its version until
   you install it again.
 - A **pinned distribution** for the Kotlin server, checked against its published
   checksum. It is about 370 MB to download and about 1.2 GB once installed,
@@ -806,7 +808,7 @@ covered through one of these channels, picked per server:
   needs a JDK, plus three jars from Maven Central that the zip leaves out, each
   checked against its published checksum. The server is started and asked one
   request before the install is kept.
-- A **single jar** for the Groovy server (gvy), pinned to one release and checked
+- A **single jar** for the Groovy server (`gls`, from gvy), pinned to one release and checked
   against its published checksum. It runs on the JDK chosen for builds and runs
   (Java 17 or later).
 - A **pinned native binary** for clojure-lsp, one per OS and architecture, each
@@ -843,7 +845,7 @@ not start the server until you trust the folder. The trust prompt lists the SDK 
 
 ## Groovy
 
-The Groovy server is gvy. Install it from its Settings → LSP card, the banner
+The Groovy server is `gls`, from the gvy project. Install it from its Settings → LSP card, the banner
 on a `.groovy` file, or **Install: Language Server…**. It has no command until
 it is installed. The installer sets its command to `java -jar` with the
 downloaded jar, and Editora runs that with the JDK chosen for Maven, Gradle and
@@ -1835,8 +1837,7 @@ version, a missing module), and refactorings such as *Extract as new property*.
 Every other XML file keeps the fast native lemminx, and the
 [XML settings](#xml-settings) apply to both.
 
-It runs on the **Default JDK** chosen under Settings → Languages & Tools →
-Build Tools (else the `java` on your `PATH`), for Install… as well as for the
+It runs on the **Default JDK** chosen under Settings → Build Tools (else the `java` on your `PATH`), for Install… as well as for the
 server itself. Its root is the outermost pom of a contiguous chain, so a
 multi-module reactor is served by one JVM: in the open project, opened without a
 project, and for a Maven project beside the open one. The status bar says
@@ -1895,15 +1896,13 @@ server points at a program that is missing, the banner offers **Settings…**
 instead. The install leaves the command in Settings blank, and a blank command
 runs Editora's own copy, so **Reset to default** keeps it.
 
-A folder that lacks any of the jars (an install made with an earlier release,
-or a wiped folder) does not count as installed: `pom.xml` falls back to the XML
-server, the Settings → LSP card reads *lemminx-maven: incomplete — Install…
-repairs it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars
-beside an **Install…** button. If you installed this server with an earlier
-release, click **Install…** once: that bundle lacked the three libraries and
-could not answer a request. The same goes for an install with a jsoup newer than
-1.14, which failed every hover on a schema-documented element: Editora now
-installs jsoup 1.14.3, the line the server's documentation renderer needs.
+A folder that lacks any of the jars, or whose jsoup is not a 1.14 release, does
+not count as installed: `pom.xml` falls back to the XML server, the Settings →
+LSP card reads *lemminx-maven: incomplete — Install… repairs it*, and
+[Doctor](/docs/troubleshooting#doctor) names the missing jars beside an
+**Install…** button. Click it once to repair the folder. Install puts in jsoup
+1.14.3, the line the server's documentation renderer needs; with a newer jsoup,
+every hover on a schema-documented element fails.
 
 **While you edit a pom:**
 
