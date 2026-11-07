@@ -800,6 +800,8 @@ script as it runs.
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
 | Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
 | Toggle temporary breakpoint | `debug.toggleTemporaryBreakpoint` | `C-c C-d 1` |
+| Toggle method breakpoint (Java) | `debug.toggleMethodBreakpoint` | `C-c C-d S-m` |
+| Toggle field watchpoint (Java) | `debug.toggleFieldWatchpoint` | `C-c C-d S-w` |
 | Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
 | Choose exception breakpoints | `debug.toggleExceptionBreakpoints` | (palette) |
 | Debug a project main class | `debug.mainClass` | (palette) |
@@ -1296,7 +1298,9 @@ line and code, and below them what it does (its condition or log message) and
 its folder, relative to the project (none for a file at the project root), or with
 your home folder shortened to `~`. With no breakpoints, the list says how to set
 one. Type to filter it; Enter jumps to the selected breakpoint, Alt+E enables
-or disables it, Alt+D removes it, and Alt+M mutes them all.
+or disables it, Alt+D removes it, and Alt+M mutes them all. Java
+[method breakpoints and field watchpoints](#method-breakpoints-and-field-watchpoints)
+are listed after the line breakpoints.
 
 **Debug: Mute Breakpoints** (`C-c C-d m`) turns every breakpoint off without
 removing it, until you run it again. It also stops exception breakpoints from
@@ -1347,6 +1351,43 @@ N hit and removed.* A temporary breakpoint with a condition or a hit count is
 removed only when it actually stops the program. A logpoint never stops the
 program, so it is never removed.
 
+### Method breakpoints and field watchpoints
+
+In Java, a breakpoint can be on a method or a field instead of a line.
+
+**Debug: Toggle Method Breakpoint** (`debug.toggleMethodBreakpoint`,
+`C-c C-d S-m`) stops the program when the method the caret is in is entered,
+before its body runs. It covers every overload of that name in that class, but
+not the method in a subclass. **Debug: Toggle Field Watchpoint**
+(`debug.toggleFieldWatchpoint`, `C-c C-d S-w`) stops the program when the
+field declared on the caret line is assigned, in any instance of the class.
+Run either again on the same method or field to remove it; the status bar says
+what was added or removed. Both are in **Run ▸ Debugger**. The IntelliJ IDEA
+keymap has no keys for them.
+
+Away from a method or field, they ask for one by name: the class, `#`, and the
+member, such as `com.example.Order#total` or `com.example.Order#count`. The
+prompt starts with the caret's class filled in. A nested class is written with
+`$`, as in `com.example.Order$Line#price`. `com.example.Order::total` and
+`com.example.Order.total()` are read the same way.
+
+While the program is paused, **Break When Value Changes** in the Variables
+tree's right-click menu sets a field watchpoint on the field a row shows, such
+as a field of `this` or of an object you unfolded. A local variable can't be
+watched, and the status bar says so.
+
+Method breakpoints and field watchpoints are saved per project with the line
+breakpoints, and every Java session gets them. **Debug: Breakpoints…** lists
+them after the line breakpoints, as *Method breakpoint* or *Field watchpoint,
+stops on assignment*. There Alt+E enables or disables one, Alt+D removes it,
+and Enter opens the method or field, found through the Java language server.
+**Mute Breakpoints** mutes them with the others, and
+[Force Run to Cursor](#debugging) runs past them. When one stops the program,
+the Debug window's state line says *Suspended on entering a method* or
+*Suspended on a field access*.
+
+They have no mark in the gutter, and only the Java debugger has them.
+
 ### Inspecting values
 
 The line the program is stopped on is amber, with an arrow in the gutter, and
@@ -1388,8 +1429,9 @@ or setting a value, keeps the highlights of the current stop.
 In the Variables tree, the right-click menu has **Copy Value** (a string is
 copied without its quotes and escapes), **Copy Name**, **Add to Watches**,
 which adds the row's whole expression, such as `order.items`, **Set Value…**,
-[Go to Index…](#long-lists-and-arrays) on a long list or array, and **Show
-Numbers as Hexadecimal**. Ctrl+C (⌘C on
+[Go to Index…](#long-lists-and-arrays) on a long list or array, in Java
+[Break When Value Changes](#method-breakpoints-and-field-watchpoints) on a
+field, and **Show Numbers as Hexadecimal**. Ctrl+C (⌘C on
 macOS) copies the selected value, and Delete removes the selected watch. In
 the evaluate field, Up and Down bring back the expressions you typed before.
 An expression that throws says what it threw, such as *The expression threw
