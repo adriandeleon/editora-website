@@ -50,8 +50,10 @@ Every keymap binds the debugger's commands. The Emacs keymap's are listed under
 watch, `l` lists the breakpoints, `m` mutes them, `t` enables or disables the
 caret line's breakpoint, `1` toggles a temporary breakpoint, `s` smart-steps
 into, `f` restarts the frame and `h` applies code changes. With Shift,
-`C-c C-d S-u` runs to the cursor past every breakpoint and `C-c C-d S-a`
-attaches again to the last address.
+`C-c C-d S-u` runs to the cursor past every breakpoint, `C-c C-d S-a`
+attaches again to the last address, and in Java `C-c C-d S-m` toggles a method
+breakpoint and `C-c C-d S-w` a field watchpoint. The other keymaps have no keys
+for those two.
 
 The CUA and Sublime Text keymaps use VS Code's function keys:
 
