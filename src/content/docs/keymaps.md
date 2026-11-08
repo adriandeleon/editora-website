@@ -52,8 +52,9 @@ caret line's breakpoint, `1` toggles a temporary breakpoint, `s` smart-steps
 into, `f` restarts the frame and `h` applies code changes. With Shift,
 `C-c C-d S-u` runs to the cursor past every breakpoint, `C-c C-d S-a`
 attaches again to the last address, and in Java `C-c C-d S-m` toggles a method
-breakpoint and `C-c C-d S-w` a field watchpoint. The other keymaps have no keys
-for those two.
+breakpoint, `C-c C-d S-w` a field watchpoint and `C-c C-d S-l` a
+[lambda breakpoint](/docs/run-debug#lambda-breakpoints). The other keymaps have
+no keys for method breakpoints and field watchpoints.
 
 The CUA and Sublime Text keymaps use VS Code's function keys:
 
@@ -64,6 +65,7 @@ The CUA and Sublime Text keymaps use VS Code's function keys:
 | Ctrl+Shift+F5 | Restart |
 | F6 | Pause (CUA only: in Sublime Text, F6 is spell checking) |
 | F9 | Toggle breakpoint |
+| Shift+F9 | Toggle lambda breakpoint (Java) |
 | F10 | Step over |
 | F11 | Step into while the program is paused, otherwise Full Screen |
 | Shift+F11 | Step out |

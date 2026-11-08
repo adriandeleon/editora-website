@@ -850,6 +850,7 @@ script as it runs.
 | Toggle temporary breakpoint | `debug.toggleTemporaryBreakpoint` | `C-c C-d 1` |
 | Toggle method breakpoint (Java) | `debug.toggleMethodBreakpoint` | `C-c C-d S-m` |
 | Toggle field watchpoint (Java) | `debug.toggleFieldWatchpoint` | `C-c C-d S-w` |
+| Toggle [lambda breakpoint](#lambda-breakpoints) (Java) | `debug.toggleLambdaBreakpoint` | `C-c C-d S-l` |
 | Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
 | Choose exception breakpoints | `debug.toggleExceptionBreakpoints` | (palette) |
 | Show the [exception card](#exception-card) again | `debug.showException` | (palette) |
@@ -857,7 +858,10 @@ script as it runs.
 | Debug a saved run configuration | `debug.config` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
+| Attach to a program on this machine ([Attach to Process](#attach-to-process)) | `debug.attachToProcess` | (palette) |
 | Attach again to the last address | `debug.reattach` | `C-c C-d S-a` |
+| Pin a value to the caret's line ([pinned values](#pinned-values)) | `debug.pinValue` | (palette) |
+| Unpin the values on the caret's line | `debug.unpinLine` | (palette) |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
 | Show every thread ([Threads view](#threads-view)) | `debug.threads` | (palette) |
 | Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
@@ -868,10 +872,11 @@ script as it runs.
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and most debugger actions are in the **Run** menu.
-Its top level has Start / Continue, Debug Main Class, Attach, Reattach, Stop,
-Restart and Toggle Breakpoint. Stepping, evaluate, watches, hexadecimal values,
-breakpoints, the Threads view, exception breakpoints and Show Exception are in
-its **Debugger** submenu (**Run ▸ Debugger**).
+Its top level has Start / Continue, Debug Main Class, Attach, Attach to
+Process, Reattach, Stop, Restart and Toggle Breakpoint. Stepping, evaluate,
+watches, pinned values, hexadecimal values, breakpoints, the Threads view,
+exception breakpoints and Show Exception are in its **Debugger** submenu
+(**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -1002,6 +1007,49 @@ line when you scroll, and closes when the line leaves the screen.
 the program is paused) opens the card again. If another frame is shown, it goes
 back to the frame that threw first. When the program did not stop on an
 exception, the status bar says so.
+
+### Attach to Process
+
+**Debug: Attach to Process…** (`debug.attachToProcess`, in the **Run** menu
+under Attach) lists the Java, Node.js and Python programs running on this
+machine under your user, so you can attach to one without typing its address.
+It is also the last row, *A program on this machine…*, of the
+[Attach list](#starting-a-java-session) a Java file shows once the project has
+attached before. Type to filter the list. Programs listening for a
+debugger come first:
+
+- a **JVM** started with the JDWP agent as a server on a fixed port, such as
+  `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005` (or
+  `-Xrunjdwp:…`). A JVM started with `server=n` or `address=0` can't be
+  attached to;
+- a **Node.js** started with `--inspect`, `--inspect-brk` or `--inspect-wait`
+  (port 9229 unless it names another);
+- a **Python** program started under debugpy with
+  `python -m debugpy --listen 5678 app.py`.
+
+Each row names the main class, jar or script and the process id, and below
+them the kind of program and where it listens, such as *Java · listening on
+localhost:5005*. A program of these kinds that was started without debugging is
+listed too, with what to start it with instead: *not started for debugging
+(start it with --inspect)*. Picking such a row says the same in the status bar
+and attaches nothing. With no Java, Node.js or Python program running, the list
+says so.
+
+Picking a listening program attaches the right debugger to it and opens the
+Debug window. **Stop** detaches: the program keeps running, and you can attach
+again.
+
+- **Java** attaches the way [Attach to Running Program](#starting-a-java-session)
+  does, through a Java file of the program's project: the active tab if it is
+  one, else the first open Java tab. With no Java file open, the status bar
+  asks you to open one, since the debugger finds the program's classes through
+  it. The address is added to the project's Attach list, so
+  **Debug: Reattach** goes back to it.
+- **Node.js** attaches through vscode-js-debug, as
+  [Attach to a running program](#debugging-javascript-and-typescript) does.
+- **Python** connects to debugpy inside the program, so Editora doesn't need
+  a debugpy of its own. A program listening only on another network address of
+  this machine, not on `localhost`, can't be attached to yet.
 
 ### Debugging Python
 
@@ -1185,8 +1233,10 @@ on the main-class chooser cancels the launch.
 **Debug: Attach to Running Program…** (`debug.attach`) on a Java file attaches
 to a JVM listening for a debugger. The first time in a project, it asks for the
 `host:port`, offering `localhost:5005`. After that it lists the addresses this
-project attached to, at most eight and the most recent first, with **Another
-address…** last, which asks for one, offering the most recent. The list is kept
+project attached to, at most eight and the most recent first, then **Another
+address…**, which asks for one, offering the most recent, and last
+**A program on this machine…**, which opens
+[Attach to Process](#attach-to-process). The list is kept
 with the project, so it is there after a restart. When nothing listens at the
 address, the Debug console shows the `-agentlib:jdwp` option that starts a JVM
 listening on it.
@@ -1350,6 +1400,8 @@ names the address, such as *Attached to 127.0.0.1:9229.* A program started with 
 before its first line; attaching does not start it, so press Continue. The
 list of earlier addresses is for a JVM only: on a JavaScript or TypeScript
 file, Attach and **Debug: Reattach** both ask for the inspector's address.
+[Attach to Process](#attach-to-process) lists the Node.js programs started with
+`--inspect` instead, so you don't need the address.
 
 vscode-js-debug itself needs Node.js 18 or newer to run. An older Node.js
 chosen for a project still runs the program, while vscode-js-debug runs on the
@@ -1363,15 +1415,21 @@ installs only vscode-js-debug v1.117.0, a version tested with Editora.
 A breakpoint's glyph shows its kind by shape as well as colour: a dot for a
 plain breakpoint, a diamond for a logpoint, two "=" bars for a breakpoint with
 a condition or a hit count, a "1" for a
-[temporary breakpoint](#temporary-breakpoints), and grey for a disabled one.
+[temporary breakpoint](#temporary-breakpoints), a λ for a
+[lambda breakpoint](#lambda-breakpoints), and grey for a disabled one. Java
+[method breakpoints and field watchpoints](#method-breakpoints-and-field-watchpoints)
+have marks of their own on their member's line.
 Its hover names the condition, log message and hit count, and says when it is
 disabled or removed once hit. A hit
 count stops on that hit in Java too: `3` stops the third time the line runs.
 
 Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
-**Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**. The editor's
-right-click menu has Toggle Breakpoint, Edit Breakpoint and Toggle Temporary
-Breakpoint, and while the program is paused also Run to Cursor,
+**Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**; on a Java
+line that starts a lambda, the menu also has **Stop on the Line** and
+**Stop in Lambda n** (see [Lambda breakpoints](#lambda-breakpoints)). The
+editor's right-click menu has Toggle Breakpoint, Edit Breakpoint and Toggle
+Temporary Breakpoint, Toggle Lambda Breakpoint on a Java line that starts a
+lambda, and while the program is paused also Run to Cursor,
 [Force Run to Cursor](#debugging), Show Value at Caret and Add to Watches.
 
 A breakpoint can't be set on a blank line or on a line that holds only a
@@ -1438,6 +1496,46 @@ N hit and removed.* A temporary breakpoint with a condition or a hit count is
 removed only when it actually stops the program. A logpoint never stops the
 program, so it is never removed.
 
+### Lambda breakpoints
+
+In Java, a line breakpoint stops once, when its line runs, and never inside a
+lambda on that line. On `items.forEach(x -> System.out.println(x));` it
+stops before `forEach` is called, not each time the lambda's body runs, because the body
+runs later, as code of its own. A lambda breakpoint stops there.
+
+**Debug: Toggle Lambda Breakpoint** (`debug.toggleLambdaBreakpoint`) sets a
+breakpoint that stops inside the lambda the caret is in, or the first one on
+the caret's line, each time its body runs, with the lambda's parameters in
+Variables. Its keys are Shift+F9 (⇧F9 on macOS) in the VS Code, CUA and Sublime
+Text keymaps and `C-c C-d S-l` in the Emacs keymap. It is in
+**Run ▸ Debugger**, and in the editor's right-click menu on a line that starts
+a lambda.
+
+- On a line without a breakpoint, it adds one that stops only in that lambda.
+- On a line with a breakpoint, it adds that lambda to the places it stops.
+- On a lambda the breakpoint already stops in, it takes the lambda away, and
+  removes the breakpoint when it stops nowhere else.
+
+The status bar says which, such as *Breakpoint in lambda 1 on line 12.* On a
+line that starts no lambda, it says so, and outside Java it says lambda
+breakpoints are for Java files.
+
+Right-click a breakpoint's dot on a line with lambdas to choose where it
+stops, in any combination: **Stop on the Line**, and **Stop in Lambda 1**,
+**Stop in Lambda 2**… for each lambda the line starts, numbered from the left,
+each followed by the start of its lambda.
+At least one stays on: with no lambda checked, the breakpoint stops on the line
+again.
+
+Such a breakpoint carries a λ on its dot, and its hover says *Also stops in
+lambda 1* or *Stops only in lambda 1*. It keeps its condition, hit count and
+log message for every place it stops, and is saved with the project's
+breakpoints. Lambdas are kept by their number on the line, so editing earlier
+in the line doesn't lose them; when the line no longer has that lambda, the
+breakpoint stops on the line instead. Only the Java debugger has lambda
+breakpoints; the other JVM languages and the other debuggers use line
+breakpoints.
+
 ### Method breakpoints and field watchpoints
 
 In Java, a breakpoint can be on a method or a field instead of a line.
@@ -1473,7 +1571,21 @@ and Enter opens the method or field, found through the Java language server.
 the Debug window's state line says *Suspended on entering a method* or
 *Suspended on a field access*.
 
-They have no mark in the gutter, and only the Java debugger has them.
+Each one is marked in the gutter on its member's declaration line, in an open
+Java file: a dot with an arrow into it for a method breakpoint, on the line of
+every overload it stops in, and a dot with an eye for a field watchpoint. A
+mark is gold when the breakpoint has a condition or a hit count, grey when it
+is disabled, and faded while breakpoints are muted. Hover it to see what it is,
+such as the method's name and *Method breakpoint*; click it to remove it.
+Right-click it for **Disable Breakpoint** or **Enable Breakpoint**,
+**Remove Method Breakpoint** or **Remove Field Watchpoint**, and
+**Breakpoints…**. The mark follows its member as you edit. When a line has a
+line breakpoint too, the gutter shows the line breakpoint, and a click on an
+unmarked line still sets a line breakpoint.
+
+The marks are placed from the Java language server's outline of the file, so
+without it there are none; the breakpoints still stop the program. Only the
+Java debugger has method breakpoints and field watchpoints.
 
 ### Inspecting values
 
@@ -1488,7 +1600,9 @@ collection shows as a tree that opens with its first level unfolded; unfold a
 row to see its fields or elements. A Java `String` shows its whole text,
 wrapped, under a line that gives its length, with a **Copy Value** button. A
 big array comes a page at a time: its last row is "Show N more…". Right-click a
-row for **Copy Value** and **Add to Watches**. The popup closes with Esc or when the mouse leaves it. When you open
+row for **Copy Value**, **Add to Watches** and **Pin to Line**, which
+[pins](#pinned-values) its expression to the line the popup opened for; a
+one-line value's menu has Copy Value and Pin to Line. The popup closes with Esc or when the mouse leaves it. When you open
 it with Show Value at Caret, the keyboard works it while it is open:
 
 | Key | Action |
@@ -1583,6 +1697,37 @@ Thread "main"
 ```
 
 A frame without a source file is copied with its name only.
+
+### Pinned values
+
+A pinned value is an expression kept on a line and shown at the end of that
+line at every stop, as Visual Studio's pinned DataTips and IntelliJ's inline
+watches are, so you can follow it next to the code instead of in Watches.
+
+**Debug: Pin Value to Line** (`debug.pinValue`, in **Run ▸ Debugger**) pins the
+selection, or the expression at the caret, to the caret's line. With neither,
+it asks for an expression. Running it again on the same expression unpins it.
+**Pin to Line** in the [value popup](#inspecting-values)'s right-click menu,
+shown as *Pin `total` to Line 12*, pins the popup's expression to the line it
+opened for. A line holds at most four pinned values. **Debug: Unpin Values on
+Line** (`debug.unpinLine`) removes every value pinned to the caret's line. The
+status bar says what was pinned or unpinned.
+
+At each stop, and when you pick another frame, every pinned value in the open
+files is evaluated in the selected frame and painted after the values the
+editor shows by itself, in the info colour:
+
+```
+◆ total = 3  ·  items.size() = 2
+```
+
+A value is cut to 60 characters. One that can't be evaluated there, such as a
+variable not in scope, shows *unavailable:* and the debugger's message. The
+values are cleared while the program runs and when the session ends.
+
+Pins are kept when no session runs, though they show only while the program is
+paused. They follow their line as you edit above it, are saved with the
+project's breakpoints, and come back on their line when the file opens again.
 
 ### Threads view
 
