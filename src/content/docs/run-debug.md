@@ -1035,6 +1035,8 @@ listed too, with what to start it with instead: *not started for debugging
 and attaches nothing. With no Java, Node.js or Python program running, the list
 says so.
 
+![The Attach to Process list over Main.java: com.example.inventory.InventoryServer (pid 11), Java · listening on localhost:5005; server.js (pid 13), Node.js · listening on localhost:9229; worker.py (pid 15), Python · listening on localhost:5678; then com.example.inventory.ReportJob (pid 12) and watch.js (pid 14), not started for debugging, each with what to start it with](/screenshots/docs/debug-attach-to-process.png "Attach to Process: programs listening for a debugger come first, then those started without debugging.")
+
 Picking a listening program attaches the right debugger to it and opens the
 Debug window. **Stop** detaches: the program keeps running, and you can attach
 again.
@@ -1527,6 +1529,8 @@ each followed by the start of its lambda.
 At least one stays on: with no lambda checked, the breakpoint stops on the line
 again.
 
+![Shelf.java with a breakpoint on line 56, .filter(item -> item.price() < 1.0), its dot carrying a λ, and the dot's right-click menu: Edit Breakpoint…, Disable Breakpoint, Remove Breakpoint, Stop on the Line unchecked, Stop in Lambda 1: item -> item.price() < 1.0) checked, and Breakpoints…](/screenshots/docs/debug-lambda-breakpoint.png "A lambda breakpoint: the λ on its dot, and the menu that chooses where it stops.")
+
 Such a breakpoint carries a λ on its dot, and its hover says *Also stops in
 lambda 1* or *Stops only in lambda 1*. It keeps its condition, hit count and
 log message for every place it stops, and is saved with the project's
@@ -1582,6 +1586,8 @@ Right-click it for **Disable Breakpoint** or **Enable Breakpoint**,
 **Breakpoints…**. The mark follows its member as you edit. When a line has a
 line breakpoint too, the gutter shows the line breakpoint, and a click on an
 unmarked line still sets a line breakpoint.
+
+![Shelf.java with a field watchpoint's mark, a dot with an eye, beside line 13, private final List<Item> items;, and a method breakpoint's mark, a dot with an arrow into it, beside line 39, Receipt checkout(int limit) {](/screenshots/docs/debug-member-marks.png "A field watchpoint marked on its field and a method breakpoint on its method.")
 
 The marks are placed from the Java language server's outline of the file, so
 without it there are none; the breakpoints still stop the program. Only the
@@ -1724,6 +1730,8 @@ editor shows by itself, in the info colour:
 A value is cut to 60 characters. One that can't be evaluated there, such as a
 variable not in scope, shows *unavailable:* and the debugger's message. The
 values are cleared while the program runs and when the session ends.
+
+![Shelf.java paused on line 52 in checkout, with total, subtotal and item.name() pinned to line 54, the loop's closing brace, which shows ◆ total = 4.560000 · subtotal = 8.250000 · item.name() = "Notebook", and the Debug window below with the call stack and Variables](/screenshots/docs/debug-pinned-values.png "Three values pinned to one line, evaluated at the stop.")
 
 Pins are kept when no session runs, though they show only while the program is
 paused. They follow their line as you edit above it, are saved with the
