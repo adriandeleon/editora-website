@@ -1991,7 +1991,8 @@ there yet.
 
 Go is debugged with [Delve](https://github.com/go-delve/delve), the debugger
 VS Code's Go extension uses. Debug a Go file with **Debug: Start / Continue**
-(`debug.start`, F5 in the VS Code, CUA and Sublime Text keymaps):
+(`debug.start`, F5 in the VS Code, CUA and Sublime Text keymaps), or with
+**Debug File** in the editor's right-click menu:
 
 - A file of a module (a `go.mod` in its folder or above) debugs its
   **package**, as `go run .` runs it.
@@ -2040,8 +2041,9 @@ switch, **Enable Go debugging (Delve)**, is on by default, and the
 Rust is debugged with [CodeLLDB](https://github.com/vadimcn/codelldb), LLDB
 with Rust's formatters, as VS Code debugs it with rust-analyzer. A Rust file is
 debugged from its Cargo package, the nearest `Cargo.toml` above it; outside a
-package, Debug says so. **Debug: Start / Continue** (`debug.start`, F5)
-debugs, depending on where the caret is:
+package, Debug says so. **Debug: Start / Continue** (`debug.start`, F5), or
+**Debug File** in the editor's right-click menu, debugs, depending on where the
+caret is:
 
 - in a `#[test]` function (or `#[tokio::test]` and the like): that test alone,
   in its test binary. **Debug Test at Caret** (`test.debugAtCaret`) does the
