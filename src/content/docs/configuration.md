@@ -206,7 +206,7 @@ A project's `.editora/settings.json` can set only these:
 | Trim trailing whitespace on save, and end files with a newline on save | `editor` → `trimTrailingWhitespace`, `insertFinalNewline` |
 | Spell-check language (`en_US`, `en_GB`, `es`, `es_MX` or `fr`) | `editor` → `spellLanguage` |
 | The command each build tool runs (Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, Clojure, Leiningen, Babashka) | `buildCommands`, by tool |
-| The program of the Java, Python and JavaScript debuggers | `debugTools`, by debugger |
+| The program of the Java, Python, JavaScript, Go and Rust debuggers | `debugTools`, by debugger |
 | Which language server to run for a language, and whether to run it | `lspCommands`, `lspEnabled`, by server |
 | The [Bash server's options](/docs/lsp#bash-server-options) | `bashIde` |
 | The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html`, or VS Code's dotted `html.…` keys at the top level |

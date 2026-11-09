@@ -439,6 +439,24 @@ const docsShots: Shot[] = [
     alt: "Shelf.java paused on line 52 in checkout, with total, subtotal and item.name() pinned to line 54, the loop's closing brace, which shows ◆ total = 4.560000 · subtotal = 8.250000 · item.name() = \"Notebook\", and the Debug window below with the call stack and Variables",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
+  shot("/screenshots/docs/debug-go-goroutines.png", {
+    title: "Debugging Go",
+    caption: "A Go program stopped in a goroutine: each goroutine is a thread in the Threads view.",
+    alt: "restock.go paused on line 16, restocked++, inside a goroutine that restock starts, with inline values on the lines above, and the Debug window below: the Threads view listing the program's goroutines, such as [Go 1] sync.runtime_SemacquireWaitGroup, runtime.gopark ones and the suspended main.restock.func1, Variables with w, mu, restocked and wg, and the program's output in the console",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-rust-values.png", {
+    title: "Debugging Rust",
+    caption: "A Rust program at a breakpoint: a Vec unfolds to its items, and each String reads as its text.",
+    alt: "shelf.rs paused on line 49, total += subtotal, with inline values such as item: {sku:\"A-2\", name:\"Notebook\", quantity:3, …} on the lines above, and the Debug window below: the call stack at shelf::shelf::checkout, and Variables with lines, a Vec<String> of size 2, unfolded to \"A-1  Pencil …\" and \"A-2  Notebook …\", then total, item and discount = None",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-settings-go-rust.png", {
+    title: "Go and Rust debugger settings",
+    caption: "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.",
+    alt: "The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
   shot("/screenshots/docs/trust-folder.png", {
     title: "Trusted folders",
     caption: "Before the first build in a folder, Editora lists what would run and asks.",

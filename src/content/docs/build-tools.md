@@ -555,7 +555,10 @@ first has finished; forks are debugged one at a time. The test JVM prints one
 "Debugger failed to attach: handshake failed" line in the Output console: that
 is Editora's port check, not an error. Gradle keeps its own banner. In a Node.js test file,
 Debug Test at Caret debugs the `node:test` test at the caret (see
-[Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)).
+[Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)). In a Go test file it debugs the
+test function at the caret under Delve, and in a Rust `#[test]` function that
+test alone under CodeLLDB (see [Debugging Go](/docs/run-debug#debugging-go) and
+[Debugging Rust](/docs/run-debug#debugging-rust)).
 
 ### Python tests
 

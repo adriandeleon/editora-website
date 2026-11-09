@@ -826,7 +826,8 @@ file in the project serves, and it reports an error only when there isn't one.
 ## Debugging
 
 Editora debugs **Java**, **Python**, **JavaScript and TypeScript (Node.js)**,
-**Groovy**, **Kotlin**, **Clojure** and **Scala** through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+**Groovy**, **Kotlin**, **Clojure**, **Scala**, [**Go**](#debugging-go) and
+[**Rust**](#debugging-rust) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **on by default**, and each language's debugger starts once its adapter is
 found ([Installing adapters](#installing-adapters)); the switch is **Enable
 debugging (DAP)** in **Settings → Debugging**. Shell scripts
@@ -864,7 +865,7 @@ script as it runs.
 | Unpin the values on the caret's line | `debug.unpinLine` | (palette) |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
 | Show every thread ([Threads view](#threads-view)) | `debug.threads` | (palette) |
-| Turn the Python or JavaScript adapter on or off | `debug.toggleAdapter` | (palette) |
+| Turn the Python, JavaScript, Go or Rust debugger on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
 ![A Java program paused at a breakpoint in Shelf.java with the Debug tool window below: the call stack, a variables tree with the items list unfolded, and the console](/screenshots/features/debugging.png "Paused at a breakpoint: call stack, variables and console in the Debug window.")
@@ -969,6 +970,9 @@ on; choosing one turns it on or off, also during a session.
 | Java | Caught Exceptions, Uncaught Exceptions | none |
 | JavaScript | Caught Exceptions, Uncaught Exceptions | none |
 | Groovy, Kotlin, Clojure, Scala | Caught Exceptions, Uncaught Exceptions | Uncaught Exceptions |
+| Rust | Rust: on panic | Rust: on panic |
+
+Go has none to choose: Delve stops on a panic by itself.
 
 A session starts with the filters its debugger turns on by default, so a
 Python program stops where an uncaught exception is raised, with the
@@ -1011,7 +1015,7 @@ exception, the status bar says so.
 ### Attach to Process
 
 **Debug: Attach to Process…** (`debug.attachToProcess`, in the **Run** menu
-under Attach) lists the Java, Node.js and Python programs running on this
+under Attach) lists the Java, Node.js, Python and Go programs running on this
 machine under your user, so you can attach to one without typing its address.
 It is also the last row, *A program on this machine…*, of the
 [Attach list](#starting-a-java-session) a Java file shows once the project has
@@ -1025,15 +1029,19 @@ debugger come first:
 - a **Node.js** started with `--inspect`, `--inspect-brk` or `--inspect-wait`
   (port 9229 unless it names another);
 - a **Python** program started under debugpy with
-  `python -m debugpy --listen 5678 app.py`.
+  `python -m debugpy --listen 5678 app.py`;
+- any **Go** program, on Linux and macOS. Delve attaches to it by its process
+  id, so it needs no flag; Editora tells a Go program by reading its
+  executable.
 
-Each row names the main class, jar or script and the process id, and below
-them the kind of program and where it listens, such as *Java · listening on
-localhost:5005*. A program of these kinds that was started without debugging is
+Each row names the main class, jar, script or program and the process id, and
+below them the kind of program and where it listens, such as *Java · listening
+on localhost:5005*, or *Go · Delve attaches by process id*. A program of these kinds that was started without debugging is
 listed too, with what to start it with instead: *not started for debugging
 (start it with --inspect)*. Picking such a row says the same in the status bar
-and attaches nothing. With no Java, Node.js or Python program running, the list
-says so.
+and attaches nothing. With no Java, Node.js, Python or Go program running, the
+list says so. Rust programs aren't listed: attaching to a running Rust program
+isn't offered yet.
 
 ![The Attach to Process list over Main.java: com.example.inventory.InventoryServer (pid 11), Java · listening on localhost:5005; server.js (pid 13), Node.js · listening on localhost:9229; worker.py (pid 15), Python · listening on localhost:5678; then com.example.inventory.ReportJob (pid 12) and watch.js (pid 14), not started for debugging, each with what to start it with](/screenshots/docs/debug-attach-to-process.png "Attach to Process: programs listening for a debugger come first, then those started without debugging.")
 
@@ -1052,6 +1060,11 @@ again.
 - **Python** connects to debugpy inside the program, so Editora doesn't need
   a debugpy of its own. A program listening only on another network address of
   this machine, not on `localhost`, can't be attached to yet.
+- **Go** attaches [Delve](#debugging-go) to the process, with the breakpoints
+  of the project's Go files. On Linux, a debugger may attach to a program it
+  didn't start only when `kernel.yama.ptrace_scope` is 0, which many
+  distributions don't make the default; `sudo sysctl kernel.yama.ptrace_scope=0`
+  sets it until the next restart. Not on Windows.
 
 ### Debugging Python
 
@@ -1094,8 +1107,8 @@ file instead.
 
 ### Program input in the Debug console
 
-A debugged **Java**, **Python** or **JavaScript** program can read its standard
-input from the Debug console, so a Python program that calls `input()` waits
+A debugged **Java**, **Python**, **JavaScript** or **Rust** program can read its
+standard input from the Debug console, so a Python program that calls `input()` waits
 for a line typed there.
 The field does one of two things, and its prompt says which:
 
@@ -1118,8 +1131,8 @@ console (program input)**, is on the **Debugged programs** card of
 **Settings → Debugging** (or use
 *Debug: Toggle Program Input in the Debug Console*,
 `debug.toggleProgramConsole`) and takes effect at the next launch. It applies
-to a launched Java program, and to a Python or JavaScript program started on
-this computer; a Python or JavaScript file on a remote host, in WSL or in a
+to a launched Java or Rust program, and to a Python or JavaScript program
+started on this computer; a Python or JavaScript file on a remote host, in WSL or in a
 container is unaffected, and so are attached sessions.
 
 **Run the program in a Terminal tab instead**, just below it, runs that program
@@ -1974,6 +1987,100 @@ methods `Util.twice`. Locals, `this` and fields are shown without running any
 code in the program. Conditional breakpoints and logpoints are not supported
 there yet.
 
+### Debugging Go
+
+Go is debugged with [Delve](https://github.com/go-delve/delve), the debugger
+VS Code's Go extension uses. Debug a Go file with **Debug: Start / Continue**
+(`debug.start`, F5 in the VS Code, CUA and Sublime Text keymaps):
+
+- A file of a module (a `go.mod` in its folder or above) debugs its
+  **package**, as `go run .` runs it.
+- A file outside any module is debugged alone, as `go run file.go` runs it.
+- In a `_test.go` file, Debug and **Debug Test at Caret**
+  (`test.debugAtCaret`) run the test function the caret is in on its own
+  (a `Benchmark…` function runs alone as a benchmark), and every test of the
+  package when the caret is outside a test function.
+
+**Restart** runs the same program or test again, wherever the caret is by
+then. The arguments set by **File: Run with Arguments…** (`file.runWithArgs`)
+are passed to the program, or to the test binary.
+
+Delve builds the program itself, with optimizations off, using the `go` that the
+[Go build tool](/docs/build-tools) runs. It builds from the files on disk, so
+Debug and Restart save the package's edited Go files first. Its build goes to
+the temporary folder, so no `__debug_bin` file is left in your package. The
+program's output reaches the Debug console.
+
+- **Breakpoints** take conditions, hit counts and log messages. A line that
+  holds only a comment takes none.
+- **Stepping**, **Variables**, **Watches**, hover values and inline values
+  work. A struct, slice or map unfolds to its fields or items.
+- **Goroutines are threads.** The call stack's thread list and the
+  [Threads view](#threads-view) name each one, such as
+  `[Go 6] main.restock.func1`. Delve lists at most 1024 goroutines.
+- **A panic** stops the program where it happened. Delve does that by itself,
+  so Go has no [exception breakpoints](#exception-breakpoints) to choose.
+
+![restock.go paused on line 16, restocked++, inside a goroutine that restock starts, with inline values on the lines above, and the Debug window below: the Threads view listing the program's goroutines, such as [Go 1] sync.runtime_SemacquireWaitGroup, runtime.gopark ones and the suspended main.restock.func1, Variables with w, mu, restocked and wg, and the program's output in the console](/screenshots/docs/debug-go-goroutines.png "A Go program stopped in a goroutine: each goroutine is a thread in the Threads view.")
+
+[Attach to Process](#attach-to-process) attaches Delve to a Go program that is
+already running, on Linux and macOS. Stop leaves that program running.
+
+Delve isn't bundled. Editora finds `dlv` as set on the **Go (Delve)** card of
+**Settings → Debugging**, else on the PATH, else where `go install` puts it
+(`$GOBIN`, `$GOPATH/bin` or `~/go/bin`), so a Delve installed while Editora runs
+is found too. The card's **Install…** runs
+`go install github.com/go-delve/delve/cmd/dlv@latest`, which needs Go. Without
+Delve, Debug says *Delve (dlv) was not found* and how to get it. The card's
+switch, **Enable Go debugging (Delve)**, is on by default, and the
+[Doctor](/docs/troubleshooting#doctor) checks for Delve.
+
+### Debugging Rust
+
+Rust is debugged with [CodeLLDB](https://github.com/vadimcn/codelldb), LLDB
+with Rust's formatters, as VS Code debugs it with rust-analyzer. A Rust file is
+debugged from its Cargo package, the nearest `Cargo.toml` above it; outside a
+package, Debug says so. **Debug: Start / Continue** (`debug.start`, F5)
+debugs, depending on where the caret is:
+
+- in a `#[test]` function (or `#[tokio::test]` and the like): that test alone,
+  in its test binary. **Debug Test at Caret** (`test.debugAtCaret`) does the
+  same.
+- in an integration test file (`tests/*.rs`), outside a test: all its tests.
+- in a file of `examples/`: that example.
+- anywhere else: the package's program. In a library with no program, the
+  file's tests.
+
+Cargo builds first, in the Debug console, after Editora saves the package's
+edited Rust files. Stop ends the build, and a build that fails launches
+nothing. CodeLLDB then debugs the program or test binary Cargo built, with the
+arguments set by **File: Run with Arguments…**. **Restart** builds and runs
+the same program or test again.
+
+- **Values** show as Rust values: a `String` or a `&str` reads as its text, and
+  a `Vec` or a `HashMap` unfolds to its items.
+- **A panic** stops the program where it happened: the **Rust: on panic**
+  [exception breakpoint](#exception-breakpoints) is on by default.
+
+![shelf.rs paused on line 49, total += subtotal, with inline values such as item: {sku:"A-2", name:"Notebook", quantity:3, …} on the lines above, and the Debug window below: the call stack at shelf::shelf::checkout, and Variables with lines, a Vec<String> of size 2, unfolded to "A-1  Pencil …" and "A-2  Notebook …", then total, item and discount = None](/screenshots/docs/debug-rust-values.png "A Rust program at a breakpoint: a Vec unfolds to its items, and each String reads as its text.")
+- **Breakpoints** take conditions, hit counts and log messages, and
+  **stepping**, **Watches** and the [Threads view](#threads-view) work.
+- With [program input](#program-input-in-the-debug-console) on, Editora starts
+  the program for CodeLLDB, so the program reads lines typed in the Debug
+  console.
+
+Attaching to a Rust program that is already running isn't offered yet.
+
+CodeLLDB isn't bundled. Editora finds it as set on the **Rust (CodeLLDB)** card
+of **Settings → Debugging** (the `codelldb` program, or the folder of an
+unpacked CodeLLDB extension), else in its own install, else in VS Code's
+CodeLLDB extension (`vadimcn.vscode-lldb`), else on the PATH. The card's
+**Install…** downloads CodeLLDB 1.12.3, the release tested with Editora, for
+Linux, macOS or Windows, checks its SHA-256 checksum, and unpacks it into your
+config folder. Cargo and Rust come from rustup; Editora doesn't install them.
+The card's switch, **Enable Rust debugging (CodeLLDB)**, is on by default, and
+the [Doctor](/docs/troubleshooting#doctor) checks for CodeLLDB.
+
 ### Debugging on a remote host
 
 A file in a [remote folder](/docs/remote) is debugged on its host, when that
@@ -2034,7 +2141,9 @@ installs are three palette commands:
 
 The Java and Python cards on the **Settings → Debugging** page have the same
 **Install…** button; the JavaScript card's **Install…** installs only
-vscode-js-debug. An install fetches only what is missing. When one tool's
+vscode-js-debug. The **Go (Delve)** card's **Install…** runs `go install` for
+Delve, and the **Rust (CodeLLDB)** card's downloads CodeLLDB; see
+[Debugging Go](#debugging-go) and [Debugging Rust](#debugging-rust). An install fetches only what is missing. When one tool's
 runtime is missing, the others still install and the status bar names the one
 that waits (debugpy installs without Node.js, for example). When Python has no
 `pip`, the error says so. After a debugger installs while debugging is off, the
@@ -2057,8 +2166,9 @@ script for each:
 Each card on **Settings → Debugging** has a **Detected** line, for example
 *debugpy: found (/usr/bin/python3)* (the interpreter that has debugpy) or
 *js-debug: not found*, also while that language's debugging is switched off.
-The Java and JavaScript cards also have the adapter's path field with
-**Browse…**. While **Enable debugging (DAP)** is off, the cards are greyed and
+The Java, JavaScript, Go and Rust cards also have the adapter's path field with
+**Browse…**, and the Python, JavaScript, Go and Rust cards a switch that turns
+that language's debugging on or off. While **Enable debugging (DAP)** is off, the cards are greyed and
 a note says to turn it on. Python has no path field there: debugpy runs under
 a Python interpreter, and the **Python interpreter (fallback for Run, Debug and
 code intelligence)** is on the Python card of **Settings → LSP**, which stays
@@ -2066,6 +2176,8 @@ editable with debugging off. It is the Python used when a project has no
 interpreter of its own, and the one that runs debugpy when the project's
 interpreter cannot import it. A link at the top of the Debugging page leads
 there.
+
+![The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed](/screenshots/docs/debug-settings-go-rust.png "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.")
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, Gradle, npm, Cargo, Go, sbt,

@@ -3,11 +3,11 @@ title: "Debugging (DAP)"
 group: "Run & debug"
 order: 3
 beta: false
-summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure and Scala: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
+summary: "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure, Scala, Go and Rust: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console."
 alt: "A Java program paused at a breakpoint, with inline values and the Debug window's call stack and variables"
 ---
 
-Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure** and **Scala** (through Metals for a build's file, Editora's own debugger for a script) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
+Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure**, **Scala** (through Metals for a build's file, Editora's own debugger for a script), **Go** (Delve) and **Rust** (CodeLLDB) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
 - Breakpoints (conditional, with a hit count, **temporary** ones removed once hit, and logpoints; in Java also **lambda breakpoints** that stop inside a lambda's body, and **method breakpoints** and **field watchpoints**, marked in the gutter on their member's line), step in / over / out, **run-to-cursor** (or **force run-to-cursor** past every breakpoint), and **jump-to-line** (Python)
 - A threads + call-stack view you can **copy as text**, and a **Threads view** listing every thread, running or suspended and why, where you can **pause or resume one thread** alone
@@ -33,6 +33,10 @@ Groovy is debugged by a debugger built into Editora, with nothing to install: br
 
 Clojure uses the same debugger, under the Clojure CLI or Leiningen: breakpoints in a namespace's functions and a script's top-level forms, frames named as Clojure names them (`my-app.core/greet`), locals kept visible for the whole function, and stepping that skips Clojure's runtime. Babashka, a native program, can't be debugged, and says so.
 
+Go is debugged with Delve, as in VS Code's Go extension: Debug on a Go file debugs its package (the file alone outside a module), and in a `_test.go` file Debug and *Debug Test at Caret* run the test at the caret, or the package's tests. Goroutines are listed as threads, and a panic stops where it happened. *Attach to Process* lists running Go programs and attaches to one by its process id, on Linux and macOS; Stop leaves it running. Delve's build goes to the temporary folder, not your package.
+
+Rust is debugged with CodeLLDB, as in VS Code: Cargo builds the package in the Debug console, then the program, an example, or the `#[test]` function at the caret runs under the debugger. Values read as Rust values (a `String` as its text, a `Vec` as its items), and a panic stops where it happened.
+
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript (a Python program under the project's virtual environment on that host), and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button that fetches it, and a `jdtls` that already bundles java-debug is detected as-is. On by default; the switch is in Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp), which is on by default too. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug, Delve, CodeLLDB) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button that fetches it (Delve through `go install`; a CodeLLDB already installed in VS Code is found too), and a `jdtls` that already bundles java-debug is detected as-is. On by default; the switch is in Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp), which is on by default too. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.

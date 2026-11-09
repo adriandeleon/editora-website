@@ -17,7 +17,7 @@ Every integration gets a row, grouped by area:
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, Graphviz and PlantUML (with their versions), and the Typst CLI.
 - **Language servers**: one row per enabled server, showing the resolved path (and Pyright's version).
 - **Formatting & linting**: the **Python formatter** (Ruff or Black) that Format Document and format on save use, optional unless **Format on save (Ruff/Black)** is on, ShellCheck and shfmt, which the Shell server lints and formats with, and a JavaScript project's own ESLint, Prettier and Biome.
-- **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
+- **Debugging**: the Java debug plugin, `debugpy`, `js-debug`, Delve (`dlv`) and CodeLLDB.
 - **Run**: the JDK used to run a file, the **Python interpreter** that Run, Debug and Pyright share (its version, command and why it was chosen; its **Settings…** opens the Python card of Settings → LSP), the Node.js that Run, Debug, npm scripts and the TypeScript server share, `bash`, and `make`.
 - **HTTP Client**: the Node.js that runs response handlers and pre-request scripts.
 - **Build tools**: Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka, checked by the command set in Settings or the project's own wrapper.
