@@ -415,6 +415,48 @@ const docsShots: Shot[] = [
     alt: "The Edit Breakpoint form for Shelf.java line 50 over the editor: the line's code above the fields, a Condition field with item.price() > 1.0 typed, an empty Log message, a Hit count field whose hint reads Every hit, or a number: 5 stops on the fifth hit, Enabled ticked, Remove once hit, and Cancel and OK buttons",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
+  shot("/screenshots/docs/debug-attach-to-process.png", {
+    title: "Attach to Process",
+    caption: "Attach to Process: programs listening for a debugger come first, then those started without debugging.",
+    alt: "The Attach to Process list over Main.java: com.example.inventory.InventoryServer (pid 11), Java · listening on localhost:5005; server.js (pid 13), Node.js · listening on localhost:9229; worker.py (pid 15), Python · listening on localhost:5678; then com.example.inventory.ReportJob (pid 12) and watch.js (pid 14), not started for debugging, each with what to start it with",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-lambda-breakpoint.png", {
+    title: "Lambda breakpoints",
+    caption: "A lambda breakpoint: the λ on its dot, and the menu that chooses where it stops.",
+    alt: "Shelf.java with a breakpoint on line 56, .filter(item -> item.price() < 1.0), its dot carrying a λ, and the dot's right-click menu: Edit Breakpoint…, Disable Breakpoint, Remove Breakpoint, Stop on the Line unchecked, Stop in Lambda 1: item -> item.price() < 1.0) checked, and Breakpoints…",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-member-marks.png", {
+    title: "Method and field marks",
+    caption: "A field watchpoint marked on its field and a method breakpoint on its method.",
+    alt: "Shelf.java with a field watchpoint's mark, a dot with an eye, beside line 13, private final List<Item> items;, and a method breakpoint's mark, a dot with an arrow into it, beside line 39, Receipt checkout(int limit) {",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-pinned-values.png", {
+    title: "Pinned values",
+    caption: "Three values pinned to one line, evaluated at the stop.",
+    alt: "Shelf.java paused on line 52 in checkout, with total, subtotal and item.name() pinned to line 54, the loop's closing brace, which shows ◆ total = 4.560000 · subtotal = 8.250000 · item.name() = \"Notebook\", and the Debug window below with the call stack and Variables",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-go-goroutines.png", {
+    title: "Debugging Go",
+    caption: "A Go program stopped in a goroutine: each goroutine is a thread in the Threads view.",
+    alt: "restock.go paused on line 16, restocked++, inside a goroutine that restock starts, with inline values on the lines above, and the Debug window below: the Threads view listing the program's goroutines, such as [Go 1] sync.runtime_SemacquireWaitGroup, runtime.gopark ones and the suspended main.restock.func1, Variables with w, mu, restocked and wg, and the program's output in the console",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-rust-values.png", {
+    title: "Debugging Rust",
+    caption: "A Rust program at a breakpoint: a Vec unfolds to its items, and each String reads as its text.",
+    alt: "shelf.rs paused on line 49, total += subtotal, with inline values such as item: {sku:\"A-2\", name:\"Notebook\", quantity:3, …} on the lines above, and the Debug window below: the call stack at shelf::shelf::checkout, and Variables with lines, a Vec<String> of size 2, unfolded to \"A-1  Pencil …\" and \"A-2  Notebook …\", then total, item and discount = None",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-settings-go-rust.png", {
+    title: "Go and Rust debugger settings",
+    caption: "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.",
+    alt: "The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
   shot("/screenshots/docs/trust-folder.png", {
     title: "Trusted folders",
     caption: "Before the first build in a folder, Editora lists what would run and asks.",
