@@ -836,8 +836,10 @@ debugging (DAP)** in **Settings → Debugging**. A project's
 `.vscode/launch.json` configurations start as VS Code starts them
 ([launch.json configurations](#launchjson-configurations)), and any other
 debugger that speaks the protocol can be added
-([Debug adapters of your own](#debug-adapters-of-your-own)). Shell scripts
-can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
+([Debug adapters of your own](#debug-adapters-of-your-own)). Several programs
+can be debugged at once, each in a session of its own
+([Several sessions](#several-sessions)), and a [compound](#compounds) starts
+several together. Shell scripts can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
 
 | Action | Command | Default key |
@@ -846,6 +848,7 @@ script as it runs.
 | Continue | `debug.continue` | `C-c C-d c` |
 | Pause | `debug.pause` | `C-c C-d p` |
 | Stop | `debug.stop` | `C-c C-d k` |
+| Stop every session ([Several sessions](#several-sessions)) | `debug.stopAll` | (palette) |
 | Restart | `debug.restart` | `C-c C-d r` |
 | Step over | `debug.stepOver` | `C-c C-d n` |
 | Step into | `debug.stepInto` | `C-c C-d i` |
@@ -866,6 +869,8 @@ script as it runs.
 | Debug a project main class | `debug.mainClass` | (palette) |
 | Debug a saved run configuration | `debug.config` | (palette) |
 | Start a [launch.json configuration](#launchjson-configurations) | `debug.startConfiguration` | (palette) |
+| Start a [compound](#compounds) | `debug.startCompound` | (palette) |
+| Make or change the project's compounds | `debug.editCompounds` | (palette) |
 | Open [`debug-adapters.json`](#debug-adapters-of-your-own) | `debug.editCustomAdapters` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
@@ -887,8 +892,8 @@ The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and most debugger actions are in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Attach to
-Process, Reattach, Stop, Restart and Toggle Breakpoint. Start Configuration,
-stepping (by line or by instruction), evaluate, watches, pinned values,
+Process, Reattach, Stop, Stop All, Restart and Toggle Breakpoint. Start
+Configuration, Start Compound, Edit Compounds, stepping (by line or by instruction), evaluate, watches, pinned values,
 hexadecimal values, Debug History, breakpoints, the Threads, Disassembly and
 Memory views, Edit Debug Adapters, exception breakpoints and Show Exception are
 in its **Debugger** submenu (**Run ▸ Debugger**).
@@ -971,6 +976,51 @@ already running.
 When a file cannot be debugged, the status bar says why and what to do: Python
 or JavaScript debugging is turned off, debugpy was not found for the Python
 interpreter, or vscode-js-debug or Node.js was not found.
+
+### Several sessions
+
+Editora can debug several programs at once, each in a session of its own: a
+server and its client, or a program and one of its tests. Start debugging
+another file while a session runs, with F5, **Debug File** or **Debug Test at
+Caret**, and Editora asks what to do:
+
+- **Debug Both** debugs the new file in a session of its own, beside the one
+  that runs.
+- **Stop and Debug** stops the session and debugs the new file instead.
+- **Cancel** leaves things as they are.
+
+![The question Debug Another File?: main.go is being debugged. Debug shelf_test.go as well, in a session of its own, or stop main.go and debug shelf_test.go instead? with Stop and Debug, Cancel and Debug Both buttons](/screenshots/docs/debug-both-question.png "Debugging another file while a session runs asks first.")
+
+While a session is paused, F5 continues it instead of asking, so start another
+file then with **Debug File** or **Debug Test at Caret**. **Debug Both** is
+offered beside a session that has started: while one is still getting ready
+(its build, say), the question has **Stop and Debug** and **Cancel** only.
+Asking to debug a file that a session already debugs starts nothing: that
+session is shown, and the status bar says so.
+
+With two sessions or more, a row of tabs at the top of the Debug window has one
+tab per session, with its file (or its test) and its state, such as *main.go ·
+suspended*. Click a tab to show that session. Each session has its own console,
+call stack, variables and [Debug History](#debug-history). The toolbar, the
+debugger keys, the execution line, inline values and hovers follow the session
+shown. A session that stops is shown by itself, so you see where it stopped;
+a stop on a [recording breakpoint](#recording-breakpoints) doesn't switch.
+Breakpoints, Mute, exception breakpoints and hexadecimal values apply to every
+session.
+
+![The Debug window with two Go sessions: tabs main.go · suspended and TestCheckoutTotals · suspended above the toolbar, Stop All at the right, and the test's session shown, paused at line 8 of shelf_test.go with lines and total in Variables](/screenshots/docs/debug-sessions.png "A program and one of its tests, each in a session of its own.")
+
+**Stop** stops the session shown. **Stop All**, at the right of the tabs while
+two or more sessions run, ends them all; it is also in the **Run** menu and in
+the palette as **Debug: Stop All Sessions** (`debug.stopAll`). A session that
+ends keeps its tab and its output, marked *ended*, until you close the tab with
+its ×. A window keeps up to eight sessions: past that, a new one takes the
+place of the oldest ended one.
+
+A [launch.json configuration](#launchjson-configurations) started while a
+session runs is debugged beside it, as in VS Code, without asking. A
+[compound](#compounds) starts several programs together, and a Python
+program's [subprocesses](#debugging-python) get sessions of their own.
 
 ### Exception breakpoints
 
@@ -1109,9 +1159,19 @@ the debugger needs an interpreter, not a runner.
 
 The debugger itself (debugpy) runs under the same interpreter when that
 interpreter can import debugpy, else under the **Python interpreter** set on
-the Python card of Settings → LSP. A program that starts child Python processes, for example
-with `multiprocessing`, runs them without the debugger: breakpoints stop in the
-main process only.
+the Python card of Settings → LSP.
+
+A process the program starts, with `multiprocessing` or as a Python
+subprocess, is debugged too, in a session of its own beside the program's (see
+[Several sessions](#several-sessions)). Its tab is named as debugpy names it,
+such as *Subprocess 1234*. Its breakpoints stop, and the Debug window shows it
+when it stops. Stopping the program stops its subprocesses, and a subprocess's
+tab goes once it ends, unless it is the one shown. Restart isn't available in a
+subprocess's session: restart the program that started it. To run
+subprocesses without the debugger, turn off **Debug Python subprocesses** on
+the Python card of **Settings → Debugging**. A program debugged on a
+[remote host](#debugging-on-a-remote-host) runs its subprocesses without the
+debugger.
 
 A pytest test is debugged from its test file:
 
@@ -2353,8 +2413,10 @@ at your breakpoints.
 
 **Debug: Start Configuration…** (`debug.startConfiguration`, in **Run ▸
 Debugger**) lists the configurations of the project's `.vscode/launch.json`, or
-of the nearest one above the active file, and starts the one you pick as VS
-Code would. Type to filter the list; the configuration you started last is
+of the nearest one above the active file, and its [compounds](#compounds), and
+starts the one you pick as VS Code would. A configuration started while a
+session runs is debugged beside it, in a session of its own
+([Several sessions](#several-sessions)). Type to filter the list; the configuration you started last is
 listed first. With no `launch.json`, the status bar says so.
 
 | `type` | Debugger |
@@ -2387,6 +2449,62 @@ and a configuration's `linux`, `osx` and `windows` parts apply on that system.
   `process` command runs first, in the Debug console. Any other kind of task,
   or one with `dependsOn`, isn't run: the status bar says to run it yourself
   first.
+
+### Compounds
+
+A compound starts several configurations together, each in a session of its
+own ([Several sessions](#several-sessions)), in the order it lists them: a
+server and its client, say. It comes from the project's `.vscode/launch.json`,
+or from the project's own saved run configurations.
+
+A **launch.json compound** is a `compounds` entry, read as VS Code reads it.
+**Debug: Start Configuration…** lists it beside the configurations, as
+*compound · 2 configurations*:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    { "name": "Server", "type": "debugpy", "request": "launch", "program": "${workspaceFolder}/server.py" },
+    { "name": "Client", "type": "debugpy", "request": "launch", "program": "${workspaceFolder}/client.py" }
+  ],
+  "compounds": [
+    { "name": "Server and client", "configurations": ["Server", "Client"], "stopAll": true }
+  ]
+}
+```
+
+- `configurations`: the configurations it starts, by name.
+- `preLaunchTask`: a task that runs once, before any of them. Each
+  configuration's own `preLaunchTask` still runs before that configuration.
+- `stopAll`: stopping one session of the compound stops them all.
+
+An `${input:…}` that several of its configurations use is asked once. When a
+compound names a configuration that isn't in the file, nothing starts, and the
+status bar names the missing one.
+
+A **compound of run configurations** debugs the project's saved
+[run configurations](#run-configurations) together. **Debug: Edit
+Compounds…** (`debug.editCompounds`, in **Run ▸ Debugger**) opens the
+**Compounds** window: the project's compounds on the left and, for the one
+selected, its **Name**, the **Run configurations to debug together** to tick,
+and **Stopping one stops them all**. **Add** makes a compound, **Remove**
+deletes it, and **Debug** starts it. Every change is saved as you make it, with
+the project. The ticked configurations start in the order the run
+configurations are listed, each debugged as **Debug a saved run
+configuration** debugs it, so each must be a kind that can be debugged (see
+[What a configuration can launch](#what-a-configuration-can-launch)).
+
+![The Compounds window: a compound named Server and worker on the left; on the right its Name, the list Run configurations to debug together with API server and Restock worker ticked and Web client and Price check not, Stopping one stops them all ticked, and Add, Remove, Debug and Close buttons](/screenshots/docs/debug-compounds.png "A compound of two saved run configurations, made in Debug: Edit Compounds….")
+
+**Debug: Start Compound…** (`debug.startCompound`, in **Run ▸ Debugger**) lists
+both kinds, the project's own first. Type to filter; **New Compound…**, last in
+the list, opens the Compounds window on a new one.
+
+The sessions of a compound build at the same time. When the compound stops
+them all, **Stop** in any of its sessions stops every one that still runs.
+**Stop All** stops every session, compound or not, and a program that ends by
+itself ends only its own session.
 
 ### Debug adapters of your own
 

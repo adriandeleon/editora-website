@@ -21,6 +21,8 @@ Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js)
 - **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start)
 - An **exception card** under the line that threw: caught or uncaught, the type and message, the causes and stack trace when the debugger sends them (Python, JavaScript), with **Copy**; it never takes focus, and *Debug: Show Exception* opens it again
 - **Debug File** in the editor's right-click menu, next to Run File, and on its own for a Go, Rust, C, C++, C#, Ruby or PHP file
+- **Several programs at once**, each in a session of its own with a tab in the Debug window: *Debug Both* when you debug another file while a session runs, the session that stops shown by itself, and *Stop All*
+- **Compounds** that start several configurations together: launch.json's `compounds`, or the project's own compounds of saved run configurations, made in *Debug: Edit Compounds…*
 - **VS Code's `launch.json`**: *Debug: Start Configuration…* starts the project's configurations as VS Code would, with its variables, `inputs` and `preLaunchTask`
 - **Debug adapters of your own** in `debug-adapters.json`: any program that speaks the Debug Adapter Protocol, for F5 or for launch.json
 - A debugged Java, Python or JavaScript program can read **standard input** typed in the Debug console
@@ -31,7 +33,7 @@ For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in
 
 JavaScript starts exactly as Run starts it: the same Node.js, flags and folder, with `tsx` or the compiled file for TypeScript. Node.js's own frames fold into one row of the call stack, and a breakpoint in a compiled project's `.ts` source stops there through source maps. *Attach to Running Program* connects to a Node.js started with `--inspect`, *Debug Test at Caret* debugs a `node:test` test, and Node.js and npm run configurations can be debugged.
 
-A Python program is debugged the way Run runs it: under the project's virtual environment (or the interpreter picked for the project), in the script's own folder, with the project root and `src/` on `PYTHONPATH`. A Python program started under `python -m debugpy --listen` can be attached to with *Attach to Process*. A pytest test is debugged from its test line, *Debug Test at Caret*, or its row in Test Results; without pytest, a `unittest` test runs under `unittest`. The console shows the command that runs and, at the end, the exit code.
+A Python program is debugged the way Run runs it: under the project's virtual environment (or the interpreter picked for the project), in the script's own folder, with the project root and `src/` on `PYTHONPATH`. A process the program starts (`multiprocessing`, a Python subprocess) is debugged too, in a session of its own. A Python program started under `python -m debugpy --listen` can be attached to with *Attach to Process*. A pytest test is debugged from its test line, *Debug Test at Caret*, or its row in Test Results; without pytest, a `unittest` test runs under `unittest`. The console shows the command that runs and, at the end, the exit code.
 
 Groovy is debugged by a debugger built into Editora, with nothing to install: breakpoints in scripts, classes and closures, stepping that skips Groovy's own runtime, locals and fields, and a stop where an uncaught exception is thrown. It reads variables and field paths but does not evaluate expressions, and breakpoint conditions and log messages are not supported yet.
 

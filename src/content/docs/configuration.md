@@ -377,6 +377,19 @@ step stop every thread of the program, and Continue resume them all; off, only
 the thread that hit it stops. It takes effect at the next debug session. See
 [Threads in a Java program](/docs/run-debug#threads-in-a-java-program).
 
+### Python debugging
+
+The **Python** card under **Settings → Debugging** has:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugPythonSubprocesses` | Debug Python subprocesses | `true` |
+
+On, a process that a debugged Python program starts (`multiprocessing`, a
+Python subprocess) is debugged too, in a session of its own; off, it runs
+without the debugger. See
+[Debugging Python](/docs/run-debug#debugging-python).
+
 ### Rulers and indent guides
 
 These are the rows under **Settings → Editor → Display**:
