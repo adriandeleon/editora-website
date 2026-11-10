@@ -457,6 +457,36 @@ const docsShots: Shot[] = [
     alt: "The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
+  shot("/screenshots/docs/debug-history.png", {
+    title: "Debug History",
+    caption: "An earlier stop, read back from Debug History: a recording breakpoint kept six stops while the program ran on.",
+    alt: "shelf.go during a Go debug session, shown at stop 4 of 7: line 42, total += subtotal, is marked grey with its inline values, total: 19.919 and subtotal: 4.8; the Debug window below has the banner Stop 4 at 22:33:59, breakpoint: main.checkout (shelf.go:42). Values as they were then; the program has run on, with a Back to the live stop link, the call stack at main.checkout, Variables with the values that changed since stop 3 highlighted, and the console listing Recorded stop 1 to Recorded stop 6",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-history-list.png", {
+    title: "Debug History list",
+    caption: "Debug: Show History… lists the stops of the session, newest first.",
+    alt: "The Debug History list: Stop 7, breakpoint, main.checkout — shelf.go:46, then Stops 6 to 1, each a breakpoint in main.checkout at shelf.go:42, with the time of each stop",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-disassembly.png", {
+    title: "Disassembly view",
+    caption: "The Disassembly view: the instructions around the stopped line, each run labelled with its source line.",
+    alt: "shelf.go paused on line 39 in a Go program, with the Debug window's Disassembly view open beside Variables: machine instructions such as CALL main.discountFor(SB) and MOVSD_XMM X0, 0x58(SP) with their addresses, runs labelled shelf.go:37, shelf.go:38 and shelf.go:39, and the instruction the frame is at highlighted",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-settings-cpp.png", {
+    title: "C and C++ debugger settings",
+    caption: "The Rust, C and C++ card: C and C++ can switch from CodeLLDB to GDB.",
+    alt: "The Rust, C and C++ (CodeLLDB) card of Settings → Debugging: Enable Rust debugging (CodeLLDB) on, Enable C and C++ debugging (CodeLLDB) on, C and C++ debugger set to CodeLLDB with the hint that GDB debugs through its own DAP mode (GDB 14 or later), an empty GDB path, an empty CodeLLDB (codelldb) path with Browse…, and Detected codelldb: found",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-settings-csharp-ruby-php.png", {
+    title: "C#, Ruby and PHP debugger settings",
+    caption: "The C#, Ruby and PHP cards, before their debuggers are installed.",
+    alt: "The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
   shot("/screenshots/docs/trust-folder.png", {
     title: "Trusted folders",
     caption: "Before the first build in a folder, Editora lists what would run and asks.",

@@ -148,6 +148,7 @@ change the same setting or entry, the one saved last wins.
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
 | `breakpoints.json` | Debugger breakpoints (per project) |
+| `debug-adapters.json` | Your own [debug adapters](/docs/run-debug#debug-adapters-of-your-own), opened by **Debug: Edit Debug Adapters** |
 | `connections.json` | Saved SFTP connections (no secrets), with whether each host may [run commands](/docs/remote) and its tool commands, and which containers and WSL distributions may run a project's tools |
 | `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
@@ -188,13 +189,14 @@ status bar at startup.
 
 ### Inside a project
 
-Two files live in the project itself rather than in your config directory, so
+These files live in the project itself rather than in your config directory, so
 they can be committed and shared:
 
 | File | Holds |
 | --- | --- |
 | `.editora/settings.json` | This project's own values for how its files are edited, its build commands, debugger programs and language servers (the list follows) |
 | `.editora/run-configurations.json` | [Run configurations](/docs/run-debug) exported for the team |
+| `.editora/debug-adapters.json` | The project's own [debug adapters](/docs/run-debug#debug-adapters-of-your-own), used once the folder is trusted |
 
 A project's `.editora/settings.json` can set only these:
 
@@ -206,7 +208,7 @@ A project's `.editora/settings.json` can set only these:
 | Trim trailing whitespace on save, and end files with a newline on save | `editor` → `trimTrailingWhitespace`, `insertFinalNewline` |
 | Spell-check language (`en_US`, `en_GB`, `es`, `es_MX` or `fr`) | `editor` → `spellLanguage` |
 | The command each build tool runs (Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, Clojure, Leiningen, Babashka) | `buildCommands`, by tool |
-| The program of the Java, Python, JavaScript, Go and Rust debuggers | `debugTools`, by debugger |
+| The program of the Java, Python, JavaScript, Go, Rust, C#, Ruby and PHP debuggers, and GDB | `debugTools`, by debugger |
 | Which language server to run for a language, and whether to run it | `lspCommands`, `lspEnabled`, by server |
 | The [Bash server's options](/docs/lsp#bash-server-options) | `bashIde` |
 | The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html`, or VS Code's dotted `html.…` keys at the top level |

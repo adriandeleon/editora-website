@@ -826,11 +826,17 @@ file in the project serves, and it reports an error only when there isn't one.
 ## Debugging
 
 Editora debugs **Java**, **Python**, **JavaScript and TypeScript (Node.js)**,
-**Groovy**, **Kotlin**, **Clojure**, **Scala**, [**Go**](#debugging-go) and
-[**Rust**](#debugging-rust) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
+**Groovy**, **Kotlin**, **Clojure**, **Scala**, [**Go**](#debugging-go),
+[**Rust**](#debugging-rust), [**C and C++**](#debugging-c-and-c),
+[**C#**](#debugging-c), [**Ruby**](#debugging-ruby) and
+[**PHP**](#debugging-php) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window (`M-g d`). Debugging
 is **on by default**, and each language's debugger starts once its adapter is
 found ([Installing adapters](#installing-adapters)); the switch is **Enable
-debugging (DAP)** in **Settings → Debugging**. Shell scripts
+debugging (DAP)** in **Settings → Debugging**. A project's
+`.vscode/launch.json` configurations start as VS Code starts them
+([launch.json configurations](#launchjson-configurations)), and any other
+debugger that speaks the protocol can be added
+([Debug adapters of your own](#debug-adapters-of-your-own)). Shell scripts
 can't be debugged; [Run with Trace](#run-with-trace) shows each line of a
 script as it runs.
 
@@ -844,11 +850,13 @@ script as it runs.
 | Step over | `debug.stepOver` | `C-c C-d n` |
 | Step into | `debug.stepInto` | `C-c C-d i` |
 | Step out | `debug.stepOut` | `C-c C-d o` |
+| Step over / into one machine instruction ([Disassembly](#disassembly-and-memory)) | `debug.stepOverInstruction`, `debug.stepIntoInstruction` | (palette) |
 | Run to cursor | `debug.runToCursor` | `C-c C-d u` |
 | Run to cursor past every breakpoint | `debug.forceRunToCursor` | `C-c C-d S-u` |
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
 | Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
 | Toggle temporary breakpoint | `debug.toggleTemporaryBreakpoint` | `C-c C-d 1` |
+| Toggle [recording breakpoint](#recording-breakpoints) | `debug.toggleRecordingBreakpoint` | (palette) |
 | Toggle method breakpoint (Java) | `debug.toggleMethodBreakpoint` | `C-c C-d S-m` |
 | Toggle field watchpoint (Java) | `debug.toggleFieldWatchpoint` | `C-c C-d S-w` |
 | Toggle [lambda breakpoint](#lambda-breakpoints) (Java) | `debug.toggleLambdaBreakpoint` | `C-c C-d S-l` |
@@ -857,6 +865,8 @@ script as it runs.
 | Show the [exception card](#exception-card) again | `debug.showException` | (palette) |
 | Debug a project main class | `debug.mainClass` | (palette) |
 | Debug a saved run configuration | `debug.config` | (palette) |
+| Start a [launch.json configuration](#launchjson-configurations) | `debug.startConfiguration` | (palette) |
+| Open [`debug-adapters.json`](#debug-adapters-of-your-own) | `debug.editCustomAdapters` | (palette) |
 | Debug via build tool | `debug.viaBuild` | (palette) |
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
 | Attach to a program on this machine ([Attach to Process](#attach-to-process)) | `debug.attachToProcess` | (palette) |
@@ -865,7 +875,10 @@ script as it runs.
 | Unpin the values on the caret's line | `debug.unpinLine` | (palette) |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
 | Show every thread ([Threads view](#threads-view)) | `debug.threads` | (palette) |
-| Turn the Python, JavaScript, Go or Rust debugger on or off | `debug.toggleAdapter` | (palette) |
+| Go back or forward through earlier stops ([Debug History](#debug-history)) | `debug.historyBack`, `debug.historyForward` | (palette) |
+| List the stops of the session | `debug.showHistory` | (palette) |
+| Show the [Disassembly or Memory view](#disassembly-and-memory) | `debug.showDisassembly`, `debug.showMemory` | (palette) |
+| Turn the Python, JavaScript, Go, Rust, C and C++, C#, Ruby or PHP debugger on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
 ![A Java program paused at a breakpoint in Shelf.java with the Debug tool window below: the call stack, a variables tree with the items list unfolded, and the console](/screenshots/features/debugging.png "Paused at a breakpoint: call stack, variables and console in the Debug window.")
@@ -874,10 +887,11 @@ The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and most debugger actions are in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Attach to
-Process, Reattach, Stop, Restart and Toggle Breakpoint. Stepping, evaluate,
-watches, pinned values, hexadecimal values, breakpoints, the Threads view,
-exception breakpoints and Show Exception are in its **Debugger** submenu
-(**Run ▸ Debugger**).
+Process, Reattach, Stop, Restart and Toggle Breakpoint. Start Configuration,
+stepping (by line or by instruction), evaluate, watches, pinned values,
+hexadecimal values, Debug History, breakpoints, the Threads, Disassembly and
+Memory views, Edit Debug Adapters, exception breakpoints and Show Exception are
+in its **Debugger** submenu (**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -907,8 +921,9 @@ italics instead.
 Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
 message** (which turns it into a logpoint that logs and never suspends), an
-**Enabled** toggle, and **Remove once hit**, which makes it a
-[temporary breakpoint](#temporary-breakpoints). Its title names the file and line, such as *Edit
+**Enabled** toggle, **Remove once hit**, which makes it a
+[temporary breakpoint](#temporary-breakpoints), and **Record and continue**,
+which makes it a [recording breakpoint](#recording-breakpoints). Its title names the file and line, such as *Edit
 Breakpoint — Main.java:27*, and the line's code is shown above the fields, since
 the form can cover that line. The hit count makes it stop only on that hit: `5`
 stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
@@ -971,6 +986,10 @@ on; choosing one turns it on or off, also during a session.
 | JavaScript | Caught Exceptions, Uncaught Exceptions | none |
 | Groovy, Kotlin, Clojure, Scala | Caught Exceptions, Uncaught Exceptions | Uncaught Exceptions |
 | Rust | Rust: on panic | Rust: on panic |
+| C and C++ (CodeLLDB) | C++: on throw, C++: on catch | C++: on throw |
+| C# | C#: user-unhandled exceptions, C#: all exceptions | C#: user-unhandled exceptions |
+| Ruby | Ruby: any raised exception, Ruby: RuntimeError | none |
+| PHP | PHP: exceptions, errors, warnings, notices, deprecations, everything | none |
 
 Go has none to choose: Delve stops on a panic by itself.
 
@@ -1015,8 +1034,8 @@ exception, the status bar says so.
 ### Attach to Process
 
 **Debug: Attach to Process…** (`debug.attachToProcess`, in the **Run** menu
-under Attach) lists the Java, Node.js, Python and Go programs running on this
-machine under your user, so you can attach to one without typing its address.
+under Attach) lists the Java, Node.js, Python, Go, Rust, C and C++ programs
+running on this machine under your user, so you can attach to one without typing its address.
 It is also the last row, *A program on this machine…*, of the
 [Attach list](#starting-a-java-session) a Java file shows once the project has
 attached before. Type to filter the list. Programs listening for a
@@ -1032,16 +1051,19 @@ debugger come first:
   `python -m debugpy --listen 5678 app.py`;
 - any **Go** program, on Linux and macOS. Delve attaches to it by its process
   id, so it needs no flag; Editora tells a Go program by reading its
-  executable.
+  executable;
+- a **Rust**, **C** or **C++** program built with debug information, on
+  Linux. CodeLLDB attaches to it by its process id. Editora tells a Rust
+  program from a C or C++ one, listed as *Native (C, C++)*, by reading its
+  executable. A program built without debug information isn't listed.
 
 Each row names the main class, jar, script or program and the process id, and
 below them the kind of program and where it listens, such as *Java · listening
-on localhost:5005*, or *Go · Delve attaches by process id*. A program of these kinds that was started without debugging is
+on localhost:5005*, *Go · Delve attaches by process id* or *Native (C, C++) ·
+CodeLLDB attaches by process id*. A program of these kinds that was started without debugging is
 listed too, with what to start it with instead: *not started for debugging
 (start it with --inspect)*. Picking such a row says the same in the status bar
-and attaches nothing. With no Java, Node.js, Python or Go program running, the
-list says so. Rust programs aren't listed: attaching to a running Rust program
-isn't offered yet.
+and attaches nothing. With none of these programs running, the list says so.
 
 ![The Attach to Process list over Main.java: com.example.inventory.InventoryServer (pid 11), Java · listening on localhost:5005; server.js (pid 13), Node.js · listening on localhost:9229; worker.py (pid 15), Python · listening on localhost:5678; then com.example.inventory.ReportJob (pid 12) and watch.js (pid 14), not started for debugging, each with what to start it with](/screenshots/docs/debug-attach-to-process.png "Attach to Process: programs listening for a debugger come first, then those started without debugging.")
 
@@ -1065,6 +1087,9 @@ again.
   didn't start only when `kernel.yama.ptrace_scope` is 0, which many
   distributions don't make the default; `sudo sysctl kernel.yama.ptrace_scope=0`
   sets it until the next restart. Not on Windows.
+- **Rust, C and C++** attach [CodeLLDB](#debugging-rust) to the process by
+  its process id. The same `ptrace_scope` setting applies. A macOS program keeps its debug information
+  outside the executable, so it isn't listed there.
 
 ### Debugging Python
 
@@ -1431,19 +1456,20 @@ A breakpoint's glyph shows its kind by shape as well as colour: a dot for a
 plain breakpoint, a diamond for a logpoint, two "=" bars for a breakpoint with
 a condition or a hit count, a "1" for a
 [temporary breakpoint](#temporary-breakpoints), a λ for a
-[lambda breakpoint](#lambda-breakpoints), and grey for a disabled one. Java
+[lambda breakpoint](#lambda-breakpoints), purple with a ring for a
+[recording breakpoint](#recording-breakpoints), and grey for a disabled one. Java
 [method breakpoints and field watchpoints](#method-breakpoints-and-field-watchpoints)
 have marks of their own on their member's line.
 Its hover names the condition, log message and hit count, and says when it is
-disabled or removed once hit. A hit
+disabled, removed once hit, or recorded in Debug History. A hit
 count stops on that hit in Java too: `3` stops the third time the line runs.
 
 Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
 **Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**; on a Java
 line that starts a lambda, the menu also has **Stop on the Line** and
 **Stop in Lambda n** (see [Lambda breakpoints](#lambda-breakpoints)). The
-editor's right-click menu has Toggle Breakpoint, Edit Breakpoint and Toggle
-Temporary Breakpoint, Toggle Lambda Breakpoint on a Java line that starts a
+editor's right-click menu has Toggle Breakpoint, Edit Breakpoint, Toggle
+Temporary Breakpoint and Toggle Recording Breakpoint, Toggle Lambda Breakpoint on a Java line that starts a
 lambda, and while the program is paused also Run to Cursor,
 [Force Run to Cursor](#debugging), Show Value at Caret and Add to Watches.
 
@@ -1510,6 +1536,38 @@ from the running session, and the status bar says *Temporary breakpoint on line
 N hit and removed.* A temporary breakpoint with a condition or a hit count is
 removed only when it actually stops the program. A logpoint never stops the
 program, so it is never removed.
+
+### Recording breakpoints
+
+A recording breakpoint keeps a stop instead of staying stopped. Each time it
+is hit, [Debug History](#debug-history) keeps that stop, with its call stack,
+the stopped frame's local values, your watches and the line's inline values,
+and the program goes on at once. The editor does not jump to the line, and the
+Debug console notes each one as *Recorded stop n:* followed by where it was.
+Afterwards, Back, Forward and Show Value History read the recorded stops as
+any other, so you can follow how a value changed over many passes of a loop
+without stepping through each one. This is what Visual Studio's tracepoints and
+IntelliJ's non-suspending breakpoints do, with the values kept instead of
+logged.
+
+**Debug: Toggle Recording Breakpoint** (`debug.toggleRecordingBreakpoint`, in
+**Run ▸ Debugger** and the editor's right-click menu) works on the caret line:
+
+- on a line without a breakpoint, it adds a recording one;
+- on a line with an ordinary breakpoint, it makes that breakpoint record,
+  keeping its condition and hit count;
+- on a line with a recording breakpoint, it removes it.
+
+In **Edit Breakpoint**, **Record and continue** turns any breakpoint into a
+recording one, or back. A recording breakpoint is drawn purple with a ring,
+and its hover says *Recorded in Debug History; the program goes on*. A
+condition or a hit count still decides when it records. A logpoint never stops
+the program, so it records nothing.
+
+A session records at most 500 stops. After that, a recording breakpoint stops
+the program as an ordinary one does, and the status bar says why. It also
+stops as usual when Debug History is turned off in **Settings → Debugging →
+History**, since there is nowhere to keep the stop.
 
 ### Lambda breakpoints
 
@@ -1750,6 +1808,50 @@ Pins are kept when no session runs, though they show only while the program is
 paused. They follow their line as you edit above it, are saved with the
 project's breakpoints, and come back on their line when the file opens again.
 
+### Debug History
+
+The Debug window keeps each stop of a session as it was shown: the call stack,
+the values you looked at in Variables, your watches, the inline values and the
+pinned values. After the program has run on, you can go back to an earlier
+stop and read them again. Editora keeps the stops itself and asks the debugger
+for nothing, so this works with every language's debugger.
+
+- **Back** and **Forward**, the ‹ and › buttons in the Debug window's toolbar
+  (or **Debug: Back** and **Debug: Forward**), go to the stop before or after
+  the one shown.
+- **Debug: Show History…** (`debug.showHistory`) lists the stops, each with
+  its number, time, why it stopped and where. Pick one to go back to it.
+
+![The Debug History list: Stop 7, breakpoint, main.checkout — shelf.go:46, then Stops 6 to 1, each a breakpoint in main.checkout at shelf.go:42, with the time of each stop](/screenshots/docs/debug-history-list.png "Debug: Show History… lists the stops of the session, newest first.")
+
+An earlier stop is shown read-only. A banner above the Debug window says which
+stop it is, when and where it stopped, and that the values are as they were
+then; its **Back to the live stop** button returns to the program as it is now.
+The stop's call stack and values fill the Debug window, values that changed
+since the stop before are [highlighted](#inspecting-values) as usual, and the
+editor marks the stop's line grey, with its inline and pinned values. Hovering
+a name evaluates nothing there. Forward from the last stop, a step, Continue or
+a new stop also return to the live stop.
+
+![shelf.go during a Go debug session, shown at stop 4 of 7: line 42, total += subtotal, is marked grey with its inline values, total: 19.919 and subtotal: 4.8; the Debug window below has the banner Stop 4 at 22:33:59, breakpoint: main.checkout (shelf.go:42). Values as they were then; the program has run on, with a Back to the live stop link, the call stack at main.checkout, Variables with the values that changed since stop 3 highlighted, and the console listing Recorded stop 1 to Recorded stop 6](/screenshots/docs/debug-history.png "An earlier stop, read back from Debug History: a recording breakpoint kept six stops while the program ran on.")
+
+Only values that were fetched while the stop was live are kept. A row nobody
+unfolded at that stop reads *(not opened at that stop)*, since its children
+were never asked for and the program has moved on.
+
+**Show Value History**, in the right-click menu of a Variables or Watches row,
+lists that row's value at every kept stop of the same frame and marks the ones
+that changed. Pick one to go back to that stop. At an earlier stop, the menu
+also has Copy Value and Copy Name, since nothing there can be changed.
+
+The stops are kept in memory only, never on disk. A session keeps 200 by
+default and forgets the oldest past that; **Stops kept** under **Settings →
+Debugging → History** sets it to Off, 50, 200, 1,000 or 5,000. A new session
+starts an empty history, but after the program ends you can still read the
+last session's stops until you start the next one.
+[Recording breakpoints](#recording-breakpoints) add stops to the history
+without stopping the program.
+
 ### Threads view
 
 The call stack shows one thread at a time, the one picked in the thread
@@ -1820,6 +1922,43 @@ turn it off or quit Editora. Switching does not mark every number as
 
 The debugger formats the numbers: the Java and Python debuggers do,
 JavaScript's does not, so a JavaScript program's numbers stay decimal.
+
+### Disassembly and Memory
+
+For C, C++, Rust and Go, the Debug window's third area shows the machine code
+and the memory of the program as well as its console, as VS Code, Visual
+Studio and IntelliJ do. Three toggles in the area's header switch between
+**Console**, **Disassembly** and **Memory**. **Debug: Show Disassembly**
+(`debug.showDisassembly`) and **Debug: Show Memory** (`debug.showMemory`), also
+in **Run ▸ Debugger**, open the Debug window on them. Both views need a
+debugger that offers them: CodeLLDB, which debugs Rust, C and C++, and Delve,
+which debugs Go, do. With another debugger, the view says it can't.
+
+**Disassembly** shows the machine instructions around the selected frame,
+about 120 of them, with their addresses. The instruction the frame is at is
+marked and selected, and each run of instructions is labelled with the source
+line it came from. Double-click an instruction to open its source line. The
+list is filled again at each stop and when you pick another frame in the call
+stack.
+
+![shelf.go paused on line 39 in a Go program, with the Debug window's Disassembly view open beside Variables: machine instructions such as CALL main.discountFor(SB) and MOVSD_XMM X0, 0x58(SP) with their addresses, runs labelled shelf.go:37, shelf.go:38 and shelf.go:39, and the instruction the frame is at highlighted](/screenshots/docs/debug-disassembly.png "The Disassembly view: the instructions around the stopped line, each run labelled with its source line.")
+
+While the Disassembly list has the keyboard, **Step Over** and **Step Into**
+step one instruction at a time instead of one line, as in VS Code's
+Disassembly view. **Debug: Step Over Instruction**
+(`debug.stepOverInstruction`) and **Debug: Step Into Instruction**
+(`debug.stepIntoInstruction`), in **Run ▸ Debugger**, do it from anywhere; Step
+Into Instruction follows a call into the called function. With a debugger that
+steps only by line, they say so in the status bar.
+
+**Memory** shows the program's memory as rows of 16 bytes: the address, the
+bytes in hexadecimal, and the same bytes as text. It reads 256 bytes at a time;
+the ◀ and ▶ buttons show the 256 bytes before or after. Type an address
+(`0x…`) or an expression, such as a variable's name, in its field and press
+Enter: an expression shows the memory where its value is. **View Memory**,
+in a variable's right-click menu in Variables, opens the view at that variable.
+Memory that can't be read, or an expression with no address, is said in the
+view.
 
 ### Keys in the Debug window
 
@@ -2070,18 +2209,223 @@ the same program or test again.
 - With [program input](#program-input-in-the-debug-console) on, Editora starts
   the program for CodeLLDB, so the program reads lines typed in the Debug
   console.
+- The [Disassembly and Memory views](#disassembly-and-memory) show the
+  program's machine code and memory, and step by instruction.
 
-Attaching to a Rust program that is already running isn't offered yet.
+[Attach to Process](#attach-to-process) attaches CodeLLDB to a Rust program
+that is already running, on Linux, when it was built with debug information.
+Stop leaves that program running.
 
-CodeLLDB isn't bundled. Editora finds it as set on the **Rust (CodeLLDB)** card
-of **Settings → Debugging** (the `codelldb` program, or the folder of an
-unpacked CodeLLDB extension), else in its own install, else in VS Code's
-CodeLLDB extension (`vadimcn.vscode-lldb`), else on the PATH. The card's
-**Install…** downloads CodeLLDB 1.12.3, the release tested with Editora, for
-Linux, macOS or Windows, checks its SHA-256 checksum, and unpacks it into your
-config folder. Cargo and Rust come from rustup; Editora doesn't install them.
-The card's switch, **Enable Rust debugging (CodeLLDB)**, is on by default, and
-the [Doctor](/docs/troubleshooting#doctor) checks for CodeLLDB.
+CodeLLDB isn't bundled. Editora finds it as set on the **Rust, C and C++
+(CodeLLDB)** card of **Settings → Debugging** (the `codelldb` program, or the
+folder of an unpacked CodeLLDB extension), else in its own install, else in
+VS Code's CodeLLDB extension (`vadimcn.vscode-lldb`), else on the PATH. The
+card's **Install…** downloads CodeLLDB 1.12.3, the release tested with Editora,
+for Linux, macOS or Windows, checks its SHA-256 checksum, and unpacks it into
+your config folder. Cargo and Rust come from rustup; Editora doesn't install
+them. The card's switch, **Enable Rust debugging (CodeLLDB)**, is on by
+default, and the [Doctor](/docs/troubleshooting#doctor) checks for CodeLLDB.
+
+### Debugging C and C++
+
+C and C++ are debugged with the same [CodeLLDB](#debugging-rust) as Rust, or
+with GDB if you choose it. **Debug: Start / Continue** (`debug.start`, F5) or
+**Debug File** in the editor's right-click menu builds the program first, in
+the Debug console, after Editora saves the project's edited C and C++ files:
+
+- **In a CMake project** (a `CMakeLists.txt` in the file's folder or above),
+  it configures a Debug build in `build/editora-debug` and builds it, then
+  debugs the program whose sources hold the file, else the project's only
+  program.
+- **In a Make project** (the nearest makefile above the file), it runs `make`
+  in that folder, then debugs the program it built: the one named after the
+  file, in the folder or in its `bin/` or `build/`, else the only one, else the
+  newest.
+- **A file outside a project** is compiled with `cc`, or `c++` for C++, with
+  `-g -O0`, into Editora's cache folder. A header outside a project says to
+  open its source file instead.
+
+CMake and Make run the project's own code, so the first build asks you to
+[trust the folder](/docs/workspace#trusted-folders), as Maven and Cargo do. A
+lone file compiled with `cc` asks nothing. A build that fails launches nothing.
+**Restart** builds again, and the arguments set by **File: Run with
+Arguments…** are passed to the program.
+
+- **Values:** `std::string` reads as its text, and `std::vector` and
+  `std::map` unfold to their items.
+- **A thrown C++ exception** stops the program where it was thrown: the
+  **C++: on throw** [exception breakpoint](#exception-breakpoints) is on by
+  default.
+- **Breakpoints**, **stepping**, **Watches**, the
+  [Threads view](#threads-view) and the
+  [Disassembly and Memory views](#disassembly-and-memory) work.
+
+[Attach to Process](#attach-to-process) lists running C and C++ programs built
+with debug information, on Linux, and attaches CodeLLDB to the one you pick.
+
+The **Rust, C and C++ (CodeLLDB)** card of **Settings → Debugging** has the
+switch **Enable C and C++ debugging (CodeLLDB)**, on by default, and **C and
+C++ debugger**, which picks **CodeLLDB** or **GDB**. GDB debugs through its own
+Debug Adapter Protocol mode (`gdb -i dap`), which needs GDB 14 or later. Editora
+finds `gdb` as set in **GDB path** on the same card, else on the PATH; without
+it, Debug says GDB was not found. GDB isn't installed by Editora.
+
+![The Rust, C and C++ (CodeLLDB) card of Settings → Debugging: Enable Rust debugging (CodeLLDB) on, Enable C and C++ debugging (CodeLLDB) on, C and C++ debugger set to CodeLLDB with the hint that GDB debugs through its own DAP mode (GDB 14 or later), an empty GDB path, an empty CodeLLDB (codelldb) path with Browse…, and Detected codelldb: found](/screenshots/docs/debug-settings-cpp.png "The Rust, C and C++ card: C and C++ can switch from CodeLLDB to GDB.")
+
+### Debugging C#
+
+C# is debugged with [netcoredbg](https://github.com/Samsung/netcoredbg), the
+open-source .NET debugger. **Debug: Start / Continue** (`debug.start`, F5) or
+**Debug File** in the editor's right-click menu builds the program with
+`dotnet build` in the Debug console, after Editora saves the project's edited
+C# files, then debugs it:
+
+- **In a project**, the nearest `.csproj` in the file's folder or above it (of
+  several, the one named after the folder) is built. MSBuild runs the
+  project's own build steps, so the first build asks you to
+  [trust the folder](/docs/workspace#trusted-folders).
+- **A lone `.cs` file** is built and debugged as a .NET 10 file-based app. No
+  trust is asked.
+
+The program runs on `dotnet` in the project's folder, with the arguments set by
+**File: Run with Arguments…**; its output reaches the Debug console. An
+exception your code does not handle stops it, as in Visual Studio: the **C#:
+user-unhandled exceptions** [exception breakpoint](#exception-breakpoints) is on
+by default, and **C#: all exceptions** stops on every throw.
+
+Debugging a test at the caret and attaching to a running .NET program aren't
+offered yet; a [launch.json](#launchjson-configurations) `coreclr` configuration
+can attach by process id.
+
+netcoredbg isn't bundled. Editora finds it as set on the **C# (netcoredbg)**
+card of **Settings → Debugging**, else in its own install, else in the free C#
+extension for VS Code-compatible editors (`muhammad-sammy.csharp`), else on the
+PATH. Microsoft's own C# extension ships a debugger licensed only for
+Microsoft's tools, so Editora doesn't use it. The card's **Install…** downloads
+netcoredbg 3.2.0-1092 and checks its SHA-256 checksum; Samsung builds none for
+Intel Macs. The .NET SDK isn't installed by Editora; it is found on the PATH
+and in `~/.dotnet`, where Microsoft's install script puts it.
+
+### Debugging Ruby
+
+Ruby is debugged with rdbg, the debugger of Ruby's `debug` gem, which Ruby 3.1
+and later ship. **Debug: Start / Continue** (`debug.start`, F5) or **Debug
+File** runs the file under rdbg with `ruby`, with the arguments set by **File:
+Run with Arguments…**, and stops at your breakpoints. The program's output
+reaches the Debug console. Ruby's
+[exception breakpoints](#exception-breakpoints), **Ruby: any raised exception**
+and **Ruby: RuntimeError**, are off by default, as in VS Code.
+
+Editora finds `rdbg` as set on the **Ruby (rdbg)** card of **Settings →
+Debugging**, else on the PATH, else in your own gem folders (such as
+`~/.local/share/gem/ruby/*/bin`). The card's **Install…** runs
+`gem install --user-install debug`, which puts it in your gem folder, since a
+system Ruby's own gem folder belongs to root.
+
+A [launch.json](#launchjson-configurations) `rdbg` configuration can also run a
+script under `bundle exec`, or attach to a program started with `rdbg --open`.
+
+### Debugging PHP
+
+PHP is debugged with [Xdebug](https://xdebug.org), through PHP Debug
+(vscode-php-debug), the adapter VS Code uses. **Debug: Start / Continue**
+(`debug.start`, F5) or **Debug File** starts `php` on the file with Xdebug
+turned on for that run, with the arguments set by **File: Run with
+Arguments…**, and stops at your breakpoints. The program's output reaches the
+Debug console. PHP's [exception breakpoints](#exception-breakpoints)
+(exceptions, errors, warnings, notices, deprecations, or everything) are off by
+default.
+
+PHP needs the Xdebug extension installed (on Debian and Ubuntu, the
+`php-xdebug` package), and the adapter runs on Node.js 20.18 or later. Editora
+finds PHP Debug as set on the **PHP (Xdebug)** card of **Settings → Debugging**
+(its `phpDebug.js`, or the folder of the unpacked extension), else in its own
+install, else in VS Code's PHP Debug extension (`xdebug.php-debug`). The card's
+**Install…** downloads PHP Debug 1.40.2. Editora doesn't install PHP or Xdebug.
+
+PHP has no Attach to Process: Xdebug connects to a debugger that listens for
+it. A [launch.json](#launchjson-configurations) `php` configuration without a
+`program`, VS Code's *Listen for Xdebug*, starts PHP Debug listening, and PHP
+run elsewhere, such as by a web server, with Xdebug set to connect to it stops
+at your breakpoints.
+
+### launch.json configurations
+
+**Debug: Start Configuration…** (`debug.startConfiguration`, in **Run ▸
+Debugger**) lists the configurations of the project's `.vscode/launch.json`, or
+of the nearest one above the active file, and starts the one you pick as VS
+Code would. Type to filter the list; the configuration you started last is
+listed first. With no `launch.json`, the status bar says so.
+
+| `type` | Debugger |
+| --- | --- |
+| `lldb` | CodeLLDB, for Rust, C or C++. Its `cargo` field runs Cargo first and debugs the program Cargo built |
+| `gdb` | GDB's own debug adapter mode (GDB 14 or later); attaches by `pid` |
+| `cppdbg` | GDB, or CodeLLDB when `MIMode` is `lldb`; attaches by `processId` |
+| `go` | Delve, with `exec` for a program you built yourself; `mode: remote` isn't supported |
+| `debugpy`, `python` | debugpy; an attach connects to its `connect` address |
+| `node`, `pwa-node` | vscode-js-debug; an attach connects to its `address` and `port` |
+| `java` | the Java debugger: `mainClass`, `projectName`, `args`, `vmArgs`, `cwd` and `env` |
+| `coreclr` | netcoredbg, `program` being the built assembly; attaches by `processId` |
+| `rdbg` | rdbg, with `useBundler` for `bundle exec`; an attach connects to a local `debugPort` |
+| `php` | PHP Debug; without a `program`, it listens for Xdebug |
+
+A [debug adapter of your own](#debug-adapters-of-your-own) is used by its
+`type` too. Any other type, such as C# Dev Kit's `dotnet`, is refused with a
+message.
+
+The file is read as VS Code reads it: comments and trailing commas are allowed,
+and a configuration's `linux`, `osx` and `windows` parts apply on that system.
+
+- **Variables:** `${workspaceFolder}`, `${file}` and the rest of the `${file…}`
+  family, `${relativeFile}`, `${lineNumber}`, `${selectedText}`, `${env:NAME}`,
+  `${userHome}` and `${pathSeparator}` are filled in. `${input:id}` asks for
+  its value once per start, as a list to pick from (`pickString`) or a prompt
+  (`promptString`), before anything runs. `${command:…}` and `${config:…}` name
+  VS Code's own commands and settings, so they are refused with a message.
+- **`preLaunchTask`:** a task of `.vscode/tasks.json` that is a `shell` or
+  `process` command runs first, in the Debug console. Any other kind of task,
+  or one with `dependsOn`, isn't run: the status bar says to run it yourself
+  first.
+
+### Debug adapters of your own
+
+Any program that speaks the Debug Adapter Protocol can debug in Editora, such
+as `lldb-dap` or a language's own debugger. **Debug: Edit Debug Adapters**
+(`debug.editCustomAdapters`, in **Run ▸ Debugger**) opens
+`debug-adapters.json` in your [config folder](/docs/configuration#config-directory),
+written with a commented example the first time. Each adapter says:
+
+- `type`: the name a launch.json configuration uses for it. It can't be one of
+  Editora's own types.
+- `command`: the program and its arguments, as a list.
+- `transport`: how Editora talks to it: `stdio` (the default), `port` (Editora
+  picks a free port and puts it where the command says `{port}`), or `announce`
+  (the adapter prints the port it listens on; `announce` is a pattern whose
+  first group is the port).
+- `languages`: the file types F5 debugs with it, such as `["zig"]`.
+- `name` and `adapterID`, optional.
+- `launch`: what F5 sends it, with VS Code's variables filled in. An adapter
+  without one is started only from a launch.json configuration.
+
+```json
+{
+  "adapters": [
+    {
+      "type": "lldb-dap",
+      "name": "LLDB (lldb-dap)",
+      "command": ["lldb-dap"],
+      "transport": "stdio",
+      "languages": ["zig"],
+      "launch": { "program": "${fileDirname}/${fileBasenameNoExtension}", "cwd": "${fileDirname}" }
+    }
+  ]
+}
+```
+
+A [trusted](/docs/workspace#trusted-folders) project can bring its own in
+`.editora/debug-adapters.json`; they replace yours of the same type. An entry
+that can't be read is named in the status bar, and the others still work.
 
 ### Debugging on a remote host
 
@@ -2144,8 +2488,12 @@ installs are three palette commands:
 The Java and Python cards on the **Settings → Debugging** page have the same
 **Install…** button; the JavaScript card's **Install…** installs only
 vscode-js-debug. The **Go (Delve)** card's **Install…** runs `go install` for
-Delve, and the **Rust (CodeLLDB)** card's downloads CodeLLDB; see
-[Debugging Go](#debugging-go) and [Debugging Rust](#debugging-rust). An install fetches only what is missing. When one tool's
+Delve, the **Rust, C and C++ (CodeLLDB)** card's downloads CodeLLDB, the **C#
+(netcoredbg)** card's downloads netcoredbg, the **Ruby (rdbg)** card's runs
+`gem install` for the debug gem, and the **PHP (Xdebug)** card's downloads PHP
+Debug; see [Debugging Go](#debugging-go), [Debugging Rust](#debugging-rust),
+[Debugging C#](#debugging-c), [Debugging Ruby](#debugging-ruby) and
+[Debugging PHP](#debugging-php). An install fetches only what is missing. When one tool's
 runtime is missing, the others still install and the status bar names the one
 that waits (debugpy installs without Node.js, for example). When Python has no
 `pip`, the error says so. After a debugger installs while debugging is off, the
@@ -2168,9 +2516,10 @@ script for each:
 Each card on **Settings → Debugging** has a **Detected** line, for example
 *debugpy: found (/usr/bin/python3)* (the interpreter that has debugpy) or
 *js-debug: not found*, also while that language's debugging is switched off.
-The Java, JavaScript, Go and Rust cards also have the adapter's path field with
-**Browse…**, and the Python, JavaScript, Go and Rust cards a switch that turns
-that language's debugging on or off. While **Enable debugging (DAP)** is off, the cards are greyed and
+The Java, JavaScript, Go, Rust, C#, Ruby and PHP cards also have the adapter's
+path field with **Browse…** (C and C++ use Rust's CodeLLDB path, or the **GDB
+path**), and every card but Java's a switch that turns that language's
+debugging on or off. While **Enable debugging (DAP)** is off, the cards are greyed and
 a note says to turn it on. Python has no path field there: debugpy runs under
 a Python interpreter, and the **Python interpreter (fallback for Run, Debug and
 code intelligence)** is on the Python card of **Settings → LSP**, which stays
@@ -2180,6 +2529,8 @@ interpreter cannot import it. A link at the top of the Debugging page leads
 there.
 
 ![The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed](/screenshots/docs/debug-settings-go-rust.png "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.")
+
+![The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button](/screenshots/docs/debug-settings-csharp-ruby-php.png "The C#, Ruby and PHP cards, before their debuggers are installed.")
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, Gradle, npm, Cargo, Go, sbt,

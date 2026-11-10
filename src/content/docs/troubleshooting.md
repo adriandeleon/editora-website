@@ -49,7 +49,7 @@ spirit of `flutter doctor`. It covers Git and the GitHub CLI (including whether
 `gh` is signed in), ripgrep, GnuPG and its passphrase prompt for encrypted
 files, the preview and diagram tools (`mmdc`, `maid`, Graphviz, PlantUML, the
 Typst CLI), every enabled language server, the Python formatter, ShellCheck and
-shfmt, a JavaScript project's ESLint, Prettier and Biome, the debug adapters (java-debug, debugpy, js-debug, Delve, CodeLLDB), the Run interpreters
+shfmt, a JavaScript project's ESLint, Prettier and Biome, the debug adapters (java-debug, debugpy, js-debug, Delve, CodeLLDB, netcoredbg, rdbg, PHP Debug), the Run interpreters
 (with a JDK 25 check for Java, and the Python interpreter and Node.js that Run,
 Debug and the language servers share), the Node.js for HTTP scripts, the build
 tools, the AI provider and agent, the container engine (and WSL on Windows),
