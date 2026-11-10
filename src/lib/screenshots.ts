@@ -487,6 +487,24 @@ const docsShots: Shot[] = [
     alt: "The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
+  shot("/screenshots/docs/debug-sessions.png", {
+    title: "Several debug sessions",
+    caption: "A program and one of its tests, each in a session of its own, with a tab for each in the Debug window.",
+    alt: "The Debug window with two Go sessions: tabs main.go · suspended and TestCheckoutTotals · suspended above the toolbar, Stop All at the right, and the test's session shown, paused at line 8 of shelf_test.go with lines and total in Variables",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-both-question.png", {
+    title: "Debug Both",
+    caption: "Debugging another file while a session runs asks first: Debug Both, Stop and Debug, or Cancel.",
+    alt: "The question Debug Another File?: main.go is being debugged. Debug shelf_test.go as well, in a session of its own, or stop main.go and debug shelf_test.go instead? with Stop and Debug, Cancel and Debug Both buttons",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-compounds.png", {
+    title: "Debug compounds",
+    caption: "A compound of two saved run configurations, made in Debug: Edit Compounds….",
+    alt: "The Compounds window: a compound named Server and worker on the left; on the right its Name, the list Run configurations to debug together with API server and Restock worker ticked and Web client and Price check not, Stopping one stops them all ticked, and Add, Remove, Debug and Close buttons",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
   shot("/screenshots/docs/trust-folder.png", {
     title: "Trusted folders",
     caption: "Before the first build in a folder, Editora lists what would run and asks.",
