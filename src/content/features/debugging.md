@@ -16,7 +16,8 @@ Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js)
 - **Disassembly and Memory** views for C, C++, Rust and Go, with **stepping by instruction**
 - A lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme, and **changed values highlighted** after each step
 - A **filter** for the Variables tree, **Go to Index** in a long list or array, and integers shown in **hexadecimal** on demand (Java and Python)
-- **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
+- **Evaluate expressions** as in IntelliJ IDEA: a field at the top of Variables whose result opens as a tree, non-modal **Evaluate windows**, and **Alt+click Quick Evaluate** in the editor; the fields are highlighted, take your keymap's keys, complete from the debugger and keep a history, and run code fragments of several lines
+- **Watches** that can be paused and evaluated once, and a console
 - A hover **value popup** that unfolds objects, arrays and collections as a tree
 - **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start)
 - An **exception card** under the line that threw: caught or uncaught, the type and message, the causes and stack trace when the debugger sends them (Python, JavaScript), with **Copy**; it never takes focus, and *Debug: Show Exception* opens it again
