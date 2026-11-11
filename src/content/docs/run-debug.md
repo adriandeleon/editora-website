@@ -876,6 +876,8 @@ script as it runs.
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
 | Attach to a program on this machine ([Attach to Process](#attach-to-process)) | `debug.attachToProcess` | (palette) |
 | Attach again to the last address | `debug.reattach` | `C-c C-d S-a` |
+| Open the [Evaluate window](#the-evaluate-window) | `debug.evaluate` | `C-c C-d x` |
+| Go to the [evaluate field](#the-evaluate-field-in-variables) in Variables | `debug.focusEvaluate` | (palette) |
 | Pin a value to the caret's line ([pinned values](#pinned-values)) | `debug.pinValue` | (palette) |
 | Unpin the values on the caret's line | `debug.unpinLine` | (palette) |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
@@ -911,7 +913,8 @@ it is also in **Run ▸ Debugger** and, while the program is paused, in the
 editor's right-click menu.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
-**set-value**, **watches**, and an evaluate console. While suspended, **inline
+**set-value**, **watches**, an [evaluate field](#evaluating-expressions) and a
+console. While suspended, **inline
 values** appear after each line and hovering a variable shows its value.
 Hovering an attribute shows the whole expression: the `x` of `p.x` shows
 `p.x`, not a variable named `x`. Hovering stops at a call or an index, so it
@@ -1200,6 +1203,9 @@ The field does one of two things, and its prompt says which:
 - While the program **runs**, Enter sends the line to the program (an empty
   line counts).
 - While it is **paused**, Enter evaluates an expression.
+
+The field takes your keymap's editing keys, as the
+[evaluate fields](#typing-an-expression) do.
 
 End the input with `Ctrl+D` in the field, the console's right-click menu, or
 *Debug: End Program Input (EOF)* (`debug.endProgramInput`).
@@ -1531,7 +1537,8 @@ line that starts a lambda, the menu also has **Stop on the Line** and
 editor's right-click menu has Toggle Breakpoint, Edit Breakpoint, Toggle
 Temporary Breakpoint and Toggle Recording Breakpoint, Toggle Lambda Breakpoint on a Java line that starts a
 lambda, and while the program is paused also Run to Cursor,
-[Force Run to Cursor](#debugging), Show Value at Caret and Add to Watches.
+[Force Run to Cursor](#debugging), Show Value at Caret,
+[Evaluate Expression](#the-evaluate-window) and Add to Watches.
 
 A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
@@ -1770,12 +1777,8 @@ which adds the row's whole expression, such as `order.items`, **Set Value…**,
 [Go to Index…](#long-lists-and-arrays) on a long list or array, in Java
 [Break When Value Changes](#method-breakpoints-and-field-watchpoints) on a
 field, and **Show Numbers as Hexadecimal**. Ctrl+C (⌘C on
-macOS) copies the selected value, and Delete removes the selected watch. In
-the evaluate field, Up and Down bring back the expressions you typed before.
-An expression that throws says what it threw, such as *The expression threw
-NullPointerException in length()*. After an evaluation, Variables, watches and
-inline values are fetched again, so an assignment such as `count = 5` in the
-console shows at once.
+macOS) copies the selected value, and Delete removes the selected
+[watch](#watches) or evaluate result.
 
 In Java, **Set Value…** sets a number, boolean, character or String directly,
 and an `Integer`, a record or an enum variable by assigning what you type as an
@@ -1799,13 +1802,14 @@ so: wait, or press Stop. **Show toString() values** on the Java card of
 **Settings → Debugging** (on by default) turns these calls off: objects then
 read `Type@id`, from the next debug session.
 
-While the program is paused, **completion** works in the Debug console's
-evaluate field, the Add Watch and Edit Watch prompts, and a breakpoint's
-condition and log message. Press Ctrl+Space, or type `.`, to list what the
-debugger can complete in the stopped frame. Keep typing to narrow the list, use
-Up and Down to move in it, Enter or Tab to insert the selected item, and Esc to
-close it. In the evaluate field, Enter inserts the item and does not evaluate
-yet. In a log message, only the `{expression}` part at the caret is completed.
+While the program is paused, **completion** works in the
+[evaluate field](#the-evaluate-field-in-variables) over Variables, the
+[Evaluate window](#the-evaluate-window), the Debug console's input field, the
+Add Watch and Edit Watch prompts, and a breakpoint's condition and log message.
+Press Ctrl+Space, or type `.`, to list what the debugger can complete in the
+stopped frame. Keep typing to narrow the list, use Up and Down to move in it,
+Enter or Tab to insert the selected item, and Esc to close it. In a field that
+evaluates, Enter inserts the item and does not evaluate yet. In a log message, only the `{expression}` part at the caret is completed.
 When the program is not paused, Ctrl+Space says under the field that
 completion needs a pause. A breakpoint's condition is completed against the
 frame the program is stopped in, not the breakpoint's own line.
@@ -1834,6 +1838,112 @@ Thread "main"
 ```
 
 A frame without a source file is copied with its name only.
+
+### Evaluating expressions
+
+While the program is paused, an expression can be evaluated in the frame
+selected in the call stack, as in IntelliJ IDEA: in the field at the top of
+Variables, in an Evaluate window, or with Alt+click in the editor. An
+expression may call a method, such as `items.add(7)`, and the call runs in
+your program. After an evaluation, Variables, watches and inline values are
+fetched again, so an assignment such as `count = 5` shows at once. An
+expression that throws says what it threw, such as *The expression threw
+NullPointerException in length()*.
+
+Expressions are evaluated only at a stop. While you look at an earlier stop in
+[Debug History](#debug-history), the fields say to go back to the live stop
+first. A step pressed while an evaluation runs is refused, and the status bar
+says why.
+
+#### The evaluate field in Variables
+
+The Debug window's Variables start with an evaluate field. Type an expression
+and press Enter: its result is the first row of the tree, and an object, list
+or map opens under it, a row per field or element. Those rows work like any
+other Variables row, with **Set Value…**, **Copy Value**, **Copy Name** and
+**Add to Watches** in their right-click menu. The result stays until the
+program moves on; **Clear Result**, in the result row's menu, or Delete on it,
+removes it sooner.
+
+The button beside the field adds the expression to [Watches](#watches), so you
+can follow it at every stop. **Debug: Focus Evaluate Field**
+(`debug.focusEvaluate`) puts the keyboard in the field from anywhere.
+
+#### The Evaluate window
+
+**Debug: Evaluate Expression** (`debug.evaluate`: Alt+F8 in the IntelliJ IDEA
+keymap, `C-c C-d x` in Emacs, and in the editor's right-click menu while the
+program is paused) opens an **Evaluate** window. It opens with the selection,
+or the expression at the caret, ready to evaluate or to type over. The window
+is not modal: keep it beside the editor while you step, or open several at
+once, each with its own expression.
+
+Enter, or the **Evaluate** button, shows the result below as a tree, which
+opens like the one in Variables, with Copy Value, Copy Name and Add to Watches
+on its rows. A failure shows the debugger's reason in its place. The line
+beside the buttons, *Evaluates in …*, names the frame the window evaluates in,
+with its line and file. While the program runs, the line says it is not paused and Evaluate is
+greyed out. **Add to Watches** adds the expression to Watches, and the
+History button beside the field lists your last expressions; pick one to put it
+back in the field. Esc or **Close** closes the window. After the program moves
+on, the last result can still be read but not unfolded; evaluate again for the
+new stop.
+
+Before, *Debug: Evaluate Expression* went to the Debug console's input field;
+use [Focus Evaluate Field](#the-evaluate-field-in-variables) for a field in the
+Debug window.
+
+#### Typing an expression
+
+The evaluate field and the Evaluate window's field are small code editors:
+
+- They are **highlighted** in the language the program is stopped in.
+- They take your **keymap's** motion and editing keys. In the Emacs keymap
+  that is `C-a` and `C-e`, `M-f` and `M-b`, `C-d`, `C-k`, `M-d`, `M-DEL`,
+  `C-w`, `M-w` and `C-y`, and `C-/` to undo.
+- **Completion** lists what the debugger can complete: press Ctrl+Space, or
+  type `.` (see [completion](#inspecting-values)).
+- They share one **history**, kept between sessions. Up and Down bring back
+  the expressions you evaluated before; in Emacs, `C-p` and `C-n` do too at the
+  first and last line, and so do `M-p` and `M-n`.
+- **Shift+Enter**, or the expand button beside the field, turns it into a code
+  fragment of several lines, where Enter starts a new line and **Ctrl+Enter**
+  evaluates.
+
+Java and JavaScript give a fragment's value: `int x = 2; return x * 3;` in
+Java, or `let x = 2; x * 3` in JavaScript, shows 6. Python runs a fragment but
+shows no value; evaluate an expression on its own to see one.
+
+#### Quick Evaluate
+
+While the program is paused, **Alt+click** an expression in the editor to
+evaluate it at once. Clicking a name evaluates it with the names before it, as
+hovering does: `order.total` for the `total` of `order.total`, and `order`
+alone for `order`. Clicking a method's name includes the call and its
+arguments, so on `get` in `list.get(i + 1)` it runs `list.get(i + 1)`, which
+hovering never does. Alt+click inside a selection evaluates the selection
+instead. The value shows in the same
+popup as a [hover](#inspecting-values), as a tree for an object, and an
+expression that fails shows the debugger's reason. Unlike hovering, Quick
+Evaluate runs code, so a call it evaluates has its effects.
+
+### Watches
+
+A watch is an expression evaluated at every stop and listed under **Watches**
+in Variables. Add one with **Add to Watches** in a Variables row's menu, the
+button beside the [evaluate field](#the-evaluate-field-in-variables), the
+Evaluate window, the editor's right-click menu while paused, or
+*Debug: Add Watch* (`C-c C-d w`). Delete removes the selected watch.
+
+A watch row's right-click menu has:
+
+- **Pause Watch**: the watch stays listed, marked *(paused)*, but is not
+  evaluated at each stop. Use it for an expression that is slow or that you
+  need only now and then. **Resume Watch** evaluates it again at every stop.
+  A paused watch stays paused in later sessions.
+- **Evaluate Once**, on a paused watch while the program is paused: evaluates
+  it for the stop shown, and it stays paused.
+- **Remove All Watches**, also on the Watches heading: removes every watch.
 
 ### Pinned values
 
@@ -2041,7 +2151,8 @@ gdb:
 | Shift+R | Restart |
 
 Stop and Restart need Shift, so a stray `k` or `r` typed in a list does nothing
-to the program. The keys don't apply while you type in the evaluate field.
+to the program. The keys don't apply while you type in the evaluate field or
+the console's input field.
 Stepping keeps the focus in the Debug window, so you can step again and again.
 A toolbar button's tooltip shows both its key in your keymap and its key in the
 Debug window, for example "Step Over (F10 · in this window: N)".

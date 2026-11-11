@@ -84,8 +84,12 @@ on macOS), Shift+F7 Smart Step Into and Ctrl+F9 Apply Code Changes to its usual
 debugger keys.
 
 Some debugger keys are the same in every keymap. While the program is paused,
-Ctrl+Space completes an expression in the evaluate field, a watch prompt and a
-breakpoint's condition and log message, and typing `.` opens the same list.
+Ctrl+Space completes an expression in the evaluate field, the Evaluate window,
+a watch prompt and a breakpoint's condition and log message, and typing `.`
+opens the same list. In the evaluate fields, Shift+Enter starts a fragment of
+several lines, which Ctrl+Enter evaluates; your keymap's own editing keys work
+there too. Alt+click on an expression in the editor evaluates it
+([Quick Evaluate](/docs/run-debug#quick-evaluate)).
 In the value popup of Show Value at Caret, the arrow keys move and unfold,
 Enter unfolds a row or loads the next page, Shift+Enter adds the row to
 Watches, Ctrl+C (⌘C on macOS) copies its value and Esc closes the popup. See
