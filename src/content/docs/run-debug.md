@@ -864,6 +864,7 @@ script as it runs.
 | Toggle field watchpoint (Java) | `debug.toggleFieldWatchpoint` | `C-c C-d S-w` |
 | Toggle [lambda breakpoint](#lambda-breakpoints) (Java, JavaScript, TypeScript) | `debug.toggleLambdaBreakpoint` | `C-c C-d S-l` |
 | Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
+| Add a [logpoint](#logpoints) | `debug.addLogpoint` | `C-c C-d g` |
 | Add a [triggered breakpoint](#triggered-breakpoints) that waits for another | `debug.addTriggeredBreakpoint` | (palette) |
 | Put the caret line's breakpoint in a [group](#breakpoint-groups) | `debug.moveBreakpointToGroup` | (palette) |
 | Turn a group's breakpoints on or off | `debug.toggleBreakpointGroup` | (palette) |
@@ -901,7 +902,7 @@ buttons in the Debug window, and most debugger actions are in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Attach to
 Process, Reattach, Stop, Stop All, Restart and Toggle Breakpoint. Start
 Configuration, Start Compound, Edit Compounds, stepping (by line or by instruction), evaluate, watches, pinned values,
-hexadecimal values, Debug History, breakpoints (with triggered breakpoints,
+hexadecimal values, Debug History, breakpoints (with logpoints, triggered breakpoints,
 groups, and export and import), the Threads, Loaded Sources, Modules,
 Disassembly and Memory views, Edit Debug Adapters, exception breakpoints and Show Exception are
 in its **Debugger** submenu (**Run ▸ Debugger**).
@@ -934,7 +935,7 @@ italics instead.
 
 Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
-message** (which turns it into a logpoint that logs and never suspends), an
+message** (which turns it into a [logpoint](#logpoints) that logs and never suspends), an
 **Enabled** toggle, **Remove once hit**, which makes it a
 [temporary breakpoint](#temporary-breakpoints), **Record and continue**,
 which makes it a [recording breakpoint](#recording-breakpoints), **Wait for**,
@@ -1564,7 +1565,8 @@ paused, the editor's menu also has Run to Cursor,
 [Force Run to Cursor](#debugging), Show Value at Caret,
 [Evaluate Expression](#the-evaluate-window) and Add to Watches.
 
-A breakpoint can't be set on a blank line or on a line that holds only a
+Click the gutter strip to toggle a breakpoint; Shift+click it to add a
+[logpoint](#logpoints). A breakpoint can't be set on a blank line or on a line that holds only a
 comment; the status bar says so. Removing one is always possible. A line with
 only a closing `}` takes a breakpoint.
 
@@ -1606,6 +1608,43 @@ java.lang.IllegalStateException). Left blank, both stop on every exception.
 At an exception stop, the line that threw is drawn red, the
 [exception card](#exception-card) opens under it, and the exception's type and
 message are the top row of Variables.
+
+### Logpoints
+
+A logpoint logs a message each time its line runs, and the program goes on
+without stopping, like a `print` you don't have to add to the code and remove
+again. IntelliJ IDEA calls these non-suspending breakpoints with a log message,
+and VS Code calls them logpoints.
+
+To add one in a single step, **Shift+click** the breakpoint gutter on the line,
+as in IntelliJ, or run **Debug: Add Logpoint…** (`debug.addLogpoint`;
+`C-c C-d g` in the Emacs keymap) on the caret line. It is also in the editor's
+right-click **Breakpoints** submenu and in **Run ▸ Debugger**. A small form,
+*Add Logpoint* with the file and line in its title, asks only for the
+**Log message**. Put an expression in braces to include its value:
+`{item.name}: total = {total}`. While the program is paused, the field completes
+the `{expression}` at the caret, as the full
+[Edit Breakpoint](#debugging) form does.
+
+![The Add Logpoint — shelf.js:13 form over the editor: the line's code total += subtotal; above a Log message field holding {item.name}: total = {total}, a hint that it is logged each time the line runs and the program does not suspend, and Cancel and OK buttons](/screenshots/docs/debug-add-logpoint.png "Add Logpoint asks only for the message; braces include a value.")
+
+OK makes the line a logpoint, drawn as a blue diamond, and the status bar says
+it logs and never suspends. OK is greyed out while the message is blank, so the
+form never leaves a breakpoint that stops the program; Cancel adds nothing.
+On a line that already has a breakpoint, the form opens with its current
+message, and OK changes only the message: its condition and hit count stay.
+A line with no code is refused, as for a breakpoint. A plain click on the
+gutter still toggles an ordinary breakpoint.
+
+Each time the line runs, the message, with the values filled in, appears in
+the Debug window's console. A condition or a hit count, set in
+**Edit Breakpoint**, decides which runs of the line log.
+
+![A JavaScript session paused on line 20 of shelf.js, the logpoint's blue diamond on line 13, and the Debug window's console showing four logged lines: 'Pencil': total = 0, 'Notebook': total = 4.800000000000001, 'Stapler': total = 13.05 and 'Marker': total = 21.950000000000003](/screenshots/docs/debug-logpoint-console.png "Each pass through the loop logs a line in the console; the program never stopped there.")
+
+Not every debugger supports logpoints. The Groovy, Kotlin and Scala debuggers
+don't yet (see their sections below). netcoredbg, the C# debugger, doesn't
+either, so in C# a logpoint stops the program like a plain breakpoint.
 
 ### Temporary breakpoints
 
@@ -2334,6 +2373,8 @@ first. Each row shows what the debugger says of it: whether its symbols are
 loaded, its version, whether it is your code or optimized, its address range,
 and its path. Enter or Alt+C copies the module's path.
 
+![The Debug: Modules… list over a C# session paused in Checkout.cs: Shelf.dll first with Symbols loaded. and its path in the project's bin/Debug/net10.0 folder, then System.Collections.dll, System.Console.dll, System.Linq.dll, System.Private.CoreLib.dll, System.Runtime.dll and System.Runtime.InteropServices.dll, each with Symbols not found. and its path in the .NET shared runtime](/screenshots/docs/debug-modules.png "Modules in a C# session: the program's own assembly first, with its symbols loaded, then the .NET assemblies it uses.")
+
 Which list a debugger fills:
 
 | Debugger | Loaded Sources | Modules |
@@ -2702,6 +2743,9 @@ The program runs on `dotnet` in the project's folder, with the arguments set by
 exception your code does not handle stops it, as in Visual Studio: the **C#:
 user-unhandled exceptions** [exception breakpoint](#exception-breakpoints) is on
 by default, and **C#: all exceptions** stops on every throw.
+
+netcoredbg doesn't support [logpoints](#logpoints): in C#, a logpoint stops
+the program as a plain breakpoint does, and its message isn't logged.
 
 Debugging a test at the caret and attaching to a running .NET program aren't
 offered yet; a [launch.json](#launchjson-configurations) `coreclr` configuration

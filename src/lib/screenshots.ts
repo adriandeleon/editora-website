@@ -517,10 +517,28 @@ const docsShots: Shot[] = [
     alt: "The Breakpoints list: shelf.js:12 and shelf.js:13 disabled in group checkout, and shelf.js:21 waiting until shelf.js:12 is hit, in group report",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
+  shot("/screenshots/docs/debug-add-logpoint.png", {
+    title: "Add Logpoint",
+    caption: "Shift+click the gutter or run Add Logpoint: the form asks only for the message, and braces include a value.",
+    alt: "The Add Logpoint form for shelf.js line 13: the line's code above a Log message field holding {item.name}: total = {total}, a hint that the program does not suspend, and Cancel and OK",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-logpoint-console.png", {
+    title: "Logpoint output",
+    caption: "A logpoint logs a line in the Debug console on every pass and never stops the program.",
+    alt: "A paused JavaScript session with a logpoint's blue diamond on line 13 of shelf.js and the Debug console listing one logged line per item, from Pencil: total = 0 to Marker",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
   shot("/screenshots/docs/debug-loaded-sources.png", {
     title: "Loaded Sources",
     caption: "The scripts a Node.js program has loaded: the project's file first, then Node.js's own modules, read-only.",
     alt: "The Debug: Loaded Sources… list over a paused JavaScript session: shelf.js marked project folder, then <node_internals> modules marked read-only, from the debugger",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-modules.png", {
+    title: "Modules",
+    caption: "The assemblies a C# program has loaded: its own first with symbols loaded, then the .NET runtime's.",
+    alt: "The Debug: Modules… list over a paused C# session: Shelf.dll with Symbols loaded, then System.Collections.dll, System.Console.dll, System.Linq.dll and other .NET assemblies with Symbols not found, each with its path",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
   shot("/screenshots/docs/debug-eval-source.png", {

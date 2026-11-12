@@ -786,6 +786,7 @@ export const commandGroups: CmdGroup[] = [
   {
     title: "Debugging",
     commands: [
+      { title: "Debug: Add Logpoint…", id: "debug.addLogpoint", keys: "C-c C-d g", bindings: { "emacs": "C-c C-d g" }, mac: { "emacs": "C-c C-d g" }, desc: "Make the caret line a logpoint: it logs a message each time the line runs and the program never suspends." },
       { title: "Debug: Add Triggered Breakpoint…", id: "debug.addTriggeredBreakpoint", desc: "A breakpoint on the caret line that waits, in each debug session, until another breakpoint is hit; from then on it stops like any other." },
       { title: "Debug: Add Watch", id: "debug.addWatch", keys: "C-c C-d w", bindings: { "emacs": "C-c C-d w" }, mac: { "emacs": "C-c C-d w" }, desc: "Add a watch expression evaluated at each stop." },
       { title: "Debug: Apply Code Changes", id: "debug.applyCodeChanges", keys: "C-c C-d h", bindings: { "emacs": "C-c C-d h", "intellij": "C-f9" }, mac: { "emacs": "C-c C-d h", "intellij": "Cmd-f9" }, desc: "Load the saved Java changes into the running program (hot code replace), without restarting it." },
