@@ -1642,9 +1642,11 @@ the Debug window's console. A condition or a hit count, set in
 
 ![A JavaScript session paused on line 20 of shelf.js, the logpoint's blue diamond on line 13, and the Debug window's console showing four logged lines: 'Pencil': total = 0, 'Notebook': total = 4.800000000000001, 'Stapler': total = 13.05 and 'Marker': total = 21.950000000000003](/screenshots/docs/debug-logpoint-console.png "Each pass through the loop logs a line in the console; the program never stopped there.")
 
-Not every debugger supports logpoints. The Groovy, Kotlin and Scala debuggers
-don't yet (see their sections below). netcoredbg, the C# debugger, doesn't
-either, so in C# a logpoint stops the program like a plain breakpoint.
+The Groovy, Kotlin and Scala debuggers don't support logpoints yet (see their
+sections below). netcoredbg, the C# debugger, can't log them itself, so
+Editora does: the program pauses on the line for a moment while Editora logs the
+message, then goes on. The editor doesn't jump to the line, and the pause isn't
+kept in [Debug History](#debug-history).
 
 ### Temporary breakpoints
 
@@ -2744,8 +2746,8 @@ exception your code does not handle stops it, as in Visual Studio: the **C#:
 user-unhandled exceptions** [exception breakpoint](#exception-breakpoints) is on
 by default, and **C#: all exceptions** stops on every throw.
 
-netcoredbg doesn't support [logpoints](#logpoints): in C#, a logpoint stops
-the program as a plain breakpoint does, and its message isn't logged.
+netcoredbg can't log [logpoints](#logpoints) itself, so Editora logs their
+messages for it.
 
 Debugging a test at the caret and attaching to a running .NET program aren't
 offered yet; a [launch.json](#launchjson-configurations) `coreclr` configuration
