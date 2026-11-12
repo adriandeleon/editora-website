@@ -899,13 +899,20 @@ script as it runs.
 The keys are the Emacs keymap's; the other keymaps' keys are listed under
 [Debugger keys](/docs/keymaps#debugger-keys). The step commands are also
 buttons in the Debug window, and most debugger actions are in the **Run** menu.
-Its top level has Start / Continue, Debug Main Class, Attach, Attach to
-Process, Reattach, Stop, Stop All, Restart and Toggle Breakpoint. Start
-Configuration, Start Compound, Edit Compounds, stepping (by line or by instruction), evaluate, watches, pinned values,
-hexadecimal values, Debug History, breakpoints (with logpoints, triggered breakpoints,
-groups, and export and import), the Threads, Loaded Sources, Modules,
-Disassembly and Memory views, Edit Debug Adapters, exception breakpoints and Show Exception are
-in its **Debugger** submenu (**Run ▸ Debugger**).
+Its top level has Start / Continue, Debug Main Class, Attach, Stop, Stop All
+and Restart. The rest is in four submenus:
+
+- **Launch and Attach**: Run and Debug Selected Configuration, Start
+  Configuration, Start Compound, Edit Compounds, Attach to Process, Reattach,
+  Debug in Browser and Attach to Browser.
+- **Stepping**: Pause, stepping by line or by instruction, Run to Cursor, Force
+  Run to Cursor and Restart Frame.
+- **Breakpoints**: Toggle Breakpoint and the other kinds of breakpoint (with
+  logpoints and triggered breakpoints), Edit Breakpoint, the breakpoint list,
+  groups, export and import, Mute Breakpoints and the exception breakpoints.
+- **Debugger**: Apply Code Changes, evaluate, watches, pinned values,
+  hexadecimal values, Show Exception, Debug History, the Threads, Loaded
+  Sources, Modules, Disassembly and Memory views, and Edit Debug Adapters.
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -916,7 +923,7 @@ breakpoint or logpoint on the way stops it, in any file. Exception breakpoints
 still stop the program. The breakpoints are back at the next stop, wherever
 that is: the caret line, an exception, or Pause. Its keys are `C-c C-d S-u` in
 the Emacs keymap and Ctrl+Alt+F9 (⌥⌘F9 on macOS) in the IntelliJ IDEA keymap;
-it is also in **Run ▸ Debugger** and, while the program is paused, in the
+it is also in **Run ▸ Stepping** and, while the program is paused, in the
 editor's right-click menu.
 
 The Debug window has a threads and call-stack view, a lazy variables tree with
@@ -1095,8 +1102,8 @@ exception, the status bar says so.
 
 ### Attach to Process
 
-**Debug: Attach to Process…** (`debug.attachToProcess`, in the **Run** menu
-under Attach) lists the Java, Node.js, Python, Go, Rust, C and C++ programs
+**Debug: Attach to Process…** (`debug.attachToProcess`, in **Run ▸ Launch and
+Attach**) lists the Java, Node.js, Python, Go, Rust, C and C++ programs
 running on this machine under your user, so you can attach to one without typing its address.
 It is also the last row, *A program on this machine…*, of the
 [Attach list](#starting-a-java-session) a Java file shows once the project has
@@ -1358,8 +1365,8 @@ listening on it.
 
 **Debug: Reattach** (`debug.reattach`, `C-c C-d S-a`) attaches again to the
 address this project attached to last, without asking. Before the first attach,
-the status bar says to use Attach to Running Program. Reattach is in the
-**Run** menu, under Attach.
+the status bar says to use Attach to Running Program. Reattach is in
+**Run ▸ Launch and Attach**.
 
 When Java debugging can't start, the status bar names the missing
 piece: LSP is off, the Java language server is turned off, or jdtls or
@@ -1378,14 +1385,14 @@ When you step into JDK or library code anyway, or click such a frame in the
 call stack, its source opens in a read-only tab. A stop at a breakpoint, a
 Pause or an exception still selects the nearest frame of your own code.
 
-**Debug: Smart Step Into…** (`C-c C-d s`, also in Run ▸ Debugger) lists the
+**Debug: Smart Step Into…** (`C-c C-d s`, also in Run ▸ Stepping) lists the
 calls on the current line in the order they run, for example `twice(1)`,
 `twice(2)` and `add(twice(1), twice(2))`. Pick one to step into it. On a line
 with a single call it steps straight in. The list closes when the program runs
 on.
 
 **Debug: Restart Frame** (`C-c C-d f`, the call stack's right-click menu, or
-Run ▸ Debugger) runs the method of the selected frame again from its first line
+Run ▸ Stepping) runs the method of the selected frame again from its first line
 and pauses there. It is greyed out on the bottom frame.
 
 If the connection to the debugger is lost, Editora ends the program at once and
@@ -1588,15 +1595,15 @@ removing it, until you run it again. It also stops exception breakpoints from
 stopping the program; your caught and uncaught choices come back when you turn
 it off. While breakpoints are muted, every glyph is faded, a glyph's hover says
 that none of them stops the program, Mute Breakpoints is checked in
-Run ▸ Debugger, and the Debug window's state line says "breakpoints muted".
+Run ▸ Breakpoints, and the Debug window's state line says "breakpoints muted".
 Editora keeps the choice for each project, so a muted project is still muted
 when you open it again. **Debug: Enable / Disable Breakpoint** (`C-c C-d t`)
 switches the breakpoint on the caret line. These commands are in
-**Run ▸ Debugger**.
+**Run ▸ Breakpoints**.
 
 **Debug: Break on Caught Exceptions** stops wherever an exception is thrown,
 even one the program catches. **Debug: Break on Uncaught Exceptions** stops on
-an exception that nothing catches. Both are in Run ▸ Debugger, checked when on,
+an exception that nothing catches. Both are in Run ▸ Breakpoints, checked when on,
 and in the menu of the ⚠ button in the Debug window's toolbar. While either is
 on, the ⚠ is drawn in the accent colour, and its tooltip says which are on.
 They act on the running session's language, or else on the active file's, and
@@ -1619,7 +1626,7 @@ and VS Code calls them logpoints.
 To add one in a single step, **Shift+click** the breakpoint gutter on the line,
 as in IntelliJ, or run **Debug: Add Logpoint…** (`debug.addLogpoint`;
 `C-c C-d g` in the Emacs keymap) on the caret line. It is also in the editor's
-right-click **Breakpoints** submenu and in **Run ▸ Debugger**. A small form,
+right-click **Breakpoints** submenu and in **Run ▸ Breakpoints**. A small form,
 *Add Logpoint* with the file and line in its title, asks only for the
 **Log message**. Put an expression in braces to include its value:
 `{item.name}: total = {total}`. While the program is paused, the field completes
@@ -1658,7 +1665,7 @@ on the caret line:
   keeping its condition and hit count;
 - on a line with a temporary breakpoint, it removes it.
 
-The command is also in **Run ▸ Debugger** and the editor's right-click
+The command is also in **Run ▸ Breakpoints** and the editor's right-click
 **Breakpoints** submenu. In **Edit Breakpoint**, **Remove once hit** turns any breakpoint into a
 temporary one, or back.
 
@@ -1684,7 +1691,7 @@ IntelliJ's non-suspending breakpoints do, with the values kept instead of
 logged.
 
 **Debug: Toggle Recording Breakpoint** (`debug.toggleRecordingBreakpoint`, in
-**Run ▸ Debugger** and the editor's right-click **Breakpoints** submenu) works
+**Run ▸ Breakpoints** and the editor's right-click **Breakpoints** submenu) works
 on the caret line:
 
 - on a line without a breakpoint, it adds a recording one;
@@ -1722,7 +1729,7 @@ for already is ticked, and choosing it again makes the breakpoint stop as
 usual. The list leaves out any breakpoint that waits, directly or through
 others, for this one, so two breakpoints never wait for each other. With no
 other breakpoint to wait for, the status bar says to set that one first. The
-command is in the palette, **Run ▸ Debugger**, the editor's right-click
+command is in the palette, **Run ▸ Breakpoints**, the editor's right-click
 **Breakpoints** submenu and a breakpoint's gutter menu. In **Edit
 Breakpoint**, the **Wait for** field does the same; choose *No other
 breakpoint* to stop waiting.
@@ -1753,7 +1760,7 @@ program, can stay set while you work on something else.
 
 **Debug: Move Breakpoint to Group…** (`debug.moveBreakpointToGroup`) asks for
 the group of the caret line's breakpoint: pick one of the groups there are,
-type a new name, or leave it blank for none. It is in **Run ▸ Debugger**, the
+type a new name, or leave it blank for none. It is in **Run ▸ Breakpoints**, the
 editor's right-click **Breakpoints** submenu and a breakpoint's gutter menu. On
 a line without a breakpoint, the status bar says so. In **Edit Breakpoint**,
 the **Group** field does the same.
@@ -1792,7 +1799,7 @@ set, 0 in files not found.* A running session gets the imported breakpoints at
 once, in open files and closed ones. A file that isn't an Editora breakpoints
 file, or one written by a newer Editora, is refused, and nothing is imported.
 
-Both commands are in **Run ▸ Debugger** and the palette.
+Both commands are in **Run ▸ Breakpoints** and the palette.
 
 ### Lambda breakpoints
 
@@ -1809,7 +1816,7 @@ breakpoint that stops inside the lambda the caret is in, or the first one on
 the caret's line, each time its body runs, with the lambda's parameters in
 Variables. Its keys are Shift+F9 (⇧F9 on macOS) in the VS Code, CUA and Sublime
 Text keymaps and `C-c C-d S-l` in the Emacs keymap. It is in
-**Run ▸ Debugger**, and in the editor's right-click **Breakpoints** submenu on
+**Run ▸ Breakpoints**, and in the editor's right-click **Breakpoints** submenu on
 a line that starts a lambda.
 
 - On a line without a breakpoint, it adds one that stops only in that lambda.
@@ -1861,7 +1868,7 @@ not the method in a subclass. **Debug: Toggle Field Watchpoint**
 (`debug.toggleFieldWatchpoint`, `C-c C-d S-w`) stops the program when the
 field declared on the caret line is assigned, in any instance of the class.
 Run either again on the same method or field to remove it; the status bar says
-what was added or removed. Both are in **Run ▸ Debugger**. The IntelliJ IDEA
+what was added or removed. Both are in **Run ▸ Breakpoints**. The IntelliJ IDEA
 keymap has no keys for them.
 
 Away from a method or field, they ask for one by name: the class, `#`, and the
@@ -2337,7 +2344,7 @@ While the Disassembly list has the keyboard, **Step Over** and **Step Into**
 step one instruction at a time instead of one line, as in VS Code's
 Disassembly view. **Debug: Step Over Instruction**
 (`debug.stepOverInstruction`) and **Debug: Step Into Instruction**
-(`debug.stepIntoInstruction`), in **Run ▸ Debugger**, do it from anywhere; Step
+(`debug.stepIntoInstruction`), in **Run ▸ Stepping**, do it from anywhere; Step
 Into Instruction follows a call into the called function. With a debugger that
 steps only by line, they say so in the status bar.
 
@@ -2805,8 +2812,8 @@ at your breakpoints.
 
 ### launch.json configurations
 
-**Debug: Start Configuration…** (`debug.startConfiguration`, in **Run ▸
-Debugger**) lists the configurations of the project's `.vscode/launch.json`, or
+**Debug: Start Configuration…** (`debug.startConfiguration`, in **Run ▸ Launch
+and Attach**) lists the configurations of the project's `.vscode/launch.json`, or
 of the nearest one above the active file, and its [compounds](#compounds), and
 starts the one you pick as VS Code would. A configuration started while a
 session runs is debugged beside it, in a session of its own
@@ -2879,7 +2886,7 @@ status bar names the missing one.
 
 A **compound of run configurations** debugs the project's saved
 [run configurations](#run-configurations) together. **Debug: Edit
-Compounds…** (`debug.editCompounds`, in **Run ▸ Debugger**) opens the
+Compounds…** (`debug.editCompounds`, in **Run ▸ Launch and Attach**) opens the
 **Compounds** window: the project's compounds on the left and, for the one
 selected, its **Name**, the **Run configurations to debug together** to tick,
 and **Stopping one stops them all**. **Add** makes a compound, **Remove**
@@ -2891,7 +2898,7 @@ configuration** debugs it, so each must be a kind that can be debugged (see
 
 ![The Compounds window: a compound named Server and worker on the left; on the right its Name, the list Run configurations to debug together with API server and Restock worker ticked and Web client and Price check not, Stopping one stops them all ticked, and Add, Remove, Debug and Close buttons](/screenshots/docs/debug-compounds.png "A compound of two saved run configurations, made in Debug: Edit Compounds….")
 
-**Debug: Start Compound…** (`debug.startCompound`, in **Run ▸ Debugger**) lists
+**Debug: Start Compound…** (`debug.startCompound`, in **Run ▸ Launch and Attach**) lists
 both kinds, the project's own first. Type to filter; **New Compound…**, last in
 the list, opens the Compounds window on a new one.
 

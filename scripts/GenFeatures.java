@@ -201,16 +201,16 @@ Browse the [full command list](/commands) or the [keybindings reference](/keybin
 """),
     new Feature("menu-bar", KB, 8, false,
         "A menu bar, over the same commands",
-        "<strong>File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help</strong> menus, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke.",
+        "<strong>File / Edit / Find / View / Navigate / Code / Run / Git / Tools / Window / Help</strong> menus, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke.",
         """
 The command palette lists everything, but it is hard to browse. It helps when you know roughly what a command is called, and less when you want to see what the editor can do. The menu bar is for that.
 
-**File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help.** Every item names a registered [command](/features/command-driven-core), the same object the palette lists and the keymap binds, so the menu cannot drift out of step with what Editora can do.
+**File / Edit / Find / View / Navigate / Code / Run / Git / Tools / Window / Help.** Every item names a registered [command](/features/command-driven-core), the same object the palette lists and the keymap binds, so the menu cannot drift out of step with what Editora can do.
 
 - Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
 - A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
 - Almost every item that can carry an **icon** does, and it is the same glyph you see for that action in a right-click menu, so Save looks the same wherever you reach it from. About a third are left blank rather than given an invented glyph. The icon column is reserved either way, so the titles still line up.
-- Menus that grew long keep their daily items at the top and the rest one level down: VCS groups its commands by what they act on, and File keeps its export formats under **Export**.
+- Menus that grew long keep their daily items at the top and the rest one level down: Git groups its commands by what they act on, Run keeps the debugger's in four submenus, and File keeps its export formats under **Export**.
 - On **macOS** it sits in the system menu bar.
 
 It is a curated subset. Editora registers over seven hundred commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
@@ -1242,7 +1242,7 @@ static final Map<String, String> ALT = Map.ofEntries(
     Map.entry("macros", "The command palette filtered by \"macro\", listing the macro commands with F3, F4 and C-x e"),
     Map.entry("markdown-preview", "A Markdown file in Split view, with headings, a task list and a table rendered beside the source"),
     Map.entry("mcp", "Settings → MCP Server with the loopback MCP server turned on"),
-    Map.entry("menu-bar", "The VCS menu open, listing Git commands with their keybindings and submenus such as Branches and Stash"),
+    Map.entry("menu-bar", "The Git menu open, listing its commands with their keybindings and submenus such as Branches and Stash"),
     Map.entry("mermaid", "A Mermaid flowchart in Split view, with the rendered diagram beside its source"),
     Map.entry("multiple-cursors", "Five carets in a column of Java lines, the same word typed at each"),
     Map.entry("plugins", "The Browse Plugins picker listing registry plugins with their versions and descriptions"),

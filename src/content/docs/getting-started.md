@@ -226,7 +226,7 @@ want, run **Search Everywhere** and type its name. See
 [Navigation & search](/docs/navigation#search-everywhere).
 
 If you'd rather browse than recall, there is also a **menu bar** (File / Edit /
-Find / View / Navigate / Code / Run / VCS / Tools / Window / Help) built over
+Find / View / Navigate / Code / Run / Git / Tools / Window / Help) built over
 the same commands, with each item showing its current keybinding. Its **Help**
 menu links to the documentation for the version you are running.
 

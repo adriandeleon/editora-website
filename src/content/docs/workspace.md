@@ -1132,7 +1132,7 @@ row).
 
 ![The Local History tool window beside a Java file: the file's revisions newest first under day captions, each with its time and reason, the selected one shown as a side-by-side diff against the current text with Restore](/screenshots/features/local-file-history.png "Local History: every save and auto-save of the file, each one a diff away.")
 
-The same three are under **VCS ▸ Local History**, and *Show Local History* is in
+The same three are under **Git ▸ Local History**, and *Show Local History* is in
 a tab's right-click menu and in the Project tree. Git's per-file log is a
 separate command, [Show Git History](/docs/git#git-log).
 

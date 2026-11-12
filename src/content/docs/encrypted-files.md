@@ -96,7 +96,7 @@ and decrypts the new content.
 ## Encrypt a file
 
 **Encryption: Encrypt File…** (`crypto.encryptFile`) encrypts the active file.
-It is in **Tools ▸ Encryption** (in Simple UI mode, the **File** menu), and
+It is in **Tools ▸ Encryption**, and
 **Encrypt…** on a tab's right-click menu and on a file's right-click menu in
 the Project tree. It opens the [recipient picker](#the-recipient-picker),
 then writes the encrypted file beside the original: `notes.md` becomes
@@ -197,8 +197,8 @@ on purpose: after asking, it saves the text as the plain file beside it
 
 ## Encryption commands
 
-All of these are in **Tools ▸ Encryption** and the command palette. In
-Simple UI mode, **Encrypt File…** is in the **File** menu.
+All of these are in **Tools ▸ Encryption** and the command palette. Simple UI
+mode has no Tools menu, so there they are in the palette.
 
 | Action | Command |
 | --- | --- |
