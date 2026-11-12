@@ -304,10 +304,10 @@ a file that isn't itself a `pom.xml`.
 
 ### New Maven Project
 
-**Maven: New Project…** (`maven.newProject`) creates a project from an
+**Maven: New Maven Project…** (`maven.newProject`) creates a project from an
 archetype and opens it in its own window. It is in the File menu, in the
 Project tree's **New ▸** submenu on a folder, and in the palette, where
-**Maven: New Project in Folder…** (`maven.newProjectHere`) asks for the parent
+**Maven: New Maven Project in Folder…** (`maven.newProjectHere`) asks for the parent
 folder first. It runs your own Maven (the command override, else `mvn` on your
 `PATH`), never a wrapper found in the target folder, and says so before the
 wizard opens when there is none. That Maven runs on the **Default JDK** chosen

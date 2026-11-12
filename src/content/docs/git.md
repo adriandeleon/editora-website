@@ -61,7 +61,7 @@ itself on every save are a separate feature,
 | Create a repository in a folder | `git.init` | (palette) |
 | Refresh | `git.refresh` | (palette) |
 
-The **VCS** menu keeps the daily actions at the top level (Commit, Commit and
+The **Git** menu keeps the daily actions at the top level (Commit, Commit and
 Push, Push, Pull, Fetch, Switch Branch, Git Log, and Continue / Skip / Abort)
 and groups the rest into submenus: Changes, Branches, Remotes & Worktrees, Tags,
 Stash, Patches, History & Blame, and Compare.
@@ -214,7 +214,7 @@ Branch, Pull, Fetch, Push, and the like), then **Local** branches with the
 current one first, then **Remote** branches, grouped by remote when there are
 several. It opens with the current branch selected. Clicking a row checks the
 branch out. A row's `⋯` button, a right-click, or the Menu key opens its
-actions; the same actions are in the palette and under **VCS ▸ Branches**.
+actions; the same actions are in the palette and under **Git ▸ Branches**.
 
 Each section folds to its header: click the header, or select it and press
 Enter, ← or →. A folded header shows how many rows it hides, and the choice is
@@ -322,7 +322,7 @@ loads more as you scroll, a page at a time, so it reaches the whole history
 **Show Git History** (`git.fileHistory`; `C-x v l`, or Ctrl+Alt+Shift+H in the
 other keymaps, ⌃⇧⌘H on macOS) lists the commits that changed the active file, in the Git Log
 tool window under a **Git history: name** chip. It is also in a tab's menu, the
-Project tree, and **VCS ▸ History & Blame**.
+Project tree, and **Git ▸ History & Blame**.
 
 - **Enter** or a double-click on a commit opens what it changed in that file.
   The row's menu starts with **Show Diff** and **Compare with Working Tree**,

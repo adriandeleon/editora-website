@@ -292,9 +292,9 @@ repository, asks GitHub whether there is an open pull request, an open issue, or
 a workflow run. These background calls don't spin the tool window's spinner and
 aren't written to the Output console's **GitHub** transcript.
 
-## The VCS menu
+## The Git menu
 
-**VCS ▸ GitHub** is a submenu holding the GitHub commands: the tool window and
+**Git ▸ GitHub** is a submenu holding the GitHub commands: the tool window and
 its three segments, create, review, check out and submit review, the checks list
 and the CI failure log, the run actions, **Open File on GitHub**, **Copy URL of
 Selected Row**, and **Refresh**.
