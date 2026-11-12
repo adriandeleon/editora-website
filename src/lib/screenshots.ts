@@ -505,6 +505,42 @@ const docsShots: Shot[] = [
     alt: "The Compounds window: a compound named Server and worker on the left; on the right its Name, the list Run configurations to debug together with API server and Restock worker ticked and Web client and Price check not, Stopping one stops them all ticked, and Add, Remove, Debug and Close buttons",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
+  shot("/screenshots/docs/debug-triggered-breakpoint.png", {
+    title: "Triggered breakpoints",
+    caption: "A breakpoint that waits until another is hit, chosen with Debug: Add Triggered Breakpoint….",
+    alt: "shelf.js with breakpoints on lines 12 and 13 and an hourglass breakpoint on line 21, under the Debug: Add Triggered Breakpoint… list for line 21 with shelf.js:12 ticked and shelf.js:13 below it",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-breakpoint-groups.png", {
+    title: "Breakpoint groups",
+    caption: "Breakpoints in named groups, turned on and off together; Alt+G in the list flips a group.",
+    alt: "The Breakpoints list: shelf.js:12 and shelf.js:13 disabled in group checkout, and shelf.js:21 waiting until shelf.js:12 is hit, in group report",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-loaded-sources.png", {
+    title: "Loaded Sources",
+    caption: "The scripts a Node.js program has loaded: the project's file first, then Node.js's own modules, read-only.",
+    alt: "The Debug: Loaded Sources… list over a paused JavaScript session: shelf.js marked project folder, then <node_internals> modules marked read-only, from the debugger",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-eval-source.png", {
+    title: "Code without a file",
+    caption: "Code run through eval opens read-only where the program stopped in it.",
+    alt: "A read-only tab named <eval>/VM46947589 with a report function, its debugger; line marked as the current line, and the call stack global.report:3, VM46947589 above shelf.js",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-mark-object.png", {
+    title: "Mark Object",
+    caption: "An object labelled pencil, recognised in a watch and in a variable.",
+    alt: "Variables in a paused Java session: the watch items.get(0) and the local item both read [pencil] Item@11 followed by the item's text, Item[sku=A-1, name=Pencil, quantity=12, price=0.4]",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
+  shot("/screenshots/docs/debug-view-as-json.png", {
+    title: "View As JSON",
+    caption: "A string opened with View As ▸ JSON: laid out, highlighted and read-only.",
+    alt: "A read-only tab named order (JSON) showing indented JSON with lines, sku, qty and total, and Variables filtered to the string order",
+    more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
+  }),
   shot("/screenshots/docs/trust-folder.png", {
     title: "Trusted folders",
     caption: "Before the first build in a folder, Editora lists what would run and asks.",

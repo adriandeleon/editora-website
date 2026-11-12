@@ -862,8 +862,12 @@ script as it runs.
 | Toggle [recording breakpoint](#recording-breakpoints) | `debug.toggleRecordingBreakpoint` | (palette) |
 | Toggle method breakpoint (Java) | `debug.toggleMethodBreakpoint` | `C-c C-d S-m` |
 | Toggle field watchpoint (Java) | `debug.toggleFieldWatchpoint` | `C-c C-d S-w` |
-| Toggle [lambda breakpoint](#lambda-breakpoints) (Java) | `debug.toggleLambdaBreakpoint` | `C-c C-d S-l` |
+| Toggle [lambda breakpoint](#lambda-breakpoints) (Java, JavaScript, TypeScript) | `debug.toggleLambdaBreakpoint` | `C-c C-d S-l` |
 | Edit breakpoint | `debug.editBreakpoint` | `C-c C-d e` |
+| Add a [triggered breakpoint](#triggered-breakpoints) that waits for another | `debug.addTriggeredBreakpoint` | (palette) |
+| Put the caret line's breakpoint in a [group](#breakpoint-groups) | `debug.moveBreakpointToGroup` | (palette) |
+| Turn a group's breakpoints on or off | `debug.toggleBreakpointGroup` | (palette) |
+| [Export or import breakpoints](#exporting-and-importing-breakpoints) | `debug.exportBreakpoints`, `debug.importBreakpoints` | (palette) |
 | Choose exception breakpoints | `debug.toggleExceptionBreakpoints` | (palette) |
 | Show the [exception card](#exception-card) again | `debug.showException` | (palette) |
 | Debug a project main class | `debug.mainClass` | (palette) |
@@ -885,6 +889,7 @@ script as it runs.
 | Go back or forward through earlier stops ([Debug History](#debug-history)) | `debug.historyBack`, `debug.historyForward` | (palette) |
 | List the stops of the session | `debug.showHistory` | (palette) |
 | Show the [Disassembly or Memory view](#disassembly-and-memory) | `debug.showDisassembly`, `debug.showMemory` | (palette) |
+| List the program's [loaded sources or modules](#loaded-sources-and-modules) | `debug.loadedSources`, `debug.modules` | (palette) |
 | Turn the Python, JavaScript, Go, Rust, C and C++, C#, Ruby or PHP debugger on or off | `debug.toggleAdapter` | (palette) |
 | Set an adapter's path | `debug.setAdapterPath` | (palette) |
 
@@ -896,8 +901,9 @@ buttons in the Debug window, and most debugger actions are in the **Run** menu.
 Its top level has Start / Continue, Debug Main Class, Attach, Attach to
 Process, Reattach, Stop, Stop All, Restart and Toggle Breakpoint. Start
 Configuration, Start Compound, Edit Compounds, stepping (by line or by instruction), evaluate, watches, pinned values,
-hexadecimal values, Debug History, breakpoints, the Threads, Disassembly and
-Memory views, Edit Debug Adapters, exception breakpoints and Show Exception are
+hexadecimal values, Debug History, breakpoints (with triggered breakpoints,
+groups, and export and import), the Threads, Loaded Sources, Modules,
+Disassembly and Memory views, Edit Debug Adapters, exception breakpoints and Show Exception are
 in its **Debugger** submenu (**Run ▸ Debugger**).
 
 **Jump to Line** moves the program to another line without running the code in
@@ -930,8 +936,10 @@ Breakpoints live in a leftmost gutter strip and are saved per project.
 **Edit Breakpoint** is a form with a **condition**, a **hit count**, a **log
 message** (which turns it into a logpoint that logs and never suspends), an
 **Enabled** toggle, **Remove once hit**, which makes it a
-[temporary breakpoint](#temporary-breakpoints), and **Record and continue**,
-which makes it a [recording breakpoint](#recording-breakpoints). Its title names the file and line, such as *Edit
+[temporary breakpoint](#temporary-breakpoints), **Record and continue**,
+which makes it a [recording breakpoint](#recording-breakpoints), **Wait for**,
+which makes it a [triggered breakpoint](#triggered-breakpoints), and
+**Group**, which puts it in a [group](#breakpoint-groups). Its title names the file and line, such as *Edit
 Breakpoint — Main.java:27*, and the line's code is shown above the fields, since
 the form can cover that line. The hit count makes it stop only on that hit: `5`
 stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
@@ -1488,6 +1496,15 @@ Node.js v24.18.1)*.
 - Node.js's own modules are skipped, so Step Into doesn't enter them. In the
   call stack, Node.js's own frames fold into one row, such as *… 7 frames of
   runtime or library code (click to show)*; click it to see them.
+- Code run through `eval` opens read-only where it stops, and takes
+  breakpoints for the session (see [Code without a file](#code-without-a-file)).
+  **Debug: Loaded Sources…** lists the program's scripts
+  ([Loaded Sources and Modules](#loaded-sources-and-modules)).
+- [Lambda breakpoints](#lambda-breakpoints) stop inside arrow functions and
+  function expressions each time they run.
+- Every breakpoint is placed before the program starts to run, so one on the
+  program's first lines, or in a function it calls right away, stops on the
+  first run too.
 - A breakpoint condition that isn't valid JavaScript marks the breakpoint as
   rejected, and the console says why, once.
 - Child processes and worker threads show all their threads. The status line
@@ -1523,20 +1540,27 @@ plain breakpoint, a diamond for a logpoint, two "=" bars for a breakpoint with
 a condition or a hit count, a "1" for a
 [temporary breakpoint](#temporary-breakpoints), a λ for a
 [lambda breakpoint](#lambda-breakpoints), purple with a ring for a
-[recording breakpoint](#recording-breakpoints), and grey for a disabled one. Java
+[recording breakpoint](#recording-breakpoints), an hourglass for a
+[triggered breakpoint](#triggered-breakpoints), and grey for a disabled one. Java
 [method breakpoints and field watchpoints](#method-breakpoints-and-field-watchpoints)
 have marks of their own on their member's line.
-Its hover names the condition, log message and hit count, and says when it is
-disabled, removed once hit, or recorded in Debug History. A hit
+Its hover names the condition, log message, hit count and group, and says when it is
+disabled, removed once hit, recorded in Debug History, or waiting for another
+breakpoint. A hit
 count stops on that hit in Java too: `3` stops the third time the line runs.
 
 Right-click a glyph for **Edit Breakpoint…**, **Enable Breakpoint** or
-**Disable Breakpoint**, **Remove Breakpoint** and **Breakpoints…**; on a Java
-line that starts a lambda, the menu also has **Stop on the Line** and
-**Stop in Lambda n** (see [Lambda breakpoints](#lambda-breakpoints)). The
-editor's right-click menu has Toggle Breakpoint, Edit Breakpoint, Toggle
-Temporary Breakpoint and Toggle Recording Breakpoint, Toggle Lambda Breakpoint on a Java line that starts a
-lambda, and while the program is paused also Run to Cursor,
+**Disable Breakpoint**, **Remove Breakpoint**, **Add Triggered Breakpoint…**,
+**Move Breakpoint to Group…** and **Breakpoints…**; on a line that starts a
+lambda or, in JavaScript and TypeScript, a function, the menu also has
+**Stop on the Line** and **Stop in Lambda n** (see
+[Lambda breakpoints](#lambda-breakpoints)). The editor's right-click menu has a
+**Breakpoints** submenu with every breakpoint action for the line: Toggle
+Breakpoint, Toggle Temporary Breakpoint, Toggle Recording Breakpoint, Toggle
+Lambda Breakpoint on a line that starts a lambda, Add Logpoint, Add Triggered
+Breakpoint, Edit Breakpoint, Move Breakpoint to Group, Enable / Disable
+Breakpoint, then Breakpoints… and Mute Breakpoints. While the program is
+paused, the editor's menu also has Run to Cursor,
 [Force Run to Cursor](#debugging), Show Value at Caret,
 [Evaluate Expression](#the-evaluate-window) and Add to Watches.
 
@@ -1549,8 +1573,11 @@ only a closing `}` takes a breakpoint.
 line and code, and below them what it does (its condition or log message) and
 its folder, relative to the project (none for a file at the project root), or with
 your home folder shortened to `~`. With no breakpoints, the list says how to set
-one. Type to filter it; Enter jumps to the selected breakpoint, Alt+E enables
-or disables it, Alt+D removes it, and Alt+M mutes them all. Java
+one. A breakpoint that waits for another says which, such as *Waits until
+shelf.js:12 is hit*, and one in a [group](#breakpoint-groups) names it, such as
+*Group: checkout*. Type to filter it, by file, code or group name; Enter jumps
+to the selected breakpoint, Alt+E enables or disables it, Alt+D removes it,
+Alt+G turns its whole group on or off, and Alt+M mutes them all. Java
 [method breakpoints and field watchpoints](#method-breakpoints-and-field-watchpoints)
 are listed after the line breakpoints.
 
@@ -1592,8 +1619,8 @@ on the caret line:
   keeping its condition and hit count;
 - on a line with a temporary breakpoint, it removes it.
 
-The command is also in **Run ▸ Debugger** and the editor's right-click menu.
-In **Edit Breakpoint**, **Remove once hit** turns any breakpoint into a
+The command is also in **Run ▸ Debugger** and the editor's right-click
+**Breakpoints** submenu. In **Edit Breakpoint**, **Remove once hit** turns any breakpoint into a
 temporary one, or back.
 
 A temporary breakpoint's dot carries a "1" (one with a condition or a hit count
@@ -1618,7 +1645,8 @@ IntelliJ's non-suspending breakpoints do, with the values kept instead of
 logged.
 
 **Debug: Toggle Recording Breakpoint** (`debug.toggleRecordingBreakpoint`, in
-**Run ▸ Debugger** and the editor's right-click menu) works on the caret line:
+**Run ▸ Debugger** and the editor's right-click **Breakpoints** submenu) works
+on the caret line:
 
 - on a line without a breakpoint, it adds a recording one;
 - on a line with an ordinary breakpoint, it makes that breakpoint record,
@@ -1636,20 +1664,114 @@ the program as an ordinary one does, and the status bar says why. It also
 stops as usual when Debug History is turned off in **Settings → Debugging →
 History**, since there is nowhere to keep the stop.
 
+### Triggered breakpoints
+
+A triggered breakpoint waits until another breakpoint is hit. Until then it
+does not stop the program; from then on it stops like any other breakpoint,
+for the rest of that debug session. The next session it waits again. Use one
+when a line runs often but only matters after something else has happened: a
+breakpoint in a loop that should stop only once a particular request has
+come in, for example. This is VS Code's triggered breakpoint, IntelliJ IDEA's
+*Disable until hitting the following breakpoint* and Visual Studio's *Only
+enable when the following breakpoint is hit*.
+
+**Debug: Add Triggered Breakpoint…** (`debug.addTriggeredBreakpoint`) works on
+the caret line. It lists the other line breakpoints, with their file, line and
+code; choose the one to wait for. The line gets a breakpoint if it has none,
+and an ordinary one keeps its condition and hit count. The breakpoint it waits
+for already is ticked, and choosing it again makes the breakpoint stop as
+usual. The list leaves out any breakpoint that waits, directly or through
+others, for this one, so two breakpoints never wait for each other. With no
+other breakpoint to wait for, the status bar says to set that one first. The
+command is in the palette, **Run ▸ Debugger**, the editor's right-click
+**Breakpoints** submenu and a breakpoint's gutter menu. In **Edit
+Breakpoint**, the **Wait for** field does the same; choose *No other
+breakpoint* to stop waiting.
+
+![shelf.js with breakpoints on lines 12 and 13 and, on line 21, a breakpoint carrying an hourglass; over the editor, the Debug: Add Triggered Breakpoint… list for line 21 with shelf.js:12 const subtotal = item.price * item.qty; ticked and shelf.js:13 total += subtotal; below it](/screenshots/docs/debug-triggered-breakpoint.png "A triggered breakpoint on line 21 waits for the one on line 12.")
+
+A triggered breakpoint carries an hourglass on its dot, and its hover says
+*Waits until shelf.js:12 is hit*. While a session runs and its trigger has not
+been hit, it is drawn hollow and its hover says *Waiting: shelf.js:12 has not
+been hit in this session*. When the trigger stops the program, the status bar
+and the Debug console say so, such as *shelf.js:12 was hit: the breakpoint that
+waits for it now stops*. A [recording breakpoint](#recording-breakpoints) can
+be a trigger too: it records the stop and lets the waiting breakpoints stop.
+
+The waiting is done by Editora, not by the debugger, so triggered breakpoints
+work with every debugger Editora runs, and in files that are not open. They are
+saved with the project's breakpoints, and the link holds when you edit the file
+and the lines move. If you remove the breakpoint it waits for, a triggered
+breakpoint becomes an ordinary one and stops at once. Only line breakpoints can
+be triggers; a [method breakpoint or field
+watchpoint](#method-breakpoints-and-field-watchpoints) can't.
+
+### Breakpoint groups
+
+Breakpoints can be put in named groups, as in IntelliJ IDEA, and a whole group
+turned on or off at once: the breakpoints for one bug, or for one part of the
+program, can stay set while you work on something else.
+
+**Debug: Move Breakpoint to Group…** (`debug.moveBreakpointToGroup`) asks for
+the group of the caret line's breakpoint: pick one of the groups there are,
+type a new name, or leave it blank for none. It is in **Run ▸ Debugger**, the
+editor's right-click **Breakpoints** submenu and a breakpoint's gutter menu. On
+a line without a breakpoint, the status bar says so. In **Edit Breakpoint**,
+the **Group** field does the same.
+
+**Debug: Enable / Disable Breakpoint Group…** (`debug.toggleBreakpointGroup`)
+lists the groups, each with how many breakpoints it has, ticked (✓) when all of
+them are on and marked – when only some are. Choosing a group turns all its
+breakpoints on, or all off when they are all on already. A running session is
+told at once. Breakpoints in files that are not open follow too, and so do
+method breakpoints and field watchpoints that came into a group from
+[an imported file](#exporting-and-importing-breakpoints).
+
+In **Debug: Breakpoints…**, each row names its group, typing a group's name
+lists its breakpoints, and Alt+G turns the selected row's group on or off.
+
+![The Breakpoints list over shelf.js: shelf.js:12 and shelf.js:13, hollow, marked Disabled · Group: checkout, and shelf.js:21 marked Waits until shelf.js:12 is hit · Group: report; the key line ends with Alt+G group on/off and Alt+M mute all](/screenshots/docs/debug-breakpoint-groups.png "The Breakpoints list with the checkout group turned off.")
+
+### Exporting and importing breakpoints
+
+**Debug: Export Breakpoints…** (`debug.exportBreakpoints`) writes your
+breakpoints to a file you can keep, or share with a teammate, as Visual
+Studio's Export Breakpoints does. When some breakpoints are in groups, it first
+asks whether to write all of them or one group's. The file keeps each
+breakpoint's condition, log message, hit count, lambdas, whether it records or
+is removed once hit, its group, and the breakpoint it waits for, along with
+method breakpoints and field watchpoints. Files inside the project are written
+relative to it, so the file works in another copy of the project. The code of a
+line in an [encrypted file](/docs/encrypted-files) is left out of it.
+
+**Debug: Import Breakpoints…** (`debug.importBreakpoints`) sets the breakpoints
+of such a file again. Each one goes on the line its code is on now, so edits
+since the export don't put it on the wrong line. A line that already has a
+breakpoint keeps its own, and breakpoints in files that aren't there are
+skipped. The status bar counts them, such as *Imported 5 breakpoints; 1 already
+set, 0 in files not found.* A running session gets the imported breakpoints at
+once, in open files and closed ones. A file that isn't an Editora breakpoints
+file, or one written by a newer Editora, is refused, and nothing is imported.
+
+Both commands are in **Run ▸ Debugger** and the palette.
+
 ### Lambda breakpoints
 
 In Java, a line breakpoint stops once, when its line runs, and never inside a
 lambda on that line. On `items.forEach(x -> System.out.println(x));` it
 stops before `forEach` is called, not each time the lambda's body runs, because the body
-runs later, as code of its own. A lambda breakpoint stops there.
+runs later, as code of its own. A lambda breakpoint stops there. In JavaScript
+and TypeScript the same goes for arrow functions and function expressions:
+on `items.filter((item) => item.price < 1)`, a lambda breakpoint stops in
+`item.price < 1` once for each item.
 
 **Debug: Toggle Lambda Breakpoint** (`debug.toggleLambdaBreakpoint`) sets a
 breakpoint that stops inside the lambda the caret is in, or the first one on
 the caret's line, each time its body runs, with the lambda's parameters in
 Variables. Its keys are Shift+F9 (⇧F9 on macOS) in the VS Code, CUA and Sublime
 Text keymaps and `C-c C-d S-l` in the Emacs keymap. It is in
-**Run ▸ Debugger**, and in the editor's right-click menu on a line that starts
-a lambda.
+**Run ▸ Debugger**, and in the editor's right-click **Breakpoints** submenu on
+a line that starts a lambda.
 
 - On a line without a breakpoint, it adds one that stops only in that lambda.
 - On a line with a breakpoint, it adds that lambda to the places it stops.
@@ -1657,8 +1779,8 @@ a lambda.
   removes the breakpoint when it stops nowhere else.
 
 The status bar says which, such as *Breakpoint in lambda 1 on line 12.* On a
-line that starts no lambda, it says so, and outside Java it says lambda
-breakpoints are for Java files.
+line that starts no lambda, it says so, and in other languages it says lambda
+breakpoints are for Java, JavaScript and TypeScript files.
 
 Right-click a breakpoint's dot on a line with lambdas to choose where it
 stops, in any combination: **Stop on the Line**, and **Stop in Lambda 1**,
@@ -1674,9 +1796,20 @@ lambda 1* or *Stops only in lambda 1*. It keeps its condition, hit count and
 log message for every place it stops, and is saved with the project's
 breakpoints. Lambdas are kept by their number on the line, so editing earlier
 in the line doesn't lose them; when the line no longer has that lambda, the
-breakpoint stops on the line instead. Only the Java debugger has lambda
-breakpoints; the other JVM languages and the other debuggers use line
-breakpoints.
+breakpoint stops on the line instead.
+
+In JavaScript and TypeScript, the lambdas of a line are its arrow functions
+(`async` ones and those with a TypeScript return type, such as
+`async (id): Promise<Item> => …`, included) and the `function` expressions
+that don't begin the line, such as a callback passed as
+`function (item) { … }`. A function declaration that begins its line needs no
+lambda breakpoint: a line breakpoint there already stops in it. Arrows inside
+strings, template literals and comments don't count. The breakpoint stops where
+the function's body starts: the expression after `=>`, or the first statement
+inside its braces.
+
+Java, JavaScript and TypeScript have lambda breakpoints. The other JVM
+languages and the other debuggers use line breakpoints.
 
 ### Method breakpoints and field watchpoints
 
@@ -1776,8 +1909,9 @@ copied without its quotes and escapes), **Copy Name**, **Add to Watches**,
 which adds the row's whole expression, such as `order.items`, **Set Value…**,
 [Go to Index…](#long-lists-and-arrays) on a long list or array, in Java
 [Break When Value Changes](#method-breakpoints-and-field-watchpoints) on a
-field, and **Show Numbers as Hexadecimal**. Ctrl+C (⌘C on
-macOS) copies the selected value, and Delete removes the selected
+field, [Mark Object…](#marking-objects) on an object,
+[View As](#viewing-a-string-as-json-xml-or-text) on a string, and **Show
+Numbers as Hexadecimal**. Ctrl+C (⌘C on macOS) copies the selected value, and Delete removes the selected
 [watch](#watches) or evaluate result.
 
 In Java, **Set Value…** sets a number, boolean, character or String directly,
@@ -1978,6 +2112,53 @@ Pins are kept when no session runs, though they show only while the program is
 paused. They follow their line as you edit above it, are saved with the
 project's breakpoints, and come back on their line when the file opens again.
 
+### Marking objects
+
+**Mark Object…**, in the right-click menu of a Variables, watch or
+[evaluate result](#evaluating-expressions) row that shows an object, gives
+that object a label of your own, as IntelliJ IDEA's Mark Object does. The
+prompt starts with the row's name; type another, of up to 40 characters, and
+press Enter. The label then shows in brackets before the object's value
+wherever that object appears in the session: in Variables, watches, evaluate
+results, the value popup and [Debug History](#debug-history). So when the same
+object turns up in another variable, a field or a collection, you can tell it
+is the one you marked. On a marked row the menu has **Edit Mark…** and
+**Unmark Object**, and once anything is marked, **Unmark All Objects**.
+
+![Shelf.java paused on line 48 in checkout, and the Debug window's Variables below: the watch items.get(0) and the local item both read [pencil] Item@11 "Item[sku=A-1, name=Pencil, quantity=12, price=0.4]"](/screenshots/docs/debug-mark-object.png "The object marked as pencil, recognised in a watch and a variable.")
+
+An object is recognised by the identity its debugger shows for it, so Mark
+Object is offered where the debugger shows one: Java objects (`Item@11`),
+Python objects with an address (`<Box object at 0x7f…>`), and pointers in
+native code, such as C and C++. The JavaScript debugger shows no identity for
+an object, so JavaScript and TypeScript objects can't be marked, and neither
+can a number or a string.
+
+Marks belong to the debug session. They stay after Stop, so Debug History
+still shows them, and are cleared when the program is debugged again, since an
+object of one run is not the same object in the next. A label only shows the
+object; it can't be used in an expression. IntelliJ IDEA's *Referring
+Objects* is not offered: the Java debugger has no way to find which objects
+refer to another.
+
+### Viewing a string as JSON, XML or text
+
+**View As ▸ JSON**, **View As ▸ XML** and **View As ▸ Text**, in the
+right-click menu of a Variables, watch or evaluate result row that holds a
+string, open the string's whole text in a read-only tab, so you can fold,
+search and copy it. JSON and XML are laid out and highlighted; Text opens it as
+it is. The tab is named after the row, such as *order (JSON)*. A string that
+isn't valid JSON or XML opens as text, and the status line says why, such as
+*Not valid JSON, so shown as text: …*.
+
+![A read-only tab named order (JSON) showing the string laid out as indented JSON, with lines, sku, qty and total, and the Debug window below with Variables filtered to order, whose row reads '{"customer":"Ada","lines":[{"sku":"A-1","qty":12},…'](/screenshots/docs/debug-view-as-json.png "A JavaScript string opened with View As ▸ JSON.")
+
+The text is the string's own, with the quotes and escapes the debugger shows
+taken off, and it is fetched again whole while the program is paused, so a long
+string that a row cuts short (JavaScript shows about 1,000 characters) opens
+complete. At an earlier stop in Debug History, it opens what that stop kept.
+XML is read without its DTD and without loading anything outside the text.
+
 ### Debug History
 
 The Debug window keeps each stop of a session as it was shown: the call stack,
@@ -2129,6 +2310,64 @@ Enter: an expression shows the memory where its value is. **View Memory**,
 in a variable's right-click menu in Variables, opens the view at that variable.
 Memory that can't be read, or an expression with no address, is said in the
 view.
+
+### Loaded Sources and Modules
+
+While a session runs, two lists show what the program has loaded. Both are in
+**Run ▸ Debugger** and the palette, where they are greyed out when no session
+runs.
+
+**Debug: Loaded Sources…** (`debug.loadedSources`), like VS Code's Loaded
+Scripts, lists the scripts and source files the program has loaded: your
+project's files first, then other files, then code the debugger has only in
+memory, such as Node.js's own modules (`<node_internals>/…`) and code run
+through `eval`. Type to filter it. Enter on a file opens it in its tab, where
+breakpoints work as anywhere. Enter on code in memory opens it read-only, with
+the text the debugger gives, as [Code without a file](#code-without-a-file)
+describes.
+
+![The Debug: Loaded Sources… list over a paused JavaScript session: shelf.js marked project folder first, then <node_internals>/_http_agent, _http_client, async_hooks, buffer and others, each marked read-only, from the debugger · Skipped by skipFiles](/screenshots/docs/debug-loaded-sources.png "Loaded Sources in a Node.js session: the project's file first, then Node.js's own modules.")
+
+**Debug: Modules…** (`debug.modules`), like Visual Studio's Modules window,
+lists the libraries, assemblies or modules the program has loaded, your code
+first. Each row shows what the debugger says of it: whether its symbols are
+loaded, its version, whether it is your code or optimized, its address range,
+and its path. Enter or Alt+C copies the module's path.
+
+Which list a debugger fills:
+
+| Debugger | Loaded Sources | Modules |
+| --- | --- | --- |
+| JavaScript and TypeScript (vscode-js-debug) | yes | no |
+| Rust, C and C++ (CodeLLDB) | no | yes, with symbol status |
+| C# (netcoredbg) | no | yes |
+| Python (debugpy) | no | the modules whose code has run under the debugger, such as your script as `__main__`; not every import |
+| Java, Go | no | no |
+
+When the debugger doesn't fill a list, as Java's and Go's fill neither, the
+command says so in the status bar. The lists follow the program as
+it runs: a source or module it unloads drops out.
+
+### Code without a file
+
+When a JavaScript or TypeScript program stops in, or steps into, code the
+debugger holds only in memory, such as code run through `eval`, that code opens in a read-only tab, named as the debugger names it
+(such as `<eval>/VM46947589`), with the current line marked, as VS Code shows
+it. The tab opens once per
+session; a later stop in the same code brings it to the front. The call stack
+shows such frames like any other, and clicking one opens its code.
+
+![A read-only tab named <eval>/VM46947589 holding the five lines of a report function, line 3 debugger; marked as the current line, and the Debug window with the call stack global.report:3, VM46947589 above <anonymous>:26, shelf.js](/screenshots/docs/debug-eval-source.png "Code run through eval, shown read-only where it stopped.")
+
+Breakpoints can be set in that tab. They last for that debug session only:
+they are not saved, and they go when the session ends, because the code exists
+only in that run of the program.
+
+A pause while the program waits inside Node.js's own code, in a timer for
+example, still shows your own line, not Node.js's internals. Python's debugger
+leaves code run through `exec` out of the call stack by default, so in practice
+this is for JavaScript and TypeScript. An earlier stop in such code, seen in
+[Debug History](#debug-history), still says there is no source.
 
 ### Keys in the Debug window
 

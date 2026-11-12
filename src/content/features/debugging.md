@@ -9,7 +9,8 @@ alt: "A Java program paused at a breakpoint, with inline values and the Debug wi
 
 Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure**, **Scala** (through Metals for a build's file, Editora's own debugger for a script), **Go** (Delve), **Rust**, **C** and **C++** (CodeLLDB, or GDB for C and C++), **C#** (netcoredbg), **Ruby** (rdbg) and **PHP** (Xdebug) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
-- Breakpoints (conditional, with a hit count, **temporary** ones removed once hit, **recording** ones that keep the stop in Debug History and let the program go on, and logpoints; in Java also **lambda breakpoints** that stop inside a lambda's body, and **method breakpoints** and **field watchpoints**, marked in the gutter on their member's line), step in / over / out, **run-to-cursor** (or **force run-to-cursor** past every breakpoint), and **jump-to-line** (Python)
+- Breakpoints (conditional, with a hit count, **temporary** ones removed once hit, **recording** ones that keep the stop in Debug History and let the program go on, **triggered** ones that wait until another breakpoint is hit, and logpoints; in Java, JavaScript and TypeScript also **lambda breakpoints** that stop inside a lambda's or arrow function's body, and in Java **method breakpoints** and **field watchpoints**, marked in the gutter on their member's line), step in / over / out, **run-to-cursor** (or **force run-to-cursor** past every breakpoint), and **jump-to-line** (Python)
+- **Breakpoint groups** turned on and off together, and **export and import** of breakpoints to a file you can keep or share
 - A threads + call-stack view you can **copy as text**, and a **Threads view** listing every thread, running or suspended and why, where you can **pause or resume one thread** alone
 - **Pinned values**: an expression pinned to a line is evaluated at every stop and painted at the end of that line, and saved with the project's breakpoints
 - **Debug History**: Back and Forward in the Debug window show an earlier stop as it was, with its call stack, values, watches, inline and pinned values, and *Show Value History* lists a variable's value at every stop; any debugger, kept in memory only
@@ -18,6 +19,8 @@ Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js)
 - A **filter** for the Variables tree, **Go to Index** in a long list or array, and integers shown in **hexadecimal** on demand (Java and Python)
 - **Evaluate expressions** as in IntelliJ IDEA: a field at the top of Variables whose result opens as a tree, non-modal **Evaluate windows**, and **Alt+click Quick Evaluate** in the editor; the fields are highlighted, take your keymap's keys, complete from the debugger and keep a history, and run code fragments of several lines
 - **Watches** that can be paused and evaluated once, and a console
+- **Mark Object** gives an object a label that shows wherever it appears in the session, and **View As** opens a string as laid-out JSON or XML, or as text
+- **Loaded Sources** and **Modules** list what the program has loaded, and code with no file, such as code run through `eval`, opens read-only where it stops
 - A hover **value popup** that unfolds objects, arrays and collections as a tree
 - **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start)
 - An **exception card** under the line that threw: caught or uncaught, the type and message, the causes and stack trace when the debugger sends them (Python, JavaScript), with **Copy**; it never takes focus, and *Debug: Show Exception* opens it again
