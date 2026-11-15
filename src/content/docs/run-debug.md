@@ -857,6 +857,8 @@ script as it runs.
 | Run to cursor | `debug.runToCursor` | `C-c C-d u` |
 | Run to cursor past every breakpoint | `debug.forceRunToCursor` | `C-c C-d S-u` |
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
+| [Step back or reverse continue](#stepping-backward) | `debug.stepBack`, `debug.reverseContinue` | (palette) |
+| Have GDB record the program ([Record Execution](#stepping-backward)) | `debug.toggleRecording` | (palette) |
 | Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
 | Toggle temporary breakpoint | `debug.toggleTemporaryBreakpoint` | `C-c C-d 1` |
 | Toggle [recording breakpoint](#recording-breakpoints) | `debug.toggleRecordingBreakpoint` | (palette) |
@@ -881,12 +883,16 @@ script as it runs.
 | Attach to a running JVM or Node.js | `debug.attach` | `C-c C-d a` |
 | Attach to a program on this machine ([Attach to Process](#attach-to-process)) | `debug.attachToProcess` | (palette) |
 | Attach again to the last address | `debug.reattach` | `C-c C-d S-a` |
+| Open a [core dump](#opening-a-core-dump) | `debug.openCoreDump` | (palette) |
 | Open the [Evaluate window](#the-evaluate-window) | `debug.evaluate` | `C-c C-d x` |
 | Go to the [evaluate field](#the-evaluate-field-in-variables) in Variables | `debug.focusEvaluate` | (palette) |
 | Pin a value to the caret's line ([pinned values](#pinned-values)) | `debug.pinValue` | (palette) |
 | Unpin the values on the caret's line | `debug.unpinLine` | (palette) |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
+| Show values without your [type renderers](#type-renderers) | `debug.muteRenderers` | (palette) |
 | Show every thread ([Threads view](#threads-view)) | `debug.threads` | (palette) |
+| Take a [thread dump](#thread-dump) | `debug.threadDump` | (palette) |
+| Draw every thread's stack as one tree ([Parallel Stacks](#parallel-stacks)) | `debug.parallelStacks` | (palette) |
 | Go back or forward through earlier stops ([Debug History](#debug-history)) | `debug.historyBack`, `debug.historyForward` | (palette) |
 | List the stops of the session | `debug.showHistory` | (palette) |
 | Show the [Disassembly or Memory view](#disassembly-and-memory) | `debug.showDisassembly`, `debug.showMemory` | (palette) |
@@ -904,15 +910,17 @@ and Restart. The rest is in four submenus:
 
 - **Launch and Attach**: Run and Debug Selected Configuration, Start
   Configuration, Start Compound, Edit Compounds, Attach to Process, Reattach,
-  Debug in Browser and Attach to Browser.
+  Open Core Dump, Debug in Browser and Attach to Browser.
 - **Stepping**: Pause, stepping by line or by instruction, Run to Cursor, Force
-  Run to Cursor and Restart Frame.
+  Run to Cursor, Restart Frame, and Record Execution, Step Back and Reverse
+  Continue.
 - **Breakpoints**: Toggle Breakpoint and the other kinds of breakpoint (with
   logpoints and triggered breakpoints), Edit Breakpoint, the breakpoint list,
   groups, export and import, Mute Breakpoints and the exception breakpoints.
 - **Debugger**: Apply Code Changes, evaluate, watches, pinned values,
-  hexadecimal values, Show Exception, Debug History, the Threads, Loaded
-  Sources, Modules, Disassembly and Memory views, and Edit Debug Adapters.
+  hexadecimal values, Mute Type Renderers, Show Exception, Debug History, the
+  Threads view, Thread Dump, Parallel Stacks, the Loaded Sources, Modules,
+  Disassembly and Memory views, and Edit Debug Adapters.
 
 **Jump to Line** moves the program to another line without running the code in
 between. It needs a debugger that can do that: Python's debugpy can. The Java
@@ -946,8 +954,10 @@ message** (which turns it into a [logpoint](#logpoints) that logs and never susp
 **Enabled** toggle, **Remove once hit**, which makes it a
 [temporary breakpoint](#temporary-breakpoints), **Record and continue**,
 which makes it a [recording breakpoint](#recording-breakpoints), **Wait for**,
-which makes it a [triggered breakpoint](#triggered-breakpoints), and
-**Group**, which puts it in a [group](#breakpoint-groups). Its title names the file and line, such as *Edit
+which makes it a [triggered breakpoint](#triggered-breakpoints),
+**Group**, which puts it in a [group](#breakpoint-groups), and three
+[filters](#breakpoint-filters) that limit it to some threads, callers or one
+object. Its title names the file and line, such as *Edit
 Breakpoint — Main.java:27*, and the line's code is shown above the fields, since
 the form can cover that line. The hit count makes it stop only on that hit: `5`
 stops on the fifth. Python also takes forms such as `>= 3` or `% 2`; the other
@@ -1159,6 +1169,31 @@ again.
 - **Rust, C and C++** attach [CodeLLDB](#debugging-rust) to the process by
   its process id. The same `ptrace_scope` setting applies. A macOS program keeps its debug information
   outside the executable, so it isn't listed there.
+
+### Opening a core dump
+
+**Debug: Open Core Dump…** (`debug.openCoreDump`, also in **Run ▸ Launch and
+Attach**) opens the core file a crashed **Go**, **C**, **C++** or **Rust**
+program left behind, or one made with `gcore`, as GoLand and CLion do. Pick
+the core file; on Linux the program it is the memory of is named inside the
+core, so Editora finds it. Otherwise, or when the program has moved since,
+Editora asks for the program too. A Go core opens in [Delve](#debugging-go),
+the others in [CodeLLDB](#debugging-rust).
+
+The session opens stopped where the program crashed, with the signal on the
+Debug window's state line, such as *Core dump: SIGSEGV…*. The stop shows the
+first frame in the program's own code, not the runtime's or the C library's
+frame that raised the signal, so the line drawn as the crash is your line. Every
+thread is there with its call stack and variables, and
+[evaluating](#evaluating-expressions), [watches](#watches), the
+[Threads view](#threads-view) and [Thread Dump](#thread-dump) work as at any
+stop.
+
+A core is the memory of a program that has ended, so it can't run: Continue,
+the steps, Run to Cursor, Jump to Line, Restart Frame and Resume Thread are
+disabled, and their tooltips and the command palette say why. A
+[launch.json configuration](#launchjson-configurations) that opens a core, such
+as Delve's `"mode": "core"`, is treated the same way.
 
 ### Debugging Python
 
@@ -1752,6 +1787,36 @@ breakpoint becomes an ordinary one and stops at once. Only line breakpoints can
 be triggers; a [method breakpoint or field
 watchpoint](#method-breakpoints-and-field-watchpoints) can't.
 
+### Breakpoint filters
+
+A breakpoint on a line many threads or callers pass through can be told to stop
+only for the ones you care about, as IntelliJ IDEA's breakpoint filters do.
+[Edit Breakpoint](#debugging) has three fields for it:
+
+- **Only in threads:** stops only in threads whose name matches, such as
+  `worker-*`.
+- **Only when called from:** stops only when the function that called this one
+  matches, such as `OrderService.save`.
+- **Only on the object marked:** stops only when `this` (`self` in Python, Ruby
+  and Rust, `$this` in PHP) is the object you gave that label with
+  [Mark Object](#marking-objects).
+
+Patterns are separated by commas, `*` and `?` are wildcards, `!` before a
+pattern excludes it, and case is ignored: `worker-*, !worker-0` is every
+worker but the first. A breakpoint with filters is drawn as conditional, and
+its hover and the breakpoints list name them, such as *Only in threads:
+`worker-*`*.
+
+The filters are checked by Editora, not by the debugger, so they work with
+every language. At each hit Editora looks at the thread, the caller and the
+object, and when one doesn't match, lets the program go on without showing the
+stop. A filtered breakpoint's [hit count](#debugging) and
+[log message](#logpoints) count only the hits that pass the filters.
+
+To stop on one object, mark it at the breakpoint's first stop: while no object
+carries the label, the instance filter lets every hit through, and once one
+does, the next stops are that object's.
+
 ### Breakpoint groups
 
 Breakpoints can be put in named groups, as in IntelliJ IDEA, and a whole group
@@ -2205,6 +2270,72 @@ string that a row cuts short (JavaScript shows about 1,000 characters) opens
 complete. At an earlier stop in Debug History, it opens what that stop kept.
 XML is read without its DTD and without loading anything outside the text.
 
+### Viewing a collection as a table
+
+**View as Table**, in the right-click menu of a Variables, watch or evaluate
+result row that holds a list, array, slice, set or map, opens the collection in
+a window of its own, as IntelliJ IDEA and Visual Studio do: a row for each
+element and a column for each of its fields, so a list of orders reads as a
+table of their ids, customers and totals. The first column is the element's
+index, or a map's key; an element with no fields, such as a number, shows its
+value. The debugger's own rows under a collection, such as Python's *special
+variables* or an array's `length`, are left out.
+
+- Click a column's heading to sort by it. Numbers sort by value, so `10` comes
+  after `9`.
+- The **Filter rows** field keeps the rows that mention what you type in any
+  cell.
+- **Copy** (Ctrl+C) puts the selected rows, or every row shown, on the
+  clipboard as tab-separated text, ready to paste into a spreadsheet.
+- **Open as CSV** opens the rows shown in a [CSV](/docs/csv) tab.
+- **Refresh** evaluates the collection again at the current stop and shows
+  what it holds now; it needs the program paused.
+
+The table keeps the values of the stop it was opened at, and its note says so,
+such as *12 elements, as at this stop*, so you can step on and compare. A large
+collection shows its first 1,000 elements, and the note says how many there
+are. Each collection opens its own window. [Type renderers](#type-renderers)
+apply to the cells. Checked with Python, Java and Go.
+
+### Type renderers
+
+A type renderer chooses how the debugger shows a value of one type, as IntelliJ
+IDEA's type renderers and Visual Studio's natvis do: a `Money` as `12.50 EUR`
+rather than `Money@1f3a`, and, when unfolded, the fields or expressions that
+matter instead of every field. The debugger's own children stay under a last
+row, **[Raw View]**.
+
+Right-click a value in Variables and choose **Customize Rendering…** to make
+one for that value's type, or to change the one it has. The form has:
+
+- **Type:** the type's name, filled in from the row, such as `com.shop.Money`
+  or `Money`.
+- **Language:** the debugged language it applies to, or **Any language**.
+- **Value:** an expression for the value shown on the row, such as
+  `this.amount + " " + this.currency`. Empty keeps the debugger's own.
+- **Children:** one `name = expression` per line, such as
+  `owner = this.owner.name`. Empty keeps the debugger's own children.
+- **Enabled**, to keep a renderer without using it.
+
+Expressions are written in the debugged program's language and evaluated where
+it stopped, with `this` (or `self`) for the value. A value of a subclass has its
+own type, so a renderer for `Item` does not apply to a `SpecialItem`. A value
+or child that can't be evaluated keeps the debugger's value, or shows its
+message.
+
+Renderers are listed under **Settings → Debugging → Type renderers**, where
+**Add…**, **Edit…** and **Remove** manage them. They apply in Variables,
+[watches](#watches), the [Evaluate window](#the-evaluate-window), the hover
+popup and [View as Table](#viewing-a-collection-as-a-table). A watch or
+evaluation whose expression calls a method or assigns is not evaluated a second
+time for its renderer, so it never runs twice. Setting the value of a
+renderer's child assigns to its expression.
+
+**Mute Type Renderers** (`debug.muteRenderers`), in the Variables tree's
+right-click menu and **Run ▸ Debugger**, shows every value as the debugger gives
+it; run it again to turn the renderers back on. Checked with Java, Python and
+Go.
+
 ### Debug History
 
 The Debug window keeps each stop of a session as it was shown: the call stack,
@@ -2249,6 +2380,35 @@ last session's stops until you start the next one.
 [Recording breakpoints](#recording-breakpoints) add stops to the history
 without stopping the program.
 
+### Stepping backward
+
+In a session that can run the program backward, the Debug window has two more
+buttons: **Step Back** (`debug.stepBack`) goes back over the last statement, with the
+variables as they were before it, and **Reverse Continue**
+(`debug.reverseContinue`) runs backward to the previous breakpoint, or as far
+back as the program was recorded. Both are also in **Run ▸ Stepping** and,
+in the Debug window, on the keys `b` and Shift+C. Unlike
+[Debug History](#debug-history), which shows a stop as it was without touching
+the program, these move the program itself back, and you can step forward
+again from there.
+
+For C and C++ debugged with **GDB** (**C and C++ debugger** on the
+[Rust, C and C++ card](#debugging-c-and-c) of **Settings → Debugging**), turn
+on **Record Execution** (`debug.toggleRecording`, a toggle button in the Debug
+window and in **Run ▸ Stepping**) while the program is paused. GDB records the program from there, the Debug window's
+state line says *recording*, and Step Back and Reverse Continue go back over
+what ran since. Run it again to stop recording. Recording slows the program
+down a great deal, so turn it on just before the part you want to replay, not
+at the start. GDB's recorder needs nothing installed, and it records up to
+200,000 machine instructions by default. In a GDB session, Step Back and
+Reverse Continue are there from the start but disabled until Record Execution
+is on.
+
+A debugger that says it can step back by itself is used as it is: the buttons
+show in its sessions, and Record Execution is not needed. In a session that
+can't run backward, the commands are greyed out in the command palette and say
+why.
+
 ### Threads view
 
 The call stack shows one thread at a time, the one picked in the thread
@@ -2287,6 +2447,56 @@ the program runs update it.
 
 With Python (debugpy), Pause Thread and Resume Thread pause or resume the whole
 program, not one thread.
+
+### Thread Dump
+
+**Debug: Thread Dump** (`debug.threadDump`, also in **Run ▸ Debugger** and the
+right-click menus of the [Threads view](#threads-view) and the call stack)
+shows every thread of the program with its call stack, in a window of its own,
+as IntelliJ IDEA's Get Thread Dump does. The threads are listed on the left
+with their state, the thread on screen first; the selected one's call stack is
+on the right.
+
+It works on a running program too: Editora pauses it for a moment, takes the
+dump and lets it go on, without moving the editor to where it was. That is the
+way to see what a program that hangs is doing. On a paused program, the dump is
+of the stop.
+
+- **Merge identical stacks**, on by default, puts threads whose stacks are the
+  same in one row, such as *worker-0 and 19 others*, so twenty pool workers
+  waiting in one place read as one.
+- The **Filter threads and frames** field finds a thread by its name or by a
+  frame's text.
+- Enter or a double-click on a frame opens its code at its line, even after the
+  program went on: the dump is a snapshot.
+- **Copy** puts the dump on the clipboard as text, laid out as `jstack` prints
+  one; **Open as Text** opens it in a read-only tab; **Take Again** takes a new
+  one.
+
+A thread that was running when the dump was taken has no call stack, and the
+window says so and suggests Pause, then Take Again. That happens with Java when
+a breakpoint stops only its own thread (see
+[Threads in a Java program](#threads-in-a-java-program)). Thread Dump works
+with Java, Python, Go and every other debugger that lists threads; Go's
+goroutines are listed as threads.
+
+### Parallel Stacks
+
+**Debug: Parallel Stacks** (`debug.parallelStacks`, beside Thread Dump in
+**Run ▸ Debugger** and the Threads view's and call stack's menus) draws every
+thread's call stack as one tree, as Visual Studio's Parallel Stacks window
+does. The outermost calls are at the bottom. Threads that went through the same
+calls share a box, which names how many threads it holds, and the tree branches
+where they went different ways, so twenty workers waiting in one place are one
+box of twenty threads. A frame whose threads are on different lines of the same
+function says *several lines*.
+
+The thread on screen is highlighted all the way up, through each box it passes
+and its own top frame. A click on a frame, or Enter on it, opens its line.
+**Copy** puts the tree on the clipboard as indented text, and **Take Again**
+draws it anew. As with Thread Dump, a running program is paused for a moment
+and goes on, and threads that were running at a stop, with no stack to draw,
+are counted in a note. Checked with Python, Java and Go.
 
 ### Filtering Variables
 
@@ -2434,6 +2644,8 @@ gdb:
 | `s` | Step into |
 | `f` | Step out (finish) |
 | `u` | Run to cursor |
+| `b` | [Step back](#stepping-backward) |
+| Shift+C | [Reverse continue](#stepping-backward) |
 | Shift+K | Stop |
 | Shift+R | Restart |
 
@@ -2623,6 +2835,8 @@ program's output reaches the Debug console.
 
 [Attach to Process](#attach-to-process) attaches Delve to a Go program that is
 already running, on Linux and macOS. Stop leaves that program running.
+[Open Core Dump](#opening-a-core-dump) opens the core a crashed Go program
+left in Delve.
 
 Delve isn't bundled. Editora finds `dlv` as set on the **Go (Delve)** card of
 **Settings → Debugging**, else on the PATH, else where `go install` puts it
@@ -2672,7 +2886,8 @@ the same program or test again.
 
 [Attach to Process](#attach-to-process) attaches CodeLLDB to a Rust program
 that is already running, on Linux, when it was built with debug information.
-Stop leaves that program running.
+Stop leaves that program running. [Open Core Dump](#opening-a-core-dump)
+opens the core a crashed Rust program left in CodeLLDB.
 
 CodeLLDB isn't bundled. Editora finds it as set on the **Rust, C and C++
 (CodeLLDB)** card of **Settings → Debugging** (the `codelldb` program, or the
@@ -2720,6 +2935,9 @@ Arguments…** are passed to the program.
 
 [Attach to Process](#attach-to-process) lists running C and C++ programs built
 with debug information, on Linux, and attaches CodeLLDB to the one you pick.
+[Open Core Dump](#opening-a-core-dump) opens a crashed program's core in
+CodeLLDB. With GDB, **Record Execution** lets you
+[step backward](#stepping-backward) through what the program just did.
 
 The **Rust, C and C++ (CodeLLDB)** card of **Settings → Debugging** has the
 switch **Enable C and C++ debugging (CodeLLDB)**, on by default, and **C and
