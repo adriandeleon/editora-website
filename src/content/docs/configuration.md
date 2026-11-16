@@ -384,11 +384,39 @@ The **Python** card under **Settings → Debugging** has:
 | Key | Settings row | Default |
 | --- | --- | --- |
 | `debugPythonSubprocesses` | Debug Python subprocesses | `true` |
+| `debugPythonTemplates` | Template breakpoints: `auto` (Automatic), `on` (Django and Jinja) or `off` (Off) | `auto` |
 
 On, a process that a debugged Python program starts (`multiprocessing`, a
 Python subprocess) is debugged too, in a session of its own; off, it runs
-without the debugger. See
+without the debugger. **Template breakpoints** makes a breakpoint in a Django
+or Jinja template stop on its line; Automatic turns it on for a project that
+uses Django or Jinja. See
 [Debugging Python](/docs/run-debug#debugging-python).
+
+### Go debugging
+
+The **Go goroutines** rows under **Settings → Debugging** choose which
+goroutines the Threads view lists:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugGoHideRuntimeGoroutines` | Hide runtime goroutines | `true` |
+| `debugGoPprofLabels` | pprof labels in names (`*` for every label, or keys such as `job, region`) | `*` |
+| `debugGoGoroutineFilter` | Goroutine filter, in Delve's syntax (`-with label job=*`) | blank (every goroutine) |
+
+See [Goroutines](/docs/run-debug#goroutines).
+
+### Evaluating expressions
+
+**Evaluating expressions** under **Settings → Debugging** has:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugEvaluationTimeLimit` | Time limit, in seconds (`0` is each debugger's own) | `10` |
+
+GDB and Python's debugger stop an expression's call after this long, and the
+program stays paused where it was. See
+[Time limit](/docs/run-debug#time-limit).
 
 ### Rulers and indent guides
 
