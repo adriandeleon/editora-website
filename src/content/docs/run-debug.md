@@ -857,6 +857,7 @@ script as it runs.
 | Run to cursor | `debug.runToCursor` | `C-c C-d u` |
 | Run to cursor past every breakpoint | `debug.forceRunToCursor` | `C-c C-d S-u` |
 | Jump to line | `debug.jumpToLine` | `C-c C-d j` |
+| Have Step Into go over a frame's code ([Don't step into](#dont-step-into)) | `debug.dontStepIntoFrame` | (palette) |
 | [Step back or reverse continue](#stepping-backward) | `debug.stepBack`, `debug.reverseContinue` | (palette) |
 | Have GDB record the program ([Record Execution](#stepping-backward)) | `debug.toggleRecording` | (palette) |
 | Toggle breakpoint | `debug.toggleBreakpoint` | `C-c C-b` |
@@ -872,6 +873,7 @@ script as it runs.
 | Turn a group's breakpoints on or off | `debug.toggleBreakpointGroup` | (palette) |
 | [Export or import breakpoints](#exporting-and-importing-breakpoints) | `debug.exportBreakpoints`, `debug.importBreakpoints` | (palette) |
 | Choose exception breakpoints | `debug.toggleExceptionBreakpoints` | (palette) |
+| Stop on an exception [of a type you name](#exception-breakpoints-by-type) | `debug.addExceptionBreakpoint` | (palette) |
 | Show the [exception card](#exception-card) again | `debug.showException` | (palette) |
 | Debug a project main class | `debug.mainClass` | (palette) |
 | Debug a saved run configuration | `debug.config` | (palette) |
@@ -889,8 +891,10 @@ script as it runs.
 | Pin a value to the caret's line ([pinned values](#pinned-values)) | `debug.pinValue` | (palette) |
 | Unpin the values on the caret's line | `debug.unpinLine` | (palette) |
 | Show numbers as hexadecimal | `debug.toggleHex` | (palette) |
+| Show one number in another base ([Show Value As](#show-value-as)) | `debug.showSelectedAsHex`, `debug.showSelectedAsDecimal`, `debug.showSelectedAsBinary`, `debug.showSelectedAsOctal`, `debug.showSelectedAsCharacter`, `debug.showSelectedAsDefault` | (palette) |
 | Show values without your [type renderers](#type-renderers) | `debug.muteRenderers` | (palette) |
 | Show every thread ([Threads view](#threads-view)) | `debug.threads` | (palette) |
+| Hide or list the Go runtime's goroutines, or filter them ([Goroutines](#goroutines)) | `debug.toggleRuntimeGoroutines`, `debug.filterGoroutines` | (palette) |
 | Take a [thread dump](#thread-dump) | `debug.threadDump` | (palette) |
 | Draw every thread's stack as one tree ([Parallel Stacks](#parallel-stacks)) | `debug.parallelStacks` | (palette) |
 | Go back or forward through earlier stops ([Debug History](#debug-history)) | `debug.historyBack`, `debug.historyForward` | (palette) |
@@ -912,11 +916,12 @@ and Restart. The rest is in four submenus:
   Configuration, Start Compound, Edit Compounds, Attach to Process, Reattach,
   Open Core Dump, Debug in Browser and Attach to Browser.
 - **Stepping**: Pause, stepping by line or by instruction, Run to Cursor, Force
-  Run to Cursor, Restart Frame, and Record Execution, Step Back and Reverse
+  Run to Cursor, Restart Frame, Don't Step Into This, and Record Execution, Step Back and Reverse
   Continue.
 - **Breakpoints**: Toggle Breakpoint and the other kinds of breakpoint (with
   logpoints and triggered breakpoints), Edit Breakpoint, the breakpoint list,
-  groups, export and import, Mute Breakpoints and the exception breakpoints.
+  groups, export and import, Mute Breakpoints, the exception breakpoints and
+  Add Exception Breakpoint.
 - **Debugger**: Apply Code Changes, evaluate, watches, pinned values,
   hexadecimal values, Mute Type Renderers, Show Exception, Debug History, the
   Threads view, Thread Dump, Parallel Stacks, the Loaded Sources, Modules,
@@ -1080,6 +1085,37 @@ Continue then ends the program. Editora keeps your choice for each language and
 each project, as it does for **Break on Caught Exceptions** and **Break on
 Uncaught Exceptions** (see [Managing breakpoints](#managing-breakpoints)).
 
+### Exception breakpoints by type
+
+To stop only on some exceptions, name their type, as IntelliJ IDEA's exception
+breakpoints do. **Debug: Add Exception Breakpoint…**
+(`debug.addExceptionBreakpoint`, also in **Run ▸ Breakpoints**) opens a form
+with:
+
+- **Exception type**: a type, or patterns separated by commas. `*` and `?` are
+  wildcards and `!` before a pattern leaves it out, so `java.io.*`, `*Error`
+  and `!InterruptedException` all work. A pattern matches the full type or its
+  last part, so `KeyError` matches Python's `KeyError`. Blank is any type.
+- **Language**: the language whose exceptions it is for.
+- **Condition** (optional): an expression evaluated where the exception was
+  thrown. `KeyError` with `order.id == 42` stops on that one order's error and
+  lets the rest go by.
+- **Enabled**.
+
+When the program is stopped on an exception, the form offers that exception's
+type. Subclasses are not matched by themselves: name them, or use a pattern
+such as `*IOException`.
+
+The program then stops only on an exception that matches; the others go by.
+An exception nothing catches always stops, and while **Break on Caught
+Exceptions** is on, every exception stops as before. If the condition can't be
+evaluated, the program stops and the status bar says why.
+
+Exception breakpoints are listed in **Debug: Exception Breakpoints…**, after
+the debugger's own filters. Choose one to edit it, turn it off or remove it.
+They are kept per project, with the other breakpoints, and work with every
+language whose debugger stops on exceptions.
+
 ### Exception card
 
 When the program stops on an exception, a card opens under the line that threw
@@ -1226,6 +1262,18 @@ subprocesses without the debugger, turn off **Debug Python subprocesses** on
 the Python card of **Settings → Debugging**. A program debugged on a
 [remote host](#debugging-on-a-remote-host) runs its subprocesses without the
 debugger.
+
+A breakpoint on a line of a **Django or Jinja template** stops on that line.
+The call stack's top frame is the template, and Variables shows the template's
+context, such as a loop's item and `forloop`. Editora turns this on for a
+project that uses Django (a `manage.py`, or Django in its requirements) or
+Jinja (Jinja2, Flask or Quart in its requirements). **Template breakpoints**
+on the Python card of **Settings → Debugging** sets it for every project:
+**Automatic** (the default), **Django and Jinja**, or **Off**. A project in a
+remote folder isn't detected, so pick Django and Jinja there.
+
+A pandas DataFrame or Series, or a numpy array, opens as a table of its rows
+with [View as DataFrame or View as Array](#dataframes-and-numpy-arrays).
 
 A pytest test is debugged from its test file:
 
@@ -1414,7 +1462,8 @@ Step Into skips JDK classes (`java.*`, `javax.*`, `jdk.*`, `sun.*`, `com.sun.*`
 and a few more) and synthetic methods, and a frame's variables include its
 class's static fields. You can turn either off on the Java card of
 **Settings → Debugging**: **Step Into skips JDK classes and synthetic methods**
-and **Show static fields in Variables**.
+and **Show static fields in Variables**. To have Step Into go over your own or
+a library's classes too, add them to [Don't step into](#dont-step-into).
 
 When you step into JDK or library code anyway, or click such a frame in the
 call stack, its source opens in a read-only tab. A stop at a breakpoint, a
@@ -2172,6 +2221,20 @@ popup as a [hover](#inspecting-values), as a tree for an object, and an
 expression that fails shows the debugger's reason. Unlike hovering, Quick
 Evaluate runs code, so a call it evaluates has its effects.
 
+#### Time limit
+
+An expression that calls a function which never returns, in a watch, the
+Debug console or a hover, would hold the paused program for good. With GDB and
+Python's debugger, the call is stopped after a time limit: the program stays
+paused on the same line, and the next expression is evaluated there. Set it
+with **Time limit** under **Evaluating expressions** in
+**Settings → Debugging**: 10 s by default, or 5 s, 30 s, 60 s, 300 s, or
+**Each debugger's own**. It applies from the next session on.
+
+CodeLLDB stops such a call in a watch or a hover by itself. The Java,
+JavaScript and Go debuggers have no limit to set: after 30 seconds Editora
+stops waiting and says the program is still running the expression.
+
 ### Watches
 
 A watch is an expression evaluated at every stop and listed under **Watches**
@@ -2188,6 +2251,12 @@ A watch row's right-click menu has:
   A paused watch stays paused in later sessions.
 - **Evaluate Once**, on a paused watch while the program is paused: evaluates
   it for the stop shown, and it stays paused.
+- **Set Value…**, while the program is paused and the watch has a value: gives
+  the watch's expression a new value, such as a variable, a field or an
+  element. The prompt starts with the current value, and every watch and value
+  shown is evaluated again afterwards. Python and JavaScript set the expression
+  itself; Java, Go and C and C++ set the variable the watch names, and Java
+  evaluates an assignment for a field such as `o.n`.
 - **Remove All Watches**, also on the Watches heading: removes every watch.
 
 ### Pinned values
@@ -2297,6 +2366,23 @@ collection shows its first 1,000 elements, and the note says how many there
 are. Each collection opens its own window. [Type renderers](#type-renderers)
 apply to the cells. Checked with Python, Java and Go.
 
+#### DataFrames and numpy arrays
+
+In a Python program, the row is named **View as DataFrame** on a pandas
+DataFrame or Series, and **View as Array** on a numpy array, as PyCharm's data
+viewer does. It opens the data's rows, not the object's attributes:
+
+- Columns keep their names, and hovering a column's heading shows its dtype.
+  The heading of the window says the kind and the shape.
+- A Series, or an array of one dimension, is a single column of values. A
+  structured array's fields are its columns.
+- An array of more dimensions is laid out as rows of its last one, each row
+  named by the indexes before it, such as `(1, 2)`.
+- The first 1,000 rows show; **Load More** brings the next 1,000.
+
+Filter, sort, Copy and Open as CSV work as for any table, and Refresh reads
+the first rows again while the program is paused.
+
 ### Type renderers
 
 A type renderer chooses how the debugger shows a value of one type, as IntelliJ
@@ -2379,6 +2465,30 @@ starts an empty history, but after the program ends you can still read the
 last session's stops until you start the next one.
 [Recording breakpoints](#recording-breakpoints) add stops to the history
 without stopping the program.
+
+### Don't step into
+
+**Don't step into**, in **Settings → Debugging**, lists code that Step Into
+goes over: a step that lands there leaves at once. An entry can name:
+
+- a class or package: `com.shop.util.*`
+- a module: `requests`
+- a function: `fmt.*`, `std::*`
+- a file: `**/vendor/**`
+
+`*` stands for any text. Each entry is for one language or every language, and
+has its own on/off switch. **Add…**, **Edit…** and **Remove** change the list.
+
+To add the code you are in, right-click a frame in the call stack and choose
+**Don't Step Into This…** (`debug.dontStepIntoFrame`, also in
+**Run ▸ Stepping**). It offers the frame's code as its language names it: the
+class in Java, the file in Python (or the npm package in JavaScript), the
+package in Go and C#, or the outer namespace in C++ and Rust.
+
+A breakpoint inside code on the list still stops. The Java, Python and
+JavaScript debuggers, and the other JVM languages', skip the code themselves;
+with Go, Rust, C and C++ and the rest, Editora steps back out when a step
+lands there.
 
 ### Stepping backward
 
@@ -2528,7 +2638,28 @@ turn it off or quit Editora. Switching does not mark every number as
 [changed](#inspecting-values).
 
 The debugger formats the numbers: the Java and Python debuggers do,
-JavaScript's does not, so a JavaScript program's numbers stay decimal.
+JavaScript's does not, so a JavaScript program's numbers stay decimal. CodeLLDB
+and Delve ignore it too; [Show Value As](#show-value-as) works with every
+debugger.
+
+### Show Value As
+
+Right-click a whole number in Variables or a watch and choose **Show Value As ▸
+Decimal**, **Hexadecimal**, **Binary**, **Octal** or **Character** to see that
+one value that way, while the others stay as they are. **As the Debugger Shows
+It** goes back.
+
+- A negative number shows as its two's complement for its type: `-42` as an
+  `int` is `0xffffffd6`. A `char` shows its code.
+- Chosen on an array or an object, it applies to the numbers inside, except
+  one with its own choice.
+- The choice holds at the next stop and in the next session, until the window
+  closes.
+- **Copy Value** copies what is shown.
+- On a value that is not a number, the submenu is greyed out and says why.
+
+It works with every debugger. GDB and Delve don't give a value's type, so with
+them a negative number keeps its sign, such as `-0x2a`.
 
 ### Disassembly and Memory
 
@@ -2827,7 +2958,8 @@ program's output reaches the Debug console.
   work. A struct, slice or map unfolds to its fields or items.
 - **Goroutines are threads.** The call stack's thread list and the
   [Threads view](#threads-view) name each one, such as
-  `[Go 6] main.restock.func1`. Delve lists at most 1024 goroutines.
+  `[Go 6] main.restock.func1`. Delve lists at most 1024 goroutines. See
+  [Goroutines](#goroutines) for which are listed.
 - **A panic** stops the program where it happened. Delve does that by itself,
   so Go has no [exception breakpoints](#exception-breakpoints) to choose.
 
@@ -2837,6 +2969,29 @@ program's output reaches the Debug console.
 already running, on Linux and macOS. Stop leaves that program running.
 [Open Core Dump](#opening-a-core-dump) opens the core a crashed Go program
 left in Delve.
+
+#### Goroutines
+
+The Threads view lists your program's goroutines. The runtime's own, such as
+the garbage collector's workers, the finalizer and the scavenger, are left out.
+A goroutine started under pprof labels (`pprof.Do`) shows them in its name:
+`[Go 20 job:resize-0] main.worker`.
+
+Right-click the Threads view for:
+
+- **Hide Runtime Goroutines** (`debug.toggleRuntimeGoroutines`): untick it to
+  list the runtime's goroutines again.
+- **Filter Goroutines…** (`debug.filterGoroutines`): list only the goroutines
+  that Delve's own filter keeps, such as `-with label job=*`,
+  `-without go runtime.*` or `-with user`. Empty lists every goroutine.
+
+Both apply to the running program at once and are kept. A filter can leave out
+the goroutine the program stopped on.
+
+**Go goroutines** in **Settings → Debugging** holds the same choices:
+**Hide runtime goroutines** (on), **pprof labels in names** (`*` for every
+label, or the keys to show, such as `job, region`; empty shows none, from the
+next session on) and **Goroutine filter**.
 
 Delve isn't bundled. Editora finds `dlv` as set on the **Go (Delve)** card of
 **Settings → Debugging**, else on the PATH, else where `go install` puts it
