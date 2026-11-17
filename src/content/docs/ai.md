@@ -118,8 +118,15 @@ Pick a provider in Settings:
 - **LM Studio / Bionic**: a separate local provider with its own endpoint,
   action model, inline model, and optional token. It can also supply the model
   for the **OpenCode** ACP agent preset without writing OpenCode config files.
+  For the preset, install the OpenCode CLI, select **LM Studio / Bionic** on the
+  AI Actions page and fill in its model (the preset needs one; AI Actions
+  themselves need not be enabled). A changed model, endpoint or token applies
+  from the next agent session.
 - **Codex**: use the user-installed `codex-acp` adapter and an existing Codex
-  login for Explain, Rewrite, and commit-message generation. These actions use
+  login for Explain, Rewrite, and commit-message generation. Install both with
+  `npm install -g @agentclientprotocol/codex-acp @openai/codex`, then sign in
+  with `codex login`. Plain `codex` starts a terminal program and cannot be used
+  here. These actions use
   separate text-only sessions and leave your Agent chat intact. Codex has its
   own **Model** field (blank uses the Codex default). Inline completion is
   unavailable with this provider, and it takes no API key or endpoint.

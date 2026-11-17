@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Doctor, a blocked first launch, finding external tools, the application log, recovering after a crash, performance, and resetting config.
+description: Doctor, a blocked first launch, finding external tools, plugins that fail, the application log, recovering after a crash, performance, and resetting config.
 category: Help
 order: 3
 ---
@@ -452,6 +452,12 @@ Java N, but the code was built for Java M*, the program runs on another JDK
 than the one the language server builds for. Choose the program's JDK as the
 **Default JDK**, or restart the debug session. See
 [Build tools](/docs/build-tools) for which JDK a program runs on.
+
+## A plugin does nothing or stops Editora starting
+
+A plugin's row in **Settings → Plugins** says why it did not load or start, and
+[`--disable-plugins`](/docs/cli#flags) starts Editora without any plugin. See
+[Plugins: Troubleshooting](/docs/plugins#troubleshooting).
 
 ## Seeing errors in a packaged build
 

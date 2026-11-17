@@ -1,6 +1,6 @@
 ---
 title: Plugins
-description: Install plugins from the registry, and write your own to extend Editora.
+description: Install plugins from the registry, fix one that does not work, and write your own to extend Editora.
 category: Customization
 order: 4
 ---
@@ -60,6 +60,12 @@ name and, when it has saved data, saying that the data goes too. Its `plugin.jso
 last, so a folder that cannot be fully deleted is still listed and can be
 removed again.
 
+Export Configuration leaves out the data plugins saved unless you tick
+**Include the data plugins saved** (it is asked only when a plugin has saved
+data). A plugin's data folder can hold tokens, keys or notes, so leave it off
+for an export you will share. The installer's staging folders are never
+exported.
+
 ### When changes take effect
 
 Plugins are loaded once, at startup, and every window of a session runs the
@@ -97,23 +103,6 @@ The result of a Browse or install started here is shown under its buttons, as
 well as in the status bar. Install and registry errors are sentences in your
 language, in a dialog titled **Plugins**; a plugin that fails to start, or
 whose main class is missing, is reported in the Message Log and on its row.
-
-### If a plugin breaks startup
-
-Start Editora with [`--disable-plugins`](/docs/cli#flags) to load no plugin for
-that session; nothing is saved, and Settings → Plugins and the Doctor say it is
-on. Then switch the plugin off or remove it, and restart. **Restart Now** from
-that session starts Editora without the flag.
-
-The Doctor's **Plugins** section (**View: Doctor**) shows how many plugins run
-and how many are installed, and has a row for each plugin that failed to load,
-failed to start, or started slowly, with a link to Settings → Plugins.
-
-Export Configuration leaves out the data plugins saved unless you tick
-**Include the data plugins saved** (it is asked only when a plugin has saved
-data). A plugin's data folder can hold tokens, keys or notes, so leave it off
-for an export you will share. The installer's staging folders are never
-exported.
 
 ## Security
 
@@ -265,3 +254,33 @@ is removed at startup and its id is never listed, installed or loaded again.
 The GnuPG plugin (`gpg-tools`) is retired, since
 [encrypted files](/docs/encrypted-files) are built in; its gpg path and last
 recipient are kept.
+
+## Troubleshooting
+
+### A plugin does nothing
+
+Look at its row in **Settings → Plugins** first. A plugin that did not load
+says why there: its `plugin.json` could not be read, its main class was not
+found, it failed to start, or it changed since you enabled it. A row that says
+a restart will change something means the plugin you see is not the one
+running yet. The Doctor's **Plugins** section (**View: Doctor**) lists the
+plugins that failed to load or start, and a plugin that fails to start is also
+named in the Message Log.
+
+### A plugin's chord does nothing
+
+Your own key bindings win over a plugin's, so a binding of yours on the same
+chord shadows it. A plugin can also give chords for one keymap only (see
+[Writing a plugin](#writing-a-plugin)), which do nothing in another keymap.
+The command is still in the palette either way.
+
+### If a plugin breaks startup
+
+Start Editora with [`--disable-plugins`](/docs/cli#flags) to load no plugin for
+that session; nothing is saved, and Settings → Plugins and the Doctor say it is
+on. Then switch the plugin off or remove it, and restart. **Restart Now** from
+that session starts Editora without the flag.
+
+The Doctor's **Plugins** section shows how many plugins run and how many are
+installed, and has a row for each plugin that failed to load, failed to start,
+or started slowly, with a link to Settings → Plugins.
