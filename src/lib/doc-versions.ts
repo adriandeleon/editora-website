@@ -23,6 +23,10 @@ import {
   type CmdGroup,
 } from "./commands";
 import {
+  commandGroups as commandGroups_0_27_0,
+  keymaps as keymaps_0_27_0,
+} from "./commands-archive/v0-27-0";
+import {
   commandGroups as commandGroups_0_26_0,
   keymaps as keymaps_0_26_0,
 } from "./commands-archive/v0-26-0";
@@ -156,6 +160,12 @@ type Spec = Pick<DocVersion, "version" | "archive" | "commandGroups" | "keymaps"
 
 // Newest first. Add an entry here when a release is archived.
 const ARCHIVED: Spec[] = [
+  {
+    version: "0.27.0",
+    archive: "0.27.0",
+    commandGroups: commandGroups_0_27_0,
+    keymaps: keymaps_0_27_0,
+  },
   {
     version: "0.26.0",
     archive: "0.26.0",
