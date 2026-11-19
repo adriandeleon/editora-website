@@ -31,6 +31,12 @@ The master switch is **Enable LSP (language servers)** in **Settings → LSP**.
 
 ![Shelf.java with the caret on discountFor and the References tool window below: 2 references to discountFor in 2 files, one in Shelf.java at 48:41 with its line, and one in ShelfTest.java](/screenshots/docs/lsp-references.png "Find references in a Java project, grouped by file.")
 
+In the References and Hierarchy tool windows a row's right-click menu (or the
+Menu key, Shift+F10) has Open and Copy, and the Copy key copies the selected row;
+the commands are References: Open Reference / Copy Line
+(`references.openSelected`, `references.copySelected`) and Hierarchy: Open
+Declaration / Copy Name (`hierarchy.openSelected`, `hierarchy.copySelected`).
+
 The goto, references and hover commands are also in the editor right-click menu
 while a server is active, under a single **LSP** submenu, and you can
 **Ctrl/Cmd-click** a symbol to jump to its definition. **Go to Implementation**

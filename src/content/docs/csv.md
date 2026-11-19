@@ -34,6 +34,16 @@ control at the top right of the editor, or with `view.togglePreview` and
 - **Editable** cells and headers, written straight back to the file.
 - Right-click to **Export to PDF / Print / Excel (`.xlsx`) / ODF (`.ods`)**.
 
+The grid's actions are commands too, acting on the focused cell:
+
+| Action | Command |
+| --- | --- |
+| Sort by the focused column, smallest or largest first | `csv.sortAscending` / `csv.sortDescending` |
+| Back to the file's row order | `csv.clearSort` |
+| Rename the focused column (as a double-click on its header) | `csv.renameColumn` |
+| Read the first row as column titles, or not | `csv.toggleHeaderRow` |
+| Move the editor's caret to the focused cell's text | `csv.revealFocusedCell` |
+
 It's on by default for CSV/TSV files (**Settings → Editor → CSV**, or *View:
 Toggle CSV Grid Preview*).
 

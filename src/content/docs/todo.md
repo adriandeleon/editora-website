@@ -63,7 +63,9 @@ The tool window's **Group by** selector groups matches by **File**,
 **Priority**, **Tag**, or **Keyword**. Right-click a match to edit it in your
 source: **Mark Done** rewrites its keyword to `DONE` (**Reopen** reverses it),
 **Priority** sets or clears the priority, and **Edit Description…** changes the
-text.
+text. The same actions act on the selected match from the palette:
+`todo.markSelectedDone`, `todo.reopenSelected`, `todo.setSelectedPriority` and
+`todo.editSelectedDescription`.
 
 ## Commands
 

@@ -267,6 +267,13 @@ field (a comma-separated list of language ids) limits a snippet to those
 languages. A file with a mistake is reported with its name, the reason and the
 line, and only the bad entry is skipped.
 
+A snippet file Editora writes carries `"schemaVersion": 1`, which says which
+format it is in. A file without it loads as before and gets the marker the next
+time Editora saves it. A snippet file written by a newer Editora in a newer
+format is not loaded: it is left exactly as it is, a copy is kept beside it
+(`java.json.v2.bak`, say), saving into it is refused, and
+[Settings sync](/docs/settings-sync) does not merge it.
+
 ### Changing or disabling a bundled snippet
 
 Bundled snippets appear in **Settings → Snippets** alongside yours. Editing one
@@ -437,6 +444,11 @@ A single-file template looks like this:
 
 A file that is not this shape is skipped. The picker and **Template: Reload
 Templates** name the file, the reason, and the line of a JSON syntax error.
+
+A template you save carries `"schemaVersion": 1`, which says which format it is
+in; a template without it loads as before. A template written by a newer
+Editora in a newer format is not loaded: it is left exactly as it is, and a copy
+is kept beside it (`<id>.json.v2.bak`, say).
 
 ### Starting a project
 

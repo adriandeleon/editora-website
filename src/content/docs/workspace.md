@@ -151,8 +151,8 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
 - Ignored, dependency (`node_modules`), vendored and generated files and folders
   are **drawn dimmed**, and their tooltip says why. ⋯ → **Hide ignored and
   generated** takes them off the map.
-- Filter globally by open, unsaved, Git-changed, bookmarked, or Personal Notes
-  state and by file type. Matches and the folders that contain them stay
+- Filter globally by open, unsaved, Git-changed, bookmarked, Personal Notes or
+  **Problems** state and by file type. Matches and the folders that contain them stay
   prominent while everything else fades (still readable), or drops out with
   **Hide unmatched** (below). The Git chip includes the files inside a new,
   untracked folder. **Clear** turns the filters off and clears the search.
@@ -166,7 +166,10 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   file's licence header. A card, code or note, opens the way a new column does:
   past its row's column the way the map flows (right of it when the map flows
   left to right, below it when it flows down, and so on), level with its row,
-  and past any column or card already open there. The map then pans to put the
+  and past any column or card already open there. A second card opened from a
+  row of the same column lines up with the first: at the same left edge and
+  below it when the map flows sideways, at the same top and beside it when it
+  flows up or down. The map then pans to put the
   card in the middle of the window, with its row still in sight. This follows
   **Focus new column** in the options (⋯) menu, as columns do. With it off, the
   map never pans for a card: a card opens past its column when there is room in
@@ -186,7 +189,11 @@ row limit, what the search found, and the outcome of a move, an undo or a delete
   rename, delete, reveal, terminal,
   Local History, and Git actions available in the tree. A file's menu adds
   **Related Test / Subject**, and a folder's adds **Find in Folder…** and Git ▸
-  **Show Git History** (see [Following the code](#following-the-code)). Rename,
+  **Show Git History** (see [Following the code](#following-the-code)). A file
+  or folder also has **Copy Permalink**; a folder or a source file
+  **Dependencies**, a folder **Code Metrics**, and a changed file or folder
+  **Show Changes** (see [Dependencies and code metrics](#dependencies-and-code-metrics)
+  and [Reviewing changes](#reviewing-changes)). Rename,
   New Folder, Delete, Undo Move and Reveal stay in the Map window and ask there;
   a folder or file made from the Map is shown and selected on it. The other
   actions bring the editor window forward.
@@ -211,12 +218,14 @@ the faded rows back. The choice is remembered per workspace.
 
 The **options (⋯) menu** holds **Keep current zoom**, **Focus new column**,
 **Single-click opens files**, **Compact folder chains**, **Compact rows**, **Hide
-ignored and generated**, **Show recent changes**, **Hide all open Personal
-Notes**, **Always select opened file** and **Flow ▸**; then **Reveal Active
-File**, **Project overview**, **Open cards**, **Collapse All**, **Working sets
-▸** and **Trails ▸**; then **Print…**, **PDF…** and **Export ▸**. Keep current
-zoom, Focus new column, Single-click opens files and Compact folder chains are
-on by default; every on/off option except Hide all open Personal Notes is
+ignored and generated**, **Show recent changes**, **Show dependencies of the
+selection**, **Follow the debugger**, **Hide all open Personal Notes**, **Always
+select opened file** and **Flow ▸**; then **Reveal Active File**, **Project
+overview**, **Project Dependencies**, **Project Code Metrics**, **Review
+Changes**, **Open cards**, **Collapse All**, **Working sets ▸** and **Trails
+▸**; then **Print…**, **PDF…** and **Export ▸**. Keep current zoom, Focus new
+column, Single-click opens files, Compact folder chains and Follow the debugger
+are on by default; every on/off option except Hide all open Personal Notes is
 remembered per workspace. With Keep current zoom and Focus new
 column, opening a folder preserves the current scale and brings its new column
 into view, and a new card is centred in the window; turning zoom preservation off restores fit-to-content when the map
@@ -234,7 +243,13 @@ Preview and note cards sit on the map like columns: panning carries them along,
 zooming scales them with the columns around them, and you can drag a card past
 the edge of the window and pan back to it later. The overview marks every open
 card, and ⋯ → **Open cards** lists them, the most recently used first; click a
-mark or pick one to bring that card back into view with the keyboard in it. With
+mark or pick one to bring that card back into view with the keyboard in it.
+**Switch Card…**, first in that menu, or the Recent Files key typed on the Map
+(`Ctrl+E` in the IntelliJ keymap, `Ctrl+R` in VS Code's), lists the open cards by
+name, starting on the one you were in before: type to filter, `Enter` to go
+there. `Ctrl+Shift`+arrow keys move the keyboard to the nearest card in that
+direction, from a card or from the map's selected row; the map moves only when
+that card is partly out of view. With
 a card focused, `Alt`+arrow keys move it and `Alt`+`Shift`+arrow keys resize it.
 Cards, the zoom bar and the overview never hide one another. A card's resize
 corner stays under the pointer at any zoom. Each card also keeps a live
@@ -247,13 +262,15 @@ to read the rest*, that opens the file when you click it. A text or image card's
 own **−** and **+** buttons size its content on top of the map's zoom, so a card
 can stay readable when the map is zoomed out. At most **eight cards** are open
 at once, previews and notes together; opening a ninth replaces the one used
-least recently that is not pinned.
+least recently that is not pinned. The Overview, Changes, History,
+Dependencies, Code Metrics and Symbol Graph cards are one of each and do not
+count toward the eight.
 
 Cards are for a glance beside the map; **Open** takes the file to the editor
 for reading and editing. A card's lock says so: *Preview — read only; Open to
 edit*.
 
-- **Pin** a card from its title bar, or with **Pin Card** in its menu, to keep
+- **Pin** a card from its title bar, or with **Card** ▸ **Pin Card** in its menu, to keep
   it open until you close it with its own **×**: it is never closed to make
   room, and closing its folder, **Collapse All**, **Close Other Branches**,
   `Escape` on the map or a trail moving on all leave it open. When all eight are
@@ -261,13 +278,13 @@ edit*.
 - **Find in a card** with `Ctrl+F` (`⌘F` on macOS, `C-s` in Emacs) while the
   card has the keyboard, or **Find in Card…** in its menu. A find bar opens
   under the title bar with *k of N*, previous and next, and **Aa** for match
-  case. `Enter` and `Shift+Enter` (or `F3` and `Shift+F3`) step through the
-  matches. `Escape` closes the find bar with the match still selected; a second
+  case. Every match is highlighted, the current one more strongly. `Enter` and
+  `Shift+Enter` (or `F3` and `Shift+F3`) step through the matches. `Escape` closes the find bar with the match still selected; a second
   `Escape` closes the card.
 - **Who changed it last.** In a Git project a card's status line ends with the
   last change to its file, or to a declaration card's lines: *Last change: Ada,
-  3 days ago*. Hover it for the commit's subject. **Annotate** in the card's
-  menu, beside **Show Git History**, opens the file with
+  3 days ago*. Hover it for the commit's subject. **Annotate**, in the card
+  menu's **Git** ▸ submenu beside **Show Git History**, opens the file with
   [blame annotations](/docs/git#blame).
 
 #### Searching the map
@@ -285,6 +302,14 @@ project**, however large or deep, and answers as you type.
 - Start with **`#`** to find files only, or with **`@`** to find declarations
   (`@NewScheduler`), as in [Search Everywhere](/docs/navigation#search-everywhere).
   A declaration is shown in its file's Structure column.
+- Start with **`%`** to find **text in the files** (`%needle`) instead of their
+  names. The files that hold it stand out on the map, and each step through
+  the lines found opens the card of the declaration that holds the line, with
+  the text selected. The next step replaces that card unless you keep it with
+  `Ctrl+Enter`, move it or pin it. Find in Files (`search.inFiles`) typed in
+  the Map window starts the same search, and **Find in Folder…** on a folder of
+  the Map starts it limited to that folder; the status line names the folder
+  searched.
 
 The best match comes first: the exact name, then whole words, then partial
 matches; a name in the case you typed; source before tests, fixtures, resources
@@ -323,9 +348,16 @@ where you were before you searched.
 
 **Back** and **Forward** (`Alt+Left` / `Alt+Right`) step through the **places**
 you visited: files you opened or previewed, where a search landed, reveals,
-breadcrumb jumps and rows you clicked. A run of arrow keys is one step, so Back
-returns to where the run started. Right-click either button for the list of
-places.
+breadcrumb jumps and rows you clicked, and the cards you
+[followed the code](#following-the-code) through, in the order you visited
+them. A run of arrow keys is one step, so Back returns to where the run
+started. The same history answers the buttons, `Alt+Left` / `Alt+Right` on the
+map, and your keymap's Back and Forward (`nav.back`, `nav.forward`) typed
+anywhere in the Map window, a card included; they never move the editor. A
+card comes back with its caret where you left it, and one you have closed since
+opens again at that line. Right-click either button, or run *Project Map:
+History* (`projectMap.history`), for the list of places; a card's place says
+which line it was at.
 
 *Project Map: Reveal Active File* (`projectMap.revealActiveFile`; `Alt+F1`,
 `C-c o r` in Emacs) opens the Map window, or brings it forward, and selects the
@@ -338,13 +370,15 @@ select opened file** in the ⋯ menu to have
 the Map follow every file you open. A Map opened with nothing selected starts at
 the current file. A revealed row, like a search landing or a Back step, is shown
 a third of the way down with the folders that lead to it (zooming out to no less
-than 70% when that shows more), and flashes briefly.
+than 70% when that shows more), and flashes briefly (not when the system's
+reduced-motion setting is on).
 
 In a column, **type the first letters of a name** to jump to it; a one-second
 pause starts again, and the same letter again steps to the next row with that
 initial. `Home` and `End` go to the column's first and last rows.
 
-The first time you open the Map on a project, a **Project overview** card shows
+The first time the Map shows a folder in a session (not again when you close the
+window and open it later in the same session), a **Project overview** card shows
 its README, build system and modules, languages, top-level folders with their
 file counts, likely entry points, and where the tests and docs are. Click any of
 them to see it on the map. It opens before the project's own column, the way the
@@ -357,7 +391,11 @@ it holds.
 
 **The Map remembers your exploration** of a local project across restarts: the
 folders you opened, the selected row, Back and Forward, the zoom and pan, and the
-code cards you had open, with their place, size and Structure column. They come
+code cards you had open, with their place, size, Structure column, caret and
+scroll position. The answers asked from a card (references, callers, a
+definition and the rest) come back with their edges and their **+N more** list,
+without asking the language server again. All this is saved moments after it
+changes, so it survives a crash too. It comes
 back the first time the Map shows that folder again; anything deleted meanwhile
 is dropped. Note cards are not kept. To keep a view you want to come back to on
 purpose, save it as a [working set](#working-sets).
@@ -387,12 +425,23 @@ title names the declaration with its parameter types, for example
   [Narrow to fold region](/docs/editing#the-emacs-editing-model) toggle does.
 
 A declaration row's own right-click menu has **Preview**, **Open at
-Declaration** and **Open Narrowed**.
+Declaration** and **Open Narrowed**; then the Map's questions about it (Show
+References, Callers, Callees, Implementations, Supertypes or Subtypes as Cards,
+Go to Type Definition, Go to Super Method, **Show Call Hierarchy**, **Show Type
+Hierarchy** and **Symbol Graph**, see [Following the code](#following-the-code));
+**In the Editor** ▸; and **Related Test / Subject**, **Declaration History** and
+**Show Git History**.
+
+**Usage counts.** A method, class or field row, in the Map's Structure columns
+and in a card's, says how many times it is used (*12 uses*, *no uses*), as the
+editor's code lens does. The counts come from a language server already running
+for the file (the Map never starts one), and they update a moment after you
+stop typing. Without a server a row shows no count.
 
 A declaration card's **‹ ›** buttons, or `Alt+Page Up` / `Alt+Page Down`, show
 the previous or next declaration of the same file in the same card. **Show in
-Structure**, in the card's menu, selects the declaration in the file's Structure
-column, opening the column if it is closed.
+Structure**, in the card menu's **Card** ▸ submenu, selects the declaration in
+the file's Structure column, opening the column if it is closed.
 
 Several declarations of one file can be open side by side, within the
 eight-card limit. The columns and cards follow your edits: a card follows its
@@ -450,41 +499,175 @@ closed row does not widen it; opening or closing a row fits it again.
   row; clicking it in the card's column brings it back. A pinned card stays
   where it is, and only its line moves.
 - From the keyboard, the Structure tool window's key (`Alt+7` in the Emacs and
-  IntelliJ keymaps, `⌘7` in IntelliJ on macOS) or **Show this preview's
-  Structure** in the card's menu opens the column and puts the keyboard in it;
+  IntelliJ keymaps, `⌘7` in IntelliJ on macOS) or **Card** ▸ **Show this
+  preview's Structure** in the card's menu opens the column and puts the keyboard in it;
   the same key goes back to the card. The arrows and `C-n`, `C-p`, `C-f` and `C-b` move in the column, its
   right-click menu is a declaration row's, and `Escape` or its **×** takes it
   off.
 
+#### Reading code in a card
+
+A code card reads like the editor. It shows the language server's semantic
+highlighting and inlay hints, and pins the headers of the class or method you
+have scrolled into, as [sticky scroll](/docs/code-navigation#sticky-scroll)
+does; each follows its editor setting.
+
+- **The gutter.** Beside each line number a card shows the line's breakpoint,
+  bookmark and Git change bar, and a **▶** on a JUnit test or a Java `main`
+  method that runs it, as the editor's gutter does. Click in the breakpoint
+  column to set or remove a breakpoint, whether the file is open in a tab or
+  not; a running debug session is told at once. Each column appears only when
+  the file has something to show in it, and a declaration card marks the file's
+  own lines. *Project Map: Toggle Breakpoint in Card*
+  (`projectMap.cardToggleBreakpoint`) and *Run from Card Gutter*
+  (`projectMap.cardRun`) do the same at the caret's line.
+- **Problems.** While a language server runs for the file, a card underlines
+  its errors and warnings as the editor does, and its status line counts them;
+  a declaration card shows only its declaration's. Rest the mouse on the text
+  to see the problems there and, on a name, its documentation.
+- **Moving around.** Your keymap's keys move the card's caret, never the
+  editor's: Go to Line (`nav.goToLine`) opens a small bar under the card's title,
+  numbered as the file numbers its lines, so a declaration card keeps its
+  file's line numbers; the matching bracket and Beginning / End of Defun work
+  too. In a file card, `Alt+Page Up` / `Alt+Page Down` move the caret to the
+  declaration before or after it. Next Problem and Previous Problem
+  (`lsp.nextProblem`, `lsp.previousProblem`) go through the card's problems.
+  When the caret rests on a name, its other uses in the card are highlighted.
+- **Copying.** Your keymap's Copy and Select All keys (`M-w` in Emacs, or a key
+  of your own) work in a card. **Copy** in the card's menu copies the
+  selection, or the whole text (**Copy All**) when nothing is selected.
+
+**The card's right-click menu** starts with Copy, Select All, **Find in Card…**
+and **Go to Line…** (a declaration card puts **Open Narrowed** first). Then come
+the code questions: **Go to Definition** and **Show References as Cards**, a
+**Navigate** ▸ submenu (Go to Declaration, Go to Type Definition, Show
+Implementations as Cards, Go to Super Method), a **Hierarchy** ▸ submenu (Show
+Callers, Callees, Supertypes and Subtypes as Cards, Show Call Hierarchy, Show
+Type Hierarchy and Symbol Graph), **Quick Documentation** and **In the Editor**
+▸. Then **Related Test / Subject**, **Dependencies**, a **Git** ▸ submenu
+(Declaration History, Show Git History, Annotate, Copy Permalink), Add Bookmark
+and Add Note, and a **Card** ▸ submenu (the card's Structure column, Previous
+and Next Declaration, Show in Structure, Pin Card, Move to Free Space). A row
+the file's language cannot answer, such as Show Callers in a `pom.xml`, is
+greyed, and its tooltip says why.
+
 #### Following the code
 
-From a card's or a declaration row's right-click menu, **Go to Definition**,
-**Find Usages**, **Go to Implementation**, **Type Hierarchy** and **Call
-Hierarchy** open the file in the editor at that spot and run there, bringing the
-editor window forward. Their keys work in a focused card too (`F12` and
-`Shift+F12` in the CUA and VS Code keymaps), at the card's caret.
+The editor's code navigation works inside Map cards and answers with cards
+beside them, without leaving the Map: Go to Definition (and Peek Definition),
+Go to Declaration, Go to Type Definition, Go to Implementation, Go to Super
+Method, Find Usages, Call Hierarchy and Type Hierarchy. Type them in a card
+with your keymap's keys (`lsp.gotoDefinition`, `lsp.findReferences` and the
+rest), pick them from a card's or a declaration row's menu, or `Ctrl`+click
+(`⌘`+click on macOS) a name. With a declaration row selected, the same keys
+ask about that declaration. Each result card is joined to the card it came from
+by a labelled edge (*definition*, *implements*, *extends*, *calls*…), the
+keyboard follows a definition to its card, and
+[Back and Forward](#finding-your-way) step between the cards you followed.
+**Quick Documentation** (`lsp.hover`) shows the language server's hover over a
+card. A language server that is already running for the language answers, even
+for files with no editor tab, and the editor stays where it is. Without one, Go
+to Definition finds the declarations of that name.
 
-To follow the code without leaving the Map, right-click a declaration, or a name
-in a card, and choose **Show Callers as Cards** or **Show References as Cards**.
-The places found open as cards around it, each joined to it by an edge that says
-how: *calls*, *references*, or *by name*. Each opens at the call or use, with the
-name selected. Up to six open, the code nearest the declaration first and tests
-last; a **+N more** chip on the card lists the rest, and picking one opens its
-card. When pinned cards leave no room, the places left over are listed under the
-chip and the status line says so. Closing the card you asked from closes the
+- **One card for a chain of steps.** Like an editor's
+  [preview tab](/docs/code-navigation#preview-tabs), a card opened by Go to
+  Definition, Declaration, Type Definition or Super Method is a preview, with
+  its title in italics. The next Go to from it opens where it stood and
+  replaces it, so a chain of steps keeps one card in view. Pin, drag or resize
+  a preview to keep it.
+- **Into libraries.** In a Java project, a definition, caller or supertype in
+  the JDK or a dependency opens that class's source as a card, as the editor's
+  library tabs do. It is highlighted, outlined and searchable like any other
+  card, and says it is library source; its **Open** opens the editor's library
+  tab of that class.
+- **In the Editor** ▸, in a card's and a declaration row's menu, runs Go to
+  Definition, Find Usages, Go to Implementation, Type Hierarchy and Call
+  Hierarchy in the editor instead, at that spot, bringing the editor window
+  forward.
+- **Go to File and Go to Symbol.** Typed in the Map window, the file finder
+  (`file.find`; `Ctrl+P` in VS Code, `Ctrl+Shift+N` in IntelliJ, `C-x C-f` in
+  Emacs) and Go to Symbol in Workspace (`lsp.gotoSymbol`) open over the Map, and
+  what you pick opens as a card there, its name selected. The finder starts in
+  the folder of the card you are in, Go to Symbol asks that card's language
+  server, and Back returns to the card you came from. Without a language
+  server, Go to Symbol starts an `@name` search in the Map instead.
+
+To see where a declaration is used, right-click it, or a name in a card, and
+choose **Show Callers as Cards**, **Show References as Cards**, **Show
+Implementations as Cards** or **Show Subtypes as Cards**; **Show Callees as
+Cards** (`projectMap.showCallees`, which you can bind to a key) opens a card for
+each declaration the function calls, from the language server's call
+hierarchy, with the number of call sites on its edge. The places found open as
+cards around it, each joined to it by an edge that says how: *calls*,
+*references*, or *by name*. Each opens at the call or use, with the name
+selected. Up to six open, the code nearest the declaration first and tests
+last, and a **+N more** chip on the card holds the rest. When pinned cards leave
+no room, the places left over go under the chip too, and the status line says so. Closing the card you asked from closes the
 cards it opened, except pinned ones, and stepping it to another declaration ends
-its question. A language server that is already running for the language
-answers, even for files with no editor tab, and the editor stays where it is.
-With no server running, or when it fails or does not answer in time, Editora
-matches the name in the project's files instead: those edges are dashed and say
-*by name*, and the status line says why.
+its question. With no server running, or when it fails or does not answer in
+time, Editora matches the name in the project's files instead: those edges are
+dashed and say *by name*, and the status line says why.
+
+The **+N more** chip opens a list beside the card with **every place**,
+grouped by file, each with its line's text; the places that have a card are
+marked. Type to filter by file or text, and clear **Tests** to leave out test
+files and folders. `Enter` or a double-click opens a place as a card at that
+very line. *Project Map: Show All Places* (`projectMap.allPlaces`) opens the
+list from the keyboard.
 
 **Related Test / Subject**, in a file row's and a card's menu, finds the file's
 test, or the class a test tests, and reveals it on the Map; when there are
-several you pick one. **Show Git History** in a card's menu shows the file's
-log. A folder's menu, here and in the Project tree, has **Find in Folder…**,
-which opens [Find in Files](/docs/navigation#find-in-files) on that folder, and
-Git ▸ **Show Git History**, the [Git log](/docs/git#git-log) of that folder.
+several you pick one. **Show Git History** in a card's **Git** ▸ submenu shows
+the file's log. A folder's menu has Git ▸ **Show Git History**, the
+[Git log](/docs/git#git-log) of that folder, and **Find in Folder…**, which on
+the Map searches the folder's text (see [Searching the map](#searching-the-map));
+in the Project tree it opens [Find in Files](/docs/navigation#find-in-files) on
+that folder.
+
+#### Hierarchies and the Symbol Graph
+
+**Show Call Hierarchy** and **Show Type Hierarchy**, in a card's or a
+declaration row's menu, or Call Hierarchy and Type Hierarchy typed there
+(`lsp.callHierarchy`, `lsp.typeHierarchy`), open a **tree** beside the card. It
+starts with the callers (or, for a type, its subtypes); open a row to see its
+own callers, one level at a time, as deep as you want. It works with a language
+server and, for callers, without one by matching names. A function that calls
+itself through others is marked *(recursive)* instead of repeating forever. The
+**⇄** button (`projectMap.hierarchyFlip`) turns the tree the other way: callers ⇄
+callees, subtypes ⇄ supertypes. `Enter` or a double-click opens that row's
+declaration as a card, and Back returns to where you were; `Escape` closes the
+tree.
+
+**Symbol Graph** (`projectMap.showSymbolGraph`), in a card's or a declaration
+row's menu, opens a card with the method or class in the middle: what calls it
+on the left, what it calls on the right, the types it extends or implements
+above, and those that extend or implement it below. `Enter` on any of them
+moves the graph there (**Show Its Graph**), so you can walk the code;
+`Backspace` goes back. Press the middle, or choose **Open as Card**, to open its
+card. One Symbol Graph card is open at a time.
+
+#### Problems on the map
+
+Files with errors or warnings, and the folders that hold them, are marked on the
+map with a red or amber dot and coloured names, as the Problems window lists
+them; their tooltip says how many. The **Problems** chip in the filter row
+(`projectMap.filterProblems`) highlights them. Next Problem and Previous Problem
+(`lsp.nextProblem`, `lsp.previousProblem`) typed on the map step through the
+whole project's problems, opening each one's card; typed in a card they go
+through that card's problems first.
+
+#### Following the debugger
+
+When a debug session pauses while the Map window is open, the Map opens the card
+of the method it stopped in, marks the line with the editor's amber execution
+line and arrow (red on an exception), and shows the **Call Stack** beside it.
+Click a frame there, or press `Enter`, to show it in the debugger; the card
+follows. Each step replaces the stop card where it stood, unless you pinned,
+moved or resized it. The Map pans to the card but leaves the keyboard where it
+is. Turn it off with ⋯ → **Follow the debugger**
+(`projectMap.toggleFollowDebugger`); the choice is remembered per workspace.
+Breakpoints set from a card's gutter are described under
+[Reading code in a card](#reading-code-in-a-card).
 
 #### Notes on cards
 
@@ -538,12 +721,82 @@ status line ends with the last change to its file or declaration; in a shallow
 clone, a change older than the clone's history reads *before this shallow
 clone's history*.
 
+**Declaration History**, in a declaration card's **Git** ▸ submenu or a
+Structure row's menu (`projectMap.declarationHistory`), opens a card beside it
+that lists every commit that changed that method, class or field, newest
+first, with how many commits and authors and who added it. Under the list,
+**Changes** shows what the picked commit changed in it, and **Blame** shows who
+last changed each of its lines. `Enter` or a double-click (or **Open Commit**)
+opens the commit's diff of the file in the editor. Lines not committed yet have
+no history, and the card says so.
+
+#### Reviewing changes
+
+⋯ → **Review Changes** (`projectMap.reviewChanges`), or **Show Changes**
+(`projectMap.changes`) on a changed file or folder, opens the **Changes** card:
+every file changed against HEAD below the Map's folder, untracked ones too, with
+the lines each adds and removes, and under them the picked file's diff, its
+lines numbered as in the old and the new file and the words a changed line
+changes marked.
+
+- `F7` / `Shift+F7`, the arrows, or your keymap's Next / Previous Change keys
+  (`git.nextChange`, `git.previousChange`) typed on the Map step through the
+  hunks of every file.
+- `Enter` on a line opens that file's card at it, `Ctrl+Enter` (**Open in
+  Editor**) the editor, and **Compare with HEAD** the side-by-side
+  [diff](/docs/diff-merge#diff-viewer).
+- The card follows the Git status as you save and commit; **Refresh** asks Git
+  again.
+
+**Review a branch.** The card's **Against** menu chooses what the working tree
+is compared with: *Uncommitted changes (against HEAD)*, *This branch, since it
+left* the default branch, or *Since it left another branch*. The last two show
+everything your branch changes, committed or not, as a pull request does. The
+branch's changed files get a stripe on the map, and the folders holding them a
+muted one, with a tooltip that says so. **Compare with base** opens the editor's
+diff of a file against the commit where the branch left.
+
+#### Dependencies and code metrics
+
+**Dependencies**, in a folder's or source file's menu on the Map or in a code
+card's menu, and ⋯ → **Project Dependencies**, open a card that shows what a
+file or folder uses of the project and what uses it. **Around** draws it in the
+middle, what uses it on the left and what it uses on the right, **Files** one box
+per file or **Folders** one box per folder, with what is on both sides marked
+**⇄**. For a folder, **Inside** shows how its parts use each other as a matrix
+ordered so that cycles stand out. Press anything (a box or a cell) to list the
+import lines behind it, and press a line to open it; `Enter` moves the card onto
+a file or folder, and `Backspace` goes back. The card reads the files' imports
+in Java, Kotlin, Groovy, Scala, C#, PHP, Python, JavaScript, TypeScript, Go,
+Rust, C, C++, Ruby and Dart, without a build or a language server.
+
+⋯ → **Show dependencies of the selection**
+(`projectMap.toggleDependencyOverlay`) tints the rows the selected file or
+folder uses (violet), the rows that use it (olive) and the rows on both sides
+(amber), folders included, so a collapsed folder still shows that something in
+it is involved. The tooltip says which side a row is on, and the status line
+how many files each way. It reads the same imports as the Dependencies card and
+is remembered per workspace.
+
+**Code Metrics**, in a folder's menu on the Map, or ⋯ → **Project Code
+Metrics**, opens a card listing the folder's files (**Files**) or its
+subfolders added up (**Parts**), with their lines of **Code** and
+**Comments**, their **Complexity** (decision points: `if`, loops, `case`,
+`catch`, `&&` and `||`, `?:`) and their **Changes**, the commits of the last 90
+days. **Hotspot** scores code that is both complex and often changed, 100 for
+the hottest, and the hottest come first; without Git history, the most complex
+do. Any column sorts. The summary gives the folder's totals and its code by
+language. `Enter` opens a file's card or looks inside a subfolder, and
+`Backspace` goes back.
+
 #### Working sets
 
 A working set is a view of the Map you can go back to. Choose ⋯ → **Working
 sets** ▸ **Save Current As…** and give it a name. It keeps the open folders, the
 selected row, the zoom and pan, and the open cards with their Structure
-columns and pins. Pick the set from the same menu to show it again, as a restart
+columns, pins, caret and scroll position, and the answers asked from them
+(references, callers and the rest, with their edges and **+N more** list), which
+come back without asking the language server again. Pick the set from the same menu to show it again, as a restart
 would: the search is cleared, a playing trail ends, the cards you have open now
 close, and the set's folders and cards come back at the zoom and pan you saved. Anything deleted since is dropped. Saving under a name you
 already used replaces that set, and **Delete** ▸ removes one.
@@ -642,19 +895,36 @@ The canvas is fully keyboard-navigable.
 | `Ctrl+0` (`⌘0` on macOS) | Fit the whole map |
 | `F2` | Rename the selected file or folder |
 | `Delete` | Delete the selection, as in the tree |
-| Menu key or `Shift+F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes, Close Column and Close Other Branches |
+| Menu key or `Shift+F10` | Open the selected row's context menu, with Preview, Structure, Personal Notes, Dependencies, Close Column and Close Other Branches |
 | `Alt`+arrows / `Alt`+`Shift`+arrows | In a focused card: move it / resize it |
 | `Ctrl+F` (`⌘F` on macOS, `C-s` in Emacs) | In a focused card: find in the card; `Enter` / `Shift+Enter` or `F3` / `Shift+F3` step through the matches |
-| `Alt+Page Up` / `Alt+Page Down` | In a declaration card: show the previous / next declaration of the file |
+| `Alt+Page Up` / `Alt+Page Down` | In a declaration card: show the previous / next declaration of the file. In a file card: move the caret to the declaration before / after it |
 | `Ctrl+Right` / `Ctrl+Left` (`⌘` on macOS) | While a trail plays: the next / previous stop |
-| Menu key or `Shift+F10` | In a focused card: open its menu at the caret, with Pin Card, Find in Card…, Show Callers as Cards, Annotate and Add This Card as a Stop |
+| Menu key or `Shift+F10` | In a focused card: open its menu at the caret (see [Reading code in a card](#reading-code-in-a-card)) |
 | `Alt+7` (Emacs and IntelliJ keymaps; `⌘7` in IntelliJ on macOS) | In a focused card: open its Structure column and move into it, or back to the card |
-| `F12` / `Shift+F12` (CUA and VS Code keymaps) | In a focused card: Go to Definition / Find Usages in the editor |
+| `F12` / `Shift+F12` (CUA and VS Code keymaps) | In a focused card, or on a declaration row: Go to Definition / Find Usages, answered as cards on the Map |
+| `Ctrl+Shift`+arrows | Move the keyboard to the nearest card in that direction, from a card or from the selected row |
+| Recent Files key (`Ctrl+E` in IntelliJ, `Ctrl+R` in VS Code) | Switch to another open card by name |
+| `F7` / `Shift+F7` | The next / previous change in the Changes card |
 | `Escape` | In a card: close its find bar, then the card. On the map: end a playing trail, close open cards (not pinned ones), then clear the search (your place stays; `Alt+Left` goes back to before it), then return to the editor window |
 
 These keys reach the map in every keymap while it has focus, including the
 chords a keymap binds to something else, such as `Ctrl+N` or `Ctrl+0`. `Tab`
 moves only between controls you can see.
+
+**Every row and button of the Map is a command.** The ⋯ menu's options and
+items, the filters and **Clear**, the zoom bar, the search results' arrows and
+list, a column's Show hidden, lock and close, the rows of a row's, a
+declaration's and a card's menus, a card's buttons, find bar and gutter, and the
+bars and menus of the Changes, History, Dependencies, Code Metrics and Symbol
+Graph cards each have a *Project Map:* command (`projectMap.toggleFollowDebugger`,
+`projectMap.showSymbolGraph`, `projectMap.cardPin`, …). Run them from the Command
+Palette or give them keys under Settings → Keymaps; a menu row shows its key.
+Each acts on what the Map's keyboard is on: the selected row, the card, the
+place in a card. Working sets, trails, the breadcrumb's places and the open
+cards are picked from a list (`projectMap.showWorkingSet`,
+`projectMap.playTrail`, `projectMap.breadcrumb`, `projectMap.switchCard`). Where
+the row or button would do nothing, the Map's status line says why.
 
 #### File management
 
@@ -722,11 +992,11 @@ Project's Settings* (`lsp.trustProjectSettings`), or use **Trust Folder…** in
 Settings. A file's `.editorconfig` rules still come before the project's
 values.
 
-In a project window, Settings has a **User | Project** switch at the top, and
-its Project side names the project. Choose **Project** (the window's title then
-names the project too) to change the project's values on the same rows you use for
-your own; the change is written to `.editora/settings.json`. In **User**, a row
-the project sets says "Overridden by this project", and in **Project** it says
+In a project window, Settings has an **Edit settings for All projects | This project: name** switch
+at the top. Choose **This project** (the window's title then names the project
+too) to change the project's values on the same rows you use for
+your own; the change is written to `.editora/settings.json`. In **All projects**, a row
+the project sets says "Overridden by this project", and in **This project** it says
 "Set for this project" and offers **Use my setting**.
 
 **Project: Edit Project Settings…** (`project.editSettings`) creates the file
@@ -764,6 +1034,15 @@ buffer). Two open files with the same name show their folder in the tab
 (`pom.xml · core`, `pom.xml · web`); the suffix appears when the second opens
 and goes when it closes.
 
+Image, PDF and hex tabs are tabs like any other: their right-click menu has
+Close, Close Other Tabs, Close All Tabs, Close Unmodified Tabs, Close Tabs to the
+Left and to the Right, Reveal in Map, Reveal in File Manager, Open Terminal Here,
+Copy Path and Pin Tab, and a pin is kept across a restart. A diff, a pull request
+review, a Markdown preview, a terminal moved to the editor, Welcome and Doctor
+have the Close rows too, after their own. A tab's tooltip is the file's full path
+and, under it, its Git status ("Git: modified", "Git: untracked"), and image, PDF
+and hex tabs are tinted by that status as editor tabs are.
+
 A file you're only *glancing* at, for example while arrowing through a picker
 or following a definition, lands in a single reusable **preview tab**, shown in italic, so
 browsing costs one tab rather than one per glance. Editing it, or opening it
@@ -777,7 +1056,8 @@ during this session. A file deleted since is skipped, and a file that is open
 again is simply focused. It counts the tabs you close yourself (the close
 command, *Close Others* and the other tab-menu closes, or a tab's **×**), not the
 ones that go when a window closes or you switch projects, and it brings back
-files only, not diff or preview tabs. It is `Ctrl+Shift+T` (`⇧⌘T` on macOS) in
+files only, not diff or preview tabs; an image, PDF or hex tab comes back in the
+viewer it was in. It is `Ctrl+Shift+T` (`⇧⌘T` on macOS) in
 the VS Code, Sublime Text and CUA keymaps, and it is in the **File** menu
 under Open Project. IntelliJ IDEA's `Ctrl+Shift+T` stays Go to Test, so there,
 as in the Emacs keymap, it is a palette command.
@@ -949,6 +1229,12 @@ says so rather than guessing.
 Each tool window remembers **its own size**, rather than sharing one number per
 side, and the whole layout is saved with the session.
 
+A tool window's stripe button runs the window's command, so a button whose
+feature is off, or the TODO window for a file with no matches, says why in the
+status bar instead of opening. A window on screen hides on its button, and every
+Tool Window command (Git Log and the build tools' included) hides its window when
+run again. A button's tooltip follows its window's title.
+
 **Settings → Tool Windows** lists the windows under **Left**, **Right** and
 **Bottom**, in the order their buttons stand on each stripe. Each row has a
 switch that shows or hides the window's stripe button, the side it docks on,
@@ -959,14 +1245,15 @@ row greyed out, with the Settings page that turns it on. The **Layout** row
 says that the layout is saved per project (or per window when no project is
 open), so other projects keep theirs, and that **Reset to Defaults** does not
 change it. Its **Restore Default Layout** button puts every window back on its
-own side, shown or hidden as on a fresh install, in the default order.
+own side, shown or hidden as on a fresh install, in the default order; it asks
+first unless the layout already is the default.
 
 ![Settings on the Tool Windows page: a Layout row with Restore Default Layout, then the windows listed under Left and Right, each row with a switch, a side menu and up and down arrows](/screenshots/docs/settings-tool-windows.png "Settings → Tool Windows: show or hide each window's button, pick its side, and order the stripes.")
 
 ## The Welcome page
 
 With no session to restore, Editora opens a **Welcome** page (a real tab).
-Reopen it with `view.welcome`. From top to bottom it has:
+Reopen it from **Help → Welcome Page** (`view.welcome`). From top to bottom it has:
 
 ![The Welcome tab with the Editora logo, a Start list (New File, Open File, Open Folder as a Project, Clone Git Repository, Command Palette) with shortcuts, and Recent Projects and Recent Files lists](/screenshots/docs/welcome.png "The Welcome page, with the Project tool window open beside it.")
 
@@ -1002,12 +1289,14 @@ Page) with their shortcuts.
   floating "Z" to exit. Toggle it from the palette (`view.toggleZen`), `C-c z`,
   or start with the `--zen` flag.
 - **Expert mode** is a lighter focus mode than Zen: it strips only the window
-  chrome (toolbar, tab bar, breadcrumb, tool stripes, whitespace guides) but
+  chrome (the menu bar, toolbar, tab bar, breadcrumb, tool stripes, whitespace guides) but
   **keeps the full editor view**, line numbers, status bar, minimap, rulers,
   indent guides, and current-line highlight, so you stay oriented. Toggle it
   from the palette (`view.toggleExpert`), `C-c C-e`, Settings → Interface → Modes, the
   floating "E" button, or the `--expert` flag. Expert and Zen are mutually
   exclusive, and like Zen it's per-window and never changes your saved settings.
+  With the menu bar merged into the title bar, only the menus leave; the window
+  title and buttons stay. Commands stay on their keys and in the palette.
 - **Simple UI mode** strips the editor to the essentials: it hides the extra
   toolbar groups, the tool-window stripe, the breadcrumb, the gutter, and the
   minimap, and turns off the heavier features (LSP, debugging, Git, multiple
@@ -1092,6 +1381,10 @@ narrow window cannot hide the control that starts a run. It holds the
 run-configuration selector with its Run, Debug and Stop buttons, the project
 switcher, Open Folder, the build badges and Settings. The selector and its Run,
 Debug and Stop buttons are not draggable items in Settings → Toolbar.
+
+A button whose command cannot act (Save As with no file in front, Commit outside
+a repository) is greyed out, as its menu row is. Each button is named after its
+command, with its key in the tooltip, and Tab moves past the bar's buttons.
 
 **Recent Files sits in the cluster**, between Save As and Undo, and can be
 dragged elsewhere or removed like any other icon.
@@ -1304,7 +1597,8 @@ Review or revoke trust in **Settings → Advanced → Trusted folders**, with th
 *Trusted* or *Not trusted yet*), or from the palette with
 `workspace.manageTrust` and `workspace.revokeTrust`. Revoking a folder that is
 still covered by a trusted parent tells you so, rather than claiming a revoke
-that the parent would override.
+that the parent would override. The list's **Remove All** asks first and names how many
+folders lose their trust.
 
 A folder on a [remote host](/docs/remote) is trusted on its own: trusting
 `/srv/app` on a server does not trust a local `/srv/app`, or the other way round.

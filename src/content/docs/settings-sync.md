@@ -32,8 +32,10 @@ computer they were made on. The **What to sync** card says so too.
 **Shortcuts** syncs the key bindings you changed on the
 [Keymaps page](/docs/keymaps#rebinding-commands): every rebind, every shortcut
 you removed, and every reset. It covers the changes you made in **every
-keymap**, for Windows and Linux and for macOS, because Editora keeps them per
-keymap and per platform.
+keymap**: Editora keeps one set per keymap for every system, so a chord you
+change on a Mac is changed on Linux and Windows too (Ctrl on one is Cmd on the
+other in the keymaps with a macOS form). A `keybindings.json` from this version
+is not read by an older Editora.
 
 Which keymap a computer uses is its own choice and is not synced. A computer
 that uses another keymap keeps your changes to the Emacs keymap, say, and uses

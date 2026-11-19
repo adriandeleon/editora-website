@@ -22,8 +22,9 @@ Editora ships five complete keymaps, selectable in **Settings → Keymaps** or w
 None of them is modal: they're different chord-to-command
 maps over the same command ids, so switching changes accelerators without
 stranding any feature. Switching is **live, with no restart**, and every chord
-hint updates with it: toolbar tooltips, the command palette, tool-window
-tooltips, and the Welcome shortcuts. Hints are written in the notation of the
+hint updates with it: the menu bar, right-click menus and drop-downs, toolbar
+and button tooltips, the command palette, tool-window tooltips, and the Welcome
+shortcuts. Hints are written in the notation of the
 active keymap and platform: `Ctrl+Shift+P`, `⇧⌘P`, or Emacs notation in the
 Emacs keymap.
 
@@ -41,6 +42,58 @@ on every platform.
 Emacs notation reads `C-` as Ctrl, `M-` as Alt (Option on macOS) and `S-` as
 Shift, and a space separates the steps of a sequence: `C-x C-s` is Ctrl+X, then
 Ctrl+S.
+
+## Keys that can follow a prefix
+
+Press the first key of a sequence, such as `C-x` in the Emacs keymap or
+`Ctrl+K` in the VS Code one, and wait a moment: a card at the bottom of the
+window lists every key that can come next, with the command it runs. A key that
+leads further, such as `C-x v`, shows how many commands lie behind it, and
+pressing it lists those keys in turn. The list follows the keymap in force and
+your own bindings, flows into columns when it is long, and goes away as soon as
+the sequence runs or is cancelled.
+
+The card never takes the keyboard: the next key does what it would have done
+without it. A sequence typed at speed, such as `C-x C-s`, finishes before the
+card appears, so it never shows.
+
+## Menus and buttons from the keyboard
+
+**View: Focus Menu Bar** (`view.focusMenuBar`) opens the first menu, and the
+arrow keys walk the menu bar from there. It is on F10 in the Emacs and IntelliJ
+IDEA keymaps and on Ctrl+Shift+F10 in the CUA, VS Code and Sublime Text keymaps,
+where F10 steps the debugger. On macOS the menu bar is the system's, so the
+command says to use the system's own shortcut for it instead.
+
+The **Menu key** or **Shift+F10** (also on macOS) opens the selected row's
+right-click menu in every list, tree and table, at that row. A row of a
+right-click menu or a drop-down shows the key of the command it runs, as the
+menu bar does, and a row that deletes, discards, reverts or resets something is
+drawn in red.
+
+Every row of a right-click menu and every button of a panel is also a command,
+so the palette reaches it and you can give it a key under
+[Rebinding commands](#rebinding-commands). Such a command acts on what the
+keyboard is in: the selected row, the card or the active tab. With nothing
+there, or on a row whose menu would not offer it, the status bar says so and
+nothing happens. A button's tooltip shows the key of its command. For the lists
+of the Settings pages and the other windows, the **List** commands do what a
+row's menu does: *List: Open*, *List: Copy*, *List: Rename…*, *List: Turn On or
+Off*, *List: Remove*, *List: Move Up* and *List: Move Down*.
+
+Tab moves through the content of a window and skips the toolbar, the
+tool-window stripes, a tool window's header buttons and the panel buttons that
+a command also runs; reach those by their commands, the palette or the menus.
+
+## Keys in text fields
+
+Your keymap's editing keys work in Editora's text fields too: the file finder
+and every picker and prompt, the find bars of the editor, the consoles, the
+terminal and the Project Map's cards, and the fields of dialogs. In the Emacs
+keymap that is `C-a` and `C-e`, `C-k` and `C-y`, and `M-DEL`, which deletes the
+word before the caret (one folder at a time in a path); in the other keymaps,
+Ctrl+V, Ctrl+X, Ctrl+C and Ctrl+Z (⌘ on macOS). A field still takes its own
+Enter, Tab and Esc.
 
 ## Debugger keys
 
@@ -158,8 +211,9 @@ others), `M-g s` for Go to Symbol in Workspace, with `M-g M-n` / `M-g M-p` for t
 ## Rebinding commands
 
 The **Settings → Keymaps** page lists every command with its current chord.
-Click a row, or move to it with the arrow keys and press Enter, to show its
-buttons:
+**Help → Keyboard Shortcuts** (`help.keyboardShortcuts`, *Keyboard Shortcuts*
+in the palette) opens it from anywhere. Click a row, or move to it with the
+arrow keys and press Enter, to show its buttons:
 
 - **Record** captures a new chord. Multi-key sequences like `C-x C-s` work.
   The field shows the chord in the active keymap's notation (`Ctrl+Shift+K`,
@@ -168,6 +222,8 @@ buttons:
 - **Reset** restores that command's default chord. If another command has taken
   that chord, Editora asks first, because the other command loses it.
 - **Remove** unbinds the command. Delete or Backspace on a row does the same.
+  A binding you removed or reset comes back with
+  [Edit: Undo Last Removal](/docs/undo-history#undo-last-removal).
 - **Reset all shortcuts** clears every override of the keymap in use. Overrides
   made under another keymap stay with that keymap.
 
@@ -192,9 +248,15 @@ restores the rebinds you made there. Shortcuts of commands that no keymap binds
 by default (saved macros, external tools and run configurations) follow you to
 the new keymap instead. When the new keymap already uses that chord, or the
 chord would clash with one of its chords, the shortcut stays with the keymap it
-was made in and comes back when you switch back. Overrides are also stored **per platform**, since a chord is
-modifier-specific (⌘ on macOS, Ctrl elsewhere), so a config synced between a Mac
-and a Windows or Linux machine binds each OS's own chord instead of both.
+was made in and comes back when you switch back.
+
+Your overrides are **one set for every operating system**. In a keymap with a
+macOS form (CUA, VS Code, IntelliJ IDEA and Sublime Text), a chord you record
+with Ctrl is used with ⌘ on a Mac, and a chord recorded with ⌘ on a Mac is used
+with Ctrl on Windows and Linux. The Emacs keymap's chords are the same
+everywhere. A chord only a Mac can type (the Control key in a keymap that puts
+⌘ where the others have Ctrl, or ⌘ in the Emacs keymap) stays the Mac's own,
+and Windows and Linux keep the chord they had for that command.
 [Settings sync](/docs/settings-sync#shortcuts) can carry your overrides, for
 every keymap, to your other computers; which keymap each one uses stays its
 own.

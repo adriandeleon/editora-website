@@ -27,7 +27,7 @@ characters is never highlighted. Files that are mostly long lines open in
 
 ### Supported languages
 
-Editora ships 63 grammars:
+Editora ships 64 grammars:
 
 | Group | Languages and file types |
 | --- | --- |
@@ -36,7 +36,7 @@ Editora ships 63 grammars:
 | Scripting | Python, Ruby, PHP, Lua, JavaScript, TypeScript, JSX and TSX |
 | Shells and builds | Bash and other shell scripts, PowerShell, DOS batch, Makefile, `justfile` |
 | Web and documents | HTML (and HTML templates), CSS, Astro, XML and its dialects, Markdown, Typst |
-| Data and config | JSON, YAML, TOML, INI, Java `.properties`, CSV and TSV, `.env`, SQL, GraphQL, Protocol Buffers, Terraform and HCL, Dockerfile, pip `requirements.txt` |
+| Data and config | JSON, JSON Lines, YAML, TOML, INI, Java `.properties`, CSV and TSV, `.env`, SQL, GraphQL, Protocol Buffers, Terraform and HCL, Dockerfile, pip `requirements.txt` |
 | Diagrams and requests | Mermaid, Markwhen, Graphviz DOT, PlantUML, `.http` request files |
 | System files | systemd units, desktop entries, crontab, Caddyfile, `/etc/hosts`, `fstab`, SSH config, Git config, `.gitattributes`, `.gitignore` and the other ignore files, Debian control files and changelogs, APT sources, network `interfaces`, log files, diffs and patches |
 
@@ -51,6 +51,13 @@ property lists, KML, GPX, DITA and others open as XML (the full list is under
 file. A `go.mod` stays plain text, and `.xhtml` is HTML. A `.mod`, `.sch`,
 `.props`, `.targets` or `.fo` file is XML only when its text starts with `<`,
 so a Modula-2 module or a KiCad schematic opens as plain text.
+
+**JSON Lines** files (`.jsonl`, `.ndjson`, `.jsonlines`) hold one JSON value per
+line. Each line is coloured as JSON, and a line that is not exactly one JSON
+value (a trailing comma, two records on one line, a record split over two
+lines) is underlined with what is wrong. JSON Lines is in **File ▸ New**, and a
+`jsonl` fence in Markdown is coloured too. The preview is under
+[Smart file previews](/docs/previews#structured-data-and-api-docs).
 
 The status bar and the Problems window write each language's name as it is
 usually written: XML, JSON, YAML, HTML, CSS, SQL, TOML, C++, C#, GraphQL,
@@ -340,7 +347,7 @@ What is checked depends on the file type:
   (`f"…"`, `rb'…'`) is checked like the rest, without its prefix, and in a pip
   requirements file only the comments are checked. In JavaScript, JSX and TSX
   the text between JSX tags is checked too.
-- **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
+- **Data and configuration formats** are off by default: JSON, JSON Lines, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.
 

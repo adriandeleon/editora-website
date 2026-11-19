@@ -51,23 +51,38 @@ while the first time. A `package.json` project uses its own package manager
 (npm, pnpm, yarn or bun); see
 [npm and other package managers](#npm-and-other-package-managers).
 
-A Maven or Gradle build runs code the repository supplies, with your
-privileges: a shipped `./mvnw` or `./gradlew`, the pom's plugins, the files
-under `.mvn/`, every Gradle build script. So the **first build of any kind** in
-a folder you have not trusted asks once, wrapper or not, also when it would run
-the `mvn` on your `PATH`. The **Workspace Trust** prompt lists what it found:
-the wrapper script, the pom's plugin coordinates (the first eight, then "and
-*n* more"), the `.mvn/` files, the Gradle build scripts, and a
-`.editora/project.json` that replaces the build command. Trust is remembered
+A build runs code the repository supplies, with your privileges, beyond the
+task you pick: a shipped `./mvnw`, `./gradlew` or `./mill`, the pom's plugins
+and the files under `.mvn/`, every Gradle build script, sbt's `build.sbt` and
+`project/` and Mill's `build.mill` (Scala the build compiles and runs),
+Leiningen's `project.clj` and its plugins, a Babashka task's `:init` and
+`:depends`, the JVM options a `deps.edn` alias adds (such as a `-javaagent`),
+Cargo's `build.rs` scripts and procedural macros, the macros and compiler
+plugins a Scala CLI compile runs, and npm's `pre` and `post` scripts, install
+hooks and a yarn the repository ships through `.yarnrc.yml`'s `yarnPath`. So
+the **first build of any kind** in a folder you have not trusted asks once,
+whether it would run the repository's launcher or your own `mvn`, `sbt`,
+`mill`, `lein`, `cargo` or `npm`. The **Workspace Trust** prompt lists what it
+found: the launcher script, the pom's plugin coordinates (the first eight, then
+"and *n* more"), the `.mvn/` files, the Gradle build scripts, the sbt and Mill
+build files with a `mill-build/` meta-build, the launcher options files
+(`.jvmopts`, `.sbtopts`, `.mill-jvm-opts`, `.lein-classpath`), the Cargo and
+package manager settings (`.cargo/config.toml`, `rust-toolchain.toml`,
+`.npmrc`, `.yarnrc.yml`, `.pnpmfile.cjs`), and a project
+`.editora/settings.json` that replaces the build command, with the command it
+sets. Trust is remembered
 for the folder that ships the wrapper, else the open project, and for the
 folders inside it; a module never silently covers a script one level up. The
 tasks window's header shows **Trusted** or **Not trusted yet** with a
-**Revoke** button. The same question fronts Gradle's *Load all tasks…*, the
-build before Run and Debug, and Maven's classpath fallback. Declining cancels
-the run; nothing quieter runs instead. Review or revoke trust under
-[Trusted folders](/docs/workspace#trusted-folders). npm, Cargo, Go and the
-other tools are not asked, and neither is a Mill build that runs the project's
-own `./mill`.
+**Revoke** button. The same question fronts *Load all tasks…*, Test Results,
+the build before Run and Debug, Run and Debug on a file of a Leiningen,
+`deps.edn`, `bb.edn` or Scala CLI project or of an sbt or Mill build, an npm
+[run configuration](/docs/run-debug#what-a-configuration-can-launch), and
+Maven's classpath fallback. Declining cancels the run; nothing quieter runs
+instead. Review or revoke trust under
+[Trusted folders](/docs/workspace#trusted-folders). Only Go builds are not
+asked about: `go build` never runs a module's code, and `go run` and `go test`
+run it because that is the task you picked.
 
 Choose the JDK used for Maven under **Settings → Build Tools → Default JDK**.
 The selector finds installed JDKs in standard platform locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
@@ -274,9 +289,14 @@ and column, as stack-trace lines already were. Its header has four controls
 beside Stop and Clear:
 
 - **Find** (the magnifier, or the editor's Find chord while the console has
-  focus) opens a find bar over the output.
+  focus) opens a find bar over the output. Every match is highlighted while the
+  bar is open, the current one more strongly, and output that arrives meanwhile
+  is highlighted and counted too.
 - **Previous run** keeps the run before this one behind a toggle, so a failure
   can be compared with the build before it without re-running; Clear drops it.
+  The header's buttons are commands too: *Output: Clear Output*
+  (`buildOutput.clear`), *Output: Show Previous Run* (`buildOutput.previousRun`)
+  and *Output: Stop Output's Job* (`buildOutput.stop`).
 - **Save output…** writes the console to a file (`maven-output.txt` is
   suggested).
 - **Stop** ends the build, and the console header, the status bar and Test
@@ -495,7 +515,11 @@ failure message, stack trace, and captured output in the detail pane, with
 source. A right-click on a test row offers **Go to Test**, **Rerun This Test**
 and **Debug This Test**; on a class row, **Go to Test Class**, **Rerun This
 Class** and **Debug This Class**. The Debug entry appears where the Java
-debugger is available. A test's output, failure message and stack trace are
+debugger is available. The same rows run from the keyboard on the selected test:
+`test.goToSelected`, `test.rerunSelected` and `test.debugSelected`. The
+filter buttons are `test.togglePassed`, `test.toggleFailed` and
+`test.toggleSkipped`, `test.toggleFollow` keeps the newest result in view, and
+`test.findInOutput` searches the selected test's output. A test's output, failure message and stack trace are
 kept up to 200,000 characters; past that the start and the end are shown, with
 a line between them saying how much was left out.
 
@@ -526,7 +550,7 @@ matches nothing, such as a hand-typed `-Dtest=` in *Run custom…*, reads
 JUnit test classes and methods also get a **run icon in the gutter** (with a
 tooltip naming what it runs), and a test file's right-click menu offers **Run
 Tests** for the whole class. `test.runAtCaret` and `test.runClassAtCaret` do the
-same from the keyboard, and `test.rerun`, `test.rerunFailed`, and `test.stop`
+same from the keyboard (`test.debugClassAtCaret` debugs the class), and `test.rerun`, `test.rerunFailed`, and `test.stop`
 control the run. These JUnit gutter icons need a detected Maven or Gradle
 project. Python test files get their own, one per test (see
 [Python tests](#python-tests)). A Node.js test file has one ▶ for the whole
@@ -548,7 +572,7 @@ free loopback port before the launch, passes it in `-Dmaven.surefire.debug`,
 and attaches as soon as the forked JVM listens on it, because Surefire 3 prints
 the JDWP "Listening for transport" banner only after the test has run. While it
 waits, the Test Results header reads *Debug: waiting for the test JVM to open
-port N…*, and **Debug ▸ Stop** ends the Maven run before a session exists. After
+port N…*, and **Debug: Stop** (`debug.stop`) ends the Maven run before a session exists. After
 60 s with no listener the status says so and points at the Output window. A
 further fork of the same run (several forks, reruns) is attached after the
 first has finished; forks are debugged one at a time. The test JVM prints one

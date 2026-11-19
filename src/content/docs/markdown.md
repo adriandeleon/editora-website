@@ -65,12 +65,18 @@ Beyond GFM it also renders:
   `align="center"`.
 
 Code blocks show their language and scroll sideways rather than wrapping, as do
-wide tables. A ` ```console ` or ` ```shell-session ` block is shown as a terminal
+wide tables. Point at a fenced or indented code block and a copy button shows
+in its top right corner, beside the language: one click copies the block's
+code, and a check mark says it worked. A ` ```console ` or ` ```shell-session ` block is shown as a terminal
 session: the prompt (`$ `, `# `, `user@host:~$ `, `(venv) $ `) is muted, the
 command after it is highlighted as shell, and the lines it printed stay plain. A missing image shows its alt text, and a local image that changes
 on disk is reloaded. An empty document says *Nothing to preview yet*. The
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
+
+A very large Markdown file (about 5 MB or more) is too much for the preview to follow every
+edit: a strip says so, and its **Refresh** button (`preview.refresh`) renders
+it again.
 
 The preview caps table cells and block and inline nesting. Text nested past the
 limit shows as plain text. A table past the **table cap** (a 2.3 MB table
@@ -121,6 +127,10 @@ HTML**, then the exports and **Print…**.
 | --- | --- |
 | Copy the selection, or the whole rendered page as rich text | `preview.copy` |
 | Copy the rendered page as HTML markup | `preview.copyHtml` |
+| Copy the whole rendered text | `preview.copyAll` |
+| Copy the code block or link the selection starts in | `preview.copyCode` / `preview.copyLink` |
+| Show the picture or diagram the selection is in at full size | `preview.enlarge` |
+| Move the editor's caret to the source of the selection | `preview.goToSource` |
 
 ### Preview to the side or in a tab
 
@@ -451,7 +461,8 @@ code (fenced, indented, or nested in lists and quotes), HTML blocks and comments
 and YAML or TOML front matter exactly as written.
 
 Each rule has a **severity** (Warning by default, or Error or Hint), set beside
-it in Settings → Markdown → Linting. **Fix lint issues on save** applies the safe
+it in Settings → Markdown → Linting or with **Markdown Lint: Set Rule
+Severity…** (`markdownLint.setRuleSeverity`). **Fix lint issues on save** applies the safe
 fixes whenever a Markdown file is saved.
 
 ### Acting on an issue
@@ -472,7 +483,10 @@ fixes whenever a Markdown file is saved.
 The same actions are in the editor's right-click menu on an issue and in the
 **Markdown Lint** tool window (`tool.markdownLint`), which follows the active tab,
 shows the file name, has a **Fix** button, and offers **Copy** on each row's
-menu. *Lint Project* lists its results grouped by file. *Disable for This
+menu. **Most Severe First** (`markdownLint.toggleBySeverity`) lists errors
+before warnings and hints. The `Markdown Lint: … Selected Issue` commands
+(Fix, Copy, Disable for its line, file or project, Open Rule Documentation) act
+on the row selected there. *Lint Project* lists its results grouped by file. *Disable for This
 Project* offers to create a config when the project has none, and edits JSON,
 YAML and `.markdownlint-cli2` configs alike. With the minimap showing, the
 scrollbar stripe steps aside, since the minimap carries the same marks.

@@ -58,8 +58,11 @@ shows the whole folder. Tabs with the same title are numbered: `project`,
 in a container or in WSL shows its folder instead.
 
 A tab's right-click menu has **Rename Tab…**, **New Terminal**, **Close**,
-**Close Other Tabs**, **Close Tabs to the Right**, **Move Tab Left** and
-**Move Tab Right**. A renamed tab keeps its name whatever its shell sets;
+**Close Other Tabs**, **Close Tabs to the Right**, **Move Tab Left**,
+**Move Tab Right** and [**Move to Editor**](#a-terminal-in-an-editor-tab).
+**Terminal: Close Other Terminals** (`terminal.closeOthers`) and **Terminal:
+Close Terminals to the Right** (`terminal.closeRight`) do the same from the
+palette. A renamed tab keeps its name whatever its shell sets;
 renaming it to an empty name gives it back the shell's title. Drag a tab by
 its header to move it.
 
@@ -73,6 +76,20 @@ or its tab closes, the Terminal tool window hides and the editor has the
 keyboard again. Closing the window ends its shells. Closing a tab, a window or
 Editora while a shell is running a program
 [asks first](#closing-a-busy-terminal).
+
+## A terminal in an editor tab
+
+**Move to Editor**, in a terminal tab's right-click menu, in the Window menu
+or as **Terminal: Move to Editor** (`terminal.moveToEditor`), shows the
+selected terminal as an editor tab beside your files, as IntelliJ's terminal
+does. Its shell keeps running and keeps what it printed. With no terminal open,
+Move to Editor opens a new one in the editor.
+
+The editor tab's right-click menu renames it, closes it, or puts it back with
+**Move to Terminal Tool Window** (`terminal.moveToToolWindow`), which opens the
+Terminal with it selected. Closing it asks first when its shell is running
+something, as in the tool window, and closing the window lists it with the
+others.
 
 ## Open Terminal Here
 
@@ -484,7 +501,8 @@ a program**.
 
 ## Settings
 
-**Settings → Terminal** (under Languages & Tools):
+**Settings → Terminal** (under Languages & Tools), or **Terminal: Change a
+Setting…** (`terminal.changeSetting`) to pick one from the palette:
 
 | Setting | Default | What it does |
 | --- | --- | --- |

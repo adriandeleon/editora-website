@@ -17,8 +17,9 @@ these are true:
 1. The GitHub integration is enabled in **Settings → Version Control → GitHub**,
    and [Git support](/docs/git) is on.
 2. `gh` is on your `PATH` (or its location is set in **gh command / path** on
-   that Settings page; a path with spaces in it works). When nothing runs at the
-   path you set, the page's **Detected** row says **No gh at** that path.
+   that Settings page, or with **GitHub: Set gh Command…**, `github.setCommand`;
+   a path with spaces in it works). When nothing runs at the path you set, the
+   page's **Detected** row says **No gh at** that path.
 3. `gh` is signed in (`gh auth status`).
 4. One of the repository's remotes points at a GitHub host.
 5. The repository has an open pull request, issue, or workflow run.
@@ -84,7 +85,10 @@ GitHub's own review view:
 - Clicking a file opens that file's **read-only diff** (base against head).
 - **Open all** opens every file at once. Past a dozen files it confirms first.
 
-The tab also carries *Open on GitHub*, *Submit review…* and *Refresh* links. A
+The tab also carries *Open on GitHub*, *Submit review…* and *Refresh* links
+(`github.openReviewedPr`, `github.submitReview`, `github.refreshReviewedPr`),
+and **Open all** is **GitHub: Open All Reviewed Files**
+(`github.openReviewedFiles`) in the palette. A
 single-file pull request opens the same tab, so its description and those links
 stay reachable. Re-running the command on a pull request you already have open
 re-selects and refreshes that tab rather than opening a second one.
@@ -187,8 +191,10 @@ tabs, including onto the Welcome tab.
 A row under the toolbar shows what the window is looking at:
 
 - The **repository's URL**, as `gh` resolved it for this folder. Click it to open
-  the repository on GitHub; right-click to copy the URL. The lists and every run
-  action address this repository.
+  the repository on GitHub; right-click to copy the URL. **GitHub: Open
+  Repository on GitHub** (`github.openRepository`) and **GitHub: Copy
+  Repository URL** (`github.copyRepositoryUrl`) do the same from the palette.
+  The lists and every run action address this repository.
 - The **branch** checked out.
 - The **GitHub account** `gh` is signed in with on that host (needs `gh` 2.81 or
   newer).
@@ -197,9 +203,10 @@ A row under the toolbar shows what the window is looking at:
 
 The pull request and issue lists are fetched for one state at a time. The state
 chooser in the toolbar offers **Open** (the default), **Closed**, **Merged**
-(pull requests only) and **All**. **Mine** narrows the list to the ones you
-opened; it applies to pull requests and issues together. Runs have neither
-control.
+(pull requests only) and **All**. **Mine** (`github.toggleMine`) narrows the
+list to the ones you opened; it applies to pull requests and issues together.
+Runs have neither control. **GitHub: Refresh List** (`github.refreshList`)
+fetches the shown list again.
 
 A list shows the first 50 pull requests or issues, or the first 30 runs. When
 there are more, the last row reads *Showing the first N — load more*; activating
@@ -219,8 +226,16 @@ bare `n` / `p` also move, since the list holds no text input), and Enter opens.
 
 ### Acting on the selected row from the palette
 
-Four commands act on the row selected in the tool window, so they can be run
+These commands act on the row selected in the tool window, so they can be run
 from the palette or bound to keys:
+
+- **GitHub: Open Selected Row on GitHub** (`github.openSelected`) opens the
+  selected pull request, issue or run in the browser.
+- **GitHub: Review Selected Pull Request** (`github.reviewSelectedPr`) and
+  **GitHub: Check Out Selected Pull Request** (`github.checkoutSelectedPr`)
+  review or check out the selected pull request.
+- **GitHub: View Failure Log of Selected Run** (`github.viewSelectedRunLog`)
+  shows the failed jobs' log of the selected run.
 
 - **GitHub: Rerun Selected Workflow Run** (`github.rerunRun`) re-runs the
   selected run. A run still in progress has to finish or be cancelled first.
