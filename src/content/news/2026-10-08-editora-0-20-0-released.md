@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.20.0: more Git, crash recovery, and settings sync"
-description: "Editora 0.20.0 handles merges, rebases, branches, remotes, tags, stashes and patches from inside the editor, keeps unsaved edits through a crash, syncs snippets and templates between computers, and reworks printing and PDF export."
+description: "Merges, rebases, branches, stashes and patches from inside the editor, unsaved edits that survive a crash, settings sync, and reworked printing and PDF export."
 date: 2026-10-08
 version: "0.20.0"
 ---
@@ -112,4 +112,4 @@ and tests inside JUnit `@Nested` classes run from the gutter.
 This release has no experimental Native Image archives. The regular installers
 are unaffected.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.20/#0200---2026-10-08) page.

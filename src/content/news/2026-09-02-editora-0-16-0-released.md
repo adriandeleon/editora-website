@@ -80,4 +80,4 @@ Preferences now live in `settings.json`, with project toolchain overrides in
 Files also has one consistent toolbar toggle, and recent files now include their
 project names.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.16/#0160---2026-09-02) page.

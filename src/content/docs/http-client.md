@@ -8,8 +8,7 @@ order: 2
 Open a `.http` or `.rest` file and click the green ▶ next to a request to send
 it. It uses the JDK's built-in HTTP client, so there's no external tool to
 install. The HTTP client is **on by default**; its switch is the HTTP Client
-section of **Settings → Languages & Tools → Web** (or
-`view.toggleHttpClient`).
+section of **Settings → Web** (or `view.toggleHttpClient`).
 
 The file format is JetBrains' HTTP request format, plus some syntax from the VS
 Code REST Client extension (`$dotenv`, `$processEnv`, `$datetime`, `$shared`, and
@@ -135,6 +134,8 @@ the first run of a file already goes out in it:
 - **HTTP: Select Environment** (`http.selectEnvironment`) opens the menu from the
   keyboard, before any run too. The arrow keys and Enter pick; Escape goes back
   to the editor.
+
+![environments.http open with the environment menu dropped from its Env pill: dev, prod and local, No environment ticked, and Open http-client.env.json and Open http-client.private.env.json](/screenshots/docs/http-environments.png "The Env pill's menu: pick an environment, or open the files that define them.")
 
 The choice is remembered with the file's history, so it comes back when you
 reopen the file. Each response records the environment it was sent in: the
@@ -369,8 +370,9 @@ stepping of any JavaScript session. When you continue, the request goes on.
 - Set breakpoints on the lines of a `{% %}` block in the `.http` file itself,
   or in a `./check.js` script file. Elsewhere in a `.http` file there is
   nothing to stop at, so no breakpoint is set there.
-- It needs JavaScript debugging, as for a `.js` file: turn it on in
-  **Settings → Debugging** and [install vscode-js-debug](/docs/run-debug#installing-adapters).
+- It needs JavaScript debugging, as for a `.js` file:
+  [install vscode-js-debug](/docs/run-debug#installing-adapters), and keep
+  **Enable debugging (DAP)** on in **Settings → Debugging** (it is on by default).
 - A paused script is not stopped by the script timeout. If the debugger hasn't
   attached after 30 seconds, the script is stopped.
 - **Restart** doesn't send the request again; run Debug Request again.
@@ -426,8 +428,10 @@ it is, never filled in, so a script can't make a request read `$env` or
 script's value (or an earlier response's), the secrets prompt says the host is
 chosen by an earlier response or a script.
 
-**Settings → Languages & Tools → Web** turns scripts off, picks the Node.js to
-use (empty means `node` on the `PATH`) and sets the timeout. A Detected line
+**Settings → Web** turns scripts off, picks the Node.js to use and sets the
+timeout. Left empty, scripts run on the same Node.js as Run: a project's
+`.nvmrc` or `.node-version`, then the **Node.js** setting, then `node` on the
+`PATH` (see [Which Node.js runs](/docs/run-debug#nodejs-scripts)). A Detected line
 under **Node.js for HTTP scripts** says whether that node is there (*node: found
 (/usr/bin/node)* or *node: not found*), and the script rows are greyed out while
 the HTTP client or its scripts are off. The
@@ -442,7 +446,7 @@ model is on.
 | Run every request in the file | `http.runFile` | `C-c C-r` |
 | Cancel the running request | `http.cancelRequest` | `C-c C-k` |
 | Select environment | `http.selectEnvironment` | (palette, Env pill or status bar) |
-| Show or hide the results after request lines | **HTTP: Toggle Results After Request Lines** | (palette) |
+| Show or hide the results after request lines | `http.toggleInlineResults` | (palette) |
 | Copy the request as a curl command | `http.copyAsCurl` | (Copy as cURL icon) |
 | Turn a curl command on the clipboard into a request | `http.importCurl` | (palette) |
 | Open the response body in its own tab | `http.openResponseInTab` | (Open in tab icon) |
@@ -494,7 +498,7 @@ a success keeps the green ▶.
   History.
 
 **Show results after each request line**, in the HTTP Client section of
-**Settings → Languages & Tools → Web**, turns them off (on by default), as does
+**Settings → Web**, turns them off (on by default), as does
 **HTTP: Toggle Results After Request Lines**.
 
 ### The response view
@@ -524,10 +528,11 @@ opens on **Tests** when a test or a script failed, and on **Body** when the
 request got no response; warnings never switch tabs. Otherwise a tab you picked
 stays across runs while the response has it. The arrow keys, Home and End move
 between tabs. In the Headers table, right-click to copy a value, a header or all
-of them; the copy key copies the selected rows.
+of them; the copy key copies the selected rows (`http.copyHeaderValue`,
+`http.copyAllHeaders`).
 
 **The actions** sit at the end of the tab strip as icons: **Wrap** (long body
-lines; the Request tab always wraps), **Copy as cURL**, **Open in tab** and
+lines, `http.toggleResponseWrap`; the Request tab always wraps), **Copy as cURL**, **Open in tab** and
 **Save response**. Their tooltips show their keys. **Clear** is in the **⋯**
 menu. In a narrow panel the History picker narrows first, then the time and size
 hide, then History moves to a second row; the icons fold into the ⋯ menu, and
@@ -537,14 +542,17 @@ then the tabs show only their counts.
 
 - JSON is pretty-printed with a 2-space indent, one field or array element per
   line (`"id": 42`), and `[]` / `{}` for empty ones. NDJSON shows one value per
-  line.
+  line, and **Save response** and **Open in tab** give a body sent as
+  `application/x-ndjson` the `.jsonl` extension, so it opens as
+  [JSON Lines](/docs/languages#supported-languages).
 - One-line HTML is indented, one block element per line, with inline text kept
   on its block's line (`<h1>Not Found</h1>`). `pre`, `script`, `style` and
   comments are kept exactly; HTML the server already indented is left as it is.
 - One-line XML is indented.
 - An image is shown as a picture, with a caption (`PNG · 160 × 160 · 858 B`), a
-  checkerboard under transparent pixels, and **Fit** / **100%**. Fit, the
-  default, only ever scales a picture down.
+  checkerboard under transparent pixels, and **Fit** / **100%**
+  (`http.imageFit`, `http.imageActualSize`). Fit, the default, only ever
+  scales a picture down.
 - Other binary bodies are summarised.
 
 The layout is only for the view: **Save response** and **Open in tab** have the
@@ -599,15 +607,16 @@ tabs.
 - **The title line** gives the outcome as a coloured pill ("3 of 10 failed",
   "All 10 succeeded", "Cancelled · 2 of 4 ran"), "tests failed in 2 requests" in
   red when any did, and how long the run took. **Only failures** keeps the
-  requests that failed, weren't sent or had a failed test, and the chevron
-  collapses the list.
+  requests that failed, weren't sent or had a failed test
+  (`http.toggleOnlyFailures`), and the chevron collapses the list.
 - **Each row** shows the status (the code, "failed" or "not sent"), the
   request's name with its method and path, its time, and its tests (`✗ 2/3`,
   `✓ 3` or `—`).
 - **Selecting a row** shows that response in the tabs. The first failed
   request, else the first whose tests failed, is selected when the run ends.
   Enter or a double-click goes to the request in the editor; right-click to
-  **Run again**, **Copy as cURL** or **Go to request**.
+  **Run again**, **Copy as cURL** or **Go to request**
+  (`http.runSelectedAgain`, `http.goToSelectedRequest`).
 
 The list takes at most about 40% of the panel and scrolls on its own. It goes
 away at the next run and on **Clear**. A cancelled Run All keeps and lists the
@@ -621,7 +630,10 @@ folder and come back when you reopen the file. Saved bodies are capped at 1 MB,
 and the values of credential headers (Authorization, cookies, and headers named
 like tokens, secrets, API keys and passwords) are masked, and so is any value a
 run read from `$processEnv`, `$env` or `$dotenv`. A request marked
-`# @no-log` is never saved. **Clear**, in the ⋯ menu, empties the file's
+`# @no-log` is never saved. **HTTP: Show Response History…**
+(`http.showHistory`) opens the picker from the keyboard, and **HTTP: Run Shown
+Request Again** (`http.runShownAgain`) sends the request of the past response
+shown. **Clear**, in the ⋯ menu (`http.clearHistory`), empties the file's
 history, saved copy included. The history follows a renamed or moved file, is
 removed with a deleted one, and is shared by every window showing the file.
 **Export Configuration** includes it only when you tick "Include HTTP response

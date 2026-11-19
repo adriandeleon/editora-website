@@ -87,4 +87,4 @@ Sliding along the menu bar switches menus again on Linux, where a menu's own
 drop shadow was covering the bar. And a long status bar message no longer
 squashes everything beside it into ellipses.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.11/#0110---2026-08-11) page.

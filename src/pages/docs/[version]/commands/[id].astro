@@ -1,6 +1,8 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
 import { type Cmd } from "../../../../lib/commands";
+import { formatChord } from "../../../../lib/chord-format";
+import { formatChordMac } from "../../../../lib/chord-format-mac";
 import {
   currentDocVersion,
   docVersions,
@@ -16,6 +18,18 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 export async function getStaticPaths() {
   const docs = await getCollection("commandDocs");
   const docById = new Map(docs.map((d) => [d.id, d]));
+  // Each version's guide pages (slug → title), so "See also" only links a page
+  // that version has.
+  const current = await getCollection("docs");
+  const archive = await getCollection("docsArchive");
+  const guidesFor = (v: DocVersion): Record<string, string> =>
+    Object.fromEntries(
+      v.archive === null
+        ? current.map((e) => [e.id, e.data.title])
+        : archive
+            .filter((e) => e.id.startsWith(`${v.archive}/`))
+            .map((e) => [e.id.slice(v.archive!.length + 1), e.data.title]),
+    );
   const paths: {
     params: { version: string; id: string };
     props: {
@@ -23,14 +37,16 @@ export async function getStaticPaths() {
       category: string;
       doc: CollectionEntry<"commandDocs"> | null;
       docVersion: DocVersion;
+      guides: Record<string, string>;
     };
   }[] = [];
   for (const v of docVersions) {
+    const guides = guidesFor(v);
     for (const g of v.commandGroups) {
       for (const cmd of g.commands) {
         paths.push({
           params: { version: v.slug, id: cmd.id },
-          props: { cmd, category: g.title, doc: docById.get(cmd.id) ?? null, docVersion: v },
+          props: { cmd, category: g.title, doc: docById.get(cmd.id) ?? null, docVersion: v, guides },
         });
       }
     }
@@ -38,7 +54,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { cmd, category, doc, docVersion } = Astro.props;
+const { cmd, category, doc, docVersion, guides } = Astro.props;
 const { Content } = doc ? await render(doc) : { Content: null };
 
 const keymaps: Keymap[] = docVersion.keymaps;
@@ -53,40 +69,342 @@ const stillExists =
 const latestHref = stillExists
   ? `${currentDocVersion.base}/commands/${cmd.id}`
   : currentDocVersion.base;
-// Map a command category to the most relevant guide (slug under the docs base).
-const GUIDE: Record<string, { slug: string; label: string }> = {
-  Files: { slug: "workspace", label: "Projects, windows & files" },
-  Editing: { slug: "editing", label: "Editing" },
-  Navigation: { slug: "navigation", label: "Navigation & search" },
-  Search: { slug: "navigation", label: "Navigation & search" },
-  "Buffers & tabs": { slug: "workspace", label: "Projects, windows & files" },
-  "View & display": { slug: "workspace", label: "Projects, windows & files" },
-  Folding: { slug: "editing", label: "Editing" },
-  "Splits & zoom": { slug: "workspace", label: "Projects, windows & files" },
-  Markdown: { slug: "markdown", label: "Markdown, diagrams & preview" },
-  "Code intelligence (LSP)": { slug: "lsp", label: "Language servers (LSP)" },
-  Run: { slug: "run-debug", label: "Running & debugging" },
-  Debugging: { slug: "run-debug", label: "Running & debugging" },
-  "Git & diff": { slug: "git", label: "Git" },
-  "HTTP client": { slug: "http-client", label: "HTTP client" },
-  Diagrams: { slug: "markdown", label: "Markdown, diagrams & preview" },
-  Bookmarks: { slug: "bookmarks-notes", label: "Bookmarks & notes" },
-  "Personal notes": { slug: "bookmarks-notes", label: "Bookmarks & notes" },
-  "Snippets & templates": { slug: "snippets-templates", label: "Snippets & templates" },
-  Projects: { slug: "workspace", label: "Projects, windows & files" },
-  "Remote (SFTP)": { slug: "remote", label: "Remote files (SFTP)" },
-  "Spell check": { slug: "languages", label: "Languages & highlighting" },
-  Appearance: { slug: "themes-fonts", label: "Themes & fonts" },
-  "Tool windows": { slug: "", label: "Documentation" },
-  Window: { slug: "workspace", label: "Projects, windows & files" },
-  Application: { slug: "configuration", label: "Configuration" },
-};
-const g = GUIDE[category] ?? { slug: "", label: "Documentation" };
-const guide = { href: g.slug ? `${docsBase}/${g.slug}` : docsBase, label: g.label };
 
+const allCommands = docVersion.commandGroups.flatMap((g) => g.commands);
+const titleOf = (id: string) => allCommands.find((c) => c.id === id)?.title ?? null;
+const startsWithAny = (id: string, prefixes: string[]) => prefixes.some((p) => id.startsWith(p));
+
+// The most relevant guide for a command: by id prefix first, then by category.
+// Each entry is "slug" or "slug#anchor"; one the version doesn't have is skipped.
+const BUILD_TOOLS = ["maven", "npm", "cargo", "go", "gradle", "sbt", "mill", "scalacli", "clojure", "lein", "babashka"];
+const PRINT_IDS = [
+  "editor.exportPdf", "editor.print", "editor.exportSelectionPdf", "editor.printSelection",
+  "editor.setPdfPageSize", "preview.exportPdf", "preview.print", "projectMap.exportPdf", "projectMap.print",
+];
+const BY_PREFIX: [string[], string][] = [
+  [PRINT_IDS, "print-pdf"],
+  [["eslint."], "lsp#eslint"],
+  [["python."], "lsp#the-python-interpreter"],
+  [["install.typstCli"], "typst"],
+  [["install.mermaidSupport", "mermaid."], "markdown"],
+  [["install."], "lsp#one-click-install"],
+  [["diff.", "merge."], "diff-merge"],
+  [["github."], "github"],
+  [["diagram."], "diagrams"],
+  [["markwhen."], "previews#markwhen-timelines"],
+  [["structured."], "previews#structured-data-and-api-docs"],
+  [["pom."], "previews#maven-poms"],
+  [["htmlPreview."], "markdown#html-live-preview"],
+  [["typst."], "typst"],
+  [["csv."], "csv"],
+  [["log."], "log-viewer"],
+  [["crypto."], "encrypted-files"],
+  [["terminal."], "terminal"],
+  [["ai.", "agent."], "ai"],
+  [["mcp."], "mcp"],
+  [["plugins."], "plugins"],
+  [["externalTool."], "external-tools"],
+  [["macro."], "macros"],
+  [["sync."], "settings-sync"],
+  [["keymap."], "keymaps"],
+  [["config."], "configuration"],
+  [["editorConfig."], "editorconfig"],
+  [["abbrev."], "editing#abbreviations"],
+  [["history.", "localHistory."], "workspace#local-file-history"],
+  [["undoHistory."], "undo-history"],
+  [["projectMap."], "workspace#project-map"],
+  [["workspace."], "workspace#trusted-folders"],
+  [["deploy."], "deployments"],
+  [["container."], "remote#tools-in-a-container"],
+  [["index."], "code-navigation#go-to-symbol-in-project"],
+  [BUILD_TOOLS.map((t) => `${t}.`), "build-tools"],
+  [["todo."], "todo"],
+];
+const BY_CATEGORY: Record<string, string> = {
+  Files: "workspace",
+  Editing: "editing",
+  Navigation: "navigation",
+  Search: "navigation",
+  "Buffers & tabs": "workspace",
+  "View & display": "workspace",
+  Folding: "editing",
+  "Splits & zoom": "workspace",
+  Markdown: "markdown",
+  Diagrams: "diagrams",
+  Previews: "previews",
+  Typst: "typst",
+  CSV: "csv",
+  "Log viewer": "log-viewer",
+  "Code intelligence (LSP)": "lsp",
+  "Language support": "lsp",
+  Run: "run-debug",
+  "Build tools": "build-tools",
+  Debugging: "run-debug",
+  "Git & diff": "git",
+  "Local history": "workspace",
+  "HTTP client": "http-client",
+  Terminal: "terminal",
+  Bookmarks: "bookmarks-notes",
+  "Personal notes": "bookmarks-notes",
+  "TODO highlighting": "todo",
+  "Snippets & templates": "snippets-templates",
+  "Macros & external tools": "external-tools",
+  Projects: "workspace",
+  "Project Map": "workspace",
+  "Remote (SFTP)": "remote",
+  "Deployments & containers": "deployments",
+  "Encrypted files": "encrypted-files",
+  "AI & agents": "ai",
+  "Spell check": "languages",
+  Appearance: "themes-fonts",
+  Window: "workspace",
+  Plugins: "plugins",
+  "Settings & sync": "configuration",
+  Application: "configuration",
+};
+const guideTarget = (): string | null => {
+  const candidates = [
+    ...BY_PREFIX.filter(([ps]) => ps.some((p) => (p.endsWith(".") ? cmd.id.startsWith(p) : cmd.id === p))).map(
+      ([, t]) => t,
+    ),
+    BY_CATEGORY[category],
+  ].filter((t): t is string => !!t);
+  return candidates.find((t) => t.split("#")[0] in guides) ?? null;
+};
+const target = guideTarget();
+const guide = target
+  ? { href: `${docsBase}/${target}`, label: guides[target.split("#")[0]] }
+  : { href: docsBase, label: "Documentation" };
+
+// The command's chords per keymap, in the app's notation, primary first. An
+// archived version keeps its chords as that release's docs wrote them.
+const pcChords = (k: Keymap) => {
+  const first = cmd.bindings?.[k.id];
+  const all = first ? [first, ...(cmd.alt?.[k.id] ?? [])] : [];
+  return archived ? all : all.map((c) => formatChord(c, k.id));
+};
+const macChords = (k: Keymap) => {
+  const first = cmd.mac?.[k.id];
+  return first ? [first, ...(cmd.macAlt?.[k.id] ?? [])].map((c) => formatChordMac(c, k.id)) : [];
+};
+// A version whose data has macOS chords gets a macOS column.
+const hasMac = !archived && allCommands.some((c) => c.mac);
 const bindings = keymaps
-  .map((k) => ({ name: k.name, chord: cmd.bindings?.[k.id] ?? null }))
-  .filter((b) => b.chord);
+  .map((k) => ({ name: k.name, pc: pcChords(k), mac: hasMac ? macChords(k) : [] }))
+  .filter((b) => b.pc.length > 0 || b.mac.length > 0);
+
+// How each keymap opens the palette, grouped by chord: "M-x in Emacs, Ctrl+Shift+P
+// in CUA, Sublime Text and VS Code, …".
+const palette = allCommands.find((c) => c.id === "palette.show");
+const joinNames = (xs: string[]) =>
+  xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`;
+const groupChords = (pairs: { chord: string; name: string }[]) => {
+  const out: { chord: string; names: string[] }[] = [];
+  for (const p of pairs) {
+    const hit = out.find((o) => o.chord === p.chord);
+    if (hit) hit.names.push(p.name);
+    else out.push({ chord: p.chord, names: [p.name] });
+  }
+  return out;
+};
+const paletteKeys = palette
+  ? groupChords(
+      keymaps
+        .filter((k) => palette.bindings?.[k.id])
+        .map((k) => ({
+          chord: archived ? palette.bindings![k.id] : formatChord(palette.bindings![k.id], k.id),
+          name: k.name,
+        })),
+    )
+  : [];
+// macOS: only the keymaps whose palette chord differs there (all but Emacs).
+const paletteMacKeys = hasMac && palette
+  ? [
+      ...new Set(
+        keymaps
+          .filter((k) => palette.mac?.[k.id] && palette.mac[k.id] !== palette.bindings?.[k.id])
+          .map((k) => formatChordMac(palette.mac![k.id], k.id)),
+      ),
+    ]
+  : [];
+
+// What has to be on, or installed, for the command to run: the app's palette
+// rules (Chrome.FEATURE_RULES on master) and the tools a feature calls. Only the
+// current version states them; an archived page doesn't know what its release
+// gated.
+type Gate = {
+  /** Id prefixes ("git.") and exact ids ("tool.commit") the rule covers. */
+  ids: string[];
+  except?: string[];
+  /** The feature, as the sentence names it ("Git is off"). */
+  name: string;
+  on: boolean;
+  toggle: string;
+  settings?: string;
+  /** Simple UI mode turns the feature off as well. */
+  simple?: boolean;
+};
+const GATES: Gate[] = [
+  { ids: ["project.", "tool.project"], name: "Projects support", on: true, toggle: "view.toggleProjects", settings: "Settings → Workspace → Features" },
+  { ids: ["index."], name: "the symbol index", on: true, toggle: "view.toggleSymbolIndex", settings: "Settings → Editor → Editing", simple: true },
+  { ids: ["git.", "tool.commit", "tool.gitLog"], name: "Git support", on: true, toggle: "view.toggleGit", settings: "Settings → Git", simple: true },
+  { ids: ["github.", "tool.github"], name: "GitHub support", on: true, toggle: "view.toggleGithub", settings: "Settings → GitHub", simple: true },
+  { ids: ["notes.", "tool.notes"], name: "Personal Notes", on: true, toggle: "view.toggleNotes", settings: "Settings → Workspace → Features" },
+  { ids: ["mermaid."], name: "Mermaid support", on: true, toggle: "view.toggleMermaid", settings: "Settings → Mermaid" },
+  { ids: ["diagram."], name: "diagram preview", on: true, toggle: "view.toggleDiagramSupport", settings: "Settings → Diagrams" },
+  { ids: ["typst."], name: "Typst support", on: true, toggle: "view.toggleTypstSupport", settings: "Settings → Typst" },
+  { ids: ["lsp.", "tool.problems"], name: "LSP support", on: true, toggle: "view.toggleLsp", settings: "Settings → LSP", simple: true },
+  { ids: ["http."], name: "the HTTP client", on: true, toggle: "view.toggleHttpClient", settings: "Settings → Web", simple: true },
+  { ids: ["htmlPreview."], name: "HTML Live Preview", on: true, toggle: "view.toggleHtmlPreview", settings: "Settings → Web" },
+  { ids: ["history.", "tool.fileHistory"], name: "Local History", on: true, toggle: "view.toggleLocalHistory", settings: "Settings → Workspace → Local History", simple: true },
+  { ids: ["mcp."], name: "the MCP server", on: false, toggle: "view.toggleMcp", settings: "Settings → MCP Server", simple: true },
+  { ids: ["plugins."], except: ["plugins.toggleRequireSignature", "plugins.setRegistryUrl"], name: "plugin support", on: false, toggle: "view.togglePlugins", settings: "Settings → Plugins", simple: true },
+  { ids: ["log."], name: "the log viewer", on: true, toggle: "view.toggleLogViewer", settings: "Settings → Editor → Logs", simple: true },
+  { ids: ["test.", "tool.testResults"], name: "Test Results", on: true, toggle: "view.toggleTestRunner", settings: "Settings → Build Tools → Test Results", simple: true },
+  { ids: ["debug.", "tool.debug"], name: "debugging", on: true, toggle: "view.toggleDebug", settings: "Settings → Debugging", simple: true },
+  { ids: ["todo.", "tool.todo"], name: "TODO highlighting", on: true, toggle: "view.toggleTodoHighlight", settings: "Settings → TODO" },
+  { ids: ["spell."], name: "spell check", on: true, toggle: "view.toggleSpellCheck", settings: "Settings → Spell Check" },
+  { ids: ["csv."], name: "the CSV grid preview", on: true, toggle: "view.toggleCsvGrid", settings: "Settings → Editor → CSV" },
+  { ids: ["structured."], name: "the structured data preview", on: true, toggle: "view.toggleStructuredPreview", settings: "Settings → Editor → File previews" },
+  { ids: ["pom."], name: "the Maven pom.xml preview", on: true, toggle: "view.togglePomPreview", settings: "Settings → Editor → File previews" },
+  { ids: ["markdownLint."], name: "Markdown lint", on: true, toggle: "view.toggleMarkdownLint", settings: "Settings → Markdown → Linting" },
+  { ids: ["editorConfig."], name: "EditorConfig support", on: true, toggle: "view.toggleEditorConfig", settings: "Settings → Editor → Indentation" },
+  ...[
+    ["maven", "Maven", "view.toggleMavenSupport"],
+    ["npm", "package scripts", "view.toggleNpmSupport"],
+    ["cargo", "Cargo", "view.toggleCargoSupport"],
+    ["go", "Go", "view.toggleGoSupport"],
+    ["gradle", "Gradle", "view.toggleGradleSupport"],
+    ["sbt", "sbt", "view.toggleSbtSupport"],
+    ["mill", "Mill", "view.toggleMillSupport"],
+    ["scalacli", "Scala CLI", "view.toggleScalaCliSupport"],
+    ["clojure", "Clojure CLI", "view.toggleClojureCliSupport"],
+    ["lein", "Leiningen", "view.toggleLeiningenSupport"],
+    ["babashka", "Babashka", "view.toggleBabashkaSupport"],
+  ].map(([id, name, toggle]) => ({
+    ids: [`${id}.`, `tool.${id}`],
+    name: `${name} support`,
+    on: true,
+    toggle,
+    settings: "Settings → Build Tools",
+  })),
+];
+const covers = (ids: string[]) =>
+  ids.some((p) => (p.endsWith(".") ? cmd.id.startsWith(p) : cmd.id === p));
+const gate = archived ? undefined : GATES.find((g) => covers(g.ids) && !(g.except ?? []).includes(cmd.id));
+const gateToggle = gate ? titleOf(gate.toggle) : null;
+// AI actions and the AI Agent sit behind two switches, both off by default.
+const aiGate = archived
+  ? null
+  : covers(["ai."])
+    ? { name: "AI actions are", page: "Settings → AI Actions", toggle: titleOf("view.toggleAi") }
+    : covers(["agent.", "tool.agent"])
+      ? { name: "the AI Agent is", page: "Settings → AI Agent", toggle: titleOf("view.toggleAgent") }
+      : null;
+// Off only in Simple UI mode (External Tools has no switch of its own; the
+// one-click installs are hidden there).
+const simpleOnly =
+  !archived &&
+  covers([
+    "externalTool.", "tool.externalTools", "install.languageServer", "install.javaSupport",
+    "install.pythonSupport", "install.jsSupport", "install.shellTools",
+  ]);
+const simpleToggle = titleOf("view.toggleSimpleMode");
+
+// What the command calls that Editora doesn't ship.
+type Need = { text: string; cmd?: string; installs?: string; href?: string; link?: string };
+const need: Need | null = archived
+  ? null
+  : covers(["lsp.", "tool.problems"]) || cmd.id === "eslint.fixAll"
+    ? {
+        text: "It works through the language server for the file's language. Editora never bundles one; it uses a server on your PATH, and",
+        cmd: "install.languageServer",
+        installs: "installs a supported one.",
+        href: `${docsBase}/lsp#servers-are-auto-detected-never-bundled`,
+        link: "Which servers are supported",
+      }
+    : covers(["debug."])
+      ? {
+          text: "It needs the debug adapter for the program's language. Adapters are not bundled; each language's card on Settings → Debugging can install one.",
+          href: `${docsBase}/run-debug#installing-adapters`,
+          link: "Installing adapters",
+        }
+      : covers(["git.", "tool.commit", "tool.gitLog"])
+        ? { text: "It runs the git installed on this machine, in a folder that is a Git repository." }
+        : covers(["github.", "tool.github"])
+          ? { text: "It runs your own GitHub CLI (gh), signed in.", href: `${docsBase}/github`, link: "GitHub" }
+          : covers(["crypto."])
+            ? { text: "It runs the GnuPG (gpg) installed on this machine.", href: `${docsBase}/encrypted-files#install-gnupg`, link: "Install GnuPG" }
+            : /^typst\.export/.test(cmd.id)
+              ? { text: "Exporting runs the typst CLI;", cmd: "install.typstCli" }
+              : cmd.id === "mermaid.export"
+                ? { text: "Exporting runs the Mermaid CLI (mmdc);", cmd: "install.mermaidSupport" }
+                : cmd.id === "diagram.export"
+                  ? { text: "Exporting runs Graphviz dot or PlantUML, whichever the diagram is written for, installed on this machine." }
+                  : null;
+const needCmd = need?.cmd ? titleOf(need.cmd) : null;
+
+// Sentences with inline markup, built as segments so the markup sits flush
+// against its punctuation: text, a chord (one <kbd> per key), bold, or a link.
+type Seg = string | { kbd: string } | { b: string } | { href: string; t: string };
+const kbd = (chord: string): Seg[] =>
+  chord.split(" ").flatMap((k, i): Seg[] => (i === 0 ? [{ kbd: k }] : [" ", { kbd: k }]));
+const listOf = (items: Seg[][]): Seg[] =>
+  items.flatMap((it, i) =>
+    i === 0 ? it : [i === items.length - 1 ? (items.length > 2 ? ", and " : " and ") : ", ", ...it],
+  );
+
+const paletteSentence: Seg[] =
+  paletteKeys.length === 0
+    ? []
+    : [
+        " The palette opens with ",
+        ...listOf(paletteKeys.map((p) => [...kbd(p.chord), ` in ${joinNames(p.names)}`])),
+        ...(paletteMacKeys.length > 0
+          ? [" (", ...listOf(paletteMacKeys.map((c) => kbd(c))), " on macOS)"]
+          : []),
+        ".",
+      ];
+
+const notes: Seg[][] = [];
+if (gate) {
+  const how: Seg[] = gateToggle
+    ? ["; switch it with ", { b: gateToggle }, ...(gate.settings ? [" or in ", { b: gate.settings }] : [])]
+    : gate.settings
+      ? ["; switch it in ", { b: gate.settings }]
+      : [];
+  notes.push([
+    `The palette lists it greyed out while ${gate.name} is off. It is ${gate.on ? "on" : "off"} by default`,
+    ...how,
+    gate.simple ? ". Simple UI mode turns it off as well." : ".",
+  ]);
+}
+if (aiGate) {
+  notes.push([
+    `The palette lists it greyed out until ${aiGate.name} on. That takes two switches, both off by default: `,
+    { b: "Enable AI" },
+    " in ",
+    { b: "Settings → AI" },
+    ", and the switch in ",
+    { b: aiGate.page },
+    ...(aiGate.toggle ? [" (or ", { b: aiGate.toggle }, ")"] : []),
+    ". Simple UI mode turns it off as well.",
+  ]);
+}
+if (simpleOnly) {
+  notes.push([
+    "The palette lists it greyed out while Simple UI mode is on",
+    ...(simpleToggle ? [" (", { b: simpleToggle }, ")"] : []),
+    ".",
+  ]);
+}
+if (need) {
+  notes.push([
+    need.text,
+    ...(needCmd ? [" ", { b: needCmd }, ` ${need.installs ?? "installs it."}`] : []),
+    ...(need.href ? [" ", { href: need.href, t: `${need.link} →` }] : []),
+  ]);
+}
 ---
 
 <Layout
@@ -129,9 +447,8 @@ const bindings = keymaps
     <section class="run">
       <h2>How to run it</h2>
       <p>
-        Open the command palette (<kbd>M-x</kbd> in the Emacs keymap) and search
-        for <strong>{cmd.title}</strong>, then press Enter.
-        {
+        Open the command palette and search for <strong>{cmd.title}</strong>,
+        then press Enter.{paletteSentence.map((seg) => <Fragment>{typeof seg === "string" ? seg : "kbd" in seg ? <kbd>{seg.kbd}</kbd> : "b" in seg ? <strong>{seg.b}</strong> : <a href={seg.href}>{seg.t}</a>}</Fragment>)}{
           bindings.length > 0
             ? " It also has a default keybinding:"
             : " It has no default keybinding, but you can bind one in Settings → Keymaps."
@@ -140,19 +457,48 @@ const bindings = keymaps
       {
         bindings.length > 0 && (
           <table class="keys">
+            {hasMac && (
+              <thead>
+                <tr>
+                  <th scope="col">Keymap</th>
+                  <th scope="col">Windows / Linux</th>
+                  <th scope="col">macOS</th>
+                </tr>
+              </thead>
+            )}
             <tbody>
               {bindings.map((b) => (
                 <tr>
-                  <td class="km">{b.name}</td>
-                  <td class="chord">
-                    {b.chord!.split(" ").map((tok) => (
-                      <kbd>{tok}</kbd>
-                    ))}
-                  </td>
+                  <th scope="row" class="km">{b.name}</th>
+                  {(hasMac ? [b.pc, b.mac] : [b.pc]).map((chords) => (
+                    <td class="chord">
+                      {chords.length === 0 ? (
+                        <span class="none" aria-label="not bound">&mdash;</span>
+                      ) : (
+                        chords.map((chord, i) => (
+                          <span class="one">
+                            {i > 0 && <span class="or">or</span>}
+                            {chord.split(" ").map((tok) => (
+                              <kbd>{tok}</kbd>
+                            ))}
+                          </span>
+                        ))
+                      )}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
+        )
+      }
+      {
+        notes.length > 0 && (
+          <div class="needs">
+            {notes.map((segs) => (
+              <p>{segs.map((seg) => <Fragment>{typeof seg === "string" ? seg : "kbd" in seg ? <kbd>{seg.kbd}</kbd> : "b" in seg ? <strong>{seg.b}</strong> : <a href={seg.href}>{seg.t}</a>}</Fragment>)}</p>
+            ))}
+          </div>
         )
       }
     </section>
@@ -261,9 +607,18 @@ const bindings = keymaps
     border-collapse: collapse;
   }
 
-  table.keys td {
+  table.keys td,
+  table.keys th {
     padding: 0.35rem 1.5rem 0.35rem 0;
     vertical-align: top;
+    text-align: left;
+  }
+
+  table.keys thead th {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
   }
 
   .km {
@@ -274,6 +629,51 @@ const bindings = keymaps
 
   .chord kbd + kbd {
     margin-left: 0.25rem;
+  }
+
+  /* A keymap's chords stack, the one the app shows first. */
+  .chord .one {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .chord .one + .one {
+    margin-top: 0.15rem;
+  }
+
+  .or {
+    color: var(--faint);
+    font-size: 0.8rem;
+    margin-right: 0.4rem;
+  }
+
+  .none {
+    color: var(--faint);
+  }
+
+  .needs {
+    margin-top: 1rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    font-size: 0.92rem;
+  }
+
+  .needs p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .needs p + p {
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 600px) {
+    table.keys td,
+    table.keys th {
+      padding-right: 0.75rem;
+    }
   }
 
   .see-also ul {

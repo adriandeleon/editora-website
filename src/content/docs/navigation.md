@@ -36,6 +36,17 @@ matches rank below every match on a title.
 A command that can't run right now stays listed and dimmed, with an explanation
 of what would enable it, rather than disappearing.
 
+A screen reader hears the selected row as the arrow keys move it, with the
+command's title and keys, and the reason when the command cannot run. The other
+pickers announce their selected row the same way.
+
+The palette also reaches every setting. Most Settings pages have a command that
+lists the page's settings with their values and changes the one you pick, such
+as **Terminal: Change a Setting…** or **Debug: Change a Setting…**; see
+[The Settings window](/docs/configuration#the-settings-window).
+
+![The command palette over a Java file with fold typed: View: Fold, Fold All, Toggle Fold and Fold Level 1 to 5, each with its chord, the highlighted row's description below and a hint line naming the keys](/screenshots/docs/command-palette.png "The palette after typing fold: every matching command, its key, and what the highlighted one does.")
+
 ## Search Everywhere
 
 **Search Everywhere** (`search.everywhere`) is one picker over **commands,
@@ -71,9 +82,8 @@ instead of dropping a source outright.
 
 **A single-source query is not capped.** When a sigil restricts the picker to
 one source, or when the query is empty (which lists commands), there is no
-smaller source for a large one to crowd out, so you get the whole list. Before
-0.14.0 a `>` search returned at most eight commands, fewer than the command
-palette it stands in for.
+smaller source for a large one to crowd out, so you get the whole list: a `>`
+search lists as many commands as the command palette does.
 
 An **empty query lists every command** and touches no other corpus, so opening
 it is a browsable list rather than a blank box. A bare sigil is a *scope* rather
@@ -109,9 +119,8 @@ would mean reading every source file over the connection.
 
 A command whose feature is switched off is **listed, greyed, with an explanation
 naming the setting that would enable it**, the same way the
-[command palette](/docs/navigation#command-palette) treats it. In 0.13.0 such
-commands were omitted, which is tidier in a short mixed list but means you never
-learn the command exists. Greyed rows sort after everything you can run, and both the cursor and the mouse step over them.
+[command palette](/docs/navigation#command-palette) treats it, so you learn the
+command exists. Greyed rows sort after everything you can run, and both the cursor and the mouse step over them.
 
 The highlighted row's **description** appears under the list, and the docs key
 (**`C-h`** in the Emacs keymap) opens that command's documentation in your
@@ -124,9 +133,7 @@ browser. Both match the palette. The hint line along the bottom names them, alon
 | Emacs | `M-S-x` |
 | CUA, Sublime, VS Code, IntelliJ | `Ctrl`/`Cmd`+`Shift`+`E` |
 
-`M-S-x` was chosen because it sits beside `M-x`. (Through 0.13.0
-the command had no chord in any bundled keymap, so the only way to reach it was
-the palette.)
+`M-S-x` was chosen because it sits beside `M-x`.
 
 It can also **take over the command palette's shortcut**: switch on *Palette
 shortcut opens Search Everywhere* under **Settings → Interface → Pickers**, or
@@ -174,7 +181,9 @@ filter; Enter opens.
 | Markdown headings, project-wide ([more](/docs/markdown#completion-and-navigation)) | `project.gotoMarkdownHeading` | (palette) |
 
 The pickers share styling and dirty-file markers, so an unsaved buffer shows the
-same dot you see on its tab.
+same dot you see on its tab. A picker with nothing to list says so ("No
+bookmarks in this project"), and shows "No matches" when what you typed
+matches nothing.
 
 ## The file finder
 
@@ -184,7 +193,7 @@ open (or create) a file. There's a matching folder finder for picking a
 directory.
 
 **`C-d` opens a folder as a project**, the same as
-[Open Project Folder](/docs/workspace) (`project.open`), and closes the finder.
+[*Project: Open Folder…*](/docs/workspace) (`project.open`), and closes the finder.
 The folder it opens is:
 
 - the highlighted folder, when you picked it: typed its name, or moved the
@@ -195,7 +204,7 @@ The folder it opens is:
 - on a file row, the folder that file is in.
 
 The key legend shows it as "C-d open as project". It is only offered when
-projects are on (Settings → Workspace), not in the Open Project Folder picker
+projects are on (Settings → Workspace), not in the *Project: Open Folder…* picker
 (whose Enter already chooses a folder), and not in the IntelliJ macOS keymap,
 where `C-d` is Start Debugging.
 
@@ -208,12 +217,16 @@ and `C-g` or Esc cancels. The chord is the Emacs keymap's; the other keymaps
 leave the command unbound, so run it from the palette or bind it in
 Settings → Keymaps.
 
+**Buffer: Next** (`buffer.next`) and **Buffer: Previous** (`buffer.previous`)
+step to the tab after or before the selected one, wrapping around at the ends.
+Both are in the **Window** menu and have no key until you give them one.
+
 ## Find in the current file
 
 `C-s` / `C-r` open the Find/Replace bar at the top of the editor. It searches as
 you type (incremental), highlights every match, and shows a "{n} of {total}"
-count. A repeated `C-s` / `C-r` cycles to the next or previous match, and `C-g`
-closes the bar. Case, regex, and whole-word toggles are on the bar, along with
+count. A repeated `C-s` / `C-r` cycles to the next or previous match, and so do
+Enter and Shift+Enter in the find field; `C-g` closes the bar. Case, regex, and whole-word toggles are on the bar, along with
 **`AB`** (preserve case) and **`Sel`** (find in selection); a clear (`✕`) button
 empties a field in one click.
 
@@ -238,6 +251,37 @@ keymaps or `Ctrl+R` in IntelliJ (`Option+Cmd+F` and `Cmd+R` on macOS). The
 replace-with-confirmation loop, and the find bar's own replace is still on the
 bar and in the palette.
 
+The find bar's switches are commands too, so a key of your own can flip them:
+**Find: Toggle Match Case**, **Find: Toggle Regular Expression**, **Find: Toggle
+Whole Word**, **Find: Toggle Preserve Case** and **Find: Toggle In Selection**.
+**Edit: Clear Search Field** (`edit.clearSearchField`) empties the search or
+filter field the keyboard is in, as its `✕` does.
+
+## Find in a console
+
+The Output, Run, External Tools and Debug consoles, the test output in Test
+Results and the Application Log each have a find bar. Press your keymap's Find
+key while the console has the keyboard (the Application Log also has a **Find**
+button), or run the console's own command from the palette:
+
+| Console | Command |
+| --- | --- |
+| Output (builds) | `buildOutput.find` |
+| Run | `run.findInOutput` |
+| External Tools | `externalTool.findInOutput` |
+| Debug | `debug.findInConsole` |
+| Test Results | `test.findInOutput` |
+| Application Log | `debugLog.find` |
+
+None of them has a default key; give them one under Settings → Keymaps. Each
+shows its panel and opens the bar. The bar searches as you type, starting from
+where the caret was when it opened, highlights every match and shows a count.
+Enter goes to the next match and Shift+Enter to the previous one, wrapping
+around, and pressing Find again, or running the command again, also goes to the
+next match. Escape closes the bar and gives the keyboard back to the text. In the
+terminal, too, pressing Find while its bar is open goes to the next match; see
+[Find in the terminal](/docs/terminal#find-in-the-terminal).
+
 ## Occur
 
 **Edit: Occur…** (`M-s o`) lists every line in the current buffer matching a
@@ -251,7 +295,13 @@ the list further as you type.
 active project (skipping dot-dirs, binary files and files over 2 MB) plus the
 in-memory text of open buffers, so unsaved edits are included. Results are
 grouped by file; Enter or double-click jumps to a match. Case, regex, and
-whole-word apply here too.
+whole-word apply here too. A match's right-click menu (or the Menu key, or
+Shift+F10) has **Open** and **Copy**, and your keymap's Copy key copies the
+selected match's line, or a file heading's path. As commands they are
+**Find in Files: Open Match** (`searchResults.openSelected`) and
+**Find in Files: Copy Line** (`searchResults.copySelected`).
+
+![The Find in Files tool window beside a Java file: the query discountFor, case, regex and whole-word toggles, replace and include and exclude fields, then 4 matches in 4 files grouped under Pricing.java, Shelf.java, ShelfTest.java and README.md](/screenshots/docs/find-in-files.png "Find in Files: matches grouped by file, with a ripgrep badge when it did the search.")
 
 While **Exclude .gitignore files and folders from search** is on (Settings →
 Search, on by default), Find in Files skips what the project's `.gitignore`
@@ -306,6 +356,8 @@ it:
 | Fold / unfold all `#region` markers | `view.foldAllMarkerRegions` | (palette) |
 | Fold / unfold all except the caret | `view.foldAllExcept` / `view.unfoldAllExcept` | (palette) |
 
+![Shelf.java after Fold All: every method and the javadoc comments folded to one line each, with a fold chevron in the gutter beside each region](/screenshots/docs/fold-all.png "Fold All collapses every region; the chevrons in the gutter open them one at a time.")
+
 **Fold Level *n*** collapses everything at that nesting depth, like VS Code's
 `Ctrl+K Ctrl+1..7`. **Fold Recursively** collapses the region at the caret *and*
 everything nested inside it, and unfolding recursively reveals the whole subtree.
@@ -319,7 +371,7 @@ Settings → Keymaps.
 no syntactic basis. Unlike a detected region, which is recomputed from the text as
 you type, a manual range is tracked through your edits, and it **persists across
 restarts** with the rest of your session. **Remove Manual Fold Ranges** clears
-them for the file.
+them for the file, after asking; the text itself does not change.
 
 **Fold All Block Comments** and **Fold All `#region` Markers** fold exactly
 those. The marker families recognized are `//#region`, `//region`, `#region`,
@@ -342,6 +394,14 @@ file and restored with your session.
 Jump around and step through your navigation history with **Go: Back**
 (`nav.back`) and **Go: Forward** (`nav.forward`), like a browser's back/forward
 for the caret.
+
+| Keymap | Back | Forward |
+| --- | --- | --- |
+| Emacs | `M-,` | `C-M-,` |
+| CUA | `Ctrl+Alt+Left` (`Cmd+[` on macOS) | `Ctrl+Alt+Right` (`Cmd+]` on macOS) |
+| Sublime | `Alt+-` (`Ctrl+-` on macOS) | `Alt+Shift+-` (`Ctrl+Shift+-` on macOS) |
+| VS Code | `Ctrl+Alt+-` (`Ctrl+-` on macOS) | `Ctrl+Shift+-` |
+| IntelliJ | `Ctrl+Alt+Left` (`Option+Cmd+Left` or `Cmd+[` on macOS) | `Ctrl+Alt+Right` (`Option+Cmd+Right` or `Cmd+]` on macOS) |
 
 ### Recent Locations
 
@@ -367,7 +427,19 @@ costs one tab rather than twenty.
 `M-g j` labels every visible occurrence of the next character you type. Type a
 label to jump the caret there. **Esc** or `C-g` cancels. It's the fastest way to
 move the caret to something you can see. **Line mode** (`nav.aceJumpLine`,
-`M-g L`) labels every visible line so you can jump straight to one.
+`M-g S-l`) labels every visible line so you can jump straight to one.
+
+## Between the editor and the tool windows
+
+**Window: Other** (`window.other`) moves the keyboard from the editor to the
+next open tool window, and on round to the editor again. **Window: Other,
+Reverse** (`window.otherReverse`) goes the other way. Every keymap binds both,
+and both are in the **Window** menu:
+
+| Keymap | Other | Other, Reverse |
+| --- | --- | --- |
+| Emacs | `C-x o` | `C-x S-o` |
+| CUA, Sublime, VS Code, IntelliJ | `Alt+Page Down` (`Option+Page Down` on macOS) | `Alt+Page Up` (`Option+Page Up` on macOS) |
 
 ## Closing tool windows
 

@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 7
 beta: false
 summary: "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, registers, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap."
+alt: "The command palette filtered by \"kill\", listing the Emacs kill commands with their chords"
 ---
 
 Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto their own commands. Editora implements the model underneath: the concepts an Emacs user reaches for without thinking, built as real features rather than shortcut aliases. Emacs is the default keymap, and everything here works in the other four too, through the palette or a binding of your own.

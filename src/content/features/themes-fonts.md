@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 1
 beta: false
 summary: "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus 26 more (Primer, Nord, Cupertino, Dracula and the community set). Five bundled monospace fonts, no install needed, and you can drop in a theme of your own."
+alt: "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"
 ---
 
 **Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for keybindings. They are what a fresh install starts in.

@@ -47,4 +47,4 @@ choice cannot erase a Result you edited by hand. Git also treats paths
 literally and keeps conflicted entries visible.
 
 The full list, including the JavaFX 27 runtime update and dependency refresh in
-0.18.4, is on [What's New](/whats-new).
+0.18.4, is on [What's New](/whats-new/0.18/#0185---2026-09-19).

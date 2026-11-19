@@ -29,7 +29,7 @@ Where there is no `editora` command, substitute the launcher in the examples.
 
 | Flag | Effect |
 | --- | --- |
-| `--version`, `-V` | Print the version and exit (no GUI) |
+| `--version`, `-V`, `-v` | Print the version and exit (no GUI) |
 | `--help`, `-h` | Print usage and exit (no GUI) |
 | `--config-dir <path>` | Use this config folder |
 | `--dev` | Use an isolated `~/.editora-dev/` config |
@@ -44,6 +44,14 @@ Where there is no `editora` command, substitute the launcher in the examples.
 | `--new-instance` | Start a separate editor process instead of handing the launch to the one already running on the same config folder |
 | `--diff-ui LEFT RIGHT` | Open files or folders in an isolated comparison workspace |
 | `--report` | Write a redacted problem report (system details and the last two session logs) to the current folder and open a GitHub issue for it, without starting the editor (see [Reporting a problem](/docs/troubleshooting#reporting-a-problem)) |
+| `--` | Every argument after it is a file (see [Opening files](#opening-files)) |
+
+An option Editora does not define stops the launch: `editora --config-dri /tmp/x`
+prints `Editora: unknown option: --config-dri` and how to get help, and exits
+with status 2 before any window opens, rather than starting on your real
+settings. This holds for an option with one dash too. The JVM options a
+launcher can leave among the arguments (`--add-exports`, `--add-opens`, `-p`)
+are passed over, with their values.
 
 `--single-window` opens exactly one window instead of restoring every window
 that was open at last quit: bare, it opens the no-project window; with a name
@@ -78,6 +86,9 @@ Each target opens in its own focused tab and jumps to the given position. File
 targets, `--project`, and `--new-file` combine, so you can open a project and
 jump into a file in one command.
 
+Every argument after `--` is a file, so `editora -- -notes.txt` opens a file
+whose name starts with a dash. A lone `-` is a file name too.
+
 ## One editor, not two
 
 If Editora is already running on the same config folder, a second launch **goes
@@ -89,6 +100,8 @@ running editor does depends on what the launch asked for:
 | --- | --- |
 | Files (`editora notes.md`) | The files open in a new window |
 | `--project <dir>` | That project's window opens, or comes forward if it is already open; files named with it open as tabs in that window |
+| `--new-file` | The new buffer opens in a new window |
+| `--diff-ui LEFT RIGHT` | The comparison opens in its own window |
 | Nothing to open (`editora`, or the application icon) | The editor's current window is brought to the front |
 
 Files open in a **new window**, brought to the front, with any focus mode
@@ -109,11 +122,9 @@ clicking a file pays a full cold start and leaves a second editor resident.
 macOS does not have the problem, because Finder delivers an event to the running
 app, and the handoff routes into that same code path.
 
-Four kinds of launch always start their own process:
+Two kinds of launch always start their own process:
 
 - anything passing **`--new-instance`**
-- `--new-file`
-- `--diff-ui`, a standalone comparison window
 - `--disable-plugins`, since the running editor has its plugins loaded
 
 An instance is scoped to its **config directory**. `--dev` and `--config-dir`
@@ -145,8 +156,8 @@ differs by platform:
 
 Windows hands a file manager's chosen file to an application as a command-line
 argument, and nothing maps an extension to Editora unless the installer says
-so. Before 0.13.0 the MSI registered nothing, so no file manager could hand a
-file to the installed editor.
+so. The MSI registers Editora for those types, which is what lets a file
+manager hand it a file.
 
 **It doesn't take over your existing defaults.** On Windows 8+ the shell's
 per-user choice wins over anything an installer writes, so a type you already

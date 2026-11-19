@@ -1,21 +1,62 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "./Layout.astro";
 import { releaseSeries } from "../lib/release-series";
 
-const { frontmatter } = Astro.props;
+const { frontmatter, headings = [] } = Astro.props;
 const activeSeries = frontmatter.series;
+
+// "On this page": each release in the series (a "## [x.y.z] - date" heading), its
+// sections (Added, Changed, Fixed…), and the news post that announced it, if any.
+type Heading = { depth: number; slug: string; text: string };
+const announcements = new Map(
+  (await getCollection("news"))
+    .filter((p) => p.data.version)
+    .map((p) => [p.data.version as string, `/news/${p.id}/`]),
+);
+const releaseHeading = /^\[?([0-9][^\]\s]*)\]?\s*(?:[-–—]\s*([0-9]{4}-[0-9]{2}-[0-9]{2}))?/;
+const fmtDate = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+const releases: {
+  version: string;
+  date?: string;
+  slug: string;
+  sections: Heading[];
+  post?: string;
+}[] = [];
+for (const h of headings as Heading[]) {
+  const m = h.depth === 2 ? releaseHeading.exec(h.text) : null;
+  if (m) {
+    releases.push({
+      version: m[1],
+      date: m[2] ? fmtDate(m[2]) : undefined,
+      slug: h.slug,
+      sections: [],
+      post: announcements.get(m[1]),
+    });
+  } else if (h.depth === 3 && releases.length > 0) {
+    releases[releases.length - 1].sections.push(h);
+  }
+}
 ---
 
 <Layout
   title={`${frontmatter.title} — Editora`}
-  description="Everything recently shipped in Editora, straight from the changelog."
+  description={frontmatter.description ?? `Release notes for Editora ${activeSeries}.x, straight from the changelog.`}
+  canonicalPath={frontmatter.canonical}
 >
   <main class="page">
     <header class="page-heading">
       <h1>What's New in {activeSeries}.x</h1>
       <p class="lead">
         Everything shipped in the {activeSeries}.x release series, straight from
-        the changelog. For curated announcements and deep-dives, see <a href="/news">News</a>.
+        the changelog. Each release's announcement, with the highlights, is on
+        <a href="/news">News</a>.
       </p>
     </header>
     <div class="release-layout">
@@ -36,6 +77,30 @@ const activeSeries = frontmatter.series;
         </nav>
       </aside>
       <article class="doc release-notes">
+        {
+          releases.length > 0 && (
+            <nav class="release-toc" aria-label="On this page">
+              <ul>
+                {releases.map((r) => (
+                  <li>
+                    <a href={`#${r.slug}`} class="release-link">
+                      {r.version}
+                    </a>
+                    {r.date && <span class="release-date">{r.date}</span>}
+                    {r.sections.map((sec) => (
+                      <a href={`#${sec.slug}`}>{sec.text}</a>
+                    ))}
+                    {r.post && (
+                      <a href={r.post} class="release-post">
+                        Announcement
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )
+        }
         <slot />
       </article>
     </div>
@@ -106,6 +171,43 @@ const activeSeries = frontmatter.series;
     max-width: none;
     margin: 0;
     padding: 0;
+  }
+  .release-toc {
+    margin: 0 0 2rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    background: var(--bg-soft);
+    font-size: 0.9rem;
+  }
+  .release-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+  .release-toc li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.85rem;
+    margin: 0;
+    padding: 0.3rem 0;
+  }
+  .release-toc li + li {
+    border-top: 1px solid var(--border-soft);
+  }
+  .release-toc .release-link {
+    font-weight: 700;
+    min-width: 3.75rem;
+  }
+  .release-toc .release-date {
+    color: var(--faint);
+    min-width: 6.5rem;
+  }
+  .release-toc .release-post {
+    margin-left: auto;
   }
 
   @media (max-width: 760px) {

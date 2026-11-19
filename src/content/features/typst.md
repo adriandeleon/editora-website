@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 5
 beta: false
 summary: "A 3-mode preview for <code>.typ</code> files rendered by the Typst CLI, a tinymist language server, Markdown-style editing, and export to PDF / PNG / SVG."
+alt: "A Typst document in Split view, with the typeset page, headings and maths beside the source"
 ---
 
 Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered off-thread by the external **`typst`** CLI as a **multi-page** stack. The last good render stays on screen while you edit, so the preview does not flicker, and a compile error keeps the pages visible under a small banner.

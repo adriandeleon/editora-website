@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 3
 beta: false
 summary: "Go to symbol <strong>with no language server</strong>, sticky scroll, Peek Definition, preview tabs, and related-file jumps. Move around code without losing your place."
+alt: "The Go to Symbol in Project picker over a Java file, listing classes with their files and lines"
 ---
 
 Navigation needs two things: a symbol has to be **findable**, and you have to be able to jump to it **without losing your place**.

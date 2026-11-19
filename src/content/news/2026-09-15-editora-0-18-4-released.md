@@ -40,4 +40,4 @@ Maven Enforcer now checks the documented Maven 3.9 and JDK 25 requirements.
 Personal Notes also use the same compact source-line treatment as Structure and
 Bookmarks.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.18/#0184---2026-09-15) page.

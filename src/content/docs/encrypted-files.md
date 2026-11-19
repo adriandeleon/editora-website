@@ -96,7 +96,7 @@ and decrypts the new content.
 ## Encrypt a file
 
 **Encryption: Encrypt File…** (`crypto.encryptFile`) encrypts the active file.
-It is in **Tools ▸ Encryption** (in Simple UI mode, the **File** menu), and
+It is in **Tools ▸ Encryption**, and
 **Encrypt…** on a tab's right-click menu and on a file's right-click menu in
 the Project tree. It opens the [recipient picker](#the-recipient-picker),
 then writes the encrypted file beside the original: `notes.md` becomes
@@ -120,6 +120,8 @@ the people you encrypted for most recently, then everyone else by name. Type to
 search by name, email or key ID, move with ↑ and ↓, select with Space, accept
 with Enter, and cancel with Esc. You can choose several people at once; each
 can open the file with their own secret key.
+
+![The Encrypt README.md picker in Public keys mode: Ada Lovelace and Sam Rivera ticked and shown as chips, Release Team unticked, a signing-only key greyed at the bottom, a Format menu and an Encrypt for 2 People button](/screenshots/docs/encrypt-recipients.png "The recipient picker with two people chosen; a key that can only sign is listed last.")
 
 - **Your own key is included by default**, so you can open the file again.
   Turn this off in [Settings ▸ Encryption](#settings) (**Always include my
@@ -195,8 +197,8 @@ on purpose: after asking, it saves the text as the plain file beside it
 
 ## Encryption commands
 
-All of these are in **Tools ▸ Encryption** and the command palette. In
-Simple UI mode, **Encrypt File…** is in the **File** menu.
+All of these are in **Tools ▸ Encryption** and the command palette. Simple UI
+mode has no Tools menu, so there they are in the palette.
 
 | Action | Command |
 | --- | --- |
@@ -212,6 +214,11 @@ Simple UI mode, **Encrypt File…** is in the **File** menu.
 | Write a detached signature for the active file | `crypto.signDetached` |
 | Verify a signature | `crypto.verifySignature` |
 | Import public keys into your keyring | `crypto.importPublicKey` |
+| Decrypt the locked file in the active tab (its **Decrypt** or **Try Again** button) | `crypto.decryptLocked` |
+| Stop a decryption that is running | `crypto.cancelDecrypt` |
+| Move the unencrypted original the tab's banner names to the trash | `crypto.trashOriginal` |
+| Set the `gpg` program | `crypto.setGpgPath` |
+| Change an encryption setting from the palette | `crypto.changeSetting` |
 
 None has a default key; bind one in [Keymaps](/docs/keymaps/).
 
@@ -225,7 +232,8 @@ while GnuPG works, nothing is replaced.
 **Encryption: Decrypt Block at Caret** (`crypto.decryptBlock`) decrypts the
 armored message (`-----BEGIN PGP MESSAGE-----` … `-----END PGP MESSAGE-----`)
 the caret is in and shows its text in a read-only **Decrypted message** card
-with **Copy**, **Replace Block with Text** and **Close**. Replacing in an
+with **Copy**, **Replace Block with Text** and **Close** (`crypto.copyPeeked`,
+`crypto.replacePeeked`). Replacing in an
 encrypted file is safe: saving encrypts the whole file again. Replacing in a
 plain file puts the secret in that file as plain text, and the card says so.
 
@@ -358,6 +366,5 @@ instead.
 
 ## The GnuPG plugin
 
-GnuPG used to be a registry plugin (`gpg-tools`). It is built into Editora
-now: an installed copy of the plugin is removed when Editora starts (its gpg
-path and last recipient carry over), and it can no longer be installed.
+Encryption is part of Editora, not a plugin. The registry's `gpg-tools` plugin
+is retired: see [retired plugins](/docs/plugins#publishing).

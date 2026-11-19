@@ -36,7 +36,7 @@ Editing and code:
 - **[EditorConfig](/docs/editorconfig)**: honor a project's `.editorconfig`.
 - **[Snippets & templates](/docs/snippets-templates)**: expand boilerplate and
   scaffold new files.
-- **[Markdown, diagrams & preview](/docs/markdown)**: the live preview, the
+- **[Markdown, Mermaid & preview](/docs/markdown)**: the live preview, the
   format bar, Mermaid, and export to PDF.
 - **[HTML](/docs/html)**: tag editing, links, markup checks, the HTML language
   server, and a live preview in your browser.
@@ -44,6 +44,8 @@ Editing and code:
 - **[Diagrams as code](/docs/diagrams)**: DOT and PlantUML preview and export.
 - **[Smart file previews](/docs/previews)**: JSON/YAML/TOML/XML trees, OpenAPI
   docs, and decoded config files.
+- **[Print & PDF export](/docs/print-pdf)**: print or export a file, a
+  selection, a preview or a table, with a print preview and page settings.
 - **[Languages & highlighting](/docs/languages)**: grammars, supported
   languages, and autocomplete.
 - **[Language servers (LSP)](/docs/lsp)**: definitions, references, diagnostics,

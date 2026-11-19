@@ -82,4 +82,4 @@ double-click keeps running the script instead of opening Editora. On Linux, the
 This release's experimental Native Image archives cover Linux x64 and macOS x64.
 The regular installers remain the recommended downloads.
 
-The complete list, which is long, is on the [What's New](/whats-new) page.
+The complete list, which is long, is on the [What's New](/whats-new/0.19/#0190---2026-10-06) page.

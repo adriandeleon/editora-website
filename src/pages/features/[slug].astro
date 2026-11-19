@@ -3,7 +3,7 @@ import { getCollection, render } from "astro:content";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import Layout from "../../layouts/Layout.astro";
-import { groupedFeatures, groupId } from "../../lib/features";
+import { featureShotAlt, groupedFeatures, groupId } from "../../lib/features";
 
 export async function getStaticPaths() {
   const features = await getCollection("features");
@@ -52,11 +52,11 @@ const related = (group?.items ?? []).filter((f) => f.id !== entry.id).slice(0, 6
       shot ? (
         <figure class="shot doc-figure">
           <a class={`doc-figure-link${hasDark ? " doc-figure-light" : ""}`} href={`/${shot}`} title="Open the full-size screenshot">
-            <img src={`/${shot}`} alt={`${entry.data.title} in Editora`} />
+            <img src={`/${shot}`} alt={featureShotAlt(entry)} />
           </a>
           {hasDark && (
             <a class="doc-figure-link doc-figure-dark" href={`/${shotDark}`} title="Open the full-size screenshot">
-              <img src={`/${shotDark}`} alt={`${entry.data.title} in Editora`} />
+              <img src={`/${shotDark}`} alt={featureShotAlt(entry)} />
             </a>
           )}
         </figure>

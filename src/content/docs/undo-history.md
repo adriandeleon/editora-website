@@ -14,9 +14,7 @@ million characters).
 ![A Python file with the Undo History panel on the right, listing timestamped checkpoints, each with the line it touched](/screenshots/features/undo-history.png "The Undo History panel: one checkpoint per typing burst.")
 
 Up to **50** checkpoints are kept, within a memory budget, whichever limit is
-reached first. A count of 50 whole-document snapshots does not bound memory when
-documents differ in size by three orders of magnitude, so an ordinary file
-gets all 50 while a big one keeps fewer. The budget
+reached first: an ordinary file gets all 50, a big one keeps fewer. The budget
 is shared by **all open files together** (64 million characters), and the oldest
 checkpoints go first. Closing a tab releases its checkpoints straight away.
 
@@ -36,7 +34,9 @@ restore, so you can undo it (`edit.undo`).
 ## The tool window
 
 The **Undo History** tool window (`M-g u`) shows the same timeline; double-click
-or Enter on a checkpoint to jump back. Its side-stripe button is off by default
+or Enter on a checkpoint to jump back. A checkpoint's right-click menu (or the
+Menu key, or Shift+F10) has **Restore This State**, which is also the command
+**Undo History: Restore This State** (`undoHistory.restoreSelected`). Its side-stripe button is off by default
 (the popup is the primary entry point); enable it in **Settings → Tool Windows**
 or with `tool.undoHistory`.
 
@@ -117,6 +117,36 @@ left by an earlier run are still offered.
 Other things Editora offers to put back after an interruption (a save that did
 not finish, a refactoring cut short) are listed in
 [Troubleshooting](/docs/troubleshooting#after-a-crash-or-an-interrupted-save).
+
+## Undo Last Removal
+
+Editora asks the same way everywhere before something is lost. The question
+names what goes, its confirming button carries the action's own name (Delete, Discard,
+Replace, Overwrite, Reset) in red, and **Cancel** is the default button: Enter
+keeps what you have, and only a click on the red button removes it. Where the
+question offers a safe action beside the red one, such as Save beside Discard,
+the safe action is the default instead. Every dialog draws Cancel to the left of
+its actions, on Windows, macOS and Linux alike.
+
+Some things are removed with one key and no question, because a question each
+time would be tiresome: a watch; a breakpoint with a condition, a log message or
+a hit count; a breakpoint group or filter; a method breakpoint or field
+watchpoint with a condition; an exception breakpoint; a value pinned to a line;
+a bookmark with a mnemonic; a key binding you removed or reset; a word of your
+personal dictionary; a setting put back to its default; and a project's value
+taken off a setting. The status bar says when one of these goes, and
+**Edit: Undo Last Removal** (`edit.undoRemoval`, in the **Edit** menu) puts the
+last one back as it was: in its place in its list, with its condition, its
+paused state or its mnemonic. It has no key until you give it one.
+
+- It keeps the twenty newest removals of a window, until the window closes.
+- When something can no longer go back where it was (its file was closed, the
+  line reads something else, the key runs another command now, a new breakpoint
+  is on the line), it says so and changes nothing.
+- A plain breakpoint or bookmark is not recorded: the key that removed it sets
+  it again.
+- A removal made in Settings is reported in the editor window's status bar and
+  undone from the editor window.
 
 ## Related
 

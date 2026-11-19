@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 4
 beta: false
 summary: "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay."
+alt: "Expert mode: a Java file with only the menu bar, line numbers, minimap and status bar around it"
 ---
 
 Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.

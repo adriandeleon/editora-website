@@ -19,6 +19,9 @@ the active file previews as, so there's nothing per-type to remember. A floating
 ## Structured data and API docs
 
 - `.json`, `.yaml`, and `.toml` render a collapsible, type-colored **data tree**.
+- JSON Lines (`.jsonl`, `.ndjson`, `.jsonlines`) renders its records as a tree
+  keyed by line number; a line that is not one JSON value shows a link to it
+  instead.
 - `.xml` (xsd, xsl, fxml, wsdl, rss, and so on) renders a faithful **DOM
   tree** of tags, attributes, and text. A `pom.xml` gets [its own
   rendering](#maven-poms) instead. When an XML file cannot be rendered, the
@@ -31,6 +34,8 @@ the active file previews as, so there's nothing per-type to remember. A floating
   renders as browsable **API docs**: endpoints with colored method badges,
   params, responses, and schemas. Toggle between the tree and the docs with
   `structured.toggleView`.
+
+![petstore.yaml in Split view: the YAML on the left and, on the right, API docs titled Pet Store 1.0.0 with its server and GET and POST endpoint cards listing parameters and responses](/screenshots/docs/openapi-preview.png "An OpenAPI spec previews as API docs beside its source.")
 
 ## Maven poms
 
@@ -85,6 +90,8 @@ right-click menu.
 
 ## Config files, decoded to plain English
 
+![deploy.crontab in Split view: each schedule decoded on the right, such as Every 15 minutes and At 02:30, Monday through Friday, with its next run times, and a bad line flagged with minute 99 out of range](/screenshots/docs/crontab-preview.png "A crontab decoded: each schedule in plain English with its next runs, and a malformed line flagged.")
+
 - **crontab** (`crontab`, `*.cron`, `cron.d/*`): each schedule in plain English
   (`30 2 * * 1-5` becomes "At 02:30, Monday through Friday"), the next fire times,
   and the `@reboot` / `@daily` macros. Malformed lines are flagged with the field
@@ -101,9 +108,34 @@ right-click menu.
 - **GitHub Actions** workflows (detected by content): a plain-English digest of
   the triggers (with `schedule:` crons decoded) and each job's runner and steps.
 
+## Markwhen timelines
+
+A [Markwhen](https://markwhen.com) file (`.mw` or `.markwhen`) previews as a
+**timeline**. Each line is an event: a date or a range, a colon, then the
+text, as in `2026-02 / 2026-04: Design and prototype #Work`. A `#` heading
+starts a group, a `#Tag: color` line in the header colours the events with that
+tag, and `title:` names the timeline. A line the preview cannot read is skipped, so a
+half-typed file still shows the rest.
+
+- **Toggle Timeline / Calendar View** (`markwhen.toggleView`, also on the
+  preview's right-click menu) switches to a month **calendar**. Editora
+  remembers the view for each file. Events that span more than ten years are
+  too wide for the calendar, which then says to use the timeline.
+- **Export Timeline to JSON…** (`markwhen.exportJson`, also on the right-click
+  menu) saves the parsed timeline: its title, tag colours, groups, and each
+  event's label, tags, line and dates.
+- The **Markwhen Timeline** [file template](/docs/snippets-templates#file-templates)
+  starts a year with groups, ranges and coloured tags.
+
 ## Viewers
 
-- `.pdf` files open in a read-only **page viewer** (rasterized via PDFBox).
+- `.pdf` files open in a read-only **page viewer** (rasterized via PDFBox). Its
+  top bar turns pages and zooms: −, +, **Fit** and **1:1**. The mouse
+  wheel zooms around the pointer, Ctrl/Cmd+wheel zooms faster, and a touchpad
+  pinch zooms too; Shift+wheel pans across, Alt+wheel pans down, a sideways
+  swipe pans, and dragging pans, as on the [Project Map](/docs/workspace#project-map).
+- Images (`.png`, `.jpg`, `.gif` and `.bmp`) open in a read-only
+  **image viewer** with the same −, +, **Fit** and **1:1** buttons; Ctrl+wheel zooms.
 - `.svg` files stay editable XML but gain a live **vector** preview: it is drawn
   through JSVG's JavaFX canvas and redrawn at whatever size it is shown at, so
   it stays sharp at any zoom rather than going soft past 200% the way a scaled
@@ -113,6 +145,10 @@ right-click menu.
   M** link to the error, like the XML preview.
   Markdown badges and every export path (PDF, print, Word, ODF) still rasterize.
 - Binary files open as a read-only [hex dump](/docs/editing#hex-viewer).
+
+With a PDF or an image in the active tab, **View: Zoom In Text**, **Zoom Out
+Text** and **Reset Text Zoom** (`view.textZoomIn`, `view.textZoomOut`,
+`view.textZoomReset`) and their keys zoom it, as its −, + and 1:1 buttons do.
 
 Every preview can **export to PDF** from its right-click menu, and *File:
 Print Rendered Preview…* (`preview.print`) and *File: Export Preview to

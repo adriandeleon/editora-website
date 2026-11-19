@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 6
 beta: false
 summary: "New File From Template: single- or multi-file scaffolds that ask for their variables (author, date, file name, …)."
+alt: "The New File From Template picker listing Java, HTML, Markdown, Python and shell templates"
 ---
 
 **New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.

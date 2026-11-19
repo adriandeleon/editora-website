@@ -8,6 +8,7 @@
     "build": "node scripts/gen-thumbs.mjs && node scripts/gen-og-images.mjs && astro build",
     "preview": "astro preview",
     "check:docs": "node scripts/check-doc-commands.mjs",
+    "check:links": "node scripts/check-links.mjs",
     "astro": "astro"
   },
   "dependencies": {

@@ -66,4 +66,4 @@ reveals the ancestor columns for filename-search matches. Project Tree and Map
 menus can add first-line bookmarks and Personal Notes, with indicators on the
 file. Context menus now use consistent typography throughout the application.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.17/#0170---2026-09-08) page.

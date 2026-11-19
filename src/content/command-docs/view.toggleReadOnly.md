@@ -1,7 +1,3 @@
----
-title: "View: Toggle Read-Only"
----
-
 Read-Only (View) mode locks a buffer so it can't be edited by accident. Typing
 and the edit commands are blocked, while highlighting, folding, search, and copy
 keep working, so it's meant for reading rather than the huge-file safety limit.

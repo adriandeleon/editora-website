@@ -2,12 +2,16 @@
 // "Works with your stack": the languages covered by the language servers, and the live
 // preview formats, as theme-aware chips. Monogram swatches (brand-ish colors)
 // stand in for full brand logos — swap in real SVGs later without touching the
-// layout. Lists are kept in sync with LspServerRegistry / the preview features
-// in the Editora repo. There are more languages than servers because one server
+// layout. The languages come from lspServers in src/lib/editora.ts (which
+// mirrors LspServerRegistry in the Editora repo), so the chips and the server
+// count cannot drift apart; the previews are kept in sync with the preview
+// features by hand. There are more languages than servers because one server
 // can cover several (TypeScript also serves JavaScript, clangd serves C and C++).
-import { lspServerCount } from "../lib/editora";
+import { lspServerCount, lspServers } from "../lib/editora";
 
-const languages = [
+// How each language's chip looks, in the order the chips are shown. A language
+// a server serves that is missing here still gets a plain chip at the end.
+const chipStyle: { name: string; tag: string; color: string; dark?: boolean }[] = [
   { name: "Java", tag: "Jv", color: "#e76f00" },
   { name: "JavaScript", tag: "JS", color: "#f7df1e", dark: true },
   { name: "TypeScript", tag: "TS", color: "#3178c6" },
@@ -20,8 +24,12 @@ const languages = [
   { name: "Ruby", tag: "Rb", color: "#cc342d" },
   { name: "PHP", tag: "PHP", color: "#777bb4" },
   { name: "Kotlin", tag: "Kt", color: "#7f52ff" },
+  { name: "Groovy", tag: "Gy", color: "#4298b8" },
+  { name: "Scala", tag: "Sc", color: "#dc322f" },
+  { name: "Clojure", tag: "Clj", color: "#5881d8" },
   { name: "Lua", tag: "Lua", color: "#2c2d72" },
   { name: "HTML", tag: "<>", color: "#e34c26" },
+  { name: "Handlebars", tag: "{{", color: "#f0772b" },
   { name: "CSS", tag: "CSS", color: "#1572b6" },
   { name: "JSON", tag: "{}", color: "#8a8f98", dark: true },
   { name: "YAML", tag: "YML", color: "#cb171e" },
@@ -33,6 +41,14 @@ const languages = [
   { name: "Terraform", tag: "Tf", color: "#7b42bc" },
   { name: "Typst", tag: "Ty", color: "#239dad" },
   { name: "Astro", tag: "As", color: "#bc52ee" },
+];
+
+const served = new Set(lspServers.flatMap((s) => s.languages));
+const languages = [
+  ...chipStyle.filter((c) => served.has(c.name)),
+  ...[...served]
+    .filter((name) => !chipStyle.some((c) => c.name === name))
+    .map((name) => ({ name, tag: name.slice(0, 2), color: "#8a8f98", dark: true })),
 ];
 
 const previews = [

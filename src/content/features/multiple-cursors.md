@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 5
 beta: false
 summary: "Add a caret at the next occurrence, above/below, on every occurrence or at every selected line's end, split a selection into lines, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once."
+alt: "Five carets in a column of Java lines, the same word typed at each"
 ---
 
 Edit many places at once, VS Code-style. Add a caret at the **next occurrence** of the selection, or **above / below** the current line, or **Alt-drag** a column/box selection. Type, and the edit fans out to every caret; `Esc` collapses back to one.

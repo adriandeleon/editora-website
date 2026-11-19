@@ -224,4 +224,4 @@ query now, as the palette had always done.
   and window title that had always done so.
 
 There was also a dependency sweep (Jackson, Lucene, PDFBox, POI, commonmark and
-JSVG), and the full list is in the [changelog](/whats-new).
+JSVG), and the full list is in the [changelog](/whats-new/0.14/#0140---2026-08-29).

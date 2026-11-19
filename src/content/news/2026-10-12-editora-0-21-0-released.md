@@ -1,7 +1,7 @@
 ---
 title: "Editora 0.21.0: a faster editor and a reworked Local History"
-description: "Editora 0.21.0 does less work per keystroke, per tab switch and at startup, uses less memory per open file, reworks Local History, makes code lenses clickable, and confines the MCP server's open_file tool to the project."
-date: 2026-10-12
+description: "Less work per keystroke, tab switch and startup, less memory per open file, a reworked Local History, and clickable code lenses."
+date: 2026-10-11
 version: "0.21.0"
 ---
 
@@ -114,4 +114,4 @@ client. If you run the MCP server, update. See the [MCP guide](/docs/mcp).
 - **macOS**: a save Editora made itself is no longer taken for a change by
   another program, and Enter reloads in the "modified outside Editora" prompt.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.21/#0210---2026-10-11) page.

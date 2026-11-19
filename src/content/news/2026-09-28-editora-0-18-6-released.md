@@ -39,4 +39,4 @@ GraalVM Native Image archives for Linux x64 and macOS x64/arm64. These use
 separate settings and still have measured performance and plugin limitations;
 the regular installers remain the recommended downloads. See the
 [release assets](https://github.com/adriandeleon/Editora/releases/tag/v0.18.6)
-and [What's New](/whats-new) for the full list of changes.
+and [What's New](/whats-new/0.18/#0186---2026-09-28) for the full list of changes.

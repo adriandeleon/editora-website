@@ -32,8 +32,10 @@ computer they were made on. The **What to sync** card says so too.
 **Shortcuts** syncs the key bindings you changed on the
 [Keymaps page](/docs/keymaps#rebinding-commands): every rebind, every shortcut
 you removed, and every reset. It covers the changes you made in **every
-keymap**, for Windows and Linux and for macOS, because Editora keeps them per
-keymap and per platform.
+keymap**: Editora keeps one set per keymap for every system, so a chord you
+change on a Mac is changed on Linux and Windows too (Ctrl on one is Cmd on the
+other in the keymaps with a macOS form). A `keybindings.json` from this version
+is not read by an older Editora.
 
 Which keymap a computer uses is its own choice and is not synced. A computer
 that uses another keymap keeps your changes to the Emacs keymap, say, and uses
@@ -57,7 +59,7 @@ snippets and templates can contain private text.
    in.
 3. Click **Connect**.
 
-![The Sync page of the Settings window: a Repository URL field, a Branch field with Connect and Create on GitHub buttons, a Status row, switches for snippets, abbreviations, templates and the personal dictionary, and the automatic sync interval](/screenshots/docs/settings-sync.png "Settings → Sync before connecting.")
+![The Sync page of the Settings window: a Repository URL field, a Branch field with a Connect button, a Status row reading Not connected with Sync Now and Open Sync Folder buttons, and the first What to sync switches for snippets, abbreviations, templates and the personal dictionary](/screenshots/docs/settings-sync.png "Settings → Sync before connecting.")
 
 The **Repository** field does not take a URL with a password or token in it
 (`https://me:TOKEN@host/…`, or a token used as the user name): the field turns
@@ -146,8 +148,8 @@ kept. **Open Sync Folder** on the Sync page opens the folder.
 Editora signs in to the repository with **your own Git credentials or SSH
 key**, the same ones `git` uses in a terminal, and stores none of its own.
 
-A repository URL saved with a password or token in it, before the field refused
-them, is still in your settings. The Sync page then shows a warning above the
+When the saved repository URL has a password or token in it, for example one
+written into `settings.json` by hand, the Sync page shows a warning above the
 repository with two buttons. **Remove from URL** saves the URL without the
 secret; the next sync signs in with your credential helper or SSH key, so set
 one up first. **Keep for now** hides the warning until Editora starts again.

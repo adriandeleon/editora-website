@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 2
 beta: false
 summary: "Pick <strong>Emacs</strong>, <strong>CUA</strong>, <strong>Sublime Text</strong>, <strong>VS Code</strong>, or <strong>IntelliJ IDEA</strong>. Switch live with no restart, or rebind any command yourself in the built-in keybinding editor (multi-key chords like <kbd>C-x C-s</kbd> supported)."
+alt: "The Keymap: Select picker offering Emacs, CUA, Sublime Text, Visual Studio Code and IntelliJ IDEA"
 ---
 
 Editora ships five complete keymaps (**Emacs** (default), **CUA**, **Sublime Text**, **VS Code**, and **IntelliJ IDEA**) selectable in **Settings → Keymaps** and switchable **live, with no restart**. Each is a chord→command map over the same command ids, so switching changes accelerators without stranding any functionality.

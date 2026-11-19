@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 1
 beta: false
 summary: "Single-folder workspaces, each in its <strong>own window</strong> with its own saved session, explored as a file tree or on the Project Map, started from a template, and carrying settings the team can commit."
+alt: "A Java file open in a project, with the project's folders in the Project tree on the right"
 ---
 
 Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window, and everything in a window acts on its own project. A folder on a remote host over SFTP is a project too, with its own window, tabs and trust (a server folder is trusted separately from a local one with the same path); reopening it asks to connect.

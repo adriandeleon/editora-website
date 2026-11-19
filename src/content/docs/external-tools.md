@@ -19,6 +19,8 @@ first, with Cancel as the default, and drops the tool's key binding. Renaming a
 tool keeps its key binding. A name that would give the same command as another
 tool's is refused.
 
+![Settings on the External Tools page with one tool, Prettier: Command npx, Arguments prettier --write $FilePath$, a blank working directory, Standard input None, Output Show in console and Enabled on, with the list of macros below](/screenshots/docs/settings-external-tools.png "A tool that runs Prettier on the current file.")
+
 ## Macros
 
 A tool's command and arguments expand `$Name$` macros from the active file:
@@ -57,7 +59,8 @@ it.
 Every tool you define becomes its own palette command (bindable to a key in
 [Settings → Keymaps](/docs/keymaps)). There's also **External Tools: Run…**
 (`externalTool.run`, a picker) and **Rerun Last** (`externalTool.rerunLast`).
-Tools run off the UI thread with a timeout, and console output appears in the
+Tools run off the UI thread, a tool still running after 2 minutes is stopped,
+and console output appears in the
 External Tools tool window (`tool.externalTools`). A tool that writes to the
 console opens it at launch, with a spinner that turns until the tool exits; a
 tool that writes into the editor spins the External Tools header instead.

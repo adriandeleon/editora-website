@@ -27,12 +27,12 @@ const RASTER = new Set([".png", ".jpg", ".jpeg", ".webp"]);
 
 // Folders under public/screenshots that get a thumbs/ folder. The feature
 // cards use the light capture only; the gallery follows the site theme, so the
-// docs and map captures get their `.dark` twins thumbed too.
+// docs, map and hero captures get their `.dark` twins thumbed too.
 const DIRS = [
   { dir: "features", dark: false },
   { dir: "docs", dark: true },
   { dir: "map", dark: true },
-  { dir: "hero", dark: false },
+  { dir: "hero", dark: true },
   { dir: "", dark: false },
 ];
 

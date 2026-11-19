@@ -28,4 +28,4 @@ Also in this release:
 
 Plus fixes: the Cargo/Go/Gradle tool-window icons no longer render blank, and
 installing the Typst language server (tinymist) from the banner now
-activates it. The full list is on the [What's New](/whats-new) page.
+activates it. The full list is on the [What's New](/whats-new/0.9/#094---2026-07-13) page.

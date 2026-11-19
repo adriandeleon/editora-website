@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 5
 beta: false
 summary: "One toggle strips the editor to the essentials, hiding the extra toolbar groups, tool-window stripe, breadcrumb, gutter, and minimap for a calm, minimal surface."
+alt: "Simple UI mode: a Java file with a short menu bar, a small toolbar, and no gutter or tool windows"
 ---
 
 One toggle strips the editor to the essentials (hiding the extra toolbar groups, the tool-window stripe, the breadcrumb, the **entire gutter** (line numbers, fold chevrons, and all markers), and the minimap) and turns off the heavier features (LSP, debugging, Git, multiple cursors) for a calm, minimal surface.

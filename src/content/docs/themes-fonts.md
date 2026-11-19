@@ -12,8 +12,7 @@ preview that recolors as you change things.
 
 **Editora Light** and **Editora Dark** are the app's own pair, drawn from the
 palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved
-for keybindings. They are what a fresh install starts in. An existing
-install keeps whatever theme it was already on; the pair is added to the list.
+for keybindings. They are what a fresh install starts in.
 
 Twenty-eight themes ship in total:
 
@@ -33,6 +32,8 @@ Both pickers group the themes under **Light** and **Dark** headings, with the
 members of a family next to each other. Your own themes are listed last, under
 **Your themes**. The headings are titles only: the mouse and the arrow keys pass
 over them.
+
+![The Set App Theme picker over the editor: a filter field above a list that starts with Editora Light, Editora Dark, Primer, Nord, Cupertino, Dracula and the Army and Autumn themes](/screenshots/docs/theme-picker.png "Set App Theme lists every theme; type to filter.")
 
 The [terminal](/docs/terminal#colors-and-font) follows the editor theme too,
 unless you give it a color scheme of its own in **Settings → Terminal →
@@ -96,9 +97,35 @@ Zoom the editor text independently of the configured font size:
 | Zoom out | `C--` |
 | Reset | `C-0` |
 
-Ctrl+wheel zooms too, and the status bar has `−` / `+` buttons. When the active
-buffer is a Markdown preview, the same gestures zoom the preview instead of the
-editor text. The zoom level is saved as `fontZoom`. It has no field in Settings,
+The commands are **View: Zoom In Text**, **View: Zoom Out Text** and **View:
+Reset Text Zoom** (`view.textZoomIn`, `view.textZoomOut`, `view.textZoomReset`),
+under **View → Zoom** in the menu bar. Ctrl+wheel zooms too, and the status bar
+has `−` / `+` buttons. When the active buffer is a Markdown preview, the same
+gestures zoom the preview instead of the editor text, and with an image or a
+PDF in the active tab they zoom it, as its `−`, `+` and `1:1` buttons do. The
+zoom level is saved as `fontZoom`. It has no field in Settings,
 but while the text is zoomed the Appearance page says so under **Font size**
 ("Text zoom is 160%, so the editor and the preview show 29 px.") with a
 **Reset zoom** link, and the live preview uses the zoomed size.
+
+## Interface zoom
+
+The **interface zoom** scales the menus, toolbar, tabs, tool windows, dialogs
+and status bar together, from 80% to 200% in steps of 10%. The editor's text
+keeps its own [text zoom](#text-zoom), so the two can be set apart.
+
+| Action | Command |
+| --- | --- |
+| Zoom in | `view.uiZoomIn` (**View: Zoom In Interface**) |
+| Zoom out | `view.uiZoomOut` (**View: Zoom Out Interface**) |
+| Reset to 100% | `view.uiZoomReset` (**View: Reset Interface Zoom**) |
+
+They are under **View → Zoom**, beside the text zoom's commands, and have no
+default key. **Interface zoom** on the Appearance page of Settings sets the
+same value. A change applies to every open window at once and is kept across
+launches.
+
+Printed and exported pages are not affected. The
+[Print Preview](/docs/print-pdf) window's bar and size follow the interface
+zoom, while its page at 100% is drawn as large as the text around it and prints
+exactly as before.

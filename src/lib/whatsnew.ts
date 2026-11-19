@@ -5,10 +5,10 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Signed downloads", detail: "The macOS app is signed and notarized by Apple, the Linux downloads carry OpenPGP signatures, and every release file has a build provenance attestation." },
-  { title: "Explore code on the Project Map", detail: "Working sets, guided trails you can commit, recent-change heat with owners, and references and callers opened as cards." },
-  { title: "A Structure column on every card", detail: "Click a method or type in a preview card's outline to open it beside the card; its Open opens the file narrowed to it." },
-  { title: "ESLint, Prettier and Biome", detail: "The project's own ESLint checks JavaScript and TypeScript as you work, Prettier or Biome formats, and fixes can run on save." },
-  { title: "Python quick fixes and format on save", detail: "Import X and Remove unused import from the lightbulb, Ruff or Black on save, and each sub-project analysed by its own Pyright." },
-  { title: "Java debugging shows toString()", detail: "Objects show their toString() text within a per-stop budget, and plain-folder projects with several packages debug again." },
+  { title: "Debug eight more languages", detail: "Go, Rust, C and C++ (CodeLLDB or GDB), C#, Ruby, PHP and Bash, JavaScript in the browser, and VS Code's launch.json configurations." },
+  { title: "Go back in the debugger", detail: "Debug History keeps each stop, recording breakpoints collect stops without stopping, and GDB steps back over what it recorded." },
+  { title: "Several programs at once", detail: "Debug a second file while one runs, or a compound of several, each with its own tab, console, call stack and variables." },
+  { title: "Read and follow code on the Project Map", detail: "Go to Definition, Find Usages and the hierarchies answer with cards, Symbol Graph shows callers and callees, and Back and Forward step through them." },
+  { title: "Review and measure on the Map", detail: "Review a branch or your changes, and find the hotspots: code that is both complex and often changed." },
+  { title: "Every command on the keyboard", detail: "Every right-click row, button and setting is a command, a card lists the keys after a prefix key, and the whole interface zooms from 80% to 200%." },
 ];

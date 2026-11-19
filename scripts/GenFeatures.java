@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 record Feature(String slug, String group, int order, boolean beta,
                String title, String summary, String body) {}
@@ -200,16 +201,16 @@ Browse the [full command list](/commands) or the [keybindings reference](/keybin
 """),
     new Feature("menu-bar", KB, 8, false,
         "A menu bar, over the same commands",
-        "<strong>File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help</strong> menus, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke.",
+        "<strong>File / Edit / Find / View / Navigate / Code / Run / Git / Tools / Window / Help</strong> menus, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke.",
         """
 The command palette lists everything, but it is hard to browse. It helps when you know roughly what a command is called, and less when you want to see what the editor can do. The menu bar is for that.
 
-**File / Edit / Find / View / Navigate / Code / Run / VCS / Tools / Window / Help.** Every item names a registered [command](/features/command-driven-core), the same object the palette lists and the keymap binds, so the menu cannot drift out of step with what Editora can do.
+**File / Edit / Find / View / Navigate / Code / Run / Git / Tools / Window / Help.** Every item names a registered [command](/features/command-driven-core), the same object the palette lists and the keymap binds, so the menu cannot drift out of step with what Editora can do.
 
 - Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
 - A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
 - Almost every item that can carry an **icon** does, and it is the same glyph you see for that action in a right-click menu, so Save looks the same wherever you reach it from. About a third are left blank rather than given an invented glyph. The icon column is reserved either way, so the titles still line up.
-- Menus that grew long keep their daily items at the top and the rest one level down: VCS groups its commands by what they act on, and File keeps its export formats under **Export**.
+- Menus that grew long keep their daily items at the top and the rest one level down: Git groups its commands by what they act on, Run keeps the debugger's in four submenus, and File keeps its export formats under **Export**.
 - On **macOS** it sits in the system menu bar.
 
 It is a curated subset. Editora registers over seven hundred commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
@@ -347,7 +348,7 @@ Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am
 
 Brackets inside strings and comments are skipped, as is the `)` that ends a shell `case` pattern, because a stray `{` in a string would otherwise shift the colour of every bracket below it. The depth pass runs as part of tokenizing, so it costs no extra repaint. On by default; Settings → Editor turns it off.
 """),
-    new Feature("lsp", CI, 2, true,
+    new Feature("lsp", CI, 2, false,
         "Language servers (LSP)",
         "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled.",
         """
@@ -358,12 +359,12 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Find references**: `M-?`, listed in a browsable **References** tool window that shows each line with the editor's syntax highlighting
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
-- **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings. Python gets Editora's own fixes, which Pyright does not give: **Import** for a missing name, **Remove unused import**, and **Ignore on this line** (`# pyright: ignore[rule]`)
+- **Code actions and quick fixes**: `Ctrl+.` (`Cmd+.` on macOS) in the CUA, VS Code, Sublime and IntelliJ keymaps (also `Alt+Enter` in IntelliJ), `C-c l a` in Emacs, opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings. Python gets Editora's own fixes, which Pyright does not give: **Import** for a missing name, **Remove unused import**, and **Ignore on this line** (`# pyright: ignore[rule]`)
 - **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, getters and setters, delegate methods, and override/implement methods, each with a checkbox picker
 - **Java refactorings that ask where to, or what**: Move, Extract Interface, and Change Signature, where the signature is edited as one line
 - **Code lenses**: reference and implementation counts after a declaration; click one to open what it counts, a references lens always in the **References** tool window (off by default)
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
-- **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
+- **Rename symbol**: `F2` in the CUA, VS Code and Sublime keymaps, `Shift+F6` in IntelliJ, `C-c l r` in Emacs, across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
 - **Library sources**: a Maven library class opens with its real source when a repository has it; one that has none is shown decompiled, with **Download Sources** and **Choose Sources…** in its tab
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
@@ -386,7 +387,7 @@ Document sync is incremental, semantic highlighting transfers only what changed 
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
-Off by default. Enable it under Settings → LSP; the first Python file you open offers to turn it on.
+On by default: each server starts once it is installed. In a folder you have not trusted, a server that would run the project's build to load it waits (Kotlin, Scala, Rust, Ruby, C#, Clojure), and Java starts without its Maven or Gradle build; the file offers **Trust Folder**. The master switch is in Settings → LSP.
 """),
     new Feature("code-navigation", CI, 3, false,
         "Code navigation",
@@ -420,6 +421,21 @@ Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its
 
 Trigger manually with `C-M-i` or `M-/` in the Emacs keymap, Ctrl+Space in the others. Per-source toggles (words, snippets, Mermaid) live in Settings → Code Completion.
 """),
+    new Feature("structure-narrowing", CI, 5, false,
+        "Structure narrowing",
+        "Walk a file one function at a time: a toggle in the Structure tool window narrows the editor to the symbol you click, and a click on the next one moves there.",
+        """
+The **Structure** tool window (`tool.structure`) lists a file's declarations. Its **Narrow to fold region** toggle, at the end of the sort row, turns that list into a way to read a file one piece at a time. A click narrows the editor to the picked symbol's own block (on a method, the method itself), and while the toggle is on, a click or Enter on another symbol narrows to that one instead of only scrolling there. In Markdown it narrows a heading to its section.
+
+Narrowing restricts the buffer itself, as in Emacs: search, replace, macros and Select All see only the region, and saving still writes the whole file. An amber banner names the lines shown (*Narrowed to lines 32–36 of 81*) and has a **Widen** button, and the gutter, the status bar's **Ln** and the outline keep the file's own line numbers. The outline stays the whole file's, with the rows outside the region muted.
+
+- `f` flips the toggle while the outline has focus, and `structure.narrowFold` can be bound in any keymap.
+- Widening any way, from the banner, the status-bar badge or `C-x n w`, ends the mode.
+- The `C-x n` chords from [Emacs heritage](/features/emacs-heritage) narrow too, and the toggle shows when one of them did.
+- On the [Project Map](/features/project-map), a declaration card's **Open** opens its file narrowed to the declaration.
+
+While a buffer is narrowed, language-server support is suspended, and bookmarks, notes and breakpoints stop being saved until you widen. See [The Emacs editing model](/docs/editing#the-emacs-editing-model).
+"""),
     new Feature("run-files", RD, 1, false,
         "Run files & main classes",
         "Run a Java, Python, Node.js or shell script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
@@ -438,7 +454,7 @@ Output streams to the Run console, which also accepts **stdin** so `readln`-styl
         "Run configurations",
         "Save how a Java main class, Python, Node.js, shell, Groovy, Clojure or Scala script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file.",
         """
-A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands), an optional JDK override, a shell or Python script's interpreter, and a working directory (relative to the project root; a Python script runs in its own folder when it is blank). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
+A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands, and `@.env` loads a `.env` file), an optional JDK override, a shell or Python script's interpreter, and a working directory (relative to the project root; a Python script runs in its own folder when it is blank). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
 
 ## Six kinds
 
@@ -454,7 +470,7 @@ Choose a **Type** in the project's **Run Configurations** window:
 - a **make target**
 - a named **npm script**, run with the project's own package manager (npm, pnpm, yarn or bun), with arguments passed after `--`
 
-Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host) and, for Python, the project's venv there (or the host's Python for Run and tests). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Groovy, Clojure, Scala, Node.js and npm configurations can be debugged, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
+Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host) and, for Python, the project's venv there (or the host's Python for Run and tests). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Groovy, Clojure, Scala, Node.js and npm configurations can be debugged, several together as a compound, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
 
 ## A step before the launch
 
@@ -472,35 +488,66 @@ A configuration can name a command to run first, such as a build or a codegen st
 - The form **shows only the fields the selected type uses**, and a hidden field keeps its value. Python, Node.js, shell, Groovy and Clojure scripts can be picked with **Browse…**, a Java configuration's Main class **Browse…** takes a `.java` file and fills in its fully qualified class name, and an npm configuration's **Browse…** lists the `package.json` scripts.
 - Running an incomplete configuration **opens its form** at the field you need to fill in, rather than naming the problem and leaving you to find it.
 """),
-    new Feature("debugging", RD, 3, true,
+    new Feature("debugging", RD, 3, false,
         "Debugging (DAP)",
-        "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure and Scala: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, and an interactive console.",
+        "Full debugging for Java, Python, JavaScript, TypeScript, Groovy, Kotlin, Clojure, Scala, Go, Rust, C, C++, C#, Ruby, PHP and Bash: breakpoints, step in/over/out, watches, set-value, run-to-cursor, inline values, Debug History, and an interactive console.",
         """
-Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure** and **Scala** (through Metals for a build's file, Editora's own debugger for a script) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
+Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure**, **Scala** (through Metals for a build's file, Editora's own debugger for a script), **Go** (Delve), **Rust**, **C** and **C++** (CodeLLDB, or GDB for C and C++), **C#** (netcoredbg), **Ruby** (rdbg), **PHP** (Xdebug) and **Bash** (bashdb) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
 
-- Breakpoints (conditional, with a hit count, and logpoints), step in / over / out, **run-to-cursor**, and **jump-to-line** (Python)
-- A threads + call-stack view and a lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme
-- **Watches** and an evaluate console, with **completion** from the debugger while the program is paused
+- Breakpoints (conditional, with a hit count, **temporary** ones removed once hit, **recording** ones that keep the stop in Debug History and let the program go on, **triggered** ones that wait until another breakpoint is hit, and **logpoints**, added in one step with Shift+click on the gutter; in Java, JavaScript and TypeScript also **lambda breakpoints** that stop inside a lambda's or arrow function's body, and in Java **method breakpoints** and **field watchpoints**, marked in the gutter on their member's line), step in / over / out, **run-to-cursor** (or **force run-to-cursor** past every breakpoint; while paused, a click on a line number does either), **jump-to-line** (Python), and the time each step took shown faintly after the line it stopped on
+- **Breakpoint groups** turned on and off together, and **export and import** of breakpoints to a file you can keep or share
+- **Breakpoint filters** that make a breakpoint stop only in some threads, only when called from some functions, or only on one marked object, in every language
+- A threads + call-stack view you can **copy as text**, and a **Threads view** listing every thread, running or suspended and why, where you can **pause or resume one thread** alone
+- **Thread Dump** shows every thread's call stack in a window of its own, identical stacks merged, even on a program that hangs, and **Parallel Stacks** draws them as one tree where threads that went through the same calls share a box
+- **Don't step into**: code Step Into goes over (a class, package, module, function or file), in Settings or with *Don't Step Into This…* on a call-stack frame, for every debugger
+- **Step Back** and **Reverse Continue** where the program can run backward: for C and C++ on GDB, turn on **Record Execution** at a stop
+- **Open Core Dump** opens the core a crashed Go, C, C++ or Rust program left, with its threads, stacks and variables
+- **Pinned values**: an expression pinned to a line is evaluated at every stop and painted at the end of that line, and saved with the project's breakpoints
+- **Debug History**: Back and Forward in the Debug window show an earlier stop as it was, with its call stack, values, watches, inline and pinned values, and *Show Value History* lists a variable's value at every stop; any debugger, kept in memory only
+- **Disassembly and Memory** views for C, C++, Rust and Go, with **stepping by instruction**
+- A lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme, and **changed values highlighted** after each step; **Copy as Expression** copies what gives a value in the stopped code, and **Jump to Type Source** opens the class a value really has
+- A **filter** for the Variables tree, **Go to Index** in a long list or array, and integers shown in **hexadecimal** on demand (Java and Python), or one value at a time with **Show Value As** decimal, hexadecimal, binary, octal or character (every debugger)
+- **Evaluate expressions** as in IntelliJ IDEA: a field at the top of Variables whose result opens as a tree, non-modal **Evaluate windows**, and **Alt+click Quick Evaluate** in the editor; the fields are highlighted, take your keymap's keys, complete from the debugger and keep a history, and run code fragments of several lines
+- **Watches** that can be paused, evaluated once or given a new value with *Set Value…*, and a console you can search; a removed watch, or a breakpoint with a condition or a filter, comes back with *Edit: Undo Last Removal*
+- **Logpoints** whose message can name the function, its caller, the call stack and the thread (`$FUNCTION`, `$CALLER`, `$CALLSTACK`, `$TID`, `$TNAME`)
+- An **evaluation time limit** (GDB and Python): a watch or hover that calls a function which never returns is stopped, and the program stays paused
+- **Mark Object** gives an object a label that shows wherever it appears in the session, and **View As** opens a string as laid-out JSON or XML, or as text
+- **View as Table** opens a list, array, slice, set or map as a table, a row per element and a column per field, to sort, filter, copy or open as CSV; in Python, **View as DataFrame** and **View as Array** open a pandas DataFrame or Series, or a numpy array, as its rows
+- **Type renderers** show a value of a type as your own expressions say, such as a `Money` as `12.50 EUR`, in Variables, watches, Evaluate and hover, with the debugger's own view under *[Raw View]*
+- **Loaded Sources** and **Modules** list what the program has loaded, and code with no file, such as code run through `eval`, opens read-only where it stops
 - A hover **value popup** that unfolds objects, arrays and collections as a tree
-- **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start)
-- **Debug File** next to Run File in the editor's right-click menu
+- **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start), and **exception breakpoints by type and condition** that stop only on the exceptions you name (`java.io.*`, `*Error`), where a condition holds
+- An **exception card** under the line that threw: caught or uncaught, the type and message, the causes and stack trace when the debugger sends them (Python, JavaScript), with **Copy**; it never takes focus, and *Debug: Show Exception* opens it again
+- **Debug File** in the editor's right-click menu, next to Run File, and on its own for a Go, Rust, C, C++, C#, Ruby or PHP file
+- **Several programs at once**, each in a session of its own with a tab in the Debug window: *Debug Both* when you debug another file while a session runs, the session that stops shown by itself, and *Stop All*
+- **Compounds** that start several configurations together: launch.json's `compounds`, or the project's own compounds of saved run configurations, made in *Debug: Edit Compounds…*
+- **VS Code's `launch.json`**: *Debug: Start Configuration…* starts the project's configurations as VS Code would, with its variables, `inputs` and `preLaunchTask`
+- **Debug adapters of your own** in `debug-adapters.json`: any program that speaks the Debug Adapter Protocol, for F5 or for launch.json
 - A debugged Java, Python or JavaScript program can read **standard input** typed in the Debug console
 - The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
 - Tests inside JUnit `@Nested` classes run and debug from the gutter, or with Debug in the test file
 
-For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening. Every launch builds first, a loose file or a plain folder too (compiled with `javac` when the language server can't build it), and stops on compile errors in the code the program runs, which the Debug console lists as links. Saving a file during a session loads the change into the running program (**hot code replace**), and *Restart Frame* and *Smart Step Into* are there when you need them. Step Into skips JDK classes, and JDK or library frames open their source. Breakpoints differ by shape, are listed in one picker you can filter, and can be muted, exception stops included; caught and uncaught exception stops, one ⚠ button in the Debug window, are kept per project. Every keymap binds the debugger, and the Debug window never takes the keyboard from the editor.
+For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening. *Attach to Running Program* lists the last eight addresses the project attached to, and *Reattach* goes back to the last one without asking. *Attach to Process* lists the Java, Node.js and Python programs running on this machine that listen for a debugger, and Go, Rust, C and C++ programs too, attaches to the one you pick, and Stop leaves it running. Every launch builds first, a loose file or a plain folder too (compiled with `javac` when the language server can't build it), and stops on compile errors in the code the program runs, which the Debug console lists as links. Saving a file during a session loads the change into the running program (**hot code replace**), and *Restart Frame* and *Smart Step Into* are there when you need them. Step Into skips JDK classes, and JDK or library frames open their source. A **method breakpoint** stops on entering a method (every overload in its class), a **field watchpoint** when a field is assigned in any instance, and *Break When Value Changes* in Variables watches the field a row shows. Pause stops every thread of the program and Continue resumes them all; a setting makes every breakpoint stop all threads too. Breakpoints differ by shape, are listed in one picker you can filter, and can be muted, exception stops included; caught and uncaught exception stops, one ⚠ button in the Debug window, are kept per project. Every keymap binds the debugger, and the Debug window never takes the keyboard from the editor.
 
-JavaScript starts exactly as Run starts it: the same Node.js, flags and folder, with `tsx` or the compiled file for TypeScript. Node.js's own frames fold into one row of the call stack, and a breakpoint in a compiled project's `.ts` source stops there through source maps. *Attach to Running Program* connects to a Node.js started with `--inspect`, *Debug Test at Caret* debugs a `node:test` test, and Node.js and npm run configurations can be debugged.
+JavaScript starts exactly as Run starts it: the same Node.js, flags and folder, with `tsx` or the compiled file for TypeScript. Node.js's own frames fold into one row of the call stack, and a breakpoint in a compiled project's `.ts` source stops there through source maps. *Attach to Running Program* connects to a Node.js started with `--inspect`, *Debug Test at Caret* debugs a `node:test` test, and Node.js and npm run configurations can be debugged. *Debug in Browser…* opens a web page (an HTML file, or a dev server's URL) in Chrome, Edge or another Chromium browser under the same debugger, F5 on an HTML file does it too, and *Attach to Browser…* attaches to a browser started with `--remote-debugging-port`.
 
-A Python program is debugged the way Run runs it: under the project's virtual environment (or the interpreter picked for the project), in the script's own folder, with the project root and `src/` on `PYTHONPATH`. A pytest test is debugged from its test line, *Debug Test at Caret*, or its row in Test Results; without pytest, a `unittest` test runs under `unittest`. The console shows the command that runs and, at the end, the exit code.
+A Python program is debugged the way Run runs it: under the project's virtual environment (or the interpreter picked for the project), in the script's own folder, with the project root and `src/` on `PYTHONPATH`. A process the program starts (`multiprocessing`, a Python subprocess) is debugged too, in a session of its own, and a breakpoint in a Django or Jinja template stops on its line. A Python program started under `python -m debugpy --listen` can be attached to with *Attach to Process*. A pytest test is debugged from its test line, *Debug Test at Caret*, or its row in Test Results; without pytest, a `unittest` test runs under `unittest`. The console shows the command that runs and, at the end, the exit code.
 
 Groovy is debugged by a debugger built into Editora, with nothing to install: breakpoints in scripts, classes and closures, stepping that skips Groovy's own runtime, locals and fields, and a stop where an uncaught exception is thrown. It reads variables and field paths but does not evaluate expressions, and breakpoint conditions and log messages are not supported yet.
 
 Clojure uses the same debugger, under the Clojure CLI or Leiningen: breakpoints in a namespace's functions and a script's top-level forms, frames named as Clojure names them (`my-app.core/greet`), locals kept visible for the whole function, and stepping that skips Clojure's runtime. Babashka, a native program, can't be debugged, and says so.
 
+Go is debugged with Delve, as in VS Code's Go extension: Debug on a Go file debugs its package (the file alone outside a module), and in a `_test.go` file Debug and *Debug Test at Caret* run the test at the caret, or the package's tests. Goroutines are listed as threads, without the runtime's own and with their pprof labels in their names, and Delve's goroutine filter narrows the list. A panic stops where it happened. *Attach to Process* lists running Go programs and attaches to one by its process id, on Linux and macOS; Stop leaves it running. Delve's build goes to the temporary folder, not your package.
+
+Rust is debugged with CodeLLDB, as in VS Code: Cargo builds the package in the Debug console, then the program, an example, or the `#[test]` function at the caret runs under the debugger. Values read as Rust values (a `String` as its text, a `Vec` as its items), and a panic stops where it happened. *Attach to Process* attaches to a running Rust program on Linux.
+
+C and C++ are debugged with the same CodeLLDB, or with GDB 14 or later through its own debug adapter mode: F5 builds a CMake project's Debug build in `build/editora-debug`, runs `make` in a Make project, or compiles a lone file with `cc` or `c++ -g -O0`, then debugs the program. `std::string`, `std::vector` and `std::map` read as values, a thrown C++ exception stops where it was thrown, and *Attach to Process* attaches to a running C or C++ program on Linux.
+
+C# runs on netcoredbg: F5 builds the project with `dotnet build`, or a lone `.cs` file as a .NET 10 file-based app, and an exception your code doesn't handle stops it, as in Visual Studio. *Debug Test at Caret* debugs an xUnit, NUnit or MSTest test under `dotnet test`. Ruby runs under rdbg, the debugger Ruby 3.1 and later ship. PHP runs with Xdebug, through the PHP Debug adapter VS Code uses.
+
 Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript (a Python program under the project's virtual environment on that host), and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button that fetches it, and a `jdtls` that already bundles java-debug is detected as-is. Off by default. Enable it under Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp) switched on. Shell scripts can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
+While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug, Delve, CodeLLDB, netcoredbg, rdbg, PHP Debug, Bash Debug) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button that fetches it (Delve through `go install`, rdbg through `gem install`; a CodeLLDB or PHP Debug already installed in VS Code is found too), and a `jdtls` that already bundles java-debug is detected as-is. On by default; the switch is in Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp), which is on by default too. A Bash script is debugged with bashdb, through Bash Debug: breakpoints, stepping, and its variables in a watch or a hover. Scripts of other shells can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
 """),
     new Feature("http-client", RD, 4, false,
         "HTTP client",
@@ -531,6 +578,19 @@ Each detected build tool gets its own **tasks tool window** (its stripe appears 
 - **Babashka** (`bb.edn`): one entry per task in `:tasks`.
 
 Discovery parses the marker file directly (no shell-out, no new dependency), so it's instant and offline. **On by default**, each inert until its marker is found. See the [build tools guide](/docs/build-tools).
+"""),
+    new Feature("deployments", RD, 6, true,
+        "Deployments",
+        "Keep the project here and run it on an SSH host. Before each run, Editora copies what changed to a folder there, then runs or debugs the program in that copy.",
+        """
+A **deployment** lets you edit a project on this machine and run its programs on another one: a server with the database, a GPU box, or a machine with the right operating system. The sources, language servers, Git and Local History stay here. It is the reverse of a [remote folder](/features/remote-sftp), where the project itself lives on the host.
+
+- **Run on.** In the Run Configurations window, **Run on** picks **This machine** or one of the project's deployments. Run then saves the project's edited files, copies what changed to the deployment's folder, and runs the program there, with the host's interpreters and tools, and with output, input and Stop over the same connection.
+- **Java** is built on the host with its own Maven or Gradle. **Debug** starts the program there and attaches through the SSH connection, so breakpoints and stepping work on the local files.
+- **Only what changed is sent**, as one compressed stream into the host's `tar`. Folders such as `.git/`, `target/` and `node_modules/` stay behind, so do files Git ignores (with the default options), and **Leave out** adds patterns of your own. **Upload on save** deploys after every save without running anything.
+- **Careful with the host's files.** A deploy removes only files it sent itself, asks before replacing a file changed on the host, asks before a first deploy into a folder that already has files, and refuses `/`, system folders and the home folder.
+
+**Run → Deployment** has **Deploy Now**, **Compare with Deployed** (the active file beside its copy, in the diff viewer), **Open Terminal in Deployment** and **Edit Deployments…**. A deployment uses the same SSH logins, host keys and permission to run commands as a remote folder. Nothing is installed on the host, and passwords are never stored. See [Deployments](/docs/deployments).
 """),
     new Feature("git", GD, 1, false,
         "Git integration",
@@ -583,7 +643,7 @@ Apply changes with guarded, undoable gutter actions or open an editable Result d
         """
 An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
 
-It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. A ```` ```console ```` or ```` ```shell-session ```` block shows as a terminal session: a muted prompt, the command highlighted as shell, and plain output. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
+It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges; remote images load once you allow them for the document). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. A ```` ```console ```` or ```` ```shell-session ```` block shows as a terminal session: a muted prompt, the command highlighted as shell, and plain output. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
 
 Markdown files get a full editing kit:
 
@@ -668,7 +728,7 @@ On by default. Toggle it and choose the browser under Settings → Web → HTML 
 """),
     new Feature("project-map", WF, 0, false,
         "Project Map",
-        "See a project as a <strong>map</strong> in a window of its own: folders as columns on a canvas, code cards that open the way the map flows, callers and references as connected cards, recent-change heat, and trails that walk a team through the code.",
+        "See a project as a <strong>map</strong> in a window of its own: folders as columns on a canvas, code cards you navigate like the editor, callers, references, hierarchies and a symbol graph as connected cards, branch review, dependencies and hotspots, and trails that walk a team through the code.",
         """
 The Project Map is a second way to look at a [project](/features/projects), beside the file tree. It opens in a **window of its own** (place it next to the editor window, or on another screen) and lays the project out on a canvas you can pan and zoom. Open it with the **Map** button in the Project tool window, `Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs), or *Project: Open / Close Project Map Window*. `Alt-F1` reveals the file you are editing on it.
 
@@ -682,7 +742,7 @@ A local folder is listed whole, up to 50,000 entries, so a folder of thousands o
 
 ## Cards for a glance
 
-Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way the map flows, past its row's column, and never pans the map or covers the folders that lead to the file. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
+Click a file's **eye** for a read-only, syntax-highlighted **preview card** over the canvas, in the editor's font and with any unsaved text. A card opens the way a new column does, past its row's column the way the map flows, and the map pans to centre it with its row still in sight. A live connector keeps it tied to its row as you pan, zoom, move or resize it. **Open** takes the file to the editor.
 
 ![A read-only preview card for Shelf.java on the Project Map, opened past the file's column and joined to its row by a connector, showing syntax-highlighted Java, with the file's last change and the card's buttons in its header](/screenshots/docs/project-map-card.png "A preview card opens past the file's column, joined to its row.")
 
@@ -692,19 +752,23 @@ A file's **Structure** icon opens a column of its classes, methods or headings, 
 
 ![Show Callers as Cards on Pricing.apply: the callers in Shelf.checkout and two ShelfTest tests open as cards around Pricing.java, each joined to it by a dashed edge labelled by name](/screenshots/map/references.png "With no language server running, the callers are found by name, and the edges say so.")
 
-Right-click a declaration, or a name in a card, and choose **Show Callers as Cards** or **Show References as Cards**. The places found open as cards around it, joined by edges that say how: *calls*, *references* or *by name*. A [language server](/features/lsp) that is already running answers, even for files that are not open; with none running, Editora matches the name across the project instead and draws those edges dashed. **Related Test / Subject** jumps between a class and its test, and Go to Definition, Find Usages and the hierarchies work from a focused card.
+The editor's code navigation works inside cards and answers with cards beside them: Go to Definition, Declaration, Type Definition, Implementation and Super Method, Find Usages, and `Ctrl`-click on a name, each joined by a labelled edge. A chain of Go to steps keeps one preview card in view, Back and Forward walk the rows and cards you visited, and in a Java project the JDK and your dependencies open as library-source cards. **Show Callers**, **Callees** or **References as Cards** opens the places found around a declaration, with a list of every place one click away. Call and type hierarchies open as trees you can expand as deep as you like, and the **Symbol Graph** puts a method in the middle with its callers, callees, supertypes and subtypes around it, to walk the code. A [language server](/features/lsp) that is already running answers, even for files that are not open; with none running, Editora matches names across the project and draws those edges dashed. **Related Test / Subject** jumps between a class and its test. Cards read like the editor, with semantic colours, inlay hints, sticky headers, problems, usage counts on declaration rows, and a gutter where you set breakpoints and run tests.
+
+## Review, dependencies and hotspots
+
+**Review Changes** opens every changed file and its diff in one card, and its **Against** menu shows what your branch changes since it left the default branch, as a pull request does, with the changed files striped on the map. **Dependencies** shows what a file or folder uses and what uses it, or a folder's parts as a matrix where cycles stand out, read from the imports of 15 languages with no build. **Code Metrics** lists lines, complexity and the last 90 days' commits, with a hotspot score for code that is both complex and often changed. A declaration's own commits and blame open as a card, and while you debug the Map follows each stop with the call stack beside it.
 
 ## Search and filter
 
 ![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
 
-The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only or `@` for declarations. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked or noted files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
+The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only, `@` for declarations, or `%` for text in the files. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked, noted or problem files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
 
 ## See where the work happens
 
 ![Show recent changes on the Editora repo: rows tinted and underlined by how often they changed, with a tooltip reading 5 commits in 90 days, last: Adrian De Leon, 2 weeks ago, and Owners: @adriandeleon from .github/CODEOWNERS](/screenshots/map/recent-changes.png "Recent-change heat, with the commit count, the last author and the owners in the tooltip.")
 
-⋯ → **Show recent changes** warms each row by how often it changed in the last 90 days, and its tooltip says how many commits touched it and who changed it last. With a `CODEOWNERS` or Kubernetes-style `OWNERS` file, every row's tooltip names its owners and reviewers, read from the project's own files with no network. The first time you open a project, a **Project overview** card shows its README, build system and modules, languages, likely entry points, where the tests live, the most-changed folders and the owners.
+⋯ → **Show recent changes** warms each row by how often it changed in the last 90 days, and its tooltip says how many commits touched it and who changed it last. With a `CODEOWNERS` or Kubernetes-style `OWNERS` file, every row's tooltip names its owners and reviewers, read from the project's own files with no network. On the first Map of each session, a **Project overview** card shows its README, build system and modules, languages, likely entry points, where the tests live, the most-changed folders and the owners.
 
 ## Working sets and trails
 
@@ -714,7 +778,7 @@ Save the map as a **working set** (open folders, selection, zoom, cards and pins
 
 ## Keyboard, print and export
 
-Everything works from the keyboard: arrows follow the flow, typing a name jumps to it, `/` filters a column, `Alt-Left` / `Alt-Right` step back and forward through the places you visited, and `Alt`+arrows move a focused card. **Print…** and **PDF…** output the whole map, split across pages when it is large, and the PDF is searchable; **Export** saves it as a PNG or an SVG. Screen readers read the rows on screen as a tree.
+Everything works from the keyboard: arrows follow the flow, typing a name jumps to it, `/` filters a column, `Alt-Left` / `Alt-Right` step back and forward through the places you visited, and `Alt`+arrows move a focused card, `Ctrl-Shift`+arrows jump between cards, and every row and button of the Map is a command you can bind to a key. **Print…** and **PDF…** output the whole map, split across pages when it is large, and the PDF is searchable; **Export** saves it as a PNG or an SVG. Screen readers read the rows on screen as a tree.
 
 See the [Project Map docs](/docs/workspace#project-map) for every option and key.
 """),
@@ -935,6 +999,36 @@ Logs open in **View mode** (read-only with an *Enable Editing* banner) by defaul
 
 It builds on proper CSV/TSV syntax highlighting. Toggle rainbow and the grid in **Settings → Editor → CSV**.
 """),
+    new Feature("terminal", WF, 15, false,
+        "Terminal",
+        "Shells in a Terminal tool window, on this machine or where the project runs: an SSH host, a container or WSL. Shell integration, find, and clickable paths.",
+        """
+The **Terminal** tool window runs shells inside Editora, one per tab, below the editor. It is `M-0` in the Emacs keymap, Alt+F12 in IntelliJ IDEA's and Ctrl+\\` in the others, and **Open Terminal Here** on a tab, a folder in the Project tree or the breadcrumb starts a shell in that folder. A focused terminal owns the keyboard, so Ctrl+C, Escape and your shell's own shortcuts work as in any terminal; Shift+Escape goes back to the editor.
+
+- **Where the project runs.** A [remote project](/features/remote-sftp)'s terminal is a shell on its SSH host, and a folder whose tools run in a dev container or a WSL distribution gets a shell inside it. Each tab's chip names where its shell runs. When a connection drops, the output stays under a **Reconnect** banner.
+- **Shell integration** for bash and zsh: the tab follows the shell's folder, Ctrl+Shift+Up and Down jump between prompts, and **Copy Last Command Output** copies what the last command printed. Your own startup files run as usual and are never changed.
+- **Open what the output names.** Ctrl+click (⌘-click on macOS) a file name, a `path:line:column` from a compiler or a stack trace, a folder or a URL. Hyperlinks that programs print (OSC 8) work the same way.
+- **Find** in the scrollback with Ctrl+Shift+F (⌘F on macOS).
+- Full-screen programs such as vim, htop and less work, and programs that speak the **kitty keyboard protocol**, such as Neovim and Helix, get unambiguous keys.
+- **Type-ahead** shows what you type at once on a slow link, before the host echoes it.
+- Programs can post **desktop notifications** (OSC 9 and OSC 777) and copy to the clipboard (OSC 52), but can never read it.
+- A [run configuration](/features/run-configurations) can run its program in a terminal tab, for programs that draw on the screen or read single keys.
+
+Colours follow the editor theme, or a fixed terminal scheme such as Solarized, Dracula or Nord. The font is the editor's, and the icons of `eza` and powerline prompts show without installing a Nerd Font. Settings → Terminal holds the shell, the scrollback and the rest. See [Terminal](/docs/terminal).
+"""),
+    new Feature("encrypted-files", WF, 16, false,
+        "Encrypted files",
+        "Open, edit and save GnuPG-encrypted <code>.gpg</code>, <code>.pgp</code> and <code>.asc</code> files as the text inside them, with your own <code>gpg</code> and keyring. The plain text never reaches the disk.",
+        """
+Open `notes.md.gpg` and you edit a Markdown file, with Markdown highlighting and preview. Save encrypts it again, for the same people and in the same format, before anything reaches the disk; a save that can't be encrypted writes nothing and says why. Editora uses the `gpg` you already have, with your keyring, trust settings, smartcards and passphrase cache, and never asks you to export a key.
+
+- **Encrypt File…** writes the active file encrypted beside the original (`notes.md` → `notes.md.gpg`, or `.asc` for ASCII armor), and Save As to a `.gpg` or `.asc` name does the same. The plain original stays until you choose **Move Original to Trash** or **Keep It**.
+- The **recipient picker** chooses who can open the file: people's public keys from your keyring, your own included by default, or a passphrase. A key you haven't verified shows its fingerprint, and a folder's `.gpg-id` file, as the `pass` password manager writes it, sets the default recipients.
+- The tab has a lock, and the status bar says who the file is encrypted for. **Lock File** takes the text out of memory until you decrypt it again, and tabs restored at startup stay locked until you press Enter, so startup never asks for a run of passphrases.
+- **Encrypt Selection…** and **Decrypt Block at Caret** handle an armored message inside an otherwise plain text, and **Clear-Sign Text**, **Sign File (Detached)** and **Verify Signature** sign and check text and files.
+
+While an encrypted file is open, Editora keeps its text out of crash recovery, Local History, personal notes, Git change bars and blame, the HTML Live Preview, agents and AI actions, and language servers unless you allow them. Export, print and external tools ask first. Files in a [remote project](/features/remote-sftp) are decrypted on your computer, where your keys are. See [Encrypted files](/docs/encrypted-files).
+"""),
     new Feature("ai", CE, 0, true,
         "AI assistance",
         "One-shot AI actions (explain, rewrite, commit message, inline completion) and an embedded coding agent over ACP. Anthropic, Codex, or a local model. Off by default.",
@@ -976,11 +1070,11 @@ Drop a stylesheet into `themes/` in your config directory for a full app theme, 
 """),
     new Feature("plugins", CE, 2, false,
         "Plugins",
-        "Extend the editor with commands, tool windows, and integrations. Install from a built-in registry of 19 plugins, or write your own (Java or a simple manifest).",
+        "Extend the editor with commands, tool windows, and integrations. Install from the built-in signed registry, or write your own (Java or a simple manifest).",
         """
 Extend Editora without forking it. A plugin adds commands, keybindings, tool windows, editor-menu items, and status-bar segments, written in Java against a small exported API, or declared in a simple `plugin.json` manifest (with snippets and templates folders).
 
-Install from the built-in **registry** of 19 plugins (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
+Install from the built-in **registry** (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
 
 Off by default. Plugins aren't sandboxed, so only install ones you trust, and Editora asks first: the consent dialog lists a plugin's code, its external commands and the chords it replaces, an install or update is staged and put in place only once you agree, and a plugin whose code, commands or chords differ from what you agreed to waits until you agree again. A plugin's commands stay in its own namespace, so it cannot replace a built-in one. Start with `--disable-plugins` to run a session without any, and the [Doctor](/features/doctor) lists any plugin that failed to load or start, or started slowly.
 """),
@@ -1032,10 +1126,10 @@ The other three ways to run the editor are [Zen mode](/features/zen-mode), [Expe
         """
 The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, toolbar, tab bar, breadcrumb, gutter, minimap, and status bar are all on screen, and tool windows such as Project, Git Log, TODO, and Output dock around the editor.
 
-Some features work as soon as you open a folder, and some wait for you to switch them on:
+Some features work as soon as you open a folder, and some wait for their tool or for you to trust the folder:
 
 - **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [Local History](/features/local-file-history).
-- **Switched on in Settings (both Beta):** [language servers](/features/lsp) and [debugging](/features/debugging).
+- **Once their tool is installed:** [language servers](/features/lsp) and [debugging](/features/debugging). A file whose server is missing offers to install it, and servers that would run a project's build wait until you trust the folder.
 
 Every piece of the interface can be shown or hidden on its own from the View menu or Settings → Interface. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode) and [Expert mode](/features/expert-mode) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode) hides more and also switches the heavier features off.
 """),
@@ -1104,7 +1198,7 @@ Every integration gets a row, grouped by area:
 - **Preview & diagrams**: `mmdc` and `maid` for Mermaid, Graphviz and PlantUML (with their versions), and the Typst CLI.
 - **Language servers**: one row per enabled server, showing the resolved path (and Pyright's version).
 - **Formatting & linting**: the **Python formatter** (Ruff or Black) that Format Document and format on save use, optional unless **Format on save (Ruff/Black)** is on, ShellCheck and shfmt, which the Shell server lints and formats with, and a JavaScript project's own ESLint, Prettier and Biome.
-- **Debugging**: the Java debug plugin, `debugpy`, and `js-debug`.
+- **Debugging**: the Java debug plugin, `debugpy`, `js-debug`, Delve (`dlv`), CodeLLDB, netcoredbg, `rdbg` and PHP Debug.
 - **Run**: the JDK used to run a file, the **Python interpreter** that Run, Debug and Pyright share (its version, command and why it was chosen; its **Settings…** opens the Python card of Settings → LSP), the Node.js that Run, Debug, npm scripts and the TypeScript server share, `bash`, and `make`.
 - **HTTP Client**: the Node.js that runs response handlers and pre-request scripts.
 - **Build tools**: Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka, checked by the command set in Settings or the project's own wrapper.
@@ -1123,6 +1217,74 @@ Probes run fresh each time, off the UI thread, so Doctor reflects the machine as
 """)
 );
 
+// Alt text for each feature's screenshot (public/screenshots/features/<slug>.*): what the
+// picture shows, kept short. A feature with none falls back to "<Title> in Editora".
+static final Map<String, String> ALT = Map.ofEntries(
+    Map.entry("ai", "Settings → AI Agent with the agent on, Claude Code as the active client, and editor context included in prompts"),
+    Map.entry("auto-close-brackets", "A Python script whose last line has auto-closed brackets and quotes around the caret"),
+    Map.entry("bookmarks-notes", "The Personal Note dialog over a Java file, with bookmark markers in the gutter"),
+    Map.entry("build-tools", "A pom.xml beside the Maven tool window, listing its lifecycle phases and profiles"),
+    Map.entry("code-navigation", "The Go to Symbol in Project picker over a Java file, listing classes with their files and lines"),
+    Map.entry("command-driven-core", "The command palette filtered by \"git\", listing Git commands with the highlighted one's description"),
+    Map.entry("comment-toggling", "A Java method commented out as one block comment, its lines highlighted"),
+    Map.entry("crash-recovery", "Settings → Workspace with \"Keep a recovery copy of unsaved edits\" turned on"),
+    Map.entry("csv", "A CSV file shown as a table in Preview, with a filter box and a first-row-is-header switch"),
+    Map.entry("debugging", "A Java program paused at a breakpoint, with inline values and the Debug window's call stack and variables"),
+    Map.entry("diagrams", "A Graphviz DOT file in Split view, with the rendered graph beside its source"),
+    Map.entry("diff-merge", "A Java file side by side with its HEAD version, the changed line and words highlighted"),
+    Map.entry("doctor", "Doctor listing Git, the GitHub CLI, ripgrep and the diagram tools as found, with their versions"),
+    Map.entry("editor-groups", "Two editor groups side by side: a CSV file on the left and a Markdown file on the right"),
+    Map.entry("editorconfig", "An .editorconfig file with sections for all files, Java, XML, JSON and YAML"),
+    Map.entry("emacs-heritage", "The command palette filtered by \"kill\", listing the Emacs kill commands with their chords"),
+    Map.entry("expert-mode", "Expert mode: a Java file with only the menu bar, line numbers, minimap and status bar around it"),
+    Map.entry("export-pdf-print", "Print preview of a Java file, page 1 of 2, with Page Setup and Print buttons"),
+    Map.entry("external-tools", "The External Tools: Run picker listing three tools and what each does with its output"),
+    Map.entry("file-templates", "The New File From Template picker listing Java, HTML, Markdown, Python and shell templates"),
+    Map.entry("find-in-files", "Find in Files searching the project for \"theme\", with 1,617 matches grouped by file"),
+    Map.entry("full-ide", "The full IDE: a Java file with the Project tree on the right and the Git Log window below"),
+    Map.entry("git", "The Commit window beside a Java file: one changed file, two untracked, and a commit message typed"),
+    Map.entry("github", "The GitHub tool window listing a repository's pull requests, with Issues and Runs tabs"),
+    Map.entry("html-live-preview", "An HTML file in the editor, with the status bar giving the live preview's local address"),
+    Map.entry("http-client", "An .http file with two requests and a test script, beside the JSON response of a 200 OK"),
+    Map.entry("jump-to-popups", "The Jump to Structure picker listing a Java class and its methods"),
+    Map.entry("keymaps", "The Keymap: Select picker offering Emacs, CUA, Sublime Text, Visual Studio Code and IntelliJ IDEA"),
+    Map.entry("local-file-history", "The Local History window: a Java file's saved versions, with one compared against the current text"),
+    Map.entry("localized-ui", "Editora in Spanish, with translated menus, Project tree and status bar"),
+    Map.entry("log-viewer", "A .log file in View mode with levels coloured, a filter box, and an error's stack trace highlighted"),
+    Map.entry("lsp", "Quick fixes for an unresolved ArrayList in a Java file, above the Problems window listing two errors"),
+    Map.entry("macros", "The command palette filtered by \"macro\", listing the macro commands with F3, F4 and C-x e"),
+    Map.entry("markdown-preview", "A Markdown file in Split view, with headings, a task list and a table rendered beside the source"),
+    Map.entry("mcp", "Settings → MCP Server with the loopback MCP server turned on"),
+    Map.entry("menu-bar", "The Git menu open, listing its commands with their keybindings and submenus such as Branches and Stash"),
+    Map.entry("mermaid", "A Mermaid flowchart in Split view, with the rendered diagram beside its source"),
+    Map.entry("multiple-cursors", "Five carets in a column of Java lines, the same word typed at each"),
+    Map.entry("plugins", "The Browse Plugins picker listing registry plugins with their versions and descriptions"),
+    Map.entry("previews", "A PNG image open in the image viewer, with zoom and Fit controls"),
+    Map.entry("project-map", "The Project Map: folder columns joined by curves, a Java file selected and its Structure column"),
+    Map.entry("projects", "A Java file open in a project, with the project's folders in the Project tree on the right"),
+    Map.entry("read-only-view-mode", "A Java file in View mode, with an amber banner and an Enable Editing button"),
+    Map.entry("remote-sftp", "The Connect to SFTP form with host, port, user, authentication, key file and path fields"),
+    Map.entry("run-configurations", "A Python script run configuration: script, interpreter, arguments, working folder, console and Run on"),
+    Map.entry("run-files", "A Python script with a gutter ▶, and its output in the Run window below"),
+    Map.entry("search-everywhere", "Search Everywhere for \"theme\", with matching files and symbols in separate groups"),
+    Map.entry("settings-sync", "Settings → Sync with a repository URL, Connect and Create on GitHub buttons, and what to sync"),
+    Map.entry("simple-ui-mode", "Simple UI mode: a Java file with a short menu bar, a small toolbar, and no gutter or tool windows"),
+    Map.entry("smart-indentation", "A Python file whose new line under a for statement is indented automatically"),
+    Map.entry("snippets", "The Insert Snippet picker listing Java snippets such as main, sysout and foreach"),
+    Map.entry("spell-checking", "A Markdown paragraph with three misspelled words underlined in red"),
+    Map.entry("starting-a-project", "The New File From Template picker with two multi-file templates: HTML Page + CSS and Python Project"),
+    Map.entry("syntax-highlighting", "A Java class in the Editora Light theme, with keywords, types, strings and comments in their own colours"),
+    Map.entry("themes-fonts", "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"),
+    Map.entry("todo-highlighting", "TODO comments highlighted in a Java file, with the TODO window counting 677 matches in 90 files"),
+    Map.entry("typst", "A Typst document in Split view, with the typeset page, headings and maths beside the source"),
+    Map.entry("undo-history", "The Undo History window beside a Python file, listing each edit with its time"),
+    Map.entry("zen-mode", "Zen mode: a Java file with no menus, tabs, toolbars or status bar around it"),
+    // No feature screenshot yet: these describe the docs screenshots suggested for them.
+    Map.entry("terminal", "The Terminal tool window under the editor, running git status and git log in the project folder"),
+    Map.entry("deployments", "The Deployments window with a staging deployment: host, user, folder on the host, Leave out and options"),
+    Map.entry("encrypted-files", "The recipient picker with two people chosen, a Format menu and an Encrypt for 2 People button")
+);
+
 String yaml(String s) {
     return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
 }
@@ -1138,6 +1300,11 @@ Path outputDir() {
 void main() throws IOException {
     Path dir = outputDir();
     Files.createDirectories(dir);
+    for (String slug : ALT.keySet()) {
+        if (FEATURES.stream().noneMatch(f -> f.slug().equals(slug))) {
+            throw new IllegalStateException("Alt text for an unknown feature: " + slug);
+        }
+    }
     for (Feature f : FEATURES) {
         String fm = "---\n"
             + "title: " + yaml(f.title()) + "\n"
@@ -1145,6 +1312,7 @@ void main() throws IOException {
             + "order: " + f.order() + "\n"
             + "beta: " + f.beta() + "\n"
             + "summary: " + yaml(f.summary()) + "\n"
+            + (ALT.containsKey(f.slug()) ? "alt: " + yaml(ALT.get(f.slug())) + "\n" : "")
             + "---\n\n";
         Files.writeString(dir.resolve(f.slug() + ".md"),
             fm + f.body().strip() + "\n", StandardCharsets.UTF_8);

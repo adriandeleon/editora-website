@@ -144,4 +144,4 @@ Startup also reaches its first frame **~46 ms sooner**, by entering through a
 plain launcher so the configuration can load on a background thread while the
 JavaFX toolkit starts.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.13/#0130---2026-08-26) page.

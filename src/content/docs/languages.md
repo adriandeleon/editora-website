@@ -27,11 +27,21 @@ characters is never highlighted. Files that are mostly long lines open in
 
 ### Supported languages
 
-Grammars ship for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy,
-Kotlin, Scala, Clojure, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML,
-YAML, INI, SQL, TypeScript, JavaScript, PHP, Lua, Dockerfile, Terraform, TOML,
-Mermaid, and the HTTP request format. The TypeScript grammar also covers plain
-JavaScript.
+Editora ships 64 grammars:
+
+| Group | Languages and file types |
+| --- | --- |
+| JVM | Java, Kotlin, Groovy (and Gradle build files), Scala (and sbt and Mill builds), Clojure (and EDN) |
+| Systems | C, C++, C#, Go, Rust |
+| Scripting | Python, Ruby, PHP, Lua, JavaScript, TypeScript, JSX and TSX |
+| Shells and builds | Bash and other shell scripts, PowerShell, DOS batch, Makefile, `justfile` |
+| Web and documents | HTML (and HTML templates), CSS, Astro, XML and its dialects, Markdown, Typst |
+| Data and config | JSON, JSON Lines, YAML, TOML, INI, Java `.properties`, CSV and TSV, `.env`, SQL, GraphQL, Protocol Buffers, Terraform and HCL, Dockerfile, pip `requirements.txt` |
+| Diagrams and requests | Mermaid, Markwhen, Graphviz DOT, PlantUML, `.http` request files |
+| System files | systemd units, desktop entries, crontab, Caddyfile, `/etc/hosts`, `fstab`, SSH config, Git config, `.gitattributes`, `.gitignore` and the other ignore files, Debian control files and changelogs, APT sources, network `interfaces`, log files, diffs and patches |
+
+Two more work inside these: one for Javadoc comments, and one for the HTML in
+a Markdown file. JavaScript uses the TSX grammar, so JSX in a `.js` file highlights.
 
 XML covers its dialects too: DTDs (`.dtd`, `.ent`, `.mod`), RELAX NG,
 XSL-FO, Schematron, MSBuild and NuGet project files, `.resx`, XAML, XLIFF,
@@ -41,6 +51,13 @@ property lists, KML, GPX, DITA and others open as XML (the full list is under
 file. A `go.mod` stays plain text, and `.xhtml` is HTML. A `.mod`, `.sch`,
 `.props`, `.targets` or `.fo` file is XML only when its text starts with `<`,
 so a Modula-2 module or a KiCad schematic opens as plain text.
+
+**JSON Lines** files (`.jsonl`, `.ndjson`, `.jsonlines`) hold one JSON value per
+line. Each line is coloured as JSON, and a line that is not exactly one JSON
+value (a trailing comma, two records on one line, a record split over two
+lines) is underlined with what is wrong. JSON Lines is in **File ▸ New**, and a
+`jsonl` fence in Markdown is coloured too. The preview is under
+[Smart file previews](/docs/previews#structured-data-and-api-docs).
 
 The status bar and the Problems window write each language's name as it is
 usually written: XML, JSON, YAML, HTML, CSS, SQL, TOML, C++, C#, GraphQL,
@@ -305,6 +322,8 @@ one to replace), **Add to Dictionary**, or **Ignore**. **Ignore** stops flagging
 the word in every open file until Editora is closed; **Add to Dictionary** keeps
 it for good.
 
+![A Java file whose comments and string contain misspelled words underlined in red, while identifiers and keywords are left alone](/screenshots/docs/spell-check.png "In code, spell checking reads comments and strings, not identifiers.")
+
 What is checked depends on the file type:
 
 - **Plain text and Markdown** are checked in full, apart from inline code and
@@ -328,7 +347,7 @@ What is checked depends on the file type:
   (`f"…"`, `rb'…'`) is checked like the rest, without its prefix, and in a pip
   requirements file only the comments are checked. In JavaScript, JSX and TSX
   the text between JSX tags is checked too.
-- **Data and configuration formats** are off by default: JSON, YAML, TOML, XML,
+- **Data and configuration formats** are off by default: JSON, JSON Lines, YAML, TOML, XML,
   CSV, INI, properties, `.env`, Git and SSH configuration, system configuration
   files, logs, and diffs.
 

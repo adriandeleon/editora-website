@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 12
 beta: false
 summary: "Rainbow per-column coloring, a field readout, and an editable CSV grid with sort/filter, print, and export to PDF/Excel/ODF, plus align/shrink and Markdown-table interop."
+alt: "A CSV file shown as a table in Preview, with a filter box and a first-row-is-header switch"
 ---
 
 `.csv` and `.tsv` files get spreadsheet-style tooling.

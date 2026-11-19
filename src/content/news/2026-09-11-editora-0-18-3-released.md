@@ -28,4 +28,4 @@ Structure, Bookmark, and Personal Note navigation also keeps its destination
 visible below sticky-scroll headers, instead of allowing the selected line to
 land underneath the overlay.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.18/#0183---2026-09-11) page.

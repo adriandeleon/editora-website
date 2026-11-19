@@ -30,6 +30,8 @@ number), `${1|a,b|}` choices, and [variables](#snippet-variables). Snippets ship
 for 32 languages, plus a global set that applies to every file. The TypeScript
 set also applies to JSX and TSX files.
 
+![The Insert Snippet picker over a Java file: each trigger (main, psvm, cmain, class, interface, record, enum, sealed, package, import, ctor, method) with its description and a preview of its body](/screenshots/docs/snippet-picker.png "Snippet: Insert… lists the snippets for the file's language, each with its trigger and a preview.")
+
 ### Expanding with Tab
 
 A trigger can be a word (`fori`), a token with punctuation (`#include`), or up to
@@ -149,8 +151,9 @@ only the snippets that wrap a selection; with nothing selected it wraps the
 current line, and a selection over several lines wraps the whole lines it
 touches. Esc gives back the caret and selection you had. **Snippet: Insert…**
 (Ctrl+J, ⌘J on macOS, in the IntelliJ keymap) offers the same snippets among all
-the others, and with nothing selected they expand as before. Any snippet that uses `$TM_SELECTED_TEXT` works the same way, since a
-multi-line variable value now takes the indentation of the line it sits on.
+the others, and with nothing selected they expand as usual. Any snippet that
+uses `$TM_SELECTED_TEXT` wraps a selection the same way: a multi-line variable
+value takes the indentation of the line it sits on.
 
 The Java language server offers templates of its own under some of the same
 names (`sysout`, `fori`, `try_catch` and others). A server template named like
@@ -171,9 +174,11 @@ The HTML snippets cover the elements by name (`div`, `ul`, `table`, `form`,
 
 In an HTML page, the snippets offered follow where you are typing: CSS
 snippets inside a `<style>`, JavaScript snippets inside a `<script>`, and none
-inside a tag, so `col` in a stylesheet offers `color` rather than `<col>`. HTML
-templates (Jinja, Twig, ERB…) and Handlebars files get the HTML snippets. There
-is no Emmet; see [HTML](/docs/html#snippets-and-new-files).
+inside a tag, so `col` in a stylesheet offers `color` rather than `<col>`.
+Where you are is read back to the `<script>` or `<style>` start tag, up to
+100,000 characters back, so a long inline script still counts. HTML templates
+(Jinja, Twig, ERB…) and Handlebars files get the HTML snippets. There is no
+Emmet; see [what the HTML server does not do](/docs/html#what-it-does-not-do).
 
 ### XML snippets
 
@@ -262,6 +267,13 @@ field (a comma-separated list of language ids) limits a snippet to those
 languages. A file with a mistake is reported with its name, the reason and the
 line, and only the bad entry is skipped.
 
+A snippet file Editora writes carries `"schemaVersion": 1`, which says which
+format it is in. A file without it loads as before and gets the marker the next
+time Editora saves it. A snippet file written by a newer Editora in a newer
+format is not loaded: it is left exactly as it is, a copy is kept beside it
+(`java.json.v2.bak`, say), saving into it is refused, and
+[Settings sync](/docs/settings-sync) does not merge it.
+
 ### Changing or disabling a bundled snippet
 
 Bundled snippets appear in **Settings → Snippets** alongside yours. Editing one
@@ -278,6 +290,8 @@ or a whole set of files, from a reusable template. A picker chooses the
 template and shows where each one comes from (bundled, yours, or a plugin), then
 a small wizard prompts for any variables it declares that Editora can't fill in
 itself.
+
+![The New File From Template picker: Java Class, Java Compact Source, HTML Page, Markdown Document, Python Script, Node.js Script, Shell Script, Zsh Script, JUnit 5 Test and more, each marked Bundled with a description](/screenshots/docs/template-picker.png "New File From Template shows where each template comes from and what it makes.")
 
 Editora ships 37 templates:
 
@@ -431,6 +445,11 @@ A single-file template looks like this:
 A file that is not this shape is skipped. The picker and **Template: Reload
 Templates** name the file, the reason, and the line of a JSON syntax error.
 
+A template you save carries `"schemaVersion": 1`, which says which format it is
+in; a template without it loads as before. A template written by a newer
+Editora in a newer format is not loaded: it is left exactly as it is, and a copy
+is kept beside it (`<id>.json.v2.bak`, say).
+
 ### Starting a project
 
 **New Project From Template** (`project.newFromTemplate`) uses a multi-file
@@ -451,6 +470,10 @@ work on the fresh project: create a virtual environment with
 `python3 -m venv .venv`, install the package into it with `pip install -e .`,
 then run it with `python -m <package>.main` (or the installed command) and test
 it with `python -m unittest discover -s tests` or `pytest`.
+
+The **Node.js TypeScript Project** template writes a module, a `node:test`
+test, `package.json`, `tsconfig.json`, a `.gitignore`, and a README. Every other
+multi-file template, yours included, appears in the same picker.
 
 ## New files by type
 

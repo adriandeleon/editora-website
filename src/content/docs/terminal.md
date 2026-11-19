@@ -58,8 +58,11 @@ shows the whole folder. Tabs with the same title are numbered: `project`,
 in a container or in WSL shows its folder instead.
 
 A tab's right-click menu has **Rename Tab…**, **New Terminal**, **Close**,
-**Close Other Tabs**, **Close Tabs to the Right**, **Move Tab Left** and
-**Move Tab Right**. A renamed tab keeps its name whatever its shell sets;
+**Close Other Tabs**, **Close Tabs to the Right**, **Move Tab Left**,
+**Move Tab Right** and [**Move to Editor**](#a-terminal-in-an-editor-tab).
+**Terminal: Close Other Terminals** (`terminal.closeOthers`) and **Terminal:
+Close Terminals to the Right** (`terminal.closeRight`) do the same from the
+palette. A renamed tab keeps its name whatever its shell sets;
 renaming it to an empty name gives it back the shell's title. Drag a tab by
 its header to move it.
 
@@ -73,6 +76,20 @@ or its tab closes, the Terminal tool window hides and the editor has the
 keyboard again. Closing the window ends its shells. Closing a tab, a window or
 Editora while a shell is running a program
 [asks first](#closing-a-busy-terminal).
+
+## A terminal in an editor tab
+
+**Move to Editor**, in a terminal tab's right-click menu, in the Window menu
+or as **Terminal: Move to Editor** (`terminal.moveToEditor`), shows the
+selected terminal as an editor tab beside your files, as IntelliJ's terminal
+does. Its shell keeps running and keeps what it printed. With no terminal open,
+Move to Editor opens a new one in the editor.
+
+The editor tab's right-click menu renames it, closes it, or puts it back with
+**Move to Terminal Tool Window** (`terminal.moveToToolWindow`), which opens the
+Terminal with it selected. Closing it asks first when its shell is running
+something, as in the tool window, and closing the window lists it with the
+others.
 
 ## Open Terminal Here
 
@@ -133,7 +150,8 @@ remote project's terminal is a shell on its SSH host, and a folder whose tools
 run in a [dev container](/docs/remote#tools-in-a-container) or a
 [WSL distribution](/docs/remote#tools-in-wsl-windows) gets a shell inside it.
 The tab's chip names the host, container or distribution, so you can tell at a
-glance where a command will run.
+glance where a command will run. These are part of [Remote](/docs/remote),
+which is in Beta.
 
 - **It is a real terminal.** vim, htop, less and resizing work, as in `ssh`.
 - **It is the account's login shell there**: `$SHELL`, else bash, else sh.
@@ -184,8 +202,15 @@ What it gives you:
   prompts.
 
 It is on by default; turn it off with **Settings → Terminal → Shell
-integration**, which applies from the next terminal you open. Other shells,
-such as fish or PowerShell, start without it.
+integration**, which applies from the next terminal you open. A terminal
+starts without it:
+
+- with other shells, such as fish or PowerShell;
+- with a bash or zsh that runs on Windows itself, such as Git Bash (a WSL
+  terminal has it);
+- when **Settings → Terminal → Shell** gives the shell arguments of its own,
+  such as `/bin/bash --norc`. Only a shell named alone, or with just `-l`,
+  gets it.
 
 ## Find in the terminal
 
@@ -202,6 +227,8 @@ the current one starts at the most recent match:
 The bar counts the matches, up to 1,000; past that it says *1000+* and keeps
 the newest. Matches stay on their text as more output scrolls in. Text
 selected on one line, when there is some, is what the bar starts with.
+
+![The Terminal tool window after git log --oneline, with the find bar open over it: map typed, every match highlighted in the commit subjects, 4 of 4, an Aa toggle, up and down arrows and a close button](/screenshots/docs/terminal-find.png "Find in the terminal highlights every match in the scrollback and counts them.")
 
 ## Keys
 
@@ -276,7 +303,7 @@ keyboard protocol**, such as Neovim, Helix, fish and nushell, ask the terminal
 for unambiguous keys, and Editora's terminal gives them: Escape on its own,
 Ctrl+I apart from Tab, Shift+Enter as a key of its own, and, when the program
 asks, key repeats and releases. Nothing needs turning on. A program that
-doesn't ask, and your shell at its prompt, get the same keys as before, and a
+doesn't ask, and your shell at its prompt, get the usual terminal keys, and a
 full-screen program's request ends with it.
 
 ### Alt and Option
@@ -474,7 +501,8 @@ a program**.
 
 ## Settings
 
-**Settings → Terminal** (under Languages & Tools):
+**Settings → Terminal** (under Languages & Tools), or **Terminal: Change a
+Setting…** (`terminal.changeSetting`) to pick one from the palette:
 
 | Setting | Default | What it does |
 | --- | --- | --- |
@@ -508,8 +536,9 @@ integration, and scrollback apply from the next terminal you open.
   No terminal palette fixes that; use a prompt theme that suits light
   backgrounds, a dark editor theme, or a dark
   [terminal theme](#colors-and-font).
-- Without [shell integration](#shell-integration) (another shell, or the
-  setting off), Editora reads a shell's current folder on Linux and macOS only.
+- Without [shell integration](#shell-integration) (another shell, a bash or
+  zsh on Windows such as Git Bash, a Shell setting with arguments of its own,
+  or the setting off), Editora reads a shell's current folder on Linux and macOS only.
   On Windows, tab titles then don't follow the folder, and only absolute paths
   and URLs in the output become links, not relative paths. A terminal on a host
   needs shell integration for the folder at all.

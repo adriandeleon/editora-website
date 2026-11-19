@@ -63,4 +63,4 @@ neither was. To check a suspected startup regression, run
 `EDITORA_PERF_SAMPLE=1` now adds a per-phase sample of what is holding the UI
 thread.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.12/#0121---2026-08-17) page.

@@ -51,6 +51,8 @@ that opens a blocking dialog cannot be scripted: what you do in the dialog is
 not recorded, and a replay waits at that step for you. Both cases show a hint in
 the status bar while you record.
 
+![Shelf.java while a macro records: a comment just typed at the end of a line, Recording macro… at the left of the status bar and a red REC chip at its right](/screenshots/docs/macro-recording.png "While you record, the status bar shows REC; click it to stop.")
+
 ### Replaying
 
 One replay is **one undo step**, and so is a replay with a count: a single Undo
@@ -69,6 +71,8 @@ buffer, and a step whose command does not exist is skipped and named.
 | Name and save the last macro | `macro.nameAndSave` |
 | Run a saved macro | `macro.runSaved` |
 | Delete a saved macro | `macro.deleteSaved` |
+
+![The Macro: Name and Save Last prompt over the editor with the name mark-reviewed typed, Cancel and Save buttons, and Recorded macro (2 steps) in the status bar](/screenshots/docs/macro-save.png "Name and Save Last keeps the recording under a name you can run later.")
 
 Saved macros persist across sessions (in `macros.json` in your
 [config folder](/docs/configuration)). Each saved macro becomes its own palette

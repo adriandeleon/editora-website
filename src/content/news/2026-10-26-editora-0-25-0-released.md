@@ -1,6 +1,6 @@
 ---
-title: "Editora 0.25.0: Java support closer to an IDE, a gutter lightbulb, and Report a Problem"
-description: "Editora 0.25.0 is mostly Java: refactorings with commands of their own, Generate and Refactor This, Undo Last Refactoring across files, Go to Super Method, Smart Type and chain completion, Lombok, clean-ups and format on save, one server per project across windows, and navigation inside library source. Also a code-action lightbulb and a problem counter in the editor, Doctor update checks, Settings sync for shortcuts, file structure in the Project Map, and a redacted Report a Problem."
+title: "Editora 0.25.0: Java closer to an IDE, a lightbulb, Report a Problem"
+description: "Java refactorings, Generate, Smart Type completion, Lombok, format on save, a code-action lightbulb in the gutter, Doctor update checks, and Report a Problem."
 date: 2026-10-26
 version: "0.25.0"
 ---

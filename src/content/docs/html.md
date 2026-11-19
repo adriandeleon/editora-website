@@ -183,6 +183,8 @@ running, its folding ranges are used (see
   [XML settings](/docs/lsp#xml-settings), 5,000 by default) caps how many are
   listed.
 
+![widget.html with the Structure tool window open and no language server: html, head, body, main.widget, h1, p#count.count and div.buttons, each with its line](/screenshots/docs/html-structure.png "Structure without the language server: elements labelled tag, then #id, then .class.")
+
 ## Spell checking
 
 In an HTML page the text visitors read is checked, and comments. Tags and
@@ -199,20 +201,9 @@ they are, in `title` and `alt` values too; template comments (`{# #}`,
 
 ## Snippets and new files
 
-The HTML snippets cover the elements by name (`div`, `ul`, `table`, `form`,
-`video`…), with `div.`, `div#` and `div.#` (and the same for `p`, `ul` and `ol`)
-for an element with a class, an id or both. `!` and `html5` insert a whole
-page, with the `lang` value (`en`) selected first (`html5` also links a
-stylesheet); `doctype` inserts `<!DOCTYPE html>`; `link` is a stylesheet link.
-Obsolete elements are not offered.
-
-Which snippets are offered follows where you are typing: CSS snippets inside a
-`<style>`, JavaScript snippets inside a `<script>`, the HTML snippets in the
-markup, and none inside a tag, so `col` in a stylesheet offers `color` rather
-than `<col>`. Where you are is read back to the `<script>` or `<style>` start
-tag, up to 100,000 characters back, so a long inline script still counts.
-HTML Templates and Handlebars files get the HTML snippets. See
-[Snippets](/docs/snippets-templates#html-snippets).
+Snippets cover the elements by name, with `div.` and `div#` forms, `!` and
+`html5` for a whole page, and CSS and JavaScript snippets inside `<style>` and
+`<script>`; see [HTML snippets](/docs/snippets-templates#html-snippets).
 
 **New File From Template** (`template.new`) has **HTML Page** (a minimal
 HTML5 page) and **HTML Page + CSS** (the page and a stylesheet it links), both
@@ -408,10 +399,10 @@ taken out of VS Code. One install gives all three
 (`vscode-css-language-server` and `vscode-json-language-server` too). It is a
 Node.js program, so it needs **Node.js**.
 
-Language servers are off by default. The first HTML (or CSS) file a window
-opens asks **Turn on HTML code intelligence?**, with **Turn on** and **Not
-now**. To turn them on yourself, use **Enable LSP (language servers)** in
-Settings → LSP. See [Language servers](/docs/lsp).
+If language servers are off, the first HTML (or CSS) file a window opens asks
+**Turn on HTML code intelligence?**, with **Turn on** and **Not now**. The
+switch is **Enable LSP (language servers)** in Settings → LSP. See
+[Language servers](/docs/lsp).
 
 The server reads `.html`, `.htm` and `.xhtml` files and Handlebars files, not
 HTML Templates. It runs once per workspace root: the project, else the nearest
@@ -511,10 +502,9 @@ The HTML card in Settings → LSP has the server's switch, its command and
 | Check embedded styles | On | Report problems in the `<style>` elements of an HTML file |
 
 The quotes an attribute gets after its `=`, typed or chosen from completion,
-are no longer on this card: **Quotes after a typed or completed =** is in
-Settings → Editor → Editing, beside **Auto-close HTML/XML tags** (see
-[Attribute quotes](#editing-tags)). Searching Settings for *attribute
-quotes* finds it there.
+are set in Settings → Editor → Editing, with **Quotes after a typed or completed
+=** beside **Auto-close HTML/XML tags** (see [Attribute quotes](#editing-tags)).
+Searching Settings for *attribute quotes* finds it.
 
 A project can set them for everyone who opens it, with an `html` object in its
 `.editora/settings.json` (see

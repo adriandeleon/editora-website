@@ -1,9 +1,44 @@
 ---
 title: Troubleshooting
-description: Doctor, a blocked first launch, finding external tools, plugins that fail, the application log, recovering after a crash, performance, and resetting config.
+description: A blocked first launch, finding external tools, Doctor, plugins that fail, the application log, recovering after a crash, performance, and resetting config.
 category: Help
 order: 3
 ---
+
+## A launcher is blocked on first run
+
+The Windows installer is unsigned, so Windows stops it until you allow it. You
+only do this once.
+
+- **Windows**: when you run the downloaded `.msi`, SmartScreen shows *Windows
+  protected your PC*. Click **More info**, then **Run anyway**. The installer
+  installs Editora for every user of the computer, so Windows then asks for
+  administrator rights, and its prompt names the publisher as *Unknown*.
+  Once installed, Editora starts without these prompts.
+- **macOS**: the app is signed and notarized by Apple. The first time you open
+  it, macOS asks once whether to open an app downloaded from the Internet;
+  click **Open**.
+
+To check that a download is the one the release workflow built, see
+[Checking a download](/docs/getting-started#checking-a-download).
+
+## External tools aren't found
+
+Language servers, debug adapters, `git`, `mmdc`, and the file runner are
+external programs Editora launches. A GUI-launched app inherits a stripped
+`PATH` that often misses Homebrew, npm, and version-manager directories, so a
+tool that works in your terminal may look "not found" in the app.
+
+Editora rebuilds the `PATH` from your login shell plus the usual install
+locations before launching anything, which recovers most setups (including
+nvm/fnm/asdf per-version bins). A Python environment you activated before
+starting Editora (`$VIRTUAL_ENV`, `$CONDA_PREFIX`) stays first on that `PATH`.
+[Doctor](#doctor) shows the command each feature found, or that it found none.
+If a tool still isn't found:
+
+- Set its absolute path in the relevant Settings page (LSP, Debugging, Mermaid).
+- Confirm it runs from a plain login shell, since that's the `PATH` Editora reads.
+- On Windows there's no login-shell convention, so prefer setting absolute paths.
 
 ## Doctor
 
@@ -14,7 +49,7 @@ spirit of `flutter doctor`. It covers Git and the GitHub CLI (including whether
 `gh` is signed in), ripgrep, GnuPG and its passphrase prompt for encrypted
 files, the preview and diagram tools (`mmdc`, `maid`, Graphviz, PlantUML, the
 Typst CLI), every enabled language server, the Python formatter, ShellCheck and
-shfmt, a JavaScript project's ESLint, Prettier and Biome, the debug adapters (java-debug, debugpy, js-debug), the Run interpreters
+shfmt, a JavaScript project's ESLint, Prettier and Biome, the debug adapters (java-debug, debugpy, js-debug, Delve, CodeLLDB, netcoredbg, rdbg, PHP Debug), the Run interpreters
 (with a JDK 25 check for Java, and the Python interpreter and Node.js that Run,
 Debug and the language servers share), the Node.js for HTTP scripts, the build
 tools, the AI provider and agent, the container engine (and WSL on Windows),
@@ -34,6 +69,16 @@ off, the row carries a plain-language tip and its fix: **Install…** (the in-ap
 installer), **Turn on** for a switched-off feature, **How to install**, and
 **Settings…** straight to the right page. All probes run off the UI thread, and
 only when you open or refresh the screen.
+
+A row's buttons are commands too, acting on the row the keyboard is in:
+**Doctor: Install or Update Check's Tool** (`doctor.installRow`), **Open
+Check's Install Instructions** (`doctor.howToInstallRow`), **Open Check's
+Settings** (`doctor.openRowSettings`) and **Clear Check's Cache**
+(`doctor.clearRow`); **Copy Check** (`doctor.copyRow`), **Copy Check's Path**
+(`doctor.copyRowPath`) and **Reveal Check's Path in File Manager**
+(`doctor.revealRowPath`) are in its right-click menu.
+
+![The Doctor tab: a summary line of 1 warning, 23 OK, 9 not installed and 3 off, a Needs Attention section with the GitHub CLI not signed in, then Version Control, Search and Encryption folded to one line and the Preview & Diagrams rows](/screenshots/docs/doctor.png "The Doctor puts what needs attention first and folds the sections where everything is OK.")
 
 Start here when something that should work doesn't: it answers "is the tool
 installed, is it the version I think, and is Editora looking at the right one" in
@@ -136,8 +181,8 @@ What the warning says depends on whose copy it is:
 
 - **Editora installed it.** For example *Editora installed 0.10.0; this release
   of Editora is tested with 0.11.0.* Update replaces it.
-- **Installed by an earlier Editora.** Editora now records the version of each
-  copy it installs. For a copy from before that, Doctor reads the version from
+- **Installed by an earlier Editora.** Editora records the version of each
+  copy it installs. For a copy with no record, Doctor reads the version from
   its files, or from what the program prints, where it can. Where it can't tell
   (a Kotlin server from an earlier Editora, for example), the row says the copy
   may be older and offers Update, which installs the tested release.
@@ -186,40 +231,6 @@ are never looked up: a new Editora release brings their newer versions, and
 **Update…** on their rows installs them. Servers that a toolchain keeps up to
 date, such as rust-analyzer through rustup, are not looked up either.
 
-## A launcher is blocked on first run
-
-The Windows installer is unsigned, so Windows stops the first launch until you
-allow it. You only do this once.
-
-- **Windows**: in the SmartScreen dialog, click **More info**, then **Run
-  anyway**.
-- **macOS**: the app is signed and notarized by Apple, so Gatekeeper opens it
-  without asking. Releases before 0.27.0 were unsigned; to open one of those on
-  macOS 15 and later, open it once and dismiss the warning, then go to **System
-  Settings → Privacy & Security**, scroll to the Security section, and click
-  **Open Anyway** next to the Editora message. On macOS 14 and earlier,
-  Control-click the app in Finder and choose *Open* instead.
-
-To check that a download is the one the release workflow built, see
-[Checking a download](/docs/getting-started#checking-a-download).
-
-## External tools aren't found
-
-Language servers, debug adapters, `git`, `mmdc`, and the file runner are
-external programs Editora launches. A GUI-launched app inherits a stripped
-`PATH` that often misses Homebrew, npm, and version-manager directories, so a
-tool that works in your terminal may look "not found" in the app.
-
-Editora rebuilds the `PATH` from your login shell plus the usual install
-locations before launching anything, which recovers most setups (including
-nvm/fnm/asdf per-version bins). A Python environment you activated before
-starting Editora (`$VIRTUAL_ENV`, `$CONDA_PREFIX`) stays first on that `PATH`.
-If a tool still isn't found:
-
-- Set its absolute path in the relevant Settings page (LSP, Debugging, Mermaid).
-- Confirm it runs from a plain login shell, since that's the `PATH` Editora reads.
-- On Windows there's no login-shell convention, so prefer setting absolute paths.
-
 ## A language server starts but does nothing
 
 The status bar shows an **LSP: \<server\>** segment and a loading bar while a
@@ -246,6 +257,16 @@ server answered with no edits, or with edits that change nothing together
 `insert_final_newline` asks, for example); no undo step is left. Otherwise it says *Format failed: the language
 server did not answer in time*, *Format failed: the language server stopped
 before it answered*, or *Format failed:* with the server's own error.
+
+## Java shows errors on every import, or a server never starts
+
+In a folder you have not [trusted](/docs/workspace#trusted-folders), language
+servers that would run the project's build to load it are held back. Java's
+jdtls starts without the Maven or Gradle build, so the project's dependencies
+and other modules don't resolve; the Kotlin, Scala, Rust, Ruby, C# and Clojure
+servers don't start at all. The file says so, with **Trust Folder**. Trusting
+the folder restarts the server with the build. See
+[Servers that load a project's build](/docs/lsp#servers-that-load-a-projects-build).
 
 ## JavaScript in an HTML page completes nothing
 
@@ -442,7 +463,7 @@ When the Debug window's state line reads *Not started: the import failed*, the
 Java language server could not import the Maven or Gradle project, so nothing
 was built or launched. The Debug console lists the import's errors. Fix the
 build file and debug again. When the errors name a Java version, choose
-another **Default JDK** in **Settings → Languages & Tools → Build Tools**.
+another **Default JDK** in **Settings → Build Tools**.
 
 *Not started: the build failed* means the project has compile errors; the
 Debug console lists them, with a link to each line.
@@ -473,14 +494,21 @@ of a program you debug, which is in the Debug console.
   the log that recorded it. Neither file goes into a configuration export.
 
 The **message log** (click the status-bar message, or `view.messageLog`) keeps a
-session history of the transient status-bar messages.
+session history of the transient status-bar messages. A message's right-click
+menu has **Copy** (*Message Log: Copy*, `messageLog.copySelected`); Ctrl+C (⌘C),
+or your keymap's copy chord (`M-w` in Emacs), copies too. Esc, or your keymap's
+cancel chord (`C-g` in Emacs), closes it. *Message Log: Clear* empties it.
 
 ## Reporting a problem
 
 **Help → Report a Problem…** (`help.reportProblem`, also a button in the
 Application Log window) prepares a bug report from the Application Log of this session and the one
 before. It also lists Editora's version, the Java it runs on, your operating
-system and your plugins. Before you see it, Editora replaces what looks private:
+system and your plugins, and ends that block with one *Settings:* line saying how
+Editora is set up: the theme, the language, the keymap, the interface zoom, the
+font size, which bars show, and which features are on (language servers,
+debugging, Git, plugins, AI and so on). That line holds no path, address or
+key. Before you see it, Editora replaces what looks private:
 paths in your home folder, your user name, e-mail addresses, credentials in URLs,
 authentication headers and values shaped like tokens. The window says how many it
 replaced.
@@ -499,7 +527,9 @@ rather not share.
 
 When Editora will not start, run `editora --report` instead (see
 [command-line flags](/docs/cli#flags)). It writes the same report to the current
-folder, prints its path and the link of a new issue, and opens both.
+folder, prints its path and the link of a new issue, and opens both. Its
+*Settings:* line comes from the settings file, and says so when that file
+cannot be read.
 
 ## After a crash or an interrupted save
 

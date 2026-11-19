@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 9
 beta: false
 summary: "Snapshots of your files over time, taken on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required."
+alt: "The Local History window: a Java file's saved versions, with one compared against the current text"
 ---
 
 Editora snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.

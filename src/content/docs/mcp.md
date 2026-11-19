@@ -65,9 +65,12 @@ agent like any other open buffer, with one exception: `edit_buffer` and
 run commands, so they are not written on an agent's behalf. The
 [AI Agent](/docs/ai#ai-agent) has the same limit.
 
-### Plugins
+### Plugins and trust
 
-Turning plugins on and installing them are your decisions, never an agent's.
+Turning plugins on and installing them are your decisions, never an agent's,
+and so is trusting a folder. `execute_command` refuses every command whose id
+mentions trust (such as `workspace.trustFolder` and
+`lsp.trustProjectSettings`) and leaves them out of `list_commands`.
 `execute_command` refuses **View: Toggle Plugins** (`view.togglePlugins`) and
 every **Plugins:** command: browsing and installing (`plugins.browse`,
 `plugins.installFromDisk`), the signed-registry requirement
@@ -100,6 +103,8 @@ Every tool validates its arguments before doing anything:
 3. The endpoint is also written to `mcp-endpoint.json` in your
    [config folder](/docs/configuration) for discovery.
 
+![Settings on the MCP Server page: the Enable MCP server switch on, and the Server row reading Running at an http://127.0.0.1 endpoint with Copy Endpoint Command and New Token buttons](/screenshots/docs/settings-mcp.png "Settings → MCP Server while the server runs, with the button that copies the connect command.")
+
 ## Security
 
 The server binds to loopback only (never the network), requires the bearer
@@ -107,8 +112,10 @@ token, stays off until you enable it, and shows a security notice first.
 `open_file` is confined to the window's project and the write tools refuse the
 config folder and version-control metadata (see
 [Which files an agent can reach](#which-files-an-agent-can-reach)). Even so,
-`execute_command` can run almost any command (not the plugin ones; see
-[Plugins](#plugins)), so only connect agents you trust. Simple
+`execute_command` can run almost any command (not the plugin or trust ones;
+see [Plugins and trust](#plugins-and-trust)), so only connect agents you trust.
+No MCP tool can read the text of an open
+[encrypted file](/docs/encrypted-files#what-editora-keeps-out-of-an-encrypted-file). Simple
 UI mode turns it off.
 
 `mcp-endpoint.json` holds the endpoint URL **and the bearer token**. Where the

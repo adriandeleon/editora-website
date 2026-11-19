@@ -4,6 +4,11 @@ description: "All 21 language servers now install from inside Editora: a button 
 date: 2026-06-23
 ---
 
+*Update, November 2026: Editora supports more language servers than these 21
+today, every one installable, and the **Install…** buttons are on the server
+cards of **Settings → LSP**. The [LSP guide](/docs/lsp#one-click-install) has
+the current list.*
+
 Setting up language support used to mean hunting down each server and running an
 install script. Now Editora installs them for you, and the last batch just
 landed, so **all 21 supported language servers** are covered.

@@ -1,6 +1,6 @@
 ---
-title: "Editora 0.22.0: tools on the host, in a container or in WSL, Markdown wiki links, and HTTP scripts"
-description: "Editora 0.22.0 runs Git, builds, language servers and debuggers on the host of a remote folder, or in the container or WSL distribution a project lives in, lets you choose a file's encoding, adds line commands, text tools and more multiple-cursor commands, rulers per language and indent guides, Save All and Reopen Closed Tab, and Emacs registers. Markdown gains wiki links, backlinks and 29 lint rules, and the HTTP Client runs JetBrains-style scripts and asks before sending your secrets. Shell scripts run as their shebang says, with Run with Trace and one-click ShellCheck and shfmt."
+title: "Editora 0.22.0: tools on the host, wiki links and HTTP scripts"
+description: "Git, builds, language servers and debuggers run on a remote host, in a container or in WSL. Also Markdown wiki links, HTTP Client scripts and Emacs registers."
 date: 2026-10-16
 version: "0.22.0"
 ---

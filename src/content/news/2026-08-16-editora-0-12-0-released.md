@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.12.0: panels that go where you want, poms you can read"
-description: "Tool windows maximize, re-dock, share a side, and float into their own window. A pom.xml previews as a summary that resolves the versions it can and marks the ones it can't, and Maven can bring an existing project's versions up to date, showing you the diff first."
+description: "Tool windows maximize, re-dock and float, a pom.xml previews as a readable summary, and Maven can update a project's versions, showing you the diff first."
 date: 2026-08-16
 version: "0.12.0"
 ---
@@ -87,4 +87,4 @@ was correct. Nothing was broken except the log, but a failure logged on every
 launch teaches you to ignore the log.
 
 The complete list is on the
-[What's New](/whats-new) page.
+[What's New](/whats-new/0.12/#0120---2026-08-16) page.

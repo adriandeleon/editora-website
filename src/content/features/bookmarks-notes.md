@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 4
 beta: false
 summary: "Bookmarks and Markdown Personal Notes for lines, ranges, files, and folders, stored outside source and navigable across a project."
+alt: "The Personal Note dialog over a Java file, with bookmark markers in the gutter"
 ---
 
 Two ways to mark up code.

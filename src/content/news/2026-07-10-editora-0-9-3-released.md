@@ -23,6 +23,6 @@ The headline additions:
 - **[Build tools](/docs/build-tools)**: Maven, npm, Cargo, Go, and Gradle each
   get a toolbar icon with an actions popup and a streaming console.
 
-There's more in the full [What's New](/whats-new). Installers are still unsigned,
+There's more in the full [What's New](/whats-new/0.9/#093---2026-07-10). Installers are still unsigned,
 so on first launch you may need a right-click → *Open* (macOS) or "More info →
 Run anyway" (Windows).

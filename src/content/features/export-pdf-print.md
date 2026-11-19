@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 3
 beta: false
 summary: "Export code, a selection, or the Markdown preview to a syntax-highlighted PDF, HTML, MS Word, or ODF, or print with a preview. Light-themed and generated off-thread."
+alt: "Print preview of a Java file, page 1 of 2, with Page Setup and Print buttons"
 ---
 
 Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly formatted PDF, with headings, lists, tables, code blocks, and images rendered as native vector text.

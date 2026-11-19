@@ -2,9 +2,12 @@
 // "Your keymap, your keys": the same everyday actions, side by side across all
 // five bundled keymaps — the interactive proof of Editora's identity. Data comes
 // straight from src/lib/commands.ts (generated from the real keymap JSONs), so
-// the chords can't drift from the app. Tabs highlight one keymap's column and,
-// on narrow screens, collapse the matrix to Action + that keymap.
+// the chords can't drift from the app. Each column is written in its keymap's
+// own notation, as the app shows it (C-S-p in Emacs, Ctrl+Shift+P elsewhere).
+// Tabs highlight one keymap's column and, on narrow screens, collapse the
+// matrix to Action + that keymap.
 import { commandGroups, keymaps } from "../lib/commands";
+import { formatChord } from "../lib/chord-format";
 
 const byId = new Map<string, (typeof commandGroups)[number]["commands"][number]>();
 for (const g of commandGroups) for (const c of g.commands) byId.set(c.id, c);
@@ -27,8 +30,8 @@ const picks = [
 const chordFor = (id: string, km: string): string | null => {
   const c = byId.get(id);
   if (!c) return null;
-  if (km === "emacs") return c.bindings?.emacs ?? c.keys ?? null;
-  return c.bindings?.[km] ?? null;
+  const chord = km === "emacs" ? (c.bindings?.emacs ?? c.keys) : c.bindings?.[km];
+  return chord ? formatChord(chord, km) : null;
 };
 
 const rows = picks
@@ -38,8 +41,12 @@ const rows = picks
     cells: keymaps.map((k) => ({ km: k.id, chord: chordFor(p.id, k.id) })),
   }));
 
+// The tab the table opens on: the keymap most visitors already know. The app's
+// own default is Emacs, which the tabs and the header mark.
 const defaultKm = "vscode";
-// Chords are multi-key sequences ("C-x C-f") — split on spaces into kbds.
+const appDefaultKm = "emacs";
+// Chords are multi-key sequences ("C-x C-f", "Ctrl+K Ctrl+W") — split on
+// spaces into kbds.
 const parts = (chord: string) => chord.split(" ");
 ---
 
@@ -55,6 +62,7 @@ const parts = (chord: string) => chord.split(" ");
           aria-selected={k.id === defaultKm ? "true" : "false"}
         >
           {k.name}
+          {k.id === appDefaultKm && <span class="km-default"> (default)</span>}
         </button>
       ))
     }
@@ -69,6 +77,7 @@ const parts = (chord: string) => chord.split(" ");
             keymaps.map((k) => (
               <th class="km-col" data-km={k.id} scope="col">
                 {k.name}
+                {k.id === appDefaultKm && <span class="km-default"> (default)</span>}
               </th>
             ))
           }
@@ -104,9 +113,11 @@ const parts = (chord: string) => chord.split(" ");
   </div>
 
   <p class="km-note">
-    Windows/Linux chords are shown; macOS mostly substitutes <kbd>&#8984;</kbd>. Every
-    binding is editable in Settings, and a blank cell just means that keymap
-    leaves the action to the palette.
+    Windows/Linux chords are shown; macOS mostly substitutes <kbd>&#8984;</kbd>.
+    Emacs is the default keymap and keeps its own notation: <kbd>C-</kbd> is
+    Ctrl and <kbd>M-</kbd> is Alt (Option on macOS). Every binding is editable
+    in Settings, and a blank cell just means that keymap leaves the action to
+    the palette.
   </p>
 </div>
 
@@ -211,6 +222,14 @@ const parts = (chord: string) => chord.split(" ");
   }
   .km-none {
     color: var(--faint);
+  }
+  .km-default {
+    font-weight: 400;
+    opacity: 0.8;
+  }
+  .km-table thead .km-default {
+    text-transform: none;
+    letter-spacing: 0;
   }
   .km-note {
     color: var(--faint);

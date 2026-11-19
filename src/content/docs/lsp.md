@@ -3,12 +3,14 @@ title: Language servers (LSP)
 description: Go to definition, code actions, Java refactorings, rename, signature help, inlay hints, code lenses, hierarchy, diagnostics, and completion from 26 language servers.
 category: Code intelligence
 order: 2
-beta: true
 ---
 
 Editora speaks the **Language Server Protocol**, so with a server installed you
-get real language smarts. LSP is **off by default**; turn it on in
-**Settings → LSP**.
+get real language smarts. LSP is **on by default**: each server starts once it
+is installed, and a file whose server is missing offers to install it. In a
+folder you have not trusted, servers that would run the project's build wait
+(see [Servers that load a project's build](#servers-that-load-a-projects-build)).
+The master switch is **Enable LSP (language servers)** in **Settings → LSP**.
 
 ## Navigation
 
@@ -26,6 +28,14 @@ get real language smarts. LSP is **off by default**; turn it on in
 | Type hierarchy | `lsp.typeHierarchy` | `C-c l h` |
 | Next / previous problem | `lsp.nextProblem`, `lsp.previousProblem` | `M-g M-n`, `M-g M-p` |
 | Show problem at caret | `lsp.problemAtCaret` | `C-c l e` |
+
+![Shelf.java with the caret on discountFor and the References tool window below: 2 references to discountFor in 2 files, one in Shelf.java at 48:41 with its line, and one in ShelfTest.java](/screenshots/docs/lsp-references.png "Find references in a Java project, grouped by file.")
+
+In the References and Hierarchy tool windows a row's right-click menu (or the
+Menu key, Shift+F10) has Open and Copy, and the Copy key copies the selected row;
+the commands are References: Open Reference / Copy Line
+(`references.openSelected`, `references.copySelected`) and Hierarchy: Open
+Declaration / Copy Name (`hierarchy.openSelected`, `hierarchy.copySelected`).
 
 The goto, references and hover commands are also in the editor right-click menu
 while a server is active, under a single **LSP** submenu, and you can
@@ -123,6 +133,8 @@ popup no taller than part of the window. **Page Down** and **Page Up** scroll it
 from the keyboard (and `C-v` / `M-v` in the Emacs keymap); Escape closes it. A
 man page gets its full 80 columns.
 
+![A hover popup over discountFor in Shelf.java showing the signature Discount com.example.shelf.Pricing.discountFor(Item item), its Javadoc and its parameter](/screenshots/docs/lsp-hover.png "Hover docs: the signature and Javadoc at the caret.")
+
 **Signature help** pops the server's overload list when you type `(` or `,` in a
 call: the active signature with the current parameter highlighted, an *n/m*
 overload counter, and the signature's documentation (for Java, the method's
@@ -175,6 +187,8 @@ is drawn faded, and a call the server marks as deprecated is struck through.
 Those unused and deprecated marks are not listed in the Problems window or
 counted by the problem counter.
 
+![Shelf.java with a red squiggle under a type error on line 44, a red marker in the gutter, the problem counter at the top right of the editor reading 1, and the Problems tool window below: 1 problem in 1 file, grouped under Java and Shelf.java](/screenshots/docs/lsp-problems.png "Diagnostics: a squiggle in the editor, a counter at the top right, and the Problems window with the list.")
+
 The **problem counter** at the top right of the editor shows the file's errors
 and warnings, and a muted count of notes (information and hints, such as
 ShellCheck's quoting advice). The green check means the server found no
@@ -182,11 +196,15 @@ problems at all. Until the server has
 checked the file it says **Analyzing…** (for Java, until the project has loaded,
 and again after a restart), and **Not checked** when the file's project did not
 import. Its arrows go to the previous and next problem in that
-file, notes included, and clicking the counts shows or hides Problems. It hides when the code
+file, notes included, and clicking the counts shows or hides Problems. While
+the Problems window is open, its arrows and **Next Problem** / **Previous
+Problem** select the problem they reach there too, and the focus stays in the
+editor. It hides when the code
 pane is narrower than 520 pixels. When the caret rests on a line where the
 server can **fix an error**, a red **lightbulb** with a `!` appears in the
 gutter; an amber one marks other quick actions, a warning's fixes included.
-Click it for the list **Code Actions** (Alt+Enter) shows, for its own line.
+Click it for the list **Code Actions** (`C-c l a` in Emacs, `Ctrl+.` in the
+other keymaps, also `Alt+Enter` in IntelliJ) shows, for its own line.
 Refactorings, source actions and Add Javadoc, which a server offers almost
 everywhere, light no bulb, and the bulb goes as soon as you edit its line. In a
 split it shows only in the view you are typing in; a tab you come back to keeps
@@ -331,6 +349,8 @@ is interrupted in the middle of an edit that moves or deletes files, the next
 time the project is opened an **Interrupted Refactoring** dialog offers to put
 the files back.
 
+![Shelf.java with the caret on a line whose type is wrong and the code actions list open at the caret: two Fix rows, Change type of label to double and Change type of total to String, then an Assist row, Add final modifier for label, each labelled in words](/screenshots/docs/lsp-code-actions.png "Code actions open at the caret: fixes first, then assists and refactorings.")
+
 **Java code generation** has its own list, **Generate…** (`lsp.generate`,
 Alt+Insert in the IntelliJ keymap): **Generate toString()**, **Generate
 hashCode() and equals()**, **Generate Constructors**, **Generate Getters and
@@ -342,6 +362,8 @@ hashCode() and equals() starts with every field ticked, and Enter with nothing
 ticked says so. Delegate Methods asks for the field to delegate to first, then
 lists that field's methods. The server offers these only when the editor
 declares that it can drive the picker, and Editora does.
+
+![The Generate… list over Shelf.java: Generate Getters, Generate Constructors…, Generate hashCode() and equals()…, Generate toString()…, Override/Implement Methods… and Generate Delegate Methods…, each labelled Generate](/screenshots/docs/lsp-generate.png "Generate… on a Java class.")
 
 **Refactorings have commands of their own**, in the **Code ▸ Refactor** submenu
 and the palette: **Refactor This…** (`lsp.refactorThis`) lists the ones at the
@@ -442,6 +464,8 @@ follow to the new path. Renaming a `.java` file or a package folder in the
 lines and imports follow. `F2` is bound in the VS Code and Sublime keymaps, and
 `Shift+F6` in the IntelliJ keymap.
 
+![The Rename Symbol prompt over Shelf.java: a New name field pre-filled with discountFor, the symbol under the caret, with Cancel and OK buttons](/screenshots/docs/lsp-rename.png "Rename symbol: the prompt comes pre-filled, and the server has already checked the spot.")
+
 <a id="rename-preview"></a>A rename that reaches **beyond the file you're looking at** shows you what it
 will do first: every affected file, its change count, and where it moves to, with
 a tick beside each one so you can leave a file out. The preview also lists any
@@ -524,6 +548,10 @@ Imports and Format.
 
 ### The Java server and your project
 
+- **Untrusted folders.** In a folder you have not trusted, jdtls starts
+  without the project's Maven or Gradle build, and the file says so with
+  **Trust Folder**; see
+  [Servers that load a project's build](#servers-that-load-a-projects-build).
 - **Which jdtls.** Install fetches jdtls **1.63.0**. [Doctor](/docs/troubleshooting#doctor)
   names the installed version and warns when it is older, with an
   [Update…](/docs/troubleshooting#update-for-servers-older-than-editoras)
@@ -673,7 +701,7 @@ Twenty-six servers are supported:
   **Python** (`pyright-langserver`), **Go** (`gopls`), **Rust**
   (`rust-analyzer`), **C / C++** (`clangd`), **C#** (`csharp-ls`)
 - **Ruby** (`ruby-lsp`), **PHP** (`phpactor`), **Kotlin**
-  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (gvy), **Clojure** (`clojure-lsp`),
+  (JetBrains' Kotlin LSP, `kotlin-lsp`), **Groovy** (`gls`, from gvy), **Clojure** (`clojure-lsp`),
   **Scala** (Metals), **Lua** (`lua-language-server`)
 - **Astro** (`astro-ls`), **HTML** (`vscode-html-language-server`), **CSS**
   (`vscode-css-language-server`), **JSON** (`vscode-json-language-server`),
@@ -730,6 +758,29 @@ A remote project's `.editora/settings.json` is not read; set a server's command
 for a host in Settings → Remote instead (see
 [Language servers on a remote host](#language-servers-on-a-remote-host)).
 
+### Servers that load a project's build
+
+Some servers run the project's own code just to load it: a Gradle build's
+scripts, Maven build extensions, Rust build scripts and proc macros, a
+`Gemfile`, MSBuild projects, Leiningen. In a folder you have not
+[trusted](/docs/workspace#trusted-folders), Editora holds that back:
+
+| Server | In an untrusted folder |
+| --- | --- |
+| Java (jdtls) | Starts without the Maven or Gradle build. Syntax checks, the JDK's types and navigation within the file still work. |
+| Kotlin | Waits when the folder has a `pom.xml`, `build.gradle(.kts)` or `settings.gradle(.kts)`. |
+| Scala (Metals) | Waits when the folder has a `build.sbt`, `build.sc`, `build.mill` or `project.scala`. |
+| Rust (rust-analyzer) | Waits when the folder, or a folder one level down, has a `Cargo.toml`. |
+| Ruby (Ruby LSP) | Waits when the folder has a `Gemfile` or `gems.rb`. |
+| C# (csharp-ls) | Waits when the folder, or a folder up to two levels down, has a solution, a project file or `Directory.Build.props`/`.targets`. |
+| Clojure (clojure-lsp) | Waits when the folder has a `project.clj`, `build.boot` or `shadow-cljs.edn`. A `deps.edn` or `bb.edn` is read as data and does not hold it back. |
+
+A file of one of these languages says so, with **Trust Folder** and **Not
+now**. Trusting the folder (the button, or **Workspace: Trust This Folder**)
+restarts the server with the build; removing the trust in Settings → Advanced →
+Trusted folders stops it again. A loose file with no build next to it starts its
+server as usual. Other servers, Pyright among them, are not held back.
+
 ## One-click install
 
 If a server isn't installed, Editora can fetch it for you. **Every server** is
@@ -745,14 +796,16 @@ covered through one of these channels, picked per server:
   4.10.0, installed with npm into Editora's own folder rather than globally
   (see [HTML, CSS and JSON](#html-css-and-json)). It needs Node.
 - **Toolchain** installs that use the language's own package manager (Go, Ruby,
-  C#, Rust, PHP), which run only when that toolchain is already on your `PATH`.
+  C#, Rust, PHP, and SQL, whose `sqls` installs with `go install`), which run
+  only when that toolchain is already on your `PATH`.
 - **Binary** releases downloaded per OS/architecture (clangd, terraform-ls,
-  Lua), extracted into your config folder.
+  Lua, and tinymist for Typst), extracted into your config folder.
 - A **pinned native binary** for lemminx, the XML server, from one vscode-xml
   release, with both the zip and the program checked against the release's
   SHA-256 (see [Installing lemminx](#installing-lemminx)).
-- A **pinned release** for the Java server, Eclipse JDT LS 1.62.0, unpacked
-  into your config folder. A server installed earlier keeps its version until
+- A **pinned release** for the Java server, Eclipse JDT LS (the version is
+  under [The Java server and your project](#the-java-server-and-your-project)),
+  unpacked into your config folder. A server installed earlier keeps its version until
   you install it again.
 - A **pinned distribution** for the Kotlin server, checked against its published
   checksum. It is about 370 MB to download and about 1.2 GB once installed,
@@ -761,7 +814,7 @@ covered through one of these channels, picked per server:
   needs a JDK, plus three jars from Maven Central that the zip leaves out, each
   checked against its published checksum. The server is started and asked one
   request before the install is kept.
-- A **single jar** for the Groovy server (gvy), pinned to one release and checked
+- A **single jar** for the Groovy server (`gls`, from gvy), pinned to one release and checked
   against its published checksum. It runs on the JDK chosen for builds and runs
   (Java 17 or later).
 - A **pinned native binary** for clojure-lsp, one per OS and architecture, each
@@ -798,7 +851,7 @@ not start the server until you trust the folder. The trust prompt lists the SDK 
 
 ## Groovy
 
-The Groovy server is gvy. Install it from its Settings → LSP card, the banner
+The Groovy server is `gls`, from the gvy project. Install it from its Settings → LSP card, the banner
 on a `.groovy` file, or **Install: Language Server…**. It has no command until
 it is installed. The installer sets its command to `java -jar` with the
 downloaded jar, and Editora runs that with the JDK chosen for Maven, Gradle and
@@ -825,7 +878,10 @@ set yourself is kept, so fwcd's `kotlin-language-server` still works there.
 The server imports the project's Gradle or Maven build, so its root is the
 folder with `settings.gradle.kts` (or `settings.gradle`), else the nearest
 `build.gradle.kts`, `build.gradle` or `pom.xml`: every module of a multi-module
-build shares one server. Once the import ends (a few seconds for a small
+build shares one server. In a folder you have not trusted, the server waits
+until you trust it, since the import runs the build (see
+[Servers that load a project's build](#servers-that-load-a-projects-build)).
+Once the import ends (a few seconds for a small
 project, longer the first time Gradle fetches its plugins) it reports
 compiler errors and warnings and offers completion, hover, go to definition,
 references, rename, the outline, formatting and code actions.
@@ -849,7 +905,9 @@ outline and formatting. To resolve the project's dependencies it asks the
 project's own tool for the classpath (`clojure -Spath`, `lein classpath`,
 `bb print-deps` or `npx shadow-cljs classpath`), which it finds on the same
 `PATH` Editora gives every language server. Without that tool it still works on
-the project's own files.
+the project's own files. In a folder you have not trusted, a `project.clj`,
+`build.boot` or `shadow-cljs.edn` makes the server wait until you trust it
+(see [Servers that load a project's build](#servers-that-load-a-projects-build)).
 
 A server runs per project root: the folder with a `deps.edn`, `project.clj`,
 `bb.edn`, `shadow-cljs.edn` or `build.boot`, else the repository. Any of those
@@ -872,6 +930,8 @@ Gradle or Maven build. The first time it sees one it asks whether to **import
 the build**; the question appears as a dialog, and the editor stays usable while
 it is open. An import runs the build tool and compiles the project, which takes
 a minute or more the first time. Metals shows its progress in the status bar.
+In a folder you have not trusted, Metals waits until you trust it (see
+[Servers that load a project's build](#servers-that-load-a-projects-build)).
 
 It reports compiler errors, and offers completion, hover, go to definition,
 references, rename, the outline and formatting (with a `.scalafmt.conf`). When
@@ -880,8 +940,7 @@ Metals asks for a value or a choice of its own, a text field or a picker opens.
 A `build.sbt`, `build.mill`, `build.sc` or `project.scala` at a project's root
 makes [Doctor](/docs/troubleshooting#doctor) expect Metals.
 
-Any server's question with buttons gets the same dialog; before, such a
-question went unanswered.
+Any server's question with buttons gets the same dialog.
 
 ## Workspace roots and lifetime
 
@@ -1196,9 +1255,9 @@ names a shell, and any file with a `# shellcheck shell=bash` (or `sh`, `dash`,
 shell script too; its `pkgname`, `pkgver` and other makepkg variables are not
 reported as unused (SC2034) or unset (SC2154).
 
-Language servers are off by default, so the first shell script a window opens
-asks **Turn on shell script code intelligence?** with **Turn on** and **Not
-now**, once per window, like the [Python offer](#python).
+If language servers are off (Settings → LSP), the first shell script a window
+opens asks **Turn on shell script code intelligence?** with **Turn on** and
+**Not now**, once per window, like the [Python offer](#python).
 
 zsh startup files (`.zshrc`, `.zshenv`, `.zprofile`, `.zlogin`, `.zlogout`)
 are not opened on the Bash server. ShellCheck has no zsh mode and would report
@@ -1363,9 +1422,9 @@ one folder or file.
 
 ## Python
 
-Python files use **Pyright** (`pyright-langserver --stdio`). Language servers
-are off by default, so the first Python file a window opens asks **Turn on
-Python code intelligence?** with **Turn on** and **Not now**. The offer comes
+Python files use **Pyright** (`pyright-langserver --stdio`). If language
+servers are off (Settings → LSP), the first Python file a window opens asks
+**Turn on Python code intelligence?** with **Turn on** and **Not now**. The offer comes
 once per window and follows the same switch as the install banners
 (`view.toggleInstallPrompts`). It is not shown while **Enable Python (Pyright)**
 is off in Settings → LSP.
@@ -1533,9 +1592,9 @@ formatter found, a save says so in the status bar.
 XML files use **lemminx**, Red Hat's XML language server. Editora installs a
 fixed release of it (see [Installing lemminx](#installing-lemminx)), and a
 `pom.xml` in a trusted folder gets the
-[Maven-aware server](#pomxml-and-the-maven-server) instead. Language servers
-are off by default, so the first XML file a window opens asks whether to turn
-them on, once per window.
+[Maven-aware server](#pomxml-and-the-maven-server) instead. If language
+servers are off (Settings → LSP), the first XML file a window opens asks
+whether to turn them on, once per window.
 
 Besides `.xml`, `.xsd`, `.xsl` and the other usual extensions, these XML
 dialects open as XML, with highlighting, folding, comments and the language
@@ -1784,8 +1843,7 @@ version, a missing module), and refactorings such as *Extract as new property*.
 Every other XML file keeps the fast native lemminx, and the
 [XML settings](#xml-settings) apply to both.
 
-It runs on the **Default JDK** chosen under Settings → Languages & Tools →
-Build Tools (else the `java` on your `PATH`), for Install… as well as for the
+It runs on the **Default JDK** chosen under Settings → Build Tools (else the `java` on your `PATH`), for Install… as well as for the
 server itself. Its root is the outermost pom of a contiguous chain, so a
 multi-module reactor is served by one JVM: in the open project, opened without a
 project, and for a Maven project beside the open one. The status bar says
@@ -1844,15 +1902,13 @@ server points at a program that is missing, the banner offers **Settings…**
 instead. The install leaves the command in Settings blank, and a blank command
 runs Editora's own copy, so **Reset to default** keeps it.
 
-A folder that lacks any of the jars (an install made with an earlier release,
-or a wiped folder) does not count as installed: `pom.xml` falls back to the XML
-server, the Settings → LSP card reads *lemminx-maven: incomplete — Install…
-repairs it*, and [Doctor](/docs/troubleshooting#doctor) names the missing jars
-beside an **Install…** button. If you installed this server with an earlier
-release, click **Install…** once: that bundle lacked the three libraries and
-could not answer a request. The same goes for an install with a jsoup newer than
-1.14, which failed every hover on a schema-documented element: Editora now
-installs jsoup 1.14.3, the line the server's documentation renderer needs.
+A folder that lacks any of the jars, or whose jsoup is not a 1.14 release, does
+not count as installed: `pom.xml` falls back to the XML server, the Settings →
+LSP card reads *lemminx-maven: incomplete — Install… repairs it*, and
+[Doctor](/docs/troubleshooting#doctor) names the missing jars beside an
+**Install…** button. Click it once to repair the folder. Install puts in jsoup
+1.14.3, the line the server's documentation renderer needs; with a newer jsoup,
+every hover on a schema-documented element fails.
 
 **While you edit a pom:**
 

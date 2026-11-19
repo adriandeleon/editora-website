@@ -2,8 +2,9 @@
 title: "Language servers (LSP)"
 group: "Code intelligence"
 order: 2
-beta: true
+beta: false
 summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 26 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
+alt: "Quick fixes for an unresolved ArrayList in a Java file, above the Problems window listing two errors"
 ---
 
 Editora supports the **Language Server Protocol**, both the requests that read your code and the ones that change it.
@@ -13,12 +14,12 @@ Editora supports the **Language Server Protocol**, both the requests that read y
 - **Find references**: `M-?`, listed in a browsable **References** tool window that shows each line with the editor's syntax highlighting
 - **Call and type hierarchy** in a **Hierarchy** tool window, each level fetched as you expand it
 - **Go to Symbol in Workspace**: search any symbol across the project and jump
-- **Code actions and quick fixes**: `Ctrl-.` / `Cmd-.` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings. Python gets Editora's own fixes, which Pyright does not give: **Import** for a missing name, **Remove unused import**, and **Ignore on this line** (`# pyright: ignore[rule]`)
+- **Code actions and quick fixes**: `Ctrl+.` (`Cmd+.` on macOS) in the CUA, VS Code, Sublime and IntelliJ keymaps (also `Alt+Enter` in IntelliJ), `C-c l a` in Emacs, opening at the caret with the server's preferred fix preselected, including organize imports and extract/inline refactorings. Python gets Editora's own fixes, which Pyright does not give: **Import** for a missing name, **Remove unused import**, and **Ignore on this line** (`# pyright: ignore[rule]`)
 - **Java code generation** from the same menu: toString(), hashCode()/equals(), constructors, getters and setters, delegate methods, and override/implement methods, each with a checkbox picker
 - **Java refactorings that ask where to, or what**: Move, Extract Interface, and Change Signature, where the signature is edited as one line
 - **Code lenses**: reference and implementation counts after a declaration; click one to open what it counts, a references lens always in the **References** tool window (off by default)
 - **Re-indent as you type** (typing `;`, `}` or Enter snaps the line's indentation to the server's convention, off by default) and a **whole-project Problems** view with a Build Project command
-- **Rename symbol**: `F2` in the VS Code, Sublime and IntelliJ keymaps (from the palette in Emacs and CUA), across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
+- **Rename symbol**: `F2` in the CUA, VS Code and Sublime keymaps, `Shift+F6` in IntelliJ, `C-c l r` in Emacs, across the whole workspace, moving a public Java class's file with it. Every affected file is shown first with its change count, so you can untick any of them before applying
 - **Pasted Java code imports itself**, and a `;` typed mid-expression moves to the end of the statement
 - **Library sources**: a Maven library class opens with its real source when a repository has it; one that has none is shown decompiled, with **Download Sources** and **Choose Sources…** in its tab
 - **Signature help** as you type `(` or `,`, with the current parameter highlighted
@@ -41,4 +42,4 @@ Document sync is incremental, semantic highlighting transfers only what changed 
 
 **One-click install** covers every server: an **Install…** button per server in Settings, an in-editor banner when a file's server is missing, and the **Install: Language Server…** picker. Editora fetches each via the right channel (npm, the language's own toolchain, or a per-OS binary release), and the server activates without a restart.
 
-Off by default. Enable it under Settings → LSP; the first Python file you open offers to turn it on.
+On by default: each server starts once it is installed. In a folder you have not trusted, a server that would run the project's build to load it waits (Kotlin, Scala, Rust, Ruby, C#, Clojure), and Java starts without its Maven or Gradle build; the file offers **Trust Folder**. The master switch is in Settings → LSP.

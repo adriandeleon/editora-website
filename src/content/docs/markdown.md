@@ -1,5 +1,5 @@
 ---
-title: Markdown, diagrams & preview
+title: Markdown, Mermaid & preview
 description: The live Markdown preview, editing and formatting commands, wiki links and backlinks, linting, LaTeX math, Mermaid, and export to PDF, HTML, Word or OpenDocument.
 category: Editing
 order: 3
@@ -39,7 +39,8 @@ remembered per file.
 
 The preview is built from CommonMark + GFM and aims to match GitHub: real
 task-list checkboxes, inline-code pills, underlined headings, tables, and images
-(local and remote, including SVG badges). It updates live as you type, follows
+(local and remote, including SVG badges; see [Remote images](#remote-images)).
+It updates live as you type, follows
 the active theme or its own light/dark toggle, and remembers its mode per file.
 An edit rebuilds only the block it touches, and a long document is built a
 slice at a time.
@@ -64,18 +65,22 @@ Beyond GFM it also renders:
   `align="center"`.
 
 Code blocks show their language and scroll sideways rather than wrapping, as do
-wide tables. A ` ```console ` or ` ```shell-session ` block is shown as a terminal
+wide tables. Point at a fenced or indented code block and a copy button shows
+in its top right corner, beside the language: one click copies the block's
+code, and a check mark says it worked. A ` ```console ` or ` ```shell-session ` block is shown as a terminal
 session: the prompt (`$ `, `# `, `user@host:~$ `, `(venv) $ `) is muted, the
 command after it is highlighted as shell, and the lines it printed stay plain. A missing image shows its alt text, and a local image that changes
 on disk is reloaded. An empty document says *Nothing to preview yet*. The
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
 
-The parser caps pathological input (table cells, block nesting and inline
-nesting), because the editor renders whatever file you open. The nesting limits degrade to plain text; the **table cap** is
-reachable by a legitimate file (a 2.3 MB Markdown table trips it, well under the
-5 MB point where the preview switches off anyway), and the preview reports that
-rather than going blank.
+A very large Markdown file (about 5 MB or more) is too much for the preview to follow every
+edit: a strip says so, and its **Refresh** button (`preview.refresh`) renders
+it again.
+
+The preview caps table cells and block and inline nesting. Text nested past the
+limit shows as plain text. A table past the **table cap** (a 2.3 MB table
+reaches it) is reported in the preview rather than leaving it blank.
 
 ### Working in the preview
 
@@ -122,6 +127,10 @@ HTML**, then the exports and **Print…**.
 | --- | --- |
 | Copy the selection, or the whole rendered page as rich text | `preview.copy` |
 | Copy the rendered page as HTML markup | `preview.copyHtml` |
+| Copy the whole rendered text | `preview.copyAll` |
+| Copy the code block or link the selection starts in | `preview.copyCode` / `preview.copyLink` |
+| Show the picture or diagram the selection is in at full size | `preview.enlarge` |
+| Move the editor's caret to the source of the selection | `preview.goToSource` |
 
 ### Preview to the side or in a tab
 
@@ -142,9 +151,11 @@ Side* is also in the **View** menu.
 **Load remote images in the preview** in Settings → Markdown chooses what
 happens to images from the web:
 
-- **Always** (the default) loads them.
-- **Ask for each document** fetches nothing when a document opens; a bar at the
-  top of the preview says the document has remote images and offers **Load**.
+- **Always** loads them.
+- **Ask for each document** (the default) fetches nothing when a document
+  opens; a bar at the top of the preview says the document has remote images
+  and offers **Load**. A README from a repository you just cloned can't fetch
+  a tracking image the moment you preview it.
 - **Never** shows their alt text and fetches nothing.
 
 *Markdown: Set Remote Image Loading…* picks one of the three, and *View: Toggle
@@ -158,6 +169,8 @@ numbered and task lists, block quote, insert table, and a heading level picker.
 The bar shows the current heading level and which styles are active, and its
 tooltips name each command's key binding when the keymap has one. The same
 actions are commands with Emacs `markdown-mode` chords:
+
+![A Markdown file with three words selected and the format bar above them: bold, italic, strikethrough, code, link, bulleted, numbered and task lists, block quote, table, and a heading level picker reading Normal](/screenshots/docs/markdown-format-bar.png "Select text and the format bar appears above it.")
 
 | Action | Command | Emacs key |
 | --- | --- | --- |
@@ -255,10 +268,7 @@ default) keeps the line being typed in the middle of the window.
 ## Tables
 
 Markdown's editing actions sit under a single **Markdown** submenu in the
-editor's right-click menu. Listed flat, its entries would push cut, copy,
-paste and the spelling suggestions well down the menu, and would make file-type
-actions read as ordinary editing ones. The Table
-submenu stays nested inside it.
+editor's right-click menu, with the Table submenu nested inside it.
 
 Beyond the format bar's reflow, the right-click **Table** submenu (and the
 palette) edits the table under the cursor: **insert** a table
@@ -268,6 +278,8 @@ palette) edits the table under the cursor: **insert** a table
 size picker of *Table: Insert…* opens at the caret and works from the keyboard.
 Items that need a table are disabled when the caret is not in one, and a table
 command that cannot apply says why.
+
+![The Insert Table prompt over a Markdown file asking for a size in rows x columns, with 3x3 filled in, Cancel and OK buttons](/screenshots/docs/markdown-insert-table.png "Table: Insert… asks for the size and builds the table at the caret.")
 
 | Action | Command | Emacs key |
 | --- | --- | --- |
@@ -377,6 +389,8 @@ The **Backlinks** tool window (`markdown.showBacklinks`, or *Tool Window:
 Backlinks*) lists every link in the project's Markdown files that points at the
 active file, grouped by file.
 
+![ideas.md open with the Backlinks tool window below: 6 links to this file, grouped under archive/old-plan.md and index.md, each with its line number and the link text](/screenshots/docs/markdown-backlinks.png "The Backlinks window lists every note that links to the open one.")
+
 ### When a file is renamed or moved
 
 Renaming or moving a file in the project offers to update the Markdown links that
@@ -408,6 +422,8 @@ window, as one undo step.
   `[selection](url)`.
 - **Table editing**: **Tab** / **Shift-Tab** move between pipe-table cells, and
   **Enter** on the last row adds a row, reflowing as you go.
+
+![lint.md with squiggles under its deliberate problems and the Markdown Lint tool window below: lint.md 18 issues, then rows such as Ln 1:1 MD041 First line in a file should be a top-level heading and Ln 6:1 MD001 Heading levels should increment by one level at a time; the status bar counts 18 lint issues](/screenshots/docs/markdown-lint.png "Lint problems as squiggles, a count in the status bar, and the Markdown Lint window with the rule behind each one.")
 
 ### Lint rules
 
@@ -445,7 +461,8 @@ code (fenced, indented, or nested in lists and quotes), HTML blocks and comments
 and YAML or TOML front matter exactly as written.
 
 Each rule has a **severity** (Warning by default, or Error or Hint), set beside
-it in Settings → Markdown → Linting. **Fix lint issues on save** applies the safe
+it in Settings → Markdown → Linting or with **Markdown Lint: Set Rule
+Severity…** (`markdownLint.setRuleSeverity`). **Fix lint issues on save** applies the safe
 fixes whenever a Markdown file is saved.
 
 ### Acting on an issue
@@ -466,7 +483,10 @@ fixes whenever a Markdown file is saved.
 The same actions are in the editor's right-click menu on an issue and in the
 **Markdown Lint** tool window (`tool.markdownLint`), which follows the active tab,
 shows the file name, has a **Fix** button, and offers **Copy** on each row's
-menu. *Lint Project* lists its results grouped by file. *Disable for This
+menu. **Most Severe First** (`markdownLint.toggleBySeverity`) lists errors
+before warnings and hints. The `Markdown Lint: … Selected Issue` commands
+(Fix, Copy, Disable for its line, file or project, Open Rule Documentation) act
+on the row selected there. *Lint Project* lists its results grouped by file. *Disable for This
 Project* offers to create a config when the project has none, and edits JSON,
 YAML and `.markdownlint-cli2` configs alike. With the minimap showing, the
 scrollbar stripe steps aside, since the minimap carries the same marks.
@@ -638,7 +658,7 @@ such as an oversized image, that cannot be split.
 | Scroll the editor and the preview together | On | `view.toggleMarkdownScrollSync` |
 | Hide front matter in the preview | Off | `view.toggleMarkdownFrontMatter` |
 | Preview theme (Follows the app theme / Light / Dark) | Follows the app theme | `view.toggleMarkdownPreviewTheme` |
-| Load remote images in the preview | Always | `markdown.setRemoteImagePolicy` |
+| Load remote images in the preview | Ask for each document | `markdown.setRemoteImagePolicy` |
 | Render LaTeX math ($…$, $$…$$) | On | `view.toggleMath` |
 | **HTML export** | | |
 | Embed local images in exported HTML | On | `view.toggleHtmlExportEmbedImages` |

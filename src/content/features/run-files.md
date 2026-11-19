@@ -4,6 +4,7 @@ group: "Run & debug"
 order: 1
 beta: false
 summary: "Run a Java, Python, Node.js or shell script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations."
+alt: "A Python script with a gutter ▶, and its output in the Run window below"
 ---
 
 A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script (under the project's own Python: its `.venv`, the interpreter picked in the status bar, or a specific shebang such as `python3.12`), a **Node.js** script (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, or a `node` shebang), a **shell** script (run with the interpreter its shebang names, else `bash`), a **Groovy** script (run with `groovy` on the selected Default JDK), a **Scala** program or `.sc` script (through its sbt or Mill build, else Scala CLI), or a **Clojure** file (a namespace's `-main` with `clojure -M -m` or `lein run -m` in its project, a script with `clojure -M`, a Babashka script with `bb`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.

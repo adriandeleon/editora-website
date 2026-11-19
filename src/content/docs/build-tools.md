@@ -17,13 +17,10 @@ palette (`<tool>.showActions`, e.g. *Maven: Show Actions*). `tool.<tool>` opens
 the tasks window; `tool.buildOutput` opens the Output console. It's **on by
 default**, and each tool is inert until its marker file is found.
 
-The console holds more than build output, and was called "Build Output" until
-0.10.0. Alongside a tab per build tool it
+The console holds more than build output. Alongside a tab per build tool it
 carries a **CI** tab for a [failed GitHub Actions log](/docs/github), and a
 **Git** and **GitHub** tab holding a transcript of the `git` / `gh` commands
-Editora ran on your behalf, each with its output, exit code and duration. Only
-the window's label changed; its stripe placement and any keybinding you gave
-`tool.buildOutput` are unaffected.
+Editora ran on your behalf, each with its output, exit code and duration.
 
 While a build runs, a spinner turns beside its status and in its tab's title,
 so a build in a tab you are not looking at still shows it is running; a **Git**
@@ -54,26 +51,41 @@ while the first time. A `package.json` project uses its own package manager
 (npm, pnpm, yarn or bun); see
 [npm and other package managers](#npm-and-other-package-managers).
 
-A Maven or Gradle build runs code the repository supplies, with your
-privileges: a shipped `./mvnw` or `./gradlew`, the pom's plugins, the files
-under `.mvn/`, every Gradle build script. So the **first build of any kind** in
-a folder you have not trusted asks once, wrapper or not, also when it would run
-the `mvn` on your `PATH`. The **Workspace Trust** prompt lists what it found:
-the wrapper script, the pom's plugin coordinates (the first eight, then "and
-*n* more"), the `.mvn/` files, the Gradle build scripts, and a
-`.editora/project.json` that replaces the build command. Trust is remembered
+A build runs code the repository supplies, with your privileges, beyond the
+task you pick: a shipped `./mvnw`, `./gradlew` or `./mill`, the pom's plugins
+and the files under `.mvn/`, every Gradle build script, sbt's `build.sbt` and
+`project/` and Mill's `build.mill` (Scala the build compiles and runs),
+Leiningen's `project.clj` and its plugins, a Babashka task's `:init` and
+`:depends`, the JVM options a `deps.edn` alias adds (such as a `-javaagent`),
+Cargo's `build.rs` scripts and procedural macros, the macros and compiler
+plugins a Scala CLI compile runs, and npm's `pre` and `post` scripts, install
+hooks and a yarn the repository ships through `.yarnrc.yml`'s `yarnPath`. So
+the **first build of any kind** in a folder you have not trusted asks once,
+whether it would run the repository's launcher or your own `mvn`, `sbt`,
+`mill`, `lein`, `cargo` or `npm`. The **Workspace Trust** prompt lists what it
+found: the launcher script, the pom's plugin coordinates (the first eight, then
+"and *n* more"), the `.mvn/` files, the Gradle build scripts, the sbt and Mill
+build files with a `mill-build/` meta-build, the launcher options files
+(`.jvmopts`, `.sbtopts`, `.mill-jvm-opts`, `.lein-classpath`), the Cargo and
+package manager settings (`.cargo/config.toml`, `rust-toolchain.toml`,
+`.npmrc`, `.yarnrc.yml`, `.pnpmfile.cjs`), and a project
+`.editora/settings.json` that replaces the build command, with the command it
+sets. Trust is remembered
 for the folder that ships the wrapper, else the open project, and for the
 folders inside it; a module never silently covers a script one level up. The
 tasks window's header shows **Trusted** or **Not trusted yet** with a
-**Revoke** button. The same question fronts Gradle's *Load all tasks…*, the
-build before Run and Debug, and Maven's classpath fallback. Declining cancels
-the run; nothing quieter runs instead. Review or revoke trust under
-[Trusted folders](/docs/workspace#trusted-folders). npm, Cargo, Go and the
-other tools launch your own toolchain and are not asked.
+**Revoke** button. The same question fronts *Load all tasks…*, Test Results,
+the build before Run and Debug, Run and Debug on a file of a Leiningen,
+`deps.edn`, `bb.edn` or Scala CLI project or of an sbt or Mill build, an npm
+[run configuration](/docs/run-debug#what-a-configuration-can-launch), and
+Maven's classpath fallback. Declining cancels the run; nothing quieter runs
+instead. Review or revoke trust under
+[Trusted folders](/docs/workspace#trusted-folders). Only Go builds are not
+asked about: `go build` never runs a module's code, and `go run` and `go test`
+run it because that is the task you picked.
 
-Choose the JDK used for Maven under **Settings → Languages & Tools → Build
-Tools → Default JDK**. The selector finds installed JDKs in standard platform
-locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
+Choose the JDK used for Maven under **Settings → Build Tools → Default JDK**.
+The selector finds installed JDKs in standard platform locations and through SDKMAN, asdf, mise, Jabba, and JetBrains-managed installs;
 **System default** keeps using `JAVA_HOME` / `PATH`. The choice supplies both
 `JAVA_HOME` and the matching `java` executable to Maven tasks, Maven classpath
 resolution, Java Run and Debug, and before-launch commands, and the same JDK
@@ -109,8 +121,8 @@ environment found inside. The wrapper run there is the POSIX `./mvnw` or
 `./gradlew`, also when Editora itself runs on Windows.
 
 Discovery parses the marker file directly, with no shell-out and no new
-dependency, so it's instant and offline. Toggle each under **Settings →
-Languages & Tools → Build Tools**.
+dependency, so it's instant and offline. Toggle each under **Settings → Build
+Tools**.
 
 Each tool's card there has a **Command override** field with **Browse…** and a
 **Detected** line for the program a run uses when the project has no wrapper:
@@ -172,11 +184,10 @@ chain found beside it on disk**, followed through `<relativePath>` (Maven's
 default `../pom.xml`) while the file is inside the open project and its
 coordinates are the ones the child names. In the usual multi-module layout the
 profiles, plugins and `<pluginManagement>` are declared once in the parent, so
-a module read on its own offered no profile toggles and no `spring-boot:run`
-row. Now a module's tree carries its parent's profiles and plugins, a
+a module's tree carries its parent's profiles and plugins, a
 `pluginManagement` entry gets a goal group titled *(managed)*, and a plugin
 version written as `${property}` is resolved through the merged properties, so
-the goal list is read from the version the build runs. It is still not an
+the goal list is read from the version the build runs. It is not an
 effective pom: nothing is read from a repository, and a parent that is not on
 disk under the project contributes nothing.
 
@@ -242,8 +253,8 @@ In a multi-module project, the Maven tool window of a module starts with a
 **Reactor** section holding one toggle, *Build from \<root\> (-pl \<module\> -am)*.
 With it on, every task runs from the reactor root as
 `mvn -f <root>/pom.xml -pl <module> -am <task>`, so `compile` or `test` in a
-module that depends on a sibling no longer fails with "Could not find artifact"
-until the sibling is installed. The toggle is offered only when the root pom
+module that depends on a sibling builds the sibling too, instead of failing with
+"Could not find artifact" until the sibling is installed. The toggle is offered only when the root pom
 lists the module and the root is inside the open project; a top-level project
 has no Reactor section.
 
@@ -262,10 +273,11 @@ the folder it runs in when that is not the active file's.
 
 The **Run ▸ Build** submenu holds *Show Actions*, *Run Custom Goal(s)…*,
 *Rerun Last*, *Stop* and *Refresh pom.xml*, then the Maven and Output tool
-windows, so the stripe icon and the palette are no longer the only ways in.
-The IntelliJ keymap binds **Rerun Last** to `Ctrl+Shift+F10` (`⌃⇧R` on macOS)
-and the Output window to `Alt+Shift+B` (`⌥⇧B`), as IntelliJ IDEA does; the
-other keymaps bind nothing by default, and any `maven.*` command can be bound
+windows, so they can be reached from the menu as well as from the stripe and the
+palette.
+**Rerun Last** has no default key in any keymap. The IntelliJ keymap binds the
+Output window to `Alt+Shift+B` (`⌥⇧B`), as IntelliJ IDEA does; the other
+keymaps bind nothing by default, and any `maven.*` command can be bound
 in [Keymaps](/docs/keymaps).
 
 ### The Output console
@@ -277,9 +289,14 @@ and column, as stack-trace lines already were. Its header has four controls
 beside Stop and Clear:
 
 - **Find** (the magnifier, or the editor's Find chord while the console has
-  focus) opens a find bar over the output.
+  focus) opens a find bar over the output. Every match is highlighted while the
+  bar is open, the current one more strongly, and output that arrives meanwhile
+  is highlighted and counted too.
 - **Previous run** keeps the run before this one behind a toggle, so a failure
   can be compared with the build before it without re-running; Clear drops it.
+  The header's buttons are commands too: *Output: Clear Output*
+  (`buildOutput.clear`), *Output: Show Previous Run* (`buildOutput.previousRun`)
+  and *Output: Stop Output's Job* (`buildOutput.stop`).
 - **Save output…** writes the console to a file (`maven-output.txt` is
   suggested).
 - **Stop** ends the build, and the console header, the status bar and Test
@@ -307,10 +324,10 @@ a file that isn't itself a `pom.xml`.
 
 ### New Maven Project
 
-**Maven: New Project…** (`maven.newProject`) creates a project from an
+**Maven: New Maven Project…** (`maven.newProject`) creates a project from an
 archetype and opens it in its own window. It is in the File menu, in the
 Project tree's **New ▸** submenu on a folder, and in the palette, where
-**Maven: New Project in Folder…** (`maven.newProjectHere`) asks for the parent
+**Maven: New Maven Project in Folder…** (`maven.newProjectHere`) asks for the parent
 folder first. It runs your own Maven (the command override, else `mvn` on your
 `PATH`), never a wrapper found in the target folder, and says so before the
 wizard opens when there is none. That Maven runs on the **Default JDK** chosen
@@ -442,7 +459,7 @@ Stop** (`npm.stop`), **Package Scripts: Rerun Last** (`npm.rerunLast`) and
 Package Scripts** (`view.toggleNpmSupport`) turns the window, its actions popup
 and its Output tab on or off.
 
-The **Node.js** card in **Settings → Languages & Tools → Build Tools**, just
+The **Node.js** card in **Settings → Build Tools**, just
 above the npm card, has the **Node.js** field: the Node.js for Run, npm scripts,
 Debug, the language servers and HTTP scripts. Left blank, Editora uses `node`
 on your `PATH`. A project's `.nvmrc` or `.node-version` wins over the field
@@ -458,6 +475,8 @@ project run npm.
 
 The window always shows the project's own `package.json`: opening a file inside
 `node_modules` does not switch it to that dependency's scripts.
+
+![package.json open beside the Package Scripts tool window: Build root npm, a filter field, the Scripts section with start, build, test and lint, and a Common section with install and ci](/screenshots/docs/package-scripts.png "Package Scripts lists the scripts of the project's package.json, plus install and ci; double-click runs one.")
 
 **When something is missing,** the Output console says how to fix it instead of
 showing an error from Java:
@@ -486,7 +505,7 @@ up.
 
 Running a build tool's **test** task, from the tasks tree, the palette
 (`test.run`), or a gutter icon, is intercepted and shown in a dedicated **Test
-Results** tool window (`M-g e`) instead of only as raw console text. The same
+Results** tool window (`M-g e` in the Emacs keymap) instead of only as raw console text. The same
 single process still runs, and its raw output still streams to the Output console.
 
 The window shows a status header with pass / fail / skip counts, a progress bar,
@@ -496,7 +515,11 @@ failure message, stack trace, and captured output in the detail pane, with
 source. A right-click on a test row offers **Go to Test**, **Rerun This Test**
 and **Debug This Test**; on a class row, **Go to Test Class**, **Rerun This
 Class** and **Debug This Class**. The Debug entry appears where the Java
-debugger is available. A test's output, failure message and stack trace are
+debugger is available. The same rows run from the keyboard on the selected test:
+`test.goToSelected`, `test.rerunSelected` and `test.debugSelected`. The
+filter buttons are `test.togglePassed`, `test.toggleFailed` and
+`test.toggleSkipped`, `test.toggleFollow` keeps the newest result in view, and
+`test.findInOutput` searches the selected test's output. A test's output, failure message and stack trace are
 kept up to 200,000 characters; past that the start and the end are shown, with
 a line between them saying how much was left out.
 
@@ -516,6 +539,8 @@ red as results land, so a long run reads like a progress bar rather than classes
 appearing already finished. Parameterized and dynamic tests are left out of the
 seed, since their case ids are generated at runtime.
 
+![The Test Results tool window after a Maven run: 9 of 9 tests passed with a full green bar and 2.0 s, a filter field, the tree of ShelfTest's methods each ticked with its time, and the run summary on the right: 9 passed, 0 failed, 0 skipped](/screenshots/docs/test-results.png "Test Results after a Maven test run: counts in the header, each test in the tree.")
+
 A test that Surefire re-ran (`rerunFailingTestsCount`) shows its retries: a
 test that passed on a retry is marked **flaky ×n**, one that failed every try
 **retried ×n**, and the detail pane holds the trace of each try. A filter that
@@ -525,7 +550,7 @@ matches nothing, such as a hand-typed `-Dtest=` in *Run custom…*, reads
 JUnit test classes and methods also get a **run icon in the gutter** (with a
 tooltip naming what it runs), and a test file's right-click menu offers **Run
 Tests** for the whole class. `test.runAtCaret` and `test.runClassAtCaret` do the
-same from the keyboard, and `test.rerun`, `test.rerunFailed`, and `test.stop`
+same from the keyboard (`test.debugClassAtCaret` debugs the class), and `test.rerun`, `test.rerunFailed`, and `test.stop`
 control the run. These JUnit gutter icons need a detected Maven or Gradle
 project. Python test files get their own, one per test (see
 [Python tests](#python-tests)). A Node.js test file has one ▶ for the whole
@@ -547,14 +572,17 @@ free loopback port before the launch, passes it in `-Dmaven.surefire.debug`,
 and attaches as soon as the forked JVM listens on it, because Surefire 3 prints
 the JDWP "Listening for transport" banner only after the test has run. While it
 waits, the Test Results header reads *Debug: waiting for the test JVM to open
-port N…*, and **Debug ▸ Stop** ends the Maven run before a session exists. After
+port N…*, and **Debug: Stop** (`debug.stop`) ends the Maven run before a session exists. After
 60 s with no listener the status says so and points at the Output window. A
 further fork of the same run (several forks, reruns) is attached after the
 first has finished; forks are debugged one at a time. The test JVM prints one
 "Debugger failed to attach: handshake failed" line in the Output console: that
 is Editora's port check, not an error. Gradle keeps its own banner. In a Node.js test file,
 Debug Test at Caret debugs the `node:test` test at the caret (see
-[Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)).
+[Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)). In a Go test file it debugs the
+test function at the caret under Delve, and in a Rust `#[test]` function that
+test alone under CodeLLDB (see [Debugging Go](/docs/run-debug#debugging-go) and
+[Debugging Rust](/docs/run-debug#debugging-rust)).
 
 ### Python tests
 
@@ -594,5 +622,5 @@ for JUnit; **Rerun Last** in the Run window repeats the test run too.
 [Debugging](/docs/run-debug#debugging). With the test runner turned off, Python
 tests still run, in the Run console only.
 
-Toggle the whole feature under **Settings → Languages & Tools → Build Tools**
+Toggle the whole feature under **Settings → Build Tools**
 (`view.toggleTestRunner`). It's off in [Simple UI mode](/docs/workspace).

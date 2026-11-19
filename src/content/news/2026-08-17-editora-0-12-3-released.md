@@ -53,4 +53,4 @@ is purely "open these files", `--new-instance` still forces a separate editor,
 and an instance is scoped to its config directory. The
 [command line](/docs/cli#one-editor-not-two) page describes the whole behaviour.
 
-The complete list is on the [What's New](/whats-new) page.
+The complete list is on the [What's New](/whats-new/0.12/#0123---2026-08-17) page.

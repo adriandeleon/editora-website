@@ -11,10 +11,10 @@ edit by hand.
 
 ## The Settings window
 
-Open it with **View: Settings** (`view.settings`, `Ctrl+,` in the CUA, Sublime
-and VS Code keymaps). The sidebar groups the pages, each with an icon before
-its name (pages with an icon elsewhere in Editora, such as Git or Terminal,
-use the same one); a page whose feature is still in beta (AI, AI Agent, AI Actions, LSP, Debugging, Remote, Sync, MCP
+Open it with **View: Settings** (`view.settings`: `Ctrl+,` in the CUA, Sublime
+and VS Code keymaps, `Ctrl+Alt+S` in IntelliJ, `⌘,` in all four on macOS). The
+sidebar groups the pages, each with an icon before its name (pages with an icon elsewhere in Editora, such as Git or Terminal,
+use the same one); a page whose feature is still in beta (AI, AI Agent, AI Actions, Remote, Sync, MCP
 Server) carries a **Beta** pill in the sidebar and beside its title. Every
 page title has a **?** link that opens that page's documentation for the
 version of Editora you are running. The window fits its 900 px minimum width in
@@ -23,7 +23,8 @@ every language.
 ![The Settings window on its Appearance page: User and Project scope buttons, a search field, a sidebar of pages with icons, and the page's language, font, theme and editor theme settings above a live preview](/screenshots/docs/settings.png "The Settings window: pages in the sidebar, each with its icon.")
 
 - Changes apply as you make them. There is no OK or Save button, and the footer
-  says so. Every setting is also a palette command.
+  says so. Every setting is also a palette command; see
+  [Settings from the palette](#settings-from-the-palette).
 - The window opens centred on the editor window the first time. After that it
   stays where you put it for the rest of the session.
 - A text field applies when you press Enter, when you leave it, and when you
@@ -42,6 +43,18 @@ every language.
   Remote sites) save each change as you make it too; only Macros keeps Save
   and Revert. Deleting an entry from a list asks "Delete “…”?" first, with
   Cancel as the default button.
+- Every list on a page (Abbreviations, External Tools, Macros and their steps,
+  Templates, Snippets, the personal dictionary, Trusted Folders, the toolbar
+  lists, Remote sites, type renderers and the rest) has a right-click menu with
+  what its buttons do to a row: Edit…, Rename…, Move Up and Down, Remove,
+  Disable or Enable, and Copy where the row has text. The Menu key or Shift+F10
+  opens it at the selected row. The **List** commands (*List: Open*,
+  *List: Copy*, *List: Rename…*, *List: Turn On or Off*, *List: Remove*,
+  *List: Move Up*, *List: Move Down*) do the same from the palette or a key of
+  your own, bringing the Settings window forward first.
+- The window's buttons and links that act are commands too, such as
+  **Settings: Reset All to Defaults…**, **Settings: Restore Settings Backup…**,
+  **Settings: Open Help for Shown Page** and **Settings: Toggle Modified Only**.
 - The Editor page is grouped into Display, Editing, Clipboard, Indentation and
   Saving, followed by Performance, Logs, CSV, File previews and Export & Print.
   Updates, Trusted folders and
@@ -56,6 +69,34 @@ every language.
   unsaved files, and starts Editora again; cancelling the quit cancels the
   restart.
 
+### Settings from the palette
+
+Every setting can be changed without opening the window. Most pages have a
+command that lists the page's settings by name with their values: pick one to
+flip it, choose from its choices, or type its value.
+
+| Command | Covers |
+| --- | --- |
+| **Terminal: Change a Setting…** | The shell, theme, text size, cursor, desktop notifications and the rest of the Terminal page |
+| **Debug: Change a Setting…** | The Debugging page |
+| **LSP: Change a Language Setting…** | ShellCheck and shfmt, XML and HTML formatting, ESLint and the formatters, the actions on save |
+| **Build: Change a Setting…** | Each build tool's command, Maven's default JDK, Node.js, Build before Run |
+| **Encryption: Change a Setting…** | The Encryption page |
+| **Settings Sync: Change a Setting…** | The Sync page |
+| **Web: Change a Setting…** | The HTTP client's scripts and the browser it opens |
+| **Editor: Change a PDF Setting…** | The orientation, margins and code font size of exported and printed PDFs |
+
+Settings that stand alone have a command of their own, among them **View:
+Toggle a File Preview…**, **View: Toggle Word Wrap in Prose**, **View: Toggle
+Quick Fix Lightbulb**, **View: Toggle Problem Counter**, **GitHub: Set gh
+Command…**, **Remote: Set Container Engine…**, **Spell Check: Set Default
+Language…**, **AI: Set API Key…** (typed into a field of dots), **AI Agent: Set
+a Client's Command…** and **Markdown Lint: Set Rule Severity…**.
+
+Each keeps what its Settings row would keep, and an open Settings window shows
+the change at once. The question before pasting several lines into a terminal
+has no command: it protects you, so only its row turns it off.
+
 ### Settings you changed
 
 A row whose value differs from the default has a marker at its leading edge,
@@ -65,14 +106,16 @@ how many of its settings differ from the default.
 A modified row has a **Reset to default** link under its text, and the same
 item on its right-click menu. It puts that row's settings back to their
 defaults and leaves every other row alone. API keys and the Local History
-limits are never marked or reset row by row.
+limits are never marked or reset row by row. A row reset by mistake comes back
+with [Edit: Undo Last Removal](/docs/undo-history#undo-last-removal), run from
+the editor window.
 
 The **Modified** toggle beside the search box lists only the settings that
 differ from their defaults; typing `@modified` in the search does the same. A
 row you put back to its default leaves the list.
 
-In a project window, the **User | Project** switch at the top of the window
-chooses whose settings the pages edit; see
+In a project window, the **Edit settings for All projects | This project: name**
+switch at the top of the window chooses whose settings the pages edit; see
 [Inside a project](#inside-a-project).
 
 ### Search
@@ -109,9 +152,13 @@ The folder is chosen by this precedence:
 | Source | Location |
 | --- | --- |
 | `--config-dir <path>` (CLI) | that path |
-| `EDITORA_CONFIG_DIR` (env var) | that path |
 | `--dev` flag | `~/.editora-dev/` |
+| `EDITORA_CONFIG_DIR` (env var) | that path |
 | default | `~/.editora/` |
+
+`--dev` wins over the variable, so a development launch never uses your everyday
+folder; to run a development instance on another folder, name it with
+`--config-dir`.
 
 `~` is your home directory; on Windows that is `%USERPROFILE%`, so the default
 folder is `%USERPROFILE%\.editora`.
@@ -142,19 +189,24 @@ change the same setting or entry, the one saved last wins.
 | `workspace-state.json` | Session of the no-project window: open files, folds, tool-window layout, window geometry, and the [Python interpreter](/docs/lsp#the-python-interpreter) picked for loose files |
 | `windows/<id>.json` | Session of each extra no-project window |
 | `recent-files.json` | Recent files list |
+| `search-history.json` | Your recent [Find in Files](/docs/navigation#find-in-files) queries |
+| `agent-sessions.json` | Your recent [AI Agent](/docs/ai#ai-agent) chats, so you can resume them. Each one's title is taken from its first prompt |
 | `projects.json` + `projects/<id>.json` | Project index and each project's session, including the [Python interpreter](/docs/lsp#the-python-interpreter) picked for it |
 | `bookmarks.json` | Bookmarks (per project) |
 | `notes.json` | Personal notes (per project) |
 | `breakpoints.json` | Debugger breakpoints (per project) |
+| `debug-adapters.json` | Your own [debug adapters](/docs/run-debug#debug-adapters-of-your-own), opened by **Debug: Edit Debug Adapters** |
 | `connections.json` | Saved SFTP connections (no secrets), with whether each host may [run commands](/docs/remote) and its tool commands, and which containers and WSL distributions may run a project's tools |
 | `plugins.json` + `plugins/<id>/` | Enabled plugins and their folders |
 | `dictionary.txt` | Your added spell-check words |
 | `macros.json` | Saved keyboard macros (format version 2; an older file is converted when it is read, and its key bindings are kept) |
 | `abbreviations.json` | Your abbreviations |
-| `trusted-folders.json` | Folders you have trusted to run their build wrappers |
+| `trusted-folders.json` | Folders you have trusted: their builds, project settings, JavaScript tools and HTTP scripts may run, and language servers may load their builds ([what trust allows](/docs/workspace#trusted-folders)) |
 | `snippets/<lang>.json`, `templates/*.json` | Your snippets and file templates |
+| `themes/*.css`, `editor-themes/*.css` | Your [own themes](/docs/themes-fonts) |
 | `history/` | [Local History](/docs/workspace#local-file-history) |
 | `http-history/` | The [HTTP client](/docs/http-client)'s last responses and chosen environment for each `.http` file |
+| `cache/` | Data Editora downloads or builds and can rebuild: XML schemas, the Maven archetype catalog, compiled Kotlin scripts, the HTTP client's script runner. Settings export leaves it out |
 
 Preferences, sessions, and list files are **JSON**. If `settings.json` is absent,
 Editora converts an existing `settings.toml` automatically. Once the JSON
@@ -184,13 +236,14 @@ status bar at startup.
 
 ### Inside a project
 
-Two files live in the project itself rather than in your config directory, so
+These files live in the project itself rather than in your config directory, so
 they can be committed and shared:
 
 | File | Holds |
 | --- | --- |
 | `.editora/settings.json` | This project's own values for how its files are edited, its build commands, debugger programs and language servers (the list follows) |
 | `.editora/run-configurations.json` | [Run configurations](/docs/run-debug) exported for the team |
+| `.editora/debug-adapters.json` | The project's own [debug adapters](/docs/run-debug#debug-adapters-of-your-own), used once the folder is trusted |
 
 A project's `.editora/settings.json` can set only these:
 
@@ -202,7 +255,7 @@ A project's `.editora/settings.json` can set only these:
 | Trim trailing whitespace on save, and end files with a newline on save | `editor` → `trimTrailingWhitespace`, `insertFinalNewline` |
 | Spell-check language (`en_US`, `en_GB`, `es`, `es_MX` or `fr`) | `editor` → `spellLanguage` |
 | The command each build tool runs (Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, Clojure, Leiningen, Babashka) | `buildCommands`, by tool |
-| The program of the Java, Python and JavaScript debuggers | `debugTools`, by debugger |
+| The program of the Java, Python, JavaScript, Go, Rust, C#, Ruby and PHP debuggers, and GDB | `debugTools`, by debugger |
 | Which language server to run for a language, and whether to run it | `lspCommands`, `lspEnabled`, by server |
 | The [Bash server's options](/docs/lsp#bash-server-options) | `bashIde` |
 | The [HTML server's options](/docs/html#settings--lsp--html) (VS Code's `html.*` names) | `html`, or VS Code's dotted `html.…` keys at the top level |
@@ -229,13 +282,15 @@ the final newline exist only per project: on your own they are left to
   HTML server's options, none of which runs a program.
 - **`.editorconfig` wins** where it says something: the project's values take
   the place of yours, and a file's `.editorconfig` rules still come first.
-- **In Settings.** In a project window, Settings has a **User | Project**
-  switch at the top; the Project side names the project (*Project: name*, the
-  name the window's title shows, with the folder in its tooltip). While
-  **Project** is chosen the bar is tinted, the window is titled *Settings —
-  Project: name*, and the note under the bar names the project and the
-  `.editora/settings.json` the changes go to. In **User**, every row edits your own settings, and a row
-  the project sets says "Overridden by this project". In **Project**, only the
+- **In Settings.** In a project window, the top of Settings reads **Edit
+  settings for All projects | This project: name**. *This project* names the
+  project (the name the window's title shows, with the folder in its tooltip);
+  the tooltip of *All projects* says it is used in every window unless a project
+  sets its own. While **This project** is chosen the bar is tinted, the window
+  is titled *Settings — Project: name*, and the note under the bar names the
+  project and the `.editora/settings.json` the changes go to. In **All
+  projects**, every row edits your own settings, and a row
+  the project sets says "Overridden by this project". In **This project**, only the
   rows listed above can be changed; each shows the project's value, or yours
   as a starting point, and a change is written to the project's file, keeping
   the rest of it. A row the project sets says "Set for this project" and has
@@ -358,12 +413,59 @@ Debugging**:
 | `debugStepFilters` | Step Into skips JDK classes and synthetic methods | `true` |
 | `debugShowStatics` | Show static fields in Variables | `true` |
 | `debugShowToString` | Show toString() values | `true` |
+| `debugSuspendAllThreads` | Suspend all threads when one stops | `false` |
 | `debugExceptionTypes` | Exception breakpoints: only these classes (separated by commas) | blank (every exception) |
 
 **Show toString() values** shows what each object's `toString()` returns,
 which runs your program's code at each stop; off, objects read `Type@id`. It
 takes effect at the next debug session. See
 [Inspecting values](/docs/run-debug#inspecting-values).
+
+**Suspend all threads when one stops** makes a breakpoint, an exception or a
+step stop every thread of the program, and Continue resume them all; off, only
+the thread that hit it stops. It takes effect at the next debug session. See
+[Threads in a Java program](/docs/run-debug#threads-in-a-java-program).
+
+### Python debugging
+
+The **Python** card under **Settings → Debugging** has:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugPythonSubprocesses` | Debug Python subprocesses | `true` |
+| `debugPythonTemplates` | Template breakpoints: `auto` (Automatic), `on` (Django and Jinja) or `off` (Off) | `auto` |
+
+On, a process that a debugged Python program starts (`multiprocessing`, a
+Python subprocess) is debugged too, in a session of its own; off, it runs
+without the debugger. **Template breakpoints** makes a breakpoint in a Django
+or Jinja template stop on its line; Automatic turns it on for a project that
+uses Django or Jinja. See
+[Debugging Python](/docs/run-debug#debugging-python).
+
+### Go debugging
+
+The **Go goroutines** rows under **Settings → Debugging** choose which
+goroutines the Threads view lists:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugGoHideRuntimeGoroutines` | Hide runtime goroutines | `true` |
+| `debugGoPprofLabels` | pprof labels in names (`*` for every label, or keys such as `job, region`) | `*` |
+| `debugGoGoroutineFilter` | Goroutine filter, in Delve's syntax (`-with label job=*`) | blank (every goroutine) |
+
+See [Goroutines](/docs/run-debug#goroutines).
+
+### Evaluating expressions
+
+**Evaluating expressions** under **Settings → Debugging** has:
+
+| Key | Settings row | Default |
+| --- | --- | --- |
+| `debugEvaluationTimeLimit` | Time limit, in seconds (`0` is each debugger's own) | `10` |
+
+GDB and Python's debugger stop an expression's call after this long, and the
+program stays paused where it was. See
+[Time limit](/docs/run-debug#time-limit).
 
 ### Rulers and indent guides
 
@@ -381,14 +483,9 @@ for files in that language; an empty list means that language has no rulers.
 Columns run from 1 to 1000. An `.editorconfig` `max_line_length` replaces the
 first ruler (see [EditorConfig](/docs/editorconfig#rulers-and-max_line_length)).
 
-The palette sets the same values: *Editor: Set Rulers…* (`editor.setRulers`),
-*Editor: Set Rulers for This Language…* (`editor.setLanguageRulers`, for the
-current file's language; leave it blank to go back to the global rulers),
-*View: Toggle Rulers* (`view.toggleColumnRuler`) and *View: Toggle Indent
-Guides* (`view.toggleIndentGuides`). Indent guides are faint vertical lines at
-each indentation level, carried through blank lines and coloured by the theme;
-they are hidden in Zen and Simple UI modes and in
-[large-file mode](/docs/troubleshooting#performance).
+The palette commands that set them, and how rulers and indent guides are
+drawn, are under
+[Whitespace and the column ruler](/docs/editing#whitespace-and-the-column-ruler).
 
 ```json
 {
@@ -413,8 +510,7 @@ governs the file in front.
 
 ## Schema versioning
 
-Each structured config file carries a `schemaVersion`; in Editora 0.27.0
-`settings.json` is at version **158**. Editora migrates older files forward
+Each structured config file carries a `schemaVersion`. Editora migrates older files forward
 automatically on read. A file written by a **newer** Editora than you're running
 is backed up to `<name>.v<n>.bak` and defaults are loaded, so an older build
 never clobbers a newer config. When you return to the newer build, it puts that
@@ -481,7 +577,8 @@ copy back, provided the file left in its place still holds only defaults.
     entry outside the config folder, a zip larger than an export would be, or
     an export from a newer Editora is refused, and nothing is imported.
 - **Restore from Backup…** (Settings → Advanced, beside **Reset to Defaults**)
-  lists those backups, newest first, and puts the one you pick back. The
+  lists those backups, newest first, in a picker (type to filter, Enter to
+  choose, Esc to cancel), and puts the one you pick back. The
   settings in force are saved as a new backup first, so a restore can be undone
   the same way.
 
