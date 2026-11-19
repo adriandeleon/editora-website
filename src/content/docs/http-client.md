@@ -528,10 +528,11 @@ opens on **Tests** when a test or a script failed, and on **Body** when the
 request got no response; warnings never switch tabs. Otherwise a tab you picked
 stays across runs while the response has it. The arrow keys, Home and End move
 between tabs. In the Headers table, right-click to copy a value, a header or all
-of them; the copy key copies the selected rows.
+of them; the copy key copies the selected rows (`http.copyHeaderValue`,
+`http.copyAllHeaders`).
 
 **The actions** sit at the end of the tab strip as icons: **Wrap** (long body
-lines; the Request tab always wraps), **Copy as cURL**, **Open in tab** and
+lines, `http.toggleResponseWrap`; the Request tab always wraps), **Copy as cURL**, **Open in tab** and
 **Save response**. Their tooltips show their keys. **Clear** is in the **⋯**
 menu. In a narrow panel the History picker narrows first, then the time and size
 hide, then History moves to a second row; the icons fold into the ⋯ menu, and
@@ -541,14 +542,17 @@ then the tabs show only their counts.
 
 - JSON is pretty-printed with a 2-space indent, one field or array element per
   line (`"id": 42`), and `[]` / `{}` for empty ones. NDJSON shows one value per
-  line.
+  line, and **Save response** and **Open in tab** give a body sent as
+  `application/x-ndjson` the `.jsonl` extension, so it opens as
+  [JSON Lines](/docs/languages#supported-languages).
 - One-line HTML is indented, one block element per line, with inline text kept
   on its block's line (`<h1>Not Found</h1>`). `pre`, `script`, `style` and
   comments are kept exactly; HTML the server already indented is left as it is.
 - One-line XML is indented.
 - An image is shown as a picture, with a caption (`PNG · 160 × 160 · 858 B`), a
-  checkerboard under transparent pixels, and **Fit** / **100%**. Fit, the
-  default, only ever scales a picture down.
+  checkerboard under transparent pixels, and **Fit** / **100%**
+  (`http.imageFit`, `http.imageActualSize`). Fit, the default, only ever
+  scales a picture down.
 - Other binary bodies are summarised.
 
 The layout is only for the view: **Save response** and **Open in tab** have the
@@ -603,15 +607,16 @@ tabs.
 - **The title line** gives the outcome as a coloured pill ("3 of 10 failed",
   "All 10 succeeded", "Cancelled · 2 of 4 ran"), "tests failed in 2 requests" in
   red when any did, and how long the run took. **Only failures** keeps the
-  requests that failed, weren't sent or had a failed test, and the chevron
-  collapses the list.
+  requests that failed, weren't sent or had a failed test
+  (`http.toggleOnlyFailures`), and the chevron collapses the list.
 - **Each row** shows the status (the code, "failed" or "not sent"), the
   request's name with its method and path, its time, and its tests (`✗ 2/3`,
   `✓ 3` or `—`).
 - **Selecting a row** shows that response in the tabs. The first failed
   request, else the first whose tests failed, is selected when the run ends.
   Enter or a double-click goes to the request in the editor; right-click to
-  **Run again**, **Copy as cURL** or **Go to request**.
+  **Run again**, **Copy as cURL** or **Go to request**
+  (`http.runSelectedAgain`, `http.goToSelectedRequest`).
 
 The list takes at most about 40% of the panel and scrolls on its own. It goes
 away at the next run and on **Clear**. A cancelled Run All keeps and lists the
@@ -625,7 +630,10 @@ folder and come back when you reopen the file. Saved bodies are capped at 1 MB,
 and the values of credential headers (Authorization, cookies, and headers named
 like tokens, secrets, API keys and passwords) are masked, and so is any value a
 run read from `$processEnv`, `$env` or `$dotenv`. A request marked
-`# @no-log` is never saved. **Clear**, in the ⋯ menu, empties the file's
+`# @no-log` is never saved. **HTTP: Show Response History…**
+(`http.showHistory`) opens the picker from the keyboard, and **HTTP: Run Shown
+Request Again** (`http.runShownAgain`) sends the request of the past response
+shown. **Clear**, in the ⋯ menu (`http.clearHistory`), empties the file's
 history, saved copy included. The history follows a renamed or moved file, is
 removed with a deleted one, and is shared by every window showing the file.
 **Export Configuration** includes it only when you tick "Include HTTP response

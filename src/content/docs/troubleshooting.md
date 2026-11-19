@@ -70,6 +70,14 @@ installer), **Turn on** for a switched-off feature, **How to install**, and
 **Settings…** straight to the right page. All probes run off the UI thread, and
 only when you open or refresh the screen.
 
+A row's buttons are commands too, acting on the row the keyboard is in:
+**Doctor: Install or Update Check's Tool** (`doctor.installRow`), **Open
+Check's Install Instructions** (`doctor.howToInstallRow`), **Open Check's
+Settings** (`doctor.openRowSettings`) and **Clear Check's Cache**
+(`doctor.clearRow`); **Copy Check** (`doctor.copyRow`), **Copy Check's Path**
+(`doctor.copyRowPath`) and **Reveal Check's Path in File Manager**
+(`doctor.revealRowPath`) are in its right-click menu.
+
 ![The Doctor tab: a summary line of 1 warning, 23 OK, 9 not installed and 3 off, a Needs Attention section with the GitHub CLI not signed in, then Version Control, Search and Encryption folded to one line and the Preview & Diagrams rows](/screenshots/docs/doctor.png "The Doctor puts what needs attention first and folds the sections where everything is OK.")
 
 Start here when something that should work doesn't: it answers "is the tool
@@ -480,14 +488,21 @@ of a program you debug, which is in the Debug console.
   the log that recorded it. Neither file goes into a configuration export.
 
 The **message log** (click the status-bar message, or `view.messageLog`) keeps a
-session history of the transient status-bar messages.
+session history of the transient status-bar messages. A message's right-click
+menu has **Copy** (*Message Log: Copy*, `messageLog.copySelected`); Ctrl+C (⌘C),
+or your keymap's copy chord (`M-w` in Emacs), copies too. Esc, or your keymap's
+cancel chord (`C-g` in Emacs), closes it. *Message Log: Clear* empties it.
 
 ## Reporting a problem
 
 **Help → Report a Problem…** (`help.reportProblem`, also a button in the
 Application Log window) prepares a bug report from the Application Log of this session and the one
 before. It also lists Editora's version, the Java it runs on, your operating
-system and your plugins. Before you see it, Editora replaces what looks private:
+system and your plugins, and ends that block with one *Settings:* line saying how
+Editora is set up: the theme, the language, the keymap, the interface zoom, the
+font size, which bars show, and which features are on (language servers,
+debugging, Git, plugins, AI and so on). That line holds no path, address or
+key. Before you see it, Editora replaces what looks private:
 paths in your home folder, your user name, e-mail addresses, credentials in URLs,
 authentication headers and values shaped like tokens. The window says how many it
 replaced.
@@ -506,7 +521,9 @@ rather not share.
 
 When Editora will not start, run `editora --report` instead (see
 [command-line flags](/docs/cli#flags)). It writes the same report to the current
-folder, prints its path and the link of a new issue, and opens both.
+folder, prints its path and the link of a new issue, and opens both. Its
+*Settings:* line comes from the settings file, and says so when that file
+cannot be read.
 
 ## After a crash or an interrupted save
 

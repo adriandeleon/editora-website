@@ -3,7 +3,7 @@ title: "Project Map"
 group: "Workspace & files"
 order: 0
 beta: false
-summary: "See a project as a <strong>map</strong> in a window of its own: folders as columns on a canvas, code cards that open the way the map flows, callers and references as connected cards, recent-change heat, and trails that walk a team through the code."
+summary: "See a project as a <strong>map</strong> in a window of its own: folders as columns on a canvas, code cards you navigate like the editor, callers, references, hierarchies and a symbol graph as connected cards, branch review, dependencies and hotspots, and trails that walk a team through the code."
 alt: "The Project Map: folder columns joined by curves, a Java file selected and its Structure column"
 ---
 
@@ -29,19 +29,23 @@ A file's **Structure** icon opens a column of its classes, methods or headings, 
 
 ![Show Callers as Cards on Pricing.apply: the callers in Shelf.checkout and two ShelfTest tests open as cards around Pricing.java, each joined to it by a dashed edge labelled by name](/screenshots/map/references.png "With no language server running, the callers are found by name, and the edges say so.")
 
-Right-click a declaration, or a name in a card, and choose **Show Callers as Cards** or **Show References as Cards**. The places found open as cards around it, joined by edges that say how: *calls*, *references* or *by name*. A [language server](/features/lsp) that is already running answers, even for files that are not open; with none running, Editora matches the name across the project instead and draws those edges dashed. **Related Test / Subject** jumps between a class and its test, and Go to Definition, Find Usages and the hierarchies work from a focused card.
+The editor's code navigation works inside cards and answers with cards beside them: Go to Definition, Declaration, Type Definition, Implementation and Super Method, Find Usages, and `Ctrl`-click on a name, each joined by a labelled edge. A chain of Go to steps keeps one preview card in view, Back and Forward walk the rows and cards you visited, and in a Java project the JDK and your dependencies open as library-source cards. **Show Callers**, **Callees** or **References as Cards** opens the places found around a declaration, with a list of every place one click away. Call and type hierarchies open as trees you can expand as deep as you like, and the **Symbol Graph** puts a method in the middle with its callers, callees, supertypes and subtypes around it, to walk the code. A [language server](/features/lsp) that is already running answers, even for files that are not open; with none running, Editora matches names across the project and draws those edges dashed. **Related Test / Subject** jumps between a class and its test. Cards read like the editor, with semantic colours, inlay hints, sticky headers, problems, usage counts on declaration rows, and a gutter where you set breakpoints and run tests.
+
+## Review, dependencies and hotspots
+
+**Review Changes** opens every changed file and its diff in one card, and its **Against** menu shows what your branch changes since it left the default branch, as a pull request does, with the changed files striped on the map. **Dependencies** shows what a file or folder uses and what uses it, or a folder's parts as a matrix where cycles stand out, read from the imports of 15 languages with no build. **Code Metrics** lists lines, complexity and the last 90 days' commits, with a hotspot score for code that is both complex and often changed. A declaration's own commits and blame open as a card, and while you debug the Map follows each stop with the call stack beside it.
 
 ## Search and filter
 
 ![Git changed with Hide unmatched on: only the changed files and the folders that lead to them stay, with a 65 rows hidden badge, shown/total counts on each column and an N hidden line under each](/screenshots/map/filters.png "Git changed with Hide unmatched: only the changed files and their folders stay, and every column counts what it hid.")
 
-The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only or `@` for declarations. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked or noted files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
+The Map window has its own search over **the whole project**, however large: type a name, part of a path (`core/v1/types.go`), `#` for files only, `@` for declarations, or `%` for text in the files. A results strip counts the matches and steps through them, and clearing the search keeps your place. The filter row narrows the map to open, unsaved, Git-changed, bookmarked, noted or problem files and by file type, fading everything else; **Hide unmatched** takes the rest off the map and counts what it hid.
 
 ## See where the work happens
 
 ![Show recent changes on the Editora repo: rows tinted and underlined by how often they changed, with a tooltip reading 5 commits in 90 days, last: Adrian De Leon, 2 weeks ago, and Owners: @adriandeleon from .github/CODEOWNERS](/screenshots/map/recent-changes.png "Recent-change heat, with the commit count, the last author and the owners in the tooltip.")
 
-⋯ → **Show recent changes** warms each row by how often it changed in the last 90 days, and its tooltip says how many commits touched it and who changed it last. With a `CODEOWNERS` or Kubernetes-style `OWNERS` file, every row's tooltip names its owners and reviewers, read from the project's own files with no network. The first time you open a project, a **Project overview** card shows its README, build system and modules, languages, likely entry points, where the tests live, the most-changed folders and the owners.
+⋯ → **Show recent changes** warms each row by how often it changed in the last 90 days, and its tooltip says how many commits touched it and who changed it last. With a `CODEOWNERS` or Kubernetes-style `OWNERS` file, every row's tooltip names its owners and reviewers, read from the project's own files with no network. On the first Map of each session, a **Project overview** card shows its README, build system and modules, languages, likely entry points, where the tests live, the most-changed folders and the owners.
 
 ## Working sets and trails
 
@@ -51,6 +55,6 @@ Save the map as a **working set** (open folders, selection, zoom, cards and pins
 
 ## Keyboard, print and export
 
-Everything works from the keyboard: arrows follow the flow, typing a name jumps to it, `/` filters a column, `Alt-Left` / `Alt-Right` step back and forward through the places you visited, and `Alt`+arrows move a focused card. **Print…** and **PDF…** output the whole map, split across pages when it is large, and the PDF is searchable; **Export** saves it as a PNG or an SVG. Screen readers read the rows on screen as a tree.
+Everything works from the keyboard: arrows follow the flow, typing a name jumps to it, `/` filters a column, `Alt-Left` / `Alt-Right` step back and forward through the places you visited, and `Alt`+arrows move a focused card, `Ctrl-Shift`+arrows jump between cards, and every row and button of the Map is a command you can bind to a key. **Print…** and **PDF…** output the whole map, split across pages when it is large, and the PDF is searchable; **Export** saves it as a PNG or an SVG. Screen readers read the rows on screen as a tree.
 
 See the [Project Map docs](/docs/workspace#project-map) for every option and key.

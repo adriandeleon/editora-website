@@ -23,7 +23,8 @@ every language.
 ![The Settings window on its Appearance page: User and Project scope buttons, a search field, a sidebar of pages with icons, and the page's language, font, theme and editor theme settings above a live preview](/screenshots/docs/settings.png "The Settings window: pages in the sidebar, each with its icon.")
 
 - Changes apply as you make them. There is no OK or Save button, and the footer
-  says so. Every setting is also a palette command.
+  says so. Every setting is also a palette command; see
+  [Settings from the palette](#settings-from-the-palette).
 - The window opens centred on the editor window the first time. After that it
   stays where you put it for the rest of the session.
 - A text field applies when you press Enter, when you leave it, and when you
@@ -42,6 +43,18 @@ every language.
   Remote sites) save each change as you make it too; only Macros keeps Save
   and Revert. Deleting an entry from a list asks "Delete “…”?" first, with
   Cancel as the default button.
+- Every list on a page (Abbreviations, External Tools, Macros and their steps,
+  Templates, Snippets, the personal dictionary, Trusted Folders, the toolbar
+  lists, Remote sites, type renderers and the rest) has a right-click menu with
+  what its buttons do to a row: Edit…, Rename…, Move Up and Down, Remove,
+  Disable or Enable, and Copy where the row has text. The Menu key or Shift+F10
+  opens it at the selected row. The **List** commands (*List: Open*,
+  *List: Copy*, *List: Rename…*, *List: Turn On or Off*, *List: Remove*,
+  *List: Move Up*, *List: Move Down*) do the same from the palette or a key of
+  your own, bringing the Settings window forward first.
+- The window's buttons and links that act are commands too, such as
+  **Settings: Reset All to Defaults…**, **Settings: Restore Settings Backup…**,
+  **Settings: Open Help for Shown Page** and **Settings: Toggle Modified Only**.
 - The Editor page is grouped into Display, Editing, Clipboard, Indentation and
   Saving, followed by Performance, Logs, CSV, File previews and Export & Print.
   Updates, Trusted folders and
@@ -56,6 +69,34 @@ every language.
   unsaved files, and starts Editora again; cancelling the quit cancels the
   restart.
 
+### Settings from the palette
+
+Every setting can be changed without opening the window. Most pages have a
+command that lists the page's settings by name with their values: pick one to
+flip it, choose from its choices, or type its value.
+
+| Command | Covers |
+| --- | --- |
+| **Terminal: Change a Setting…** | The shell, theme, text size, cursor, desktop notifications and the rest of the Terminal page |
+| **Debug: Change a Setting…** | The Debugging page |
+| **LSP: Change a Language Setting…** | ShellCheck and shfmt, XML and HTML formatting, ESLint and the formatters, the actions on save |
+| **Build: Change a Setting…** | Each build tool's command, Maven's default JDK, Node.js, Build before Run |
+| **Encryption: Change a Setting…** | The Encryption page |
+| **Settings Sync: Change a Setting…** | The Sync page |
+| **Web: Change a Setting…** | The HTTP client's scripts and the browser it opens |
+| **Editor: Change a PDF Setting…** | The orientation, margins and code font size of exported and printed PDFs |
+
+Settings that stand alone have a command of their own, among them **View:
+Toggle a File Preview…**, **View: Toggle Word Wrap in Prose**, **View: Toggle
+Quick Fix Lightbulb**, **View: Toggle Problem Counter**, **GitHub: Set gh
+Command…**, **Remote: Set Container Engine…**, **Spell Check: Set Default
+Language…**, **AI: Set API Key…** (typed into a field of dots), **AI Agent: Set
+a Client's Command…** and **Markdown Lint: Set Rule Severity…**.
+
+Each keeps what its Settings row would keep, and an open Settings window shows
+the change at once. The question before pasting several lines into a terminal
+has no command: it protects you, so only its row turns it off.
+
 ### Settings you changed
 
 A row whose value differs from the default has a marker at its leading edge,
@@ -65,14 +106,16 @@ how many of its settings differ from the default.
 A modified row has a **Reset to default** link under its text, and the same
 item on its right-click menu. It puts that row's settings back to their
 defaults and leaves every other row alone. API keys and the Local History
-limits are never marked or reset row by row.
+limits are never marked or reset row by row. A row reset by mistake comes back
+with [Edit: Undo Last Removal](/docs/undo-history#undo-last-removal), run from
+the editor window.
 
 The **Modified** toggle beside the search box lists only the settings that
 differ from their defaults; typing `@modified` in the search does the same. A
 row you put back to its default leaves the list.
 
-In a project window, the **User | Project** switch at the top of the window
-chooses whose settings the pages edit; see
+In a project window, the **Edit settings for All projects | This project: name**
+switch at the top of the window chooses whose settings the pages edit; see
 [Inside a project](#inside-a-project).
 
 ### Search
@@ -109,9 +152,13 @@ The folder is chosen by this precedence:
 | Source | Location |
 | --- | --- |
 | `--config-dir <path>` (CLI) | that path |
-| `EDITORA_CONFIG_DIR` (env var) | that path |
 | `--dev` flag | `~/.editora-dev/` |
+| `EDITORA_CONFIG_DIR` (env var) | that path |
 | default | `~/.editora/` |
+
+`--dev` wins over the variable, so a development launch never uses your everyday
+folder; to run a development instance on another folder, name it with
+`--config-dir`.
 
 `~` is your home directory; on Windows that is `%USERPROFILE%`, so the default
 folder is `%USERPROFILE%\.editora`.
@@ -235,13 +282,15 @@ the final newline exist only per project: on your own they are left to
   HTML server's options, none of which runs a program.
 - **`.editorconfig` wins** where it says something: the project's values take
   the place of yours, and a file's `.editorconfig` rules still come first.
-- **In Settings.** In a project window, Settings has a **User | Project**
-  switch at the top; the Project side names the project (*Project: name*, the
-  name the window's title shows, with the folder in its tooltip). While
-  **Project** is chosen the bar is tinted, the window is titled *Settings —
-  Project: name*, and the note under the bar names the project and the
-  `.editora/settings.json` the changes go to. In **User**, every row edits your own settings, and a row
-  the project sets says "Overridden by this project". In **Project**, only the
+- **In Settings.** In a project window, the top of Settings reads **Edit
+  settings for All projects | This project: name**. *This project* names the
+  project (the name the window's title shows, with the folder in its tooltip);
+  the tooltip of *All projects* says it is used in every window unless a project
+  sets its own. While **This project** is chosen the bar is tinted, the window
+  is titled *Settings — Project: name*, and the note under the bar names the
+  project and the `.editora/settings.json` the changes go to. In **All
+  projects**, every row edits your own settings, and a row
+  the project sets says "Overridden by this project". In **This project**, only the
   rows listed above can be changed; each shows the project's value, or yours
   as a starting point, and a change is written to the project's file, keeping
   the rest of it. A row the project sets says "Set for this project" and has
@@ -528,7 +577,8 @@ copy back, provided the file left in its place still holds only defaults.
     entry outside the config folder, a zip larger than an export would be, or
     an export from a newer Editora is refused, and nothing is imported.
 - **Restore from Backup…** (Settings → Advanced, beside **Reset to Defaults**)
-  lists those backups, newest first, and puts the one you pick back. The
+  lists those backups, newest first, in a picker (type to filter, Enter to
+  choose, Esc to cancel), and puts the one you pick back. The
   settings in force are saved as a new backup first, so a restore can be undone
   the same way.
 

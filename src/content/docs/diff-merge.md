@@ -48,6 +48,18 @@ those degraded comparisons stay read-only. In a block of rewritten lines the
 removed lines are listed first and their replacements after them, with or
 without smart alignment.
 
+The controls are commands too, acting on the diff the keyboard is in:
+
+| Action | Command |
+| --- | --- |
+| Compare whitespace exactly, trimmed, or not at all | `diff.cycleWhitespace` |
+| Fold or show the unchanged lines | `diff.toggleCollapseContext` |
+| Wrap long lines | `diff.toggleWrapLines` |
+| Mark the changed words inside changed lines | `diff.toggleWordHighlight` |
+| Next / previous file of a patch or folder review | `diff.nextFile` / `diff.previousFile` |
+| Open the file at the changed line at the caret | `diff.openLineInEditor` |
+| Export the comparison as a patch | `diff.exportPatch` |
+
 **Export patch…** saves the current comparison as a unified `.patch` file. The
 patch keeps each side's own line endings, so one made from a file with Windows
 (CRLF) endings applies to that file, and it preserves a missing final newline on
@@ -56,6 +68,10 @@ Windows-1252 gets its patch in that encoding; otherwise the patch is UTF-8. The
 patch is computed in the background, and two texts that have almost nothing in
 common are written as one hunk. Export is unavailable when a side is binary or
 too large to load.
+
+A `.patch`/`.diff` open for review can be applied from the viewer:
+**Diff: Apply Reviewed Patch to Working Tree** (`diff.applyPatchToWorkingTree`)
+or **Diff: Apply Reviewed Patch to Index** (`diff.applyPatchToIndex`).
 
 To make a patch from staged changes, unstaged changes, or a commit, or to apply
 one to the working tree or the index, see [Git patches](/docs/git#patches).
@@ -73,7 +89,10 @@ or right-only files in a lazy review.
 
 `editora --diff-ui LEFT RIGHT` starts an isolated comparison workspace without
 restoring a normal Editora session. Use the Editora-mark button in its toolbar
-to restore the full interface without closing or reloading the comparison.
+(or **Diff: Leave Diff-Only Window**, `diff.exitDiffMode`) to restore the full
+interface without closing or reloading the comparison. When Editora is already
+running, the comparison opens in its own window of that editor
+(see [One editor, not two](/docs/cli#one-editor-not-two)).
 
 ## Applying changes
 
@@ -97,6 +116,17 @@ implicitly. Result drafts take part in tab and window close protection, so an
 edited result cannot disappear without the same Save / Discard / Cancel choice
 as an ordinary buffer. Stale Git/index hunks are rejected rather than applied
 to a newer working tree.
+
+The same actions work from the keyboard:
+
+| Action | Command |
+| --- | --- |
+| Apply the change at the caret, or just its line, to the local file | `diff.applyChange` / `diff.applyLine` |
+| Copy the other side's final newline, or its absence | `diff.applyFinalNewline` |
+| Take back the last applied change | `diff.undoApplied` |
+| Save the file the changes were applied to | `diff.saveResult` |
+| Stage, unstage or revert only the line at the caret | `diff.stageLine` / `diff.unstageLine` / `diff.revertLine` |
+| Apply or reset the edited Result | `diff.applyResult` / `diff.resetResult` |
 
 ## Merge conflicts
 

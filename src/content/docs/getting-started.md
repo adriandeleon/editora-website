@@ -161,7 +161,7 @@ in:
   repository and opens it.
 
 Every one of these is also a command in the palette. Reopen the page any time
-with *View: Welcome Page*.
+with **Help → Welcome Page** or *View: Welcome Page* in the palette.
 
 ![The Welcome tab with the Editora logo, a Start list (New File, Open File, Open Folder as a Project, Clone Git Repository, Command Palette) with shortcuts, and Recent Projects and Recent Files lists](/screenshots/docs/welcome.png "The Welcome page: open a folder or a file, and change the keymap or theme from the same page.")
 
@@ -228,12 +228,19 @@ want, run **Search Everywhere** and type its name. See
 If you'd rather browse than recall, there is also a **menu bar** (File / Edit /
 Find / View / Navigate / Code / Run / Git / Tools / Window / Help) built over
 the same commands, with each item showing its current keybinding. Its **Help**
-menu links to the documentation for the version you are running.
+menu links to the documentation for the version you are running, and has
+**Keyboard Shortcuts** (every command's keys, searchable and changeable) and
+**Welcome Page**. F10 opens the menu bar in the Emacs and IntelliJ IDEA keymaps
+and Ctrl+Shift+F10 in the others; see
+[Menus and buttons from the keyboard](/docs/keymaps#menus-and-buttons-from-the-keyboard).
 
 A command that can't run right now stays listed and dimmed rather than
 disappearing, whether its feature is switched off or there is nothing for it to
 act on. Hover a dimmed row and it tells you which, and names the command that
-would fix it.
+would fix it. The same holds in the menu bar, the right-click menus and the
+drop-downs: hovering a grayed row shows the reason, a screen reader hears it
+with the row, and choosing the row says it in the status bar. (On macOS the menu
+bar is the system's, and a row there is only disabled.)
 
 ## Make it yours
 

@@ -19,6 +19,9 @@ the active file previews as, so there's nothing per-type to remember. A floating
 ## Structured data and API docs
 
 - `.json`, `.yaml`, and `.toml` render a collapsible, type-colored **data tree**.
+- JSON Lines (`.jsonl`, `.ndjson`, `.jsonlines`) renders its records as a tree
+  keyed by line number; a line that is not one JSON value shows a link to it
+  instead.
 - `.xml` (xsd, xsl, fxml, wsdl, rss, and so on) renders a faithful **DOM
   tree** of tags, attributes, and text. A `pom.xml` gets [its own
   rendering](#maven-poms) instead. When an XML file cannot be rendered, the
@@ -126,7 +129,13 @@ half-typed file still shows the rest.
 
 ## Viewers
 
-- `.pdf` files open in a read-only **page viewer** (rasterized via PDFBox).
+- `.pdf` files open in a read-only **page viewer** (rasterized via PDFBox). Its
+  top bar turns pages and zooms: −, +, **Fit** and **1:1**. The mouse
+  wheel zooms around the pointer, Ctrl/Cmd+wheel zooms faster, and a touchpad
+  pinch zooms too; Shift+wheel pans across, Alt+wheel pans down, a sideways
+  swipe pans, and dragging pans, as on the [Project Map](/docs/workspace#project-map).
+- Images (`.png`, `.jpg`, `.gif` and `.bmp`) open in a read-only
+  **image viewer** with the same −, +, **Fit** and **1:1** buttons; Ctrl+wheel zooms.
 - `.svg` files stay editable XML but gain a live **vector** preview: it is drawn
   through JSVG's JavaFX canvas and redrawn at whatever size it is shown at, so
   it stays sharp at any zoom rather than going soft past 200% the way a scaled
@@ -136,6 +145,10 @@ half-typed file still shows the rest.
   M** link to the error, like the XML preview.
   Markdown badges and every export path (PDF, print, Word, ODF) still rasterize.
 - Binary files open as a read-only [hex dump](/docs/editing#hex-viewer).
+
+With a PDF or an image in the active tab, **View: Zoom In Text**, **Zoom Out
+Text** and **Reset Text Zoom** (`view.textZoomIn`, `view.textZoomOut`,
+`view.textZoomReset`) and their keys zoom it, as its −, + and 1:1 buttons do.
 
 Every preview can **export to PDF** from its right-click menu, and *File:
 Print Rendered Preview…* (`preview.print`) and *File: Export Preview to

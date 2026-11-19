@@ -64,7 +64,7 @@ itself on every save are a separate feature,
 The **Git** menu keeps the daily actions at the top level (Commit, Commit and
 Push, Push, Pull, Fetch, Switch Branch, Git Log, and Continue / Skip / Abort)
 and groups the rest into submenus: Changes, Branches, Remotes & Worktrees, Tags,
-Stash, Patches, History & Blame, and Compare.
+Stash, Patches, History & Blame, Local History, Compare, and GitHub.
 
 Cloning asks for a URL and a destination, then opens a file from the clone (its
 README if present) so Git activates without creating a project. The clone form
@@ -103,7 +103,10 @@ The Commit window (`tool.commit`; `M-4` in Emacs, Alt+0 or Ctrl+K in IntelliJ
 IDEA, ⌘K on macOS) lists **Staged**, **Changes**, and
 **Untracked** files, each row with its added and removed line counts. Its header
 shows how many commits are waiting to be pushed or pulled, or that the branch
-has not been published yet.
+has not been published yet. When there is nothing to commit but the branch has
+commits its upstream lacks, the list says so under *Nothing to commit — working
+tree clean* (*2 commits to push to origin/main*) with a **Push** button; a
+branch with no upstream keeps the header's `↑ publish` alone.
 
 ![The Commit tool window beside the editor: Shelf.java under Changes with +3 −2 line counts, two untracked entries, Amend and Sign off checkboxes and a commit message being typed; the editor gutter marks the changed lines](/screenshots/docs/git-commit.png "The Commit window lists changes and untracked files with their line counts; the editor gutter shows the same changes.")
 
@@ -118,8 +121,11 @@ has not been published yet.
   push.
 - **Commit and Push** (`git.commitAndPush`) commits and then pushes the branch.
   A failed commit does not push.
-- **Sign off** adds a `Signed-off-by` line (`git commit -s`). The choice is
-  remembered for the repository until Editora closes.
+- **Sign off** (`git.toggleSignOff`) adds a `Signed-off-by` line
+  (`git commit -s`). The choice is remembered for the repository until Editora
+  closes.
+- **Commit Now** (`git.commitNow`) commits the staged changes with the box's
+  message, as the Commit button does, from wherever the keyboard is.
 - A **length guide** under the message shows the subject length and counts long
   body lines, following the 50/72 convention. It is advice only and never blocks
   a commit.
@@ -162,6 +168,10 @@ conflicted files in their own **Conflicts** group. Each has:
   **Keep the Upstream Version** / **Keep My Commit's Version** in a rebase, and
   **Accept the Commit's Version** in a cherry-pick or revert.
 - **Mark Resolved**, for a file you fixed by hand.
+
+With several conflicted files selected, **Accept Ours for Selected Conflicts…**
+(`git.acceptOursSelected`) and **Accept Theirs for Selected Conflicts…**
+(`git.acceptTheirsSelected`) resolve them all with one side, after asking.
 
 Committing is blocked while conflicts are unresolved. When a merge is ready to
 conclude, the commit box is prefilled with the message Git prepared.
@@ -244,13 +254,16 @@ commit reports the detached HEAD.
 
 **Manage Remotes…** (`git.remotes`) lists the repository's remotes with their
 fetch and push URLs and can add, rename, re-point (Set URL), fetch, prune, and
-remove them. **Fetch Remote…** (`git.fetchRemote`) fetches one remote and prunes
+remove them; each action is also a command (`git.addRemote`,
+`git.renameRemote`, `git.setRemoteUrl`, `git.pruneRemote`, `git.removeRemote`)
+and in **Git ▸ Remotes & Worktrees**. **Fetch Remote…** (`git.fetchRemote`) fetches one remote and prunes
 its deleted branches.
 
 **Manage Worktrees…** (`git.worktrees`) lists the repository's worktrees and can
 add one (for an existing branch or a new one; a relative folder is created
 beside the repository), open one in a new window, remove one, and prune entries
-whose folder is missing. Removing a worktree deletes its folder and keeps its
+whose folder is missing (`git.addWorktree`, `git.openWorktree`,
+`git.removeWorktree`, `git.pruneWorktrees`). Removing a worktree deletes its folder and keeps its
 branch and commits; one that holds modified or untracked files asks again
 before deleting them.
 
@@ -284,7 +297,10 @@ with HEAD.
 Next and previous wrap around at the ends of the file and report the position
 ("Change 2 of 5"). Clicking a change bar, or **Peek Change at Caret**, opens a
 card showing the old and new lines with **Revert Hunk**, **Stage Hunk**, **Copy
-Old Text**, **Open Diff**, and Previous / Next.
+Old Text**, **Open Diff**, and Previous / Next. While the card is open, **Peek
+Next Change** and **Peek Previous Change** (`git.peekNextChange`,
+`git.peekPreviousChange`) move it, and `git.copyPeekedOldLines` copies its old
+lines.
 
 ![Shelf.java with two changed lines marked in the gutter and the peek card for the one at the caret: Added, change 2 of 2, the working-tree line in green, and Previous, Next, Revert Hunk, Stage Hunk, Copy Old Text and Open Diff buttons](/screenshots/docs/git-peek-change.png "Peek Change at Caret shows one hunk against HEAD with the buttons to revert or stage it.")
 
@@ -340,7 +356,9 @@ Project tree, and **Git ▸ History & Blame**.
   the commit's change instead.
 
 Typing in the filter box narrows the commits already loaded. Pressing **Enter**
-there (or `git.log.search`) searches the whole history:
+there (or **Git: Search Whole History**, `git.log.searchHistory`) searches the
+whole history for what the box says; `git.log.search` asks for the terms
+first:
 
 | Term | Meaning |
 | --- | --- |
@@ -361,7 +379,7 @@ Reverting a merge commit asks which parent is the mainline.
 ## Blame
 
 `git.toggleBlame` (`C-x v g`) shows each line's last commit, author and date,
-in a gutter column. `git.blameShowCommit` opens the diff of the commit that last
+in a gutter column; **Annotate Current File** (`git.annotate`) turns it on. `git.blameShowCommit` opens the diff of the commit that last
 changed the caret line.
 
 ![A Java file with the blame gutter on: each line shows its author and date, and the three changed lines show You · Uncommitted changes](/screenshots/docs/git-blame.png "Blame annotations in the gutter; lines you have not committed yet say so.")
@@ -382,6 +400,24 @@ changed the caret line.
 
 The two toggles apply to the window they are set in.
 
+## Permalinks
+
+**Copy Permalink** (`git.copyPermalink`, in **Git ▸ History & Blame**) copies
+the web address of the current file at the HEAD commit, with the selected lines
+(or the caret's line) marked, ready to paste in a chat or an issue. On the
+[Project Map](/docs/workspace#project-map) it is in a code card's menu and in a
+file's or folder's menu (`projectMap.copyPermalink`).
+
+- It works with GitHub, GitLab, Bitbucket, Gitea, Forgejo, Codeberg, sourcehut
+  and Azure DevOps remotes, on the remote the branch tracks (else `origin`,
+  else the first).
+- The lines stay right when the file has unsaved or uncommitted edits above
+  them. When the selected lines are all uncommitted, the link is to the whole
+  file.
+- The status bar shows the link it copied, says when HEAD is not pushed yet
+  (the link works once it is), and says why there is none: no repository, no
+  commit, no remote on a web host, or a file not committed yet.
+
 ## Stashes
 
 **Stash Changes…** (`git.stash`) takes an optional message and three options:
@@ -392,7 +428,10 @@ keep the staged changes in the index.
 shows a stash's changes as a review, and each stash can be applied, popped,
 dropped, turned into a branch, or have its name copied. `git.stashPop` applies
 and removes the latest stash, `git.unstash` applies one you pick, and
-`git.stashDrop` deletes one.
+`git.stashDrop` deletes one. The other actions each pick a stash first: **Pop
+Stash…** (`git.stashPopChosen`), **Show Stash Changes…** (`git.stashShow`),
+**Branch from Stash…** (`git.stashBranch`) and **Copy Stash Name…**
+(`git.stashCopyName`).
 
 A stash that applies with conflicts is kept, and the conflicted files appear in
 the Commit window. A stash that would overwrite local changes is not applied.

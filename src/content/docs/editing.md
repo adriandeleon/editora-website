@@ -581,6 +581,11 @@ are detected by content, and large files show their first slice with a
 truncation note. *View: Open as Hex* (`view.openAsHex`) force-opens any file's
 bytes as hex, and *View: Open as Text* switches back.
 
+The dump's right-click menu has **Copy** and **Select All**, and Edit → Copy and
+Select All, with their keys, act on it while it has the keyboard. Its tab is a
+tab like any other: it has the full tab menu, can be pinned, and **Reopen Closed
+Tab** brings it back as hex.
+
 ![sample.bin open read-only in the hex viewer: an offset column, sixteen bytes per row in hex, and the printable characters on the right](/screenshots/docs/hex-viewer.png "A binary file opens as an offset, hex and ASCII dump.")
 
 ## Read-only and View mode

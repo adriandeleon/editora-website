@@ -214,6 +214,11 @@ mode has no Tools menu, so there they are in the palette.
 | Write a detached signature for the active file | `crypto.signDetached` |
 | Verify a signature | `crypto.verifySignature` |
 | Import public keys into your keyring | `crypto.importPublicKey` |
+| Decrypt the locked file in the active tab (its **Decrypt** or **Try Again** button) | `crypto.decryptLocked` |
+| Stop a decryption that is running | `crypto.cancelDecrypt` |
+| Move the unencrypted original the tab's banner names to the trash | `crypto.trashOriginal` |
+| Set the `gpg` program | `crypto.setGpgPath` |
+| Change an encryption setting from the palette | `crypto.changeSetting` |
 
 None has a default key; bind one in [Keymaps](/docs/keymaps/).
 
@@ -227,7 +232,8 @@ while GnuPG works, nothing is replaced.
 **Encryption: Decrypt Block at Caret** (`crypto.decryptBlock`) decrypts the
 armored message (`-----BEGIN PGP MESSAGE-----` … `-----END PGP MESSAGE-----`)
 the caret is in and shows its text in a read-only **Decrypted message** card
-with **Copy**, **Replace Block with Text** and **Close**. Replacing in an
+with **Copy**, **Replace Block with Text** and **Close** (`crypto.copyPeeked`,
+`crypto.replacePeeked`). Replacing in an
 encrypted file is safe: saving encrypts the whole file again. Replacing in a
 plain file puts the secret in that file as plain text, and the card says so.
 

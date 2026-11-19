@@ -39,7 +39,7 @@ export const roadmap: RoadmapSection[] = [
   {
     title: "Java editing follow-up",
     items: [
-      { done: true, text: "Audit and improve the complete typing → sync → completion → insertion → imports path, with real-key FX regressions and an opt-in portable JDT LS Maven-project probe. See Java editing review." },
+      { done: true, text: "Audit and improve the complete typing → sync → completion → insertion → imports path, with real-key FX regressions and an opt-in portable JDT LS Maven-project probe. See Java interactive editing." },
       { done: true, text: "Validate sibling-module resolution in disposable Maven/Gradle projects and 75 KB Java source; enable JDT lifecycle joining to prevent stale import edits." },
       { done: true, text: "Add signature overload switching/multiline lifetime, nested snippet restoration, and grouped undo/redo for completion with eager or adjacent deferred imports." },
       { done: true, text: "Add a reproducible sustained typing harness on disposable real Maven/Gradle project copies and profile 16 KB–4 MB normal-mode files; reduce synchronization range-scan cost." },
@@ -49,6 +49,8 @@ export const roadmap: RoadmapSection[] = [
       { done: true, text: "Prepare a standalone JSON-RPC reproduction and compiler proof for JDT's same-file import conflict." },
       { done: false, text: "Reproduce the intermittent <code>Str</code> popup timeouts from the warmed-workspace macro stress baseline with request/state capture; passing follow-up runs do not establish a fix or root cause." },
       { done: false, text: "Track JDT LS's conflicting import proposal for a same-file class in broken source; rerun the strict live probe when evaluating server updates." },
+      { done: false, text: "Submit the prepared standalone JDT report (<code>artifacts/java-editing-study/jdt-import-conflict/</code>) upstream, and rerun it against server updates." },
+      { done: false, text: "Design a per-session ordered synchronization worker (immutable snapshot captured on FX, diff on the worker, dependent requests queued behind its version) so large-file snapshots leave the FX thread." },
     ],
   },
   {
@@ -95,6 +97,8 @@ export const roadmap: RoadmapSection[] = [
       { done: true, text: "LSP support — <strong>21 servers</strong> (see \"Recently shipped\"): diagnostics + Problems window (<code>M-8</code>) + minimap/scrollbar stripes, go-to-definition (<code>M-.</code>), find references (<code>M-?</code>), hover (<code>C-c h</code>), LSP-backed completion, TS/PHP auto-imports, and <strong>Format Document</strong> (whole-file reformat). Server-centric registry, per-server Settings, off by default. Document symbols power the Structure tool window. (Next: format-on-save; rename, code actions, quick fixes.)" },
       { done: true, text: "Fix structure for the 21 languages we support — the Structure tool window now builds from the language server's <code>textDocument/documentSymbol</code> (precise hierarchy, real kinds, per-kind icons, method signatures), with the fold-region/TextMate heuristic as the fallback for non-LSP files; sort (Position/Name/Kind) + kind filter, expanded by default" },
       { done: true, text: "Multi language support — UI string translation (en/it/es/fr/pt/de); see \"UI localization (i18n)\" under \"Recently shipped\"" },
+      { done: false, text: "One \"go to symbol\": <code>lsp.gotoSymbol</code> and <code>index.gotoSymbol</code> are separate commands; make one that asks the language server and falls back to the symbol index. See code navigation." },
+      { done: false, text: "Code lenses above a line: LSP code lenses (<code>Settings.codeLens</code>) render at the end of the line; a lens above it needs a vertical editor decoration the RichTextFX fork does not have yet (<code>Inlay</code> is horizontal); scope that rendering capability first. See code navigation." },
     ],
   },
   {

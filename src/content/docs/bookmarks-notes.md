@@ -57,7 +57,11 @@ The **Bookmarks** tool window (`M-2`) lists them across files in an order you
 control: reorder a bookmark or a whole file group with Alt+Up/Down, a right-click
 Move, or drag and drop. It groups by project, always showing the **General**
 (no-project) group plus the **current project**, with a **Show all projects**
-toggle to reveal and jump to every other project's bookmarks. Bookmarks follow
+toggle (`bookmarks.toggleAllProjects`) to reveal and jump to every other
+project's bookmarks. The row actions are commands too, acting on the selected
+row: `bookmarks.moveSelectedUp` / `bookmarks.moveSelectedDown`,
+`bookmarks.editSelectedNote`, `bookmarks.deleteSelected` and
+`bookmarks.deleteAllInSelectedFile`. Bookmarks follow
 their content through edits, and they're re-anchored to the saved line text when
 a file changes outside the editor, so they survive external edits. They live in
 `bookmarks.json`.
@@ -99,7 +103,10 @@ Notes track their anchor through edits and re-locate themselves by surrounding
 text when a file changes externally, marking themselves orphaned only if the
 anchor disappears. The **Notes** tool window (`M-5`) groups them per file
 with a filter, and like Bookmarks it groups by project, General plus the current
-one, with a **Show all projects** toggle. File and folder rows use matching
+one, with a **Show all projects** toggle (`notes.toggleAllProjects`). Its row
+actions act on the selected note from the palette too: `notes.editSelected`,
+`notes.toggleSelectedResolved`, `notes.deleteSelected` and
+`notes.deleteAllInSelectedFile`. File and folder rows use matching
 icons so their targets remain clear. They live in `notes.json`. A second
 toggle, **Highlight text that has a Personal Note** (**Settings → Editor → Display**, or
 `view.toggleNoteIndicators`), hides just the highlight and its start marker
