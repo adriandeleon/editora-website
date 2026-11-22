@@ -16,13 +16,27 @@ npm install
 npm run dev       # http://localhost:4321
 npm run build     # production build to dist/
 npm run preview   # serve the build
-npm run check:docs   # command ids and Emacs chords quoted in the docs
-npm run check:links  # internal links and anchors in dist/ (after a build)
+npm run check:docs       # command ids and Emacs chords quoted in the docs (also run by build)
+npm run check:generated  # every generated page still matches the Editora release (needs JDK 25)
+npm run check:links      # internal links and anchors in dist/ (after a build)
 ```
 
-Every pull request runs `.github/workflows/check.yml`: the feature pages must
-match `scripts/GenFeatures.java`, then `check:docs`, the build, and
-`check:links`.
+Every pull request runs `.github/workflows/check.yml`: `check:generated`, then
+`check:docs`, the build, and `check:links`. The deploy workflow
+(`.github/workflows/pages.yml`) runs `check:generated` before it builds, and the
+build runs `check:docs`, so the site is not deployed with a page that no longer
+matches the app or quotes a command id or chord the app does not have.
+
+`check:generated` (`scripts/check-generated.mjs`) runs every generator below
+against Editora at the tag of the release `src/lib/version.ts` names
+(`v<version>`) and fails when the output differs from what is committed. It
+takes the tag from a local Editora clone when it has it (`git archive`, so the
+clone's branch is untouched), else a shallow clone from GitHub; pass
+`-- --editora <dir>` for a tree already at that release. It rewrites the
+generated files in place, so `git diff` shows the difference afterwards. A
+version with no tag yet (a draft of the next release on `website-next`) fails
+it unless `--allow-unreleased` is given, which `check.yml` passes for pull
+requests into any branch but `master`.
 
 ## Content
 
@@ -64,8 +78,9 @@ The Pauta conformance page (`src/content/docs/pauta.md`, served at `/docs/v-<ver
 `java scripts/GenPauta.java`. It lists the edition of [Pauta](https://pauta-project.dev/) the app is working
 toward, the conformance that follows from the list, and every rule the app does not meet, grouped by kind, so
 the page cannot show a different set from the app's own Pauta window. It finds the Editora checkout the same
-way as `GenCommands.java`. Re-run it for each release, from the release tag, and whenever `pauta.json`
-changes; never edit the page by hand.
+way as `GenCommands.java`. Re-run it for each release, from the release tag, like the others: the page
+describes the release the docs do, and `check:generated` holds it to that tag's `pauta.json`. Never edit
+the page by hand.
 
 `src/lib/whatsnew.ts` (the home "What's new" block) is hand-written: a handful of
 highlights taken from the current release's news post. Update it with each release.
