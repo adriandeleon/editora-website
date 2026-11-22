@@ -1085,7 +1085,7 @@ The hint replaces the server's ready line and stays in the status bar.
 A `tsserver` that dies restarts the server, within the
 [crash cap](#while-the-server-works), and the status bar says it stopped
 unexpectedly. JavaScript and TypeScript files keep their server up to
-**50,000 lines**, even above the **Disable minimap & LSP above** limit.
+**50,000 lines**, even when the **Turn the language server off above** limit is set lower.
 
 **Workspace roots.** Without a project open, a file's server root is the
 nearest folder with a `tsconfig.json` or `jsconfig.json`, then one with a
@@ -1519,9 +1519,9 @@ Remote projects keep one server at the project root.
   bar makes it editable.
 - An **untitled** buffer set to Python is analysed too. In a project window it
   sees the project's modules. Once you save it, its file takes over.
-- A Python file keeps its server up to **50,000 lines**, even above the
-  **Disable minimap & LSP above** limit (10,000 lines by default), which then
-  turns off only the minimap. Pyright can take several seconds to answer on a
+- A Python file keeps its server up to **50,000 lines**, even when the
+  **Turn the language server off above** limit (50,000 lines by default) is set
+  lower. Pyright can take several seconds to answer on a
   file that large; completion says **Waiting for Pyright…** meanwhile.
 
 Pyright gives no inlay hints, semantic highlighting or code lenses. Turning one
@@ -1618,9 +1618,9 @@ The project's XML files share one server, and every XML file outside the
 project shares **one more per window**, whatever folder or Maven module it is
 in, rather than one server per folder; the status line calls that one's
 folder *files outside the project*. An XML file keeps the server up
-to **100,000 lines and 5 MB**, even above the **Disable minimap & LSP above**
-limit (10,000 lines by default), which then turns off only the minimap; at 5 MB
-every file opens without its language server (see
+to **100,000 lines**, even above the **Turn the language server off above**
+limit (50,000 lines by default); from 200,000 lines (or 16 MB) every file opens
+in large-file mode, without its language server (see
 [Performance](/docs/troubleshooting#performance)).
 
 ### What the XML server adds
