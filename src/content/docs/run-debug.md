@@ -3268,7 +3268,7 @@ Debug Adapter Protocol mode (`gdb -i dap`), which needs GDB 14 or later. Editora
 finds `gdb` as set in **GDB path** on the same card, else on the PATH; without
 it, Debug says GDB was not found. GDB isn't installed by Editora.
 
-![The Rust, C and C++ (CodeLLDB) card of Settings → Debugging: Enable Rust debugging (CodeLLDB) on, Enable C and C++ debugging (CodeLLDB) on, C and C++ debugger set to CodeLLDB with the hint that GDB debugs through its own DAP mode (GDB 14 or later), an empty GDB path, an empty CodeLLDB (codelldb) path with Browse…, and Detected codelldb: found](/screenshots/docs/debug-settings-cpp.png "The Rust, C and C++ card: C and C++ can switch from CodeLLDB to GDB.")
+![The Language picker of Settings → Debugging set to Rust, C and C++ (CodeLLDB), and under it that card: Enable Rust debugging (CodeLLDB) on, Enable C and C++ debugging (CodeLLDB) on, C and C++ debugger set to CodeLLDB with the hint that GDB debugs through its own DAP mode (GDB 14 or later), an empty GDB path, an empty CodeLLDB (codelldb) path with Browse…, and Detected codelldb: found](/screenshots/docs/debug-settings-cpp.png "The Rust, C and C++ card: C and C++ can switch from CodeLLDB to GDB.")
 
 ### Debugging C#
 
@@ -3625,7 +3625,12 @@ script for each:
 - **Python**: `debugpy`, `scripts/install-debugpy.sh`.
 - **JavaScript**: vscode-js-debug, `scripts/install-js-debug.sh`.
 
-Each card on **Settings → Debugging** has a **Detected** line, for example
+**Settings → Debugging** shows one language's card at a time: pick it in
+**Language**, under **Enable debugging (DAP)**. The cards every language
+shares follow it. A search in Settings ignores the pick and shows the
+matching settings of every language.
+
+Each language's card has a **Detected** line, for example
 *debugpy: found (/usr/bin/python3)* (the interpreter that has debugpy) or
 *js-debug: not found*, also while that language's debugging is switched off.
 The Java, JavaScript, Go, Rust, C#, Ruby and PHP cards also have the adapter's
@@ -3640,9 +3645,9 @@ interpreter of its own, and the one that runs debugpy when the project's
 interpreter cannot import it. A link at the top of the Debugging page leads
 there.
 
-![The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed](/screenshots/docs/debug-settings-go-rust.png "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.")
+![The Language picker of Settings → Debugging set to Go (Delve), and under it the Go (Delve) card: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, and Detected dlv: found (/home/ada/go/bin/dlv) with the Install button reading Installed](/screenshots/docs/debug-settings-go.png "The Go card: Delve found where go install puts it.")
 
-![The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button](/screenshots/docs/debug-settings-csharp-ruby-php.png "The C#, Ruby and PHP cards, before their debuggers are installed.")
+![The Language picker of Settings → Debugging open, listing Java, Python, JavaScript (Node.js), Go (Delve), Rust, C and C++ (CodeLLDB), C# (netcoredbg), Ruby (rdbg), PHP (Xdebug) and Bash (bashdb), with C# picked; behind it the C# (netcoredbg) card with its Enable switch, netcoredbg path field and an Install… button](/screenshots/docs/debug-settings-languages.png "One language at a time: the Language picker lists every language with a debugger.")
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, Gradle, npm, Cargo, Go, sbt,
