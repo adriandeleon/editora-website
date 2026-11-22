@@ -1,8 +1,9 @@
 name: Check
 
 # Runs on every pull request (and on demand) so a broken build, a wrong
-# command id or chord in the docs, a broken internal link, or a feature page
-# edited by hand instead of in its generator is caught before merge. The
+# command id or chord in the docs, a broken internal link, or a generated page
+# (commands, roadmap, What's new, version, Pauta conformance, features) that no
+# longer matches the app is caught before merge. The
 # deploy workflow (pages.yml) only runs after merge to master.
 on:
   pull_request:
@@ -37,12 +38,18 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Feature pages match their generator
+      # Every generator in scripts/ run against Editora at the tag of the release
+      # src/lib/version.ts names; fails when a committed page differs. Into master
+      # the release must exist; elsewhere (website-next drafts the next release
+      # before its tag) a missing tag is reported and skipped.
+      - name: Generated pages match the app
+        env:
+          ALLOW_UNRELEASED: ${{ github.base_ref != 'master' && '--allow-unreleased' || '' }}
         run: |
-          java scripts/GenFeatures.java
-          git diff --exit-code -- src/content/features \
-            || { echo "::error::src/content/features differs from scripts/GenFeatures.java. Edit the generator and re-run it."; exit 1; }
+          npm run check:generated -- $ALLOW_UNRELEASED \
+            || { echo "::error::A generated page differs from the app (see the list above). Re-run its generator against the release tag, or edit scripts/GenFeatures.java for a feature page."; exit 1; }
 
+      # npm run build runs check:docs first too; this step names the failure.
       - name: Command ids and chords in the docs
         run: npm run check:docs
 
