@@ -10,6 +10,7 @@
     "check:docs": "node scripts/check-doc-commands.mjs",
     "check:generated": "node scripts/check-generated.mjs",
     "check:links": "node scripts/check-links.mjs",
+    "optimize:shots": "node scripts/optimize-screenshots.mjs",
     "astro": "astro"
   },
   "dependencies": {
