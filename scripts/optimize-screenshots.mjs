@@ -16,7 +16,7 @@
 // `npm run build` (gen-thumbs rebuilds the thumbnails of what changed):
 //
 //   npm run optimize:shots
-//   SKIP=debug-settings-cpp,debug-settings-csharp-ruby-php npm run optimize:shots   # leave those crops alone
+//   SKIP=debug-settings-cpp,debug-settings-languages npm run optimize:shots   # leave those crops alone
 import { readdirSync, statSync, renameSync, unlinkSync, copyFileSync, existsSync, openSync, readSync, closeSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,15 +24,15 @@ import sharp from "sharp";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "public/screenshots");
 
-// docs/<out> <- docs/<source> cropped (2x pixels). The Debugging settings crops
-// need a Settings capture scrolled to those sections (docs5/ and docs6/settings.txt).
+// docs/<out> <- docs/<source> cropped (2x pixels). The Debugging settings crops are the
+// Language picker and the picked language's card (docs5/ and docs6/settings.txt).
 const CROPS = {
   "debug-attach-to-process": ["debug-attach-to-process", { left: 0, top: 0, width: 2560, height: 730 }],
   "debug-member-marks": ["debug-member-marks", { left: 0, top: 172, width: 1760, height: 1163 }],
-  "debug-settings-go-rust": ["debug-settings-go-rust", { left: 505, top: 1772, width: 1650, height: 888 }],
+  "debug-settings-go": ["debug-settings-go", { left: 533, top: 670, width: 1592, height: 592 }],
   "debug-history-list": ["debug-history-list", { left: 640, top: 170, width: 1280, height: 600 }],
-  "debug-settings-cpp": ["debug-settings-cpp-csharp", { left: 533, top: 950, width: 1592, height: 782 }],
-  "debug-settings-csharp-ruby-php": ["debug-settings-cpp-csharp", { left: 533, top: 1744, width: 1592, height: 1294 }],
+  "debug-settings-cpp": ["debug-settings-cpp", { left: 533, top: 670, width: 1592, height: 945 }],
+  "debug-settings-languages": ["debug-settings-languages", { left: 533, top: 670, width: 1592, height: 775 }],
   "debug-triggered-breakpoint": ["debug-triggered-breakpoint", { left: 0, top: 0, width: 2560, height: 1270 }],
   "debug-breakpoint-groups": ["debug-breakpoint-groups", { left: 0, top: 0, width: 2560, height: 1270 }],
   "debug-add-logpoint": ["debug-add-logpoint", { left: 0, top: 0, width: 2560, height: 1270 }],

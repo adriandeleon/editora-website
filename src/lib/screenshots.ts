@@ -451,10 +451,10 @@ const docsShots: Shot[] = [
     alt: "shelf.rs paused on line 49, total += subtotal, with inline values such as item: {sku:\"A-2\", name:\"Notebook\", quantity:3, …} on the lines above, and the Debug window below: the call stack at shelf::shelf::checkout, and Variables with lines, a Vec<String> of size 2, unfolded to \"A-1  Pencil …\" and \"A-2  Notebook …\", then total, item and discount = None",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
-  shot("/screenshots/docs/debug-settings-go-rust.png", {
-    title: "Go and Rust debugger settings",
-    caption: "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.",
-    alt: "The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed",
+  shot("/screenshots/docs/debug-settings-go.png", {
+    title: "Go debugger settings",
+    caption: "The Go card: Delve found where go install puts it.",
+    alt: "The Language picker of Settings → Debugging set to Go (Delve), and under it the Go (Delve) card: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, and Detected dlv: found (/home/ada/go/bin/dlv) with the Install button reading Installed",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
   shot("/screenshots/docs/debug-history.png", {
@@ -478,13 +478,13 @@ const docsShots: Shot[] = [
   shot("/screenshots/docs/debug-settings-cpp.png", {
     title: "C and C++ debugger settings",
     caption: "The Rust, C and C++ card: C and C++ can switch from CodeLLDB to GDB.",
-    alt: "The Rust, C and C++ (CodeLLDB) card of Settings → Debugging: Enable Rust debugging (CodeLLDB) on, Enable C and C++ debugging (CodeLLDB) on, C and C++ debugger set to CodeLLDB with the hint that GDB debugs through its own DAP mode (GDB 14 or later), an empty GDB path, an empty CodeLLDB (codelldb) path with Browse…, and Detected codelldb: found",
+    alt: "The Language picker of Settings → Debugging set to Rust, C and C++ (CodeLLDB), and under it that card: Enable Rust debugging (CodeLLDB) on, Enable C and C++ debugging (CodeLLDB) on, C and C++ debugger set to CodeLLDB with the hint that GDB debugs through its own DAP mode (GDB 14 or later), an empty GDB path, an empty CodeLLDB (codelldb) path with Browse…, and Detected codelldb: found",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
-  shot("/screenshots/docs/debug-settings-csharp-ruby-php.png", {
-    title: "C#, Ruby and PHP debugger settings",
-    caption: "The C#, Ruby and PHP cards, before their debuggers are installed.",
-    alt: "The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button",
+  shot("/screenshots/docs/debug-settings-languages.png", {
+    title: "Debugger language picker",
+    caption: "One language at a time: the Language picker lists every language with a debugger.",
+    alt: "The Language picker of Settings → Debugging open, listing Java, Python, JavaScript (Node.js), Go (Delve), Rust, C and C++ (CodeLLDB), C# (netcoredbg), Ruby (rdbg), PHP (Xdebug) and Bash (bashdb), with C# picked; behind it the C# (netcoredbg) card with its Enable switch, netcoredbg path field and an Install… button",
     more: { href: `${docsBase}/run-debug/`, label: "Read the run debug docs" },
   }),
   shot("/screenshots/docs/debug-sessions.png", {
