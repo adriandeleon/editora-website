@@ -586,15 +586,18 @@ choice for that file. See [File encodings](/docs/workspace#file-encodings).
 
 ## Performance
 
-Editora aims to stay responsive on large files. Highlighting and the minimap
-turn off automatically at about 5 MB; the status line then lists everything a
-large file opens without (highlighting, folding, Structure, spell check, the
+Editora aims to stay responsive on large files. A file of 200,000 lines or more,
+or of 16 MB or more, opens in large-file mode: the status line then lists
+everything it opens without (highlighting, folding, Structure, spell check, the
 minimap, undo and the language server), and the Structure window says why it is
-empty. Such a file, one with a line of 64K characters or more, and minified code
+empty. Such a file, one with a line of a million characters or more, and minified code
 open in [View Mode](/docs/editing#read-only-and-view-mode) with the reason;
 **Enable Editing** edits them, and the status bar says **Editable, No Undo**
-while undo is off. Files of about 50 MB open read-only
-with a capped load. A file of 5 MB or more that would not fit in the memory that
+while undo is off. A file of 50,000 lines or more keeps everything but its
+language server, unless the language keeps it longer (see
+[Language servers](/docs/lsp)); **Settings → Editor → Performance** sets that
+line count. Files of about 50 MB open read-only
+with a capped load. A large file that would not fit in the memory that
 is left (typically a second or third very large file) opens the same way, as a
 read-only slice of its first part; close other large tabs and reopen it to edit
 it. Lines longer than 20,000 characters are not syntax-highlighted, though the

@@ -74,7 +74,7 @@ on disk is reloaded. An empty document says *Nothing to preview yet*. The
 Structure tool window shows the document's `#`…`######` heading outline for quick
 navigation.
 
-A very large Markdown file (about 5 MB or more) is too much for the preview to follow every
+A very large Markdown file (200,000 lines or 16 MB or more) is too much for the preview to follow every
 edit: a strip says so, and its **Refresh** button (`preview.refresh`) renders
 it again.
 
