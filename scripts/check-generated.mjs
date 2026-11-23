@@ -1,9 +1,9 @@
 // Checks that every generated page still matches the app: runs each generator
 // in scripts/ against Editora at the release the site documents (the tag
 // v<version> of the committed src/lib/version.ts) and fails when the output
-// differs from what is committed. So the Commands and Keybindings data, the
-// Roadmap, What's new, the version, the Pauta conformance page and the feature
-// pages cannot drift from the app without the build saying so
+// differs from what is committed. So the user guide (copied from Editora's
+// user-docs/), the Commands and Keybindings data, the Roadmap, What's new, the
+// version, the Pauta conformance page and the feature pages cannot drift from the app without the build saying so
 // (pauta-project.dev, Documentation: DOCS-04; Conformance: PAUTA-14).
 //
 // Where the app comes from, first match wins:
@@ -29,6 +29,9 @@ const GITHUB = "https://github.com/adriandeleon/Editora.git";
 
 // Each generator and the paths it writes, relative to the repo root.
 const GENERATORS = [
+  // First: the guide copied from Editora's user-docs/, before GenPauta adds its
+  // page to the same folder.
+  ["SyncDocs.java", ["src/content/docs", "src/content/command-docs", "public/screenshots/docs"]],
   ["GenCommands.java", ["src/lib/commands.ts"]],
   [
     "GenRoadmap.java",
