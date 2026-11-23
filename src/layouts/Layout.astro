@@ -1,6 +1,7 @@
 ---
 import { version, repo, docsBase } from "../lib/editora";
 import SiteSearch from "../components/SiteSearch.astro";
+import { appDocs } from "../lib/app-docs";
 
 interface Props {
   title?: string;
@@ -294,13 +295,14 @@ const isActive = (href: string) => {
       </p>
     </footer>
 
-    <!-- Cloudflare Web Analytics -->
-    <script
-      type="module"
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon='{"token":"7a940b6d7a744874a778a62a83bedc05"}'
-    ></script>
-    <!-- End Cloudflare Web Analytics -->
+    {/* Cloudflare Web Analytics; the copy inside the app has none. */}
+    {!appDocs && (
+      <script
+        type="module"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token":"7a940b6d7a744874a778a62a83bedc05"}'
+      ></script>
+    )}
   </body>
 </html>
 

@@ -17,6 +17,7 @@
 // correction should not silently rewrite what a shipped version claimed; an
 // archived page is a record of that release.
 import { version as currentVersion } from "./version";
+import { appDocs } from "./app-docs";
 import {
   commandGroups as currentCommandGroups,
   keymaps as currentKeymaps,
@@ -356,7 +357,8 @@ export const currentDocVersion: DocVersion = decorate({
   keymaps: currentKeymaps,
 });
 
-export const archivedDocVersions: DocVersion[] = ARCHIVED.map(decorate);
+// The copy bundled into the app holds only the version it ships with.
+export const archivedDocVersions: DocVersion[] = appDocs ? [] : ARCHIVED.map(decorate);
 
 /** Current first, then archived newest-first. */
 export const docVersions: DocVersion[] = [currentDocVersion, ...archivedDocVersions];

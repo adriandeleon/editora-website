@@ -7,6 +7,7 @@ import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
 import { version } from "./src/lib/version.ts";
 import { docVersions } from "./src/lib/doc-versions.ts";
+import { appDocs } from "./src/lib/app-docs.ts";
 import rehypeDocFigures from "./src/lib/rehype-doc-figures.mjs";
 
 // Served at the custom apex domain editora-project.dev (www. redirects to it).
