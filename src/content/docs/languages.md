@@ -27,13 +27,13 @@ characters is never highlighted. Files that are mostly long lines open in
 
 ### Supported languages
 
-Editora ships 64 grammars:
+Editora ships 66 grammars:
 
 | Group | Languages and file types |
 | --- | --- |
 | JVM | Java, Kotlin, Groovy (and Gradle build files), Scala (and sbt and Mill builds), Clojure (and EDN) |
 | Systems | C, C++, C#, Go, Rust |
-| Scripting | Python, Ruby, PHP, Lua, JavaScript, TypeScript, JSX and TSX |
+| Scripting | Python, Ruby, Elixir, PHP, Lua, Dart, JavaScript, TypeScript, JSX and TSX |
 | Shells and builds | Bash and other shell scripts, PowerShell, DOS batch, Makefile, `justfile` |
 | Web and documents | HTML (and HTML templates), CSS, Astro, XML and its dialects, Markdown, Typst |
 | Data and config | JSON, JSON Lines, YAML, TOML, INI, Java `.properties`, CSV and TSV, `.env`, SQL, GraphQL, Protocol Buffers, Terraform and HCL, Dockerfile, pip `requirements.txt` |
@@ -46,7 +46,7 @@ a Markdown file. JavaScript uses the TSX grammar, so JSX in a `.js` file highlig
 XML covers its dialects too: DTDs (`.dtd`, `.ent`, `.mod`), RELAX NG,
 XSL-FO, Schematron, MSBuild and NuGet project files, `.resx`, XAML, XLIFF,
 property lists, KML, GPX, DITA and others open as XML (the full list is under
-[XML](/docs/lsp#xml)). DTD declarations (`<!ELEMENT>`, `<!ATTLIST>`,
+[XML](/docs/xml#language-server)). DTD declarations (`<!ELEMENT>`, `<!ATTLIST>`,
 `<!NOTATION>`, like `<!ENTITY>`) are highlighted in a DOCTYPE and in a DTD
 file. A `go.mod` stays plain text, and `.xhtml` is HTML. A `.mod`, `.sch`,
 `.props`, `.targets` or `.fo` file is XML only when its text starts with `<`,

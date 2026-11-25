@@ -14,7 +14,7 @@ inert.
 
 - The **status bar** shows the current branch with ahead/behind counts. Click it
   for a dropdown to switch or create branches, pull, fetch, and push. Outside a
-  repo it reads "No VCS" and offers to clone or create one. While a merge,
+  repo it reads "No VCS" and offers to clone one or to initialize a new one. While a merge,
   rebase, cherry-pick, or revert is in progress it names it (`main · MERGING`).
   A repository Git refuses to work in (for example "dubious ownership") is
   reported with Git's reason in the status bar and the Commit window.
@@ -75,7 +75,10 @@ folder is accepted.
 
 Branch switch, pull, and push reload unmodified open buffers whose files changed
 on disk. Branch switches, discard, and stash never silently replace a dirty open
-copy; deleted and edited buffers remain available for recovery. Git paths are
+copy; deleted and edited buffers remain available for recovery. Rolling back or
+discarding a file's changes keeps its current text in
+[Local History](/docs/workspace#local-file-history) first, and is refused if that
+copy cannot be made. Git paths are
 passed literally, including names that look like options or contain unusual
 characters, and conflicted entries remain visible while a merge is unresolved.
 History mutations and refreshes also revalidate the active file and working-tree
@@ -92,10 +95,19 @@ automatically** rows are greyed out; the command path stays editable.
 ### Credentials
 
 Editora never asks for a password, a key passphrase, or a host-key
-confirmation, and Git commands never start an external editor. Set up
-authentication outside Editora first: a credential helper for HTTPS remotes, an
-SSH agent holding your key, and one connection from a terminal so the host key
-is known. When a remote refuses to sign you in, the error says what to set up.
+confirmation itself, and Git commands never start an external editor or wait on a
+terminal: a command that would need an answer typed there fails with Git's reason
+instead. Set up authentication outside Editora first: a credential helper for HTTPS
+remotes, an SSH agent holding your key, and one connection from a terminal so the
+host key is known. A graphical askpass program (`SSH_ASKPASS`) still asks in its
+own window when you clone, fetch, pull or push. When a remote refuses to sign you
+in, the error says what to set up.
+
+Signed commits and tags (`commit.gpgSign`, `tag.gpgSign`) need a graphical
+pinentry, such as pinentry-gnome3, pinentry-qt or pinentry-mac. A terminal-only
+pinentry (pinentry-curses or pinentry-tty) may ask in the terminal gpg-agent was
+started from, where nobody is looking, and the commit then waits until it times
+out.
 
 ## The Commit window
 
@@ -114,7 +126,8 @@ branch with no upstream keeps the header's `↑ publish` alone.
   the whole group. Group menus offer **Stage All in Group**, **Unstage All**
   (`git.unstageAll`), and **Discard All Changes…** (`git.discardAll`), which
   returns tracked files to the last commit and deletes untracked files after a
-  confirmation.
+  confirmation. Both keep a [Local History](/docs/workspace#local-file-history)
+  copy of each file first, and nothing is discarded if a copy cannot be made.
 - **Amend** (`git.commitAmend`) makes the next commit replace the last one.
   Nothing needs to be staged to change only its message. If the commit is
   already on the remote, the window says that amending it will need a force
@@ -196,15 +209,33 @@ stash and the conflicts appear in the Commit window.
 | --- | --- | --- |
 | Push the current branch | `git.push` | `C-x v S-p` |
 | Push to another remote or under another branch name | `git.pushTo` | (palette) |
-| Force push | `git.pushForce` | (palette) |
 | Push every local tag the remote lacks | `git.pushTags` | (palette) |
 
 The first push of a branch publishes it to the push remote configured in Git
 (the branch's `pushRemote`, then the repository's `pushDefault`) or to the
-repository's only remote. **Force Push** always uses `--force-with-lease` and asks first: it
-is refused if the remote branch has moved since your last fetch. A push rejected
-because the remote has commits you do not offers **Pull, then Push**, **Force
-with Lease**, or Cancel.
+repository's only remote. A branch whose upstream has another name (`feat`
+tracking `origin/main`) is pushed to a branch of its own name on that remote,
+which then becomes its upstream; it is never pushed onto the other branch. A push
+rejected because the remote has commits you do not offers **Pull, then Push**,
+**Force with Lease**, or Cancel; there is no separate force-push command. The
+forced push always uses `--force-with-lease` (and `--force-if-includes` with Git
+2.30 or later) and names the one branch it replaces: it is refused if the remote
+branch has moved since your last fetch, or if a background fetch brought commits
+you never had locally.
+
+Clone, fetch, pull and push never wait for an answer in a terminal, and on
+Linux Git runs without a controlling terminal. When a graphical askpass program
+is set (`SSH_ASKPASS`, with a display on Linux), ssh asks for a key passphrase or
+a new host key in its window. Otherwise ssh runs in batch mode unless you set an
+ssh command of your own (`core.sshCommand` or `GIT_SSH_COMMAND`): a host key that
+is not yet known, or a key whose passphrase is not in your ssh agent, fails at
+once with ssh's message ("Host key verification failed.") — connect once from a
+terminal, or add the key to your agent, then try again. On Windows, batch mode
+uses the ssh that comes with Git for Windows. A remote whose push refspecs
+(`remote.<name>.push`) all push `HEAD`, such as Gerrit's `HEAD:refs/for/main`,
+keeps them, forced pushes included. Other push refspecs (notes, one fixed branch,
+`refs/heads/*`) do not decide where the current branch goes: Editora names the
+branch, so a push never sends only notes or force-pushes every branch.
 
 ### Automatic fetch
 
@@ -222,9 +253,18 @@ fetched, pulled, or pushed in during the session. A repository on a
 The branch dropdown has a search field over three sections: **Actions** (New
 Branch, Pull, Fetch, Push, and the like), then **Local** branches with the
 current one first, then **Remote** branches, grouped by remote when there are
-several. It opens with the current branch selected. Clicking a row checks the
-branch out. A row's `⋯` button, a right-click, or the Menu key opens its
-actions; the same actions are in the palette and under **Git ▸ Branches**.
+several. It opens with the current branch selected (with a detached HEAD, or
+**Local** folded, nothing that Enter would run is selected). Clicking a row
+checks the branch out. Choosing a remote branch switches to a local branch
+that tracks it, whatever that branch is called (the one of the same name
+first). A branch checked out in another [work tree](#remotes-and-worktrees) is passed
+over, since Git will not check out the same branch twice. When no free local
+branch tracks it, a new tracking branch is created under the remote branch's
+name; if a local branch of that name already exists (it tracks something
+else, tracks nothing, or is checked out in another work tree), it asks for a
+name for the new tracking branch instead. A row's `⋯` button, a
+right-click, or the Menu key opens its actions; the same actions are in the
+palette and under **Git ▸ Branches**.
 
 Each section folds to its header: click the header, or select it and press
 Enter, ← or →. A folded header shows how many rows it hides, and the choice is
@@ -245,10 +285,22 @@ section, folded or not.
 | Delete a local branch | `git.deleteBranch` |
 | Delete a branch on its remote | `git.deleteRemoteBranch` |
 
-Deleting a branch with commits that are not merged into the current branch asks
-first and states how many there are. Deleting on the remote always asks. A local
-branch whose upstream was deleted is marked "(gone)". Checking out a tag or a
-commit reports the detached HEAD.
+Deleting a local branch always asks first; when it has commits that are not
+merged into the current branch, the question states how many. A branch checked
+out in another worktree is not offered for deletion, and its Delete row says
+where it is checked out. Deleting on the remote always asks. A local branch
+whose upstream was deleted is marked "(gone)".
+
+A new branch made from another (**New Branch From**) never tracks where it
+started, even from a remote branch such as `origin/main`; set its upstream when
+you push it. Merging and rebasing carry uncommitted changes across with
+`--autostash`, as pulls do; if applying them back conflicts, they stay in the
+stash and the conflicts appear in the Commit window. Checking out a tag or a
+commit reports the detached HEAD. Leaving a detached HEAD that has commits no
+branch or tag holds — by switching branch, checking out a revision, a tag, or a
+remote branch, making a new branch and switching to it, or turning a stash into
+a branch — asks first, since
+afterwards only the reflog leads to them.
 
 ## Remotes and worktrees
 
@@ -256,16 +308,26 @@ commit reports the detached HEAD.
 fetch and push URLs and can add, rename, re-point (Set URL), fetch, prune, and
 remove them; each action is also a command (`git.addRemote`,
 `git.renameRemote`, `git.setRemoteUrl`, `git.pruneRemote`, `git.removeRemote`)
-and in **Git ▸ Remotes & Worktrees**. **Fetch Remote…** (`git.fetchRemote`) fetches one remote and prunes
-its deleted branches.
+that acts on the remote selected in the manager while it is up, or on one you
+pick. **Git ▸ Remotes & Worktrees** has the pull variants, Push To, Push Tags,
+Fetch Remote, automatic fetch, and the two managers. **Fetch Remote…**
+(`git.fetchRemote`) fetches one remote and prunes its deleted branches; a fetch
+or prune started from the manager reports in the status bar and leaves the
+manager closed.
 
 **Manage Worktrees…** (`git.worktrees`) lists the repository's worktrees and can
 add one (for an existing branch or a new one; a relative folder is created
 beside the repository), open one in a new window, remove one, and prune entries
 whose folder is missing (`git.addWorktree`, `git.openWorktree`,
-`git.removeWorktree`, `git.pruneWorktrees`). Removing a worktree deletes its folder and keeps its
-branch and commits; one that holds modified or untracked files asks again
-before deleting them.
+`git.removeWorktree`, `git.pruneWorktrees`). Adding one needs a branch: the new
+branch's name, or the existing branch or commit to check out. Removing a worktree
+deletes its folder and keeps its branch and commits; one that holds modified or
+untracked files asks again before deleting them. A worktree opened in a new
+window becomes a project; when Editora removes or prunes that worktree in the
+same session, the project it made goes too (a project you had already is kept).
+In a repository on a [remote host](#repositories-on-a-remote-host), worktrees
+are added and removed on that host, and Open in New Window says it opens local
+worktrees only.
 
 ## Tags
 
@@ -329,7 +391,8 @@ loads more as you scroll, a page at a time, so it reaches the whole history
   (`git.log.compareSelected`) reviews the difference between them.
 - A commit's context menu has Copy Hash, Checkout, New Branch from Here…, New
   Tag…, Revert Commit, Cherry-Pick, Reset Current Branch to Here, and Create
-  Patch…. The matching `Git Log: …` palette commands act on the commit selected
+  Patch…. Reverting or cherry-picking a merge commit first asks which parent is
+  the mainline. The matching `Git Log: …` palette commands act on the commit selected
   in the visible log; when the log is hidden they open it and ask for a commit.
 - **File history** follows the file across renames.
 
@@ -408,9 +471,13 @@ the web address of the current file at the HEAD commit, with the selected lines
 [Project Map](/docs/workspace#project-map) it is in a code card's menu and in a
 file's or folder's menu (`projectMap.copyPermalink`).
 
-- It works with GitHub, GitLab, Bitbucket, Gitea, Forgejo, Codeberg, sourcehut
-  and Azure DevOps remotes, on the remote the branch tracks (else `origin`,
-  else the first).
+- It works with GitHub, GitLab, Bitbucket (Cloud, and Server / Data Center),
+  Gitea, Forgejo, Codeberg, sourcehut and Azure DevOps remotes, on the remote the
+  branch tracks (else `origin`, else the first). An SSH remote whose host is an
+  `~/.ssh/config` alias (`git@github-work:org/repo.git`) links to the host the
+  alias stands for, and `ssh.github.com` to github.com.
+- On GitHub, a link with lines into a file GitHub shows rendered (Markdown, a
+  notebook, SVG, CSV) opens its source view, where the lines are marked.
 - The lines stay right when the file has unsaved or uncommitted edits above
   them. When the selected lines are all uncommitted, the link is to the whole
   file.

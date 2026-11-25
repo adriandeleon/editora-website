@@ -91,10 +91,10 @@ The selector finds installed JDKs in standard platform locations and through SDK
 resolution, Java Run and Debug, and before-launch commands, and the same JDK
 runs sbt, Mill, Scala CLI and Scala's Run and Debug, the
 [New Maven Project](#new-maven-project) wizard's Maven, and the
-[Maven `pom.xml` server](/docs/lsp#pomxml-and-the-maven-server).
+[Maven `pom.xml` server](/docs/xml#pomxml-and-the-maven-server).
 A Java file without a build tool (a loose file, or a project folder with no
 `pom.xml` or Gradle build) runs and debugs on it too, and it is the default JDK
-of the [Java language server](/docs/lsp#the-java-server-and-your-project): the
+of the [Java language server](/docs/java#the-java-server-and-your-project): the
 JDK it builds those files for, shows JDK sources from, and runs Gradle imports
 on. With **System default**, they use the `java` on your `PATH`. A changed
 Default JDK reaches a running language server at once, with no restart.
@@ -104,6 +104,63 @@ A saved run configuration can override it for one project or launch. With
 A Java run configuration's before-launch command runs in the project root,
 whatever the configuration's working directory, so a `mvn compile` or
 `gradle classes` step finds the build file.
+
+## The project's JDK, Maven, Gradle, sbt and GraalVM
+
+A project can name its own JDK, Maven, Gradle, sbt and GraalVM, so everyone who
+opens it builds with the same versions. Editora reads them, in this order for
+each tool:
+
+1. **Editora's project settings** (`toolchain` in `.editora/settings.json`),
+   applied only in a [trusted folder](/docs/workspace#trusted-folders).
+2. **The project's files**, the way [jkit](https://jkit-project.dev/) reads
+   them: `jkit.toml` (or `.jkit.toml`), or else `.sdkmanrc`, `.tool-versions`
+   (asdf, mise) and `.java-version` together. When jkit is installed, Editora
+   asks jkit itself (`jkit status`), so the editor, your shells and CI agree;
+   without jkit, Editora reads the `.sdkmanrc`.
+3. Your own choice in Settings (the **Default JDK** above), else `PATH`.
+
+The JDK found this way runs Java Run and Debug, Maven and Gradle builds and the
+Java language server; the Maven, Gradle or sbt runs that project's builds when it
+has no wrapper. The versions are matched among what jkit and SDKMAN installed
+and every other JDK on the machine. When the project names one that is not
+installed, the status line says so once; **Java Toolchain: Install the Project's
+Tools** (`toolchain.installProjectTools`) installs it with `jkit sync`.
+
+**Java Toolchain: Set Project JDK…** (and Maven, Gradle, sbt, GraalVM) picks an
+install and asks where to keep the choice: `jkit.toml` (written by `jkit pin`,
+read by jkit everywhere), `.sdkmanrc`, or Editora's project settings. A new
+`jkit.toml` takes over from the folder's `.sdkmanrc`, `.tool-versions` and
+`.java-version` for jkit, so the pins they made are copied into it first.
+Choosing **My own (Settings)** removes the project's choice from all three.
+
+### jkit
+
+[jkit](https://jkit-project.dev/) installs and switches JDKs, Maven, Gradle and
+sbt. Editora drives it through its `--json` output: every jkit command is in the
+Command Palette under **Java Toolchain**, and in **Tools ▸ Java Toolchain**.
+
+| Command | jkit |
+| --- | --- |
+| Install a JDK / GraalVM / Maven / Gradle / sbt with jkit… | `jkit search`, `jkit install` |
+| Sync the Project with jkit | `jkit sync` (a dry run first; builds jkit cannot verify only if you say so) |
+| Show jkit Status | `jkit status`: each tool's pin, what it picks, and jkit's hints |
+| Upgrade jkit's Installs | `jkit upgrade` (newest build of each installed version) |
+| Show jkit Installs… / Set jkit's Default… / Remove a jkit Install… | `jkit list`, `jkit use --global`, `jkit remove` |
+| Remove Older jkit Builds… | `jkit prune` |
+| jkit Settings… / Set jkit's Default JDK or GraalVM Vendor… / Toggle jkit Switching on cd | `jkit config` |
+| Check jkit Setup (and Network) | `jkit doctor` |
+| Add jkit to My Shell… | `jkit hook --install` |
+| Update jkit | `jkit self-update` |
+
+**Settings → Build Tools → jkit** sets the jkit program (blank finds `jkit` on
+`PATH`), shows whether it was found, and links to **jkit Settings…** and
+**Check Setup**. jkit's own settings (the default vendors, switching on `cd`)
+live in jkit's `~/.jkit/config.toml`; a value set by an environment variable
+wins there and is shown but cannot be changed. [Doctor](/docs/troubleshooting#doctor)'s
+Build Tools section has a jkit row with the first problem `jkit doctor` finds.
+Editora needs jkit 0.4.0 or newer for its settings and **Update jkit**; an older
+jkit says so.
 
 In a [remote project](/docs/remote#allowing-a-host-to-run-commands), Maven,
 Gradle, npm, Cargo and Go builds and test runs start on the host, over the same
@@ -171,7 +228,7 @@ The three tools run `clojure`, `lein` and `bb` from your `PATH`, or the command
 override in their Settings cards. Their test tasks stream to the Output console;
 the Test Results window does not read Clojure test runners' output. Running and
 debugging a single Clojure file is covered in
-[Clojure files](/docs/run-debug#clojure-files).
+[Clojure files](/docs/clojure#running-clojure-files).
 
 ## Maven
 
@@ -464,7 +521,7 @@ above the npm card, has the **Node.js** field: the Node.js for Run, npm scripts,
 Debug, the language servers and HTTP scripts. Left blank, Editora uses `node`
 on your `PATH`. A project's `.nvmrc` or `.node-version` wins over the field
 when nvm has that version (see
-[Which Node.js runs](/docs/run-debug#nodejs-scripts)). The card can be edited
+[Which Node.js runs](/docs/javascript-typescript#running-nodejs-scripts)). The card can be edited
 while JavaScript debugging is turned off.
 
 The npm card on the same page names the manager
@@ -495,7 +552,7 @@ the colours the script prints and the Node.js it runs under, such as
 configuration, start with the command line that runs, and the status bar names
 the manager that ran, for example *pnpm finished successfully*.
 
-Scripts use the same Node.js as [Run](/docs/run-debug#nodejs-scripts): that
+Scripts use the same Node.js as [Run](/docs/javascript-typescript#running-nodejs-scripts): that
 Node.js's folder goes first on the script's `PATH`, and the npm beside it runs.
 So the `node` that a script's own commands call is the same Node.js too. Stop
 first sends Ctrl+C (SIGINT), so the script and its child processes can clean
@@ -529,7 +586,34 @@ of its parent's, is read too), Go uses `go test -json`, npm reads TAP when the
 reporter emits it, and Cargo parses libtest output. For `node --test`, Test Results also reads
 node:test's own default output, so `"test": "node --test"` fills the tree with no
 reporter flag. In TAP output a `describe` block is a group, not a failed test,
-and a failure shows its error and stack. sbt, Mill and Scala CLI tests are not
+and a failure shows its error and stack.
+
+A test file that *Run File* or *Run Test at Caret* runs under its own runner
+fills Test Results too, while the Run console shows the runner's usual report:
+
+| Runner | How Test Results reads it |
+| --- | --- |
+| Jest | `--json --outputFile`, when the run ends |
+| Vitest | its `json` reporter beside the default one, when the run ends |
+| Deno | `deno test --junit-path`, when the run ends |
+| RSpec | `--format json --out` beside the console format your `.rspec` names (else `progress`), when the run ends |
+| Minitest, `bin/rails test` | the verbose console (`-v`), test by test |
+| PHPUnit | `--log-junit`, when the run ends |
+| ExUnit | `mix test --trace`, test by test |
+| `dart test`, `flutter test` | `--file-reporter json:`, when the run ends |
+| GoogleTest | `--gtest_output=xml:`, when the run ends |
+| Catch2 | its XML reporter beside the console one (Catch2 2: the XML reporter only), when the run ends |
+| doctest | its XML reporter, when the run ends (the console says little) |
+
+A row opens its test where it failed, else where it is declared. **Rerun
+Failed** and **Rerun This Test** narrow the file's run with the runner's own
+filter: `-t` for Jest and Vitest, `--filter` for Deno and PHPUnit, `--example`
+for RSpec, `-n` for Minitest, `--only test:` for ExUnit, `--name` for Dart,
+`--gtest_filter` for GoogleTest, a test spec for Catch2 and `--test-case` for
+doctest. A C or C++ test program is built again before them
+([C & C++](/docs/c-cpp#tests)).
+*Run File* on a Dart test file now runs `dart test` (`flutter test` in a
+Flutter package) rather than `dart run`. sbt, Mill and Scala CLI tests are not
 read yet: their output stays in the Output console. Where a structured format isn't available, the
 window says so and points at the Output console.
 
@@ -555,8 +639,20 @@ control the run. These JUnit gutter icons need a detected Maven or Gradle
 project. Python test files get their own, one per test (see
 [Python tests](#python-tests)). A Node.js test file has one ▶ for the whole
 file, which runs `node --test` (see
-[Node.js scripts](/docs/run-debug#nodejs-scripts)); its results can be rerun one
+[Node.js scripts](/docs/javascript-typescript#running-nodejs-scripts)); its results can be rerun one
 test at a time or failed-only.
+
+**Run Test at Caret** (`test.runAtCaret`) also runs one test in the other test
+files Editora debugs at the caret, without the debugger: it runs the file as
+*Run File* does, narrowed to the test the caret is in (the whole file when the
+caret is in none). That is a Go test (`-test.run`), a Rust `#[test]` (its path,
+exactly), a Dart `test` or `group` (`dart test --plain-name`), a `node:test`
+test (`--test-name-pattern`, into Test Results), a Deno test, a Jest or Vitest
+test, an RSpec example (`rspec file:line`), a Minitest test (`bin/rails test
+file:line` in a Rails app, else `-n`), a PHPUnit test (`--filter`), an ExUnit
+test (`mix test file:line`) and a C# test (`dotnet test --filter`). Its output
+goes where *Run File*'s does: the Run console, and Test Results for every one
+of these runners but Go, Rust and C#.
 
 Tests in **nested classes** have their own icons: a method inside a JUnit
 `@Nested` class, or inside a static nested test class, gets a ▶, and so does
@@ -579,10 +675,10 @@ first has finished; forks are debugged one at a time. The test JVM prints one
 "Debugger failed to attach: handshake failed" line in the Output console: that
 is Editora's port check, not an error. Gradle keeps its own banner. In a Node.js test file,
 Debug Test at Caret debugs the `node:test` test at the caret (see
-[Debugging JavaScript and TypeScript](/docs/run-debug#debugging-javascript-and-typescript)). In a Go test file it debugs the
+[Debugging JavaScript and TypeScript](/docs/javascript-typescript#debugging)). In a Go test file it debugs the
 test function at the caret under Delve, and in a Rust `#[test]` function that
-test alone under CodeLLDB (see [Debugging Go](/docs/run-debug#debugging-go) and
-[Debugging Rust](/docs/run-debug#debugging-rust)).
+test alone under CodeLLDB (see [Debugging Go](/docs/go#debugging) and
+[Debugging Rust](/docs/rust#debugging)).
 
 ### Python tests
 
@@ -599,7 +695,7 @@ project root has a `pyproject.toml`, `setup.py`, `setup.cfg`, `pytest.ini`,
 `tox.ini` or `conftest.py`.
 
 The tests run with the same Python as Run (see
-[Python scripts](/docs/run-debug#python-scripts)), with the project root and its
+[Python scripts](/docs/python#running-scripts)), with the project root and its
 `src/` folder on `PYTHONPATH`:
 
 - **With pytest** installed for that Python, Editora runs `python -m pytest`
@@ -619,7 +715,7 @@ Tests** (`test.rerunFailed`) runs only the tests that failed, and
 **Rerun This Test**, **Go to Test** and **Rerun Tests** (`test.rerun`) work as
 for JUnit; **Rerun Last** in the Run window repeats the test run too.
 **Debug This Test** and Debug Test at Caret are described under
-[Debugging](/docs/run-debug#debugging). With the test runner turned off, Python
+[Debugging](/docs/debugging). With the test runner turned off, Python
 tests still run, in the Run console only.
 
 Toggle the whole feature under **Settings → Build Tools**
