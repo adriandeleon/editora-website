@@ -42,7 +42,7 @@ or with `tool.undoHistory`.
 
 ## Files without undo
 
-A file of 5 MB or more, or one with a line of 64K characters or more, opens in
+A file of 200,000 lines or more (or 16 MB or more), or one with a line of a million characters or more, opens in
 [View Mode](/docs/editing#read-only-and-view-mode) and, once you enable editing, in
 [large-file mode](/docs/troubleshooting#performance), which keeps no undo steps
 at all. Typing there is not undoable. A **bulk edit** is treated differently,
@@ -54,9 +54,10 @@ a diff.
 Before such an edit Editora saves the file's current text, unsaved changes
 included, to [Local History](/docs/workspace#local-file-history) as a
 revision labelled "Before ‹operation› (no undo)", and the status bar says where
-the copy is. If the copy cannot be taken (Local History is off, the file is
-untitled or remote, or the write fails), the edit is **not applied** and the
-status bar says why.
+the copy is. The edit waits a moment for the copy to reach the disk. If the
+copy cannot be taken (Local History is off, the file is untitled, remote or
+encrypted, or the write fails or does not finish in time), the edit is **not
+applied** and the status bar says why.
 
 ## Crash recovery
 

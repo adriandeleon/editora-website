@@ -34,7 +34,7 @@ adapter to install; a file of a Scala build uses Metals' own.
 
 Scala and Clojure files are highlighted, fold, indent (Lisp-style for
 Clojure) and have an outline without a language server too. The Run window
-shows which Kotlin, Scala or Groovy version ran, beside the Java one. [More about the language servers](/docs/lsp#kotlin) and
+shows which Kotlin, Scala or Groovy version ran, beside the Java one. [More about the language servers](/docs/kotlin) and
 [running files](/docs/run-debug).
 
 ## A terminal inside Editora
@@ -67,7 +67,7 @@ vim, while the keys a shell never uses still reach Editora.
   server and HTTP scripts use the same Node, from the setting, the project's
   `.nvmrc` or `.node-version`, or PATH. Doctor says which one and why.
 
-[More about Node.js scripts](/docs/run-debug#nodejs-scripts).
+[More about Node.js scripts](/docs/javascript-typescript#running-nodejs-scripts).
 
 ## Python
 
@@ -84,7 +84,7 @@ vim, while the keys a shell never uses still reach Editora.
 - **Run configurations** take an interpreter, and a **Python module** type runs
   `python -m`.
 
-[More about Python](/docs/lsp#python).
+[More about Python](/docs/python).
 
 ## Debugging
 
@@ -103,7 +103,7 @@ vim, while the keys a shell never uses still reach Editora.
 - JDK and library frames show their source, and every keymap has the usual
   debugger keys.
 
-[More about debugging](/docs/run-debug#debugging).
+[More about debugging](/docs/debugging).
 
 ## Deployments
 

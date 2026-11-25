@@ -136,7 +136,7 @@ opens nothing.
 
 With the language server off, completion in a shell script offers the script's
 own function and variable names after the snippets, and only variables after
-`$` or `${`. With the [Bash server](/docs/lsp#shell-scripts) on, completion
+`$` or `${`. With the [Bash server](/docs/shell#language-server) on, completion
 comes from the server, and Editora's shell snippets stay in the list.
 
 Shell blocks also [fold](/docs/navigation#folding): functions (from the line
@@ -601,10 +601,10 @@ and auto-save reports that it cannot write. A Word-style **View Mode banner** do
 Some files are slow or risky to type into, so the first time a tab loads one it
 opens in View Mode, and the banner says why:
 
-- **A file of 5 MB or more.** It opens in
+- **A file of 200,000 lines or more**, or of 16 MB or more. It opens in
   [large-file mode](/docs/troubleshooting#performance), which keeps no undo.
-- **A file with a line of 64K characters or more** (65,536). Such a line is too
-  wide to lay out quickly, so the file also opens without undo.
+- **A file with a line of a million characters or more** (1,048,576). Such a
+  line is too wide to lay out quickly, so the file also opens without undo.
 - **Minified or generated code**: a file of at least 100,000 characters whose
   lines average 500 characters or more, such as `dist/bundle.min.js`. It keeps
   undo. Markdown, Typst, plain text, logs, CSV and TSV, Markwhen and diffs never

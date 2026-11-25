@@ -7,7 +7,9 @@ summary: "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus
 alt: "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"
 ---
 
-**Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for keybindings. They are what a fresh install starts in.
+**Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for keybindings. They are what a fresh install starts in, through the **System** theme, which shows Editora Light while your system is light and Editora Dark while it is dark, and switches as soon as the system does.
+
+**High Contrast Light** and **High Contrast Dark** put text, accents and syntax colours at 7:1 or better on a black or white ground, and while Windows' high-contrast mode is on Editora switches to the matching one by itself.
 
 Twenty-eight themes ship in total: the Editora pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
 

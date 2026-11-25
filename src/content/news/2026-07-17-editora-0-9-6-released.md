@@ -33,7 +33,7 @@ crontab preview that read cron's day rule backwards. The
 Output window** instead of a console each (see [Build tools](/docs/build-tools)).
 **Edit Breakpoint** is a real form now, so you can finally set a **log message**
 (a logpoint) or **disable** a breakpoint, not just a condition
-([Debugging](/docs/run-debug#debugging)). **Format Document** works for JSON,
+([Debugging](/docs/debugging)). **Format Document** works for JSON,
 CSS, and HTML. And **Reset to Defaults** now resets all of your settings,
 rather than the 23 out of 181 it used to.
 

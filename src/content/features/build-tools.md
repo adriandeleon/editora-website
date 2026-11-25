@@ -21,4 +21,6 @@ Each detected build tool gets its own **tasks tool window** (its stripe appears 
 - **Leiningen** (`project.clj`): the common `lein` tasks (`run`, `test`, `uberjar`, …).
 - **Babashka** (`bb.edn`): one entry per task in `:tasks`.
 
+A Java project's own **JDK, Maven and Gradle** come from its `.sdkmanrc`, its `.editora/settings.json`, or the pins [jkit](https://jkit-project.dev/) reads (`jkit.toml`, `.tool-versions`, `.java-version`): it builds, runs, debugs and is analysed on them. **Tools ▸ Java Toolchain** sets them, and with jkit installs, pins, syncs, upgrades and prunes JDKs, Maven, Gradle, sbt and GraalVM.
+
 Discovery parses the marker file directly (no shell-out, no new dependency), so it's instant and offline. **On by default**, each inert until its marker is found. See the [build tools guide](/docs/build-tools).

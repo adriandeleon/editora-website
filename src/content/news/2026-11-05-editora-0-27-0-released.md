@@ -67,7 +67,7 @@ download](/docs/getting-started#checking-a-download) has the commands.
   every finding. A remote host, WSL or a container now honours the project's
   `.nvmrc`, and a long word in a file no longer slows its colouring.
 
-[More about TypeScript and JavaScript](/docs/lsp#typescript-and-javascript).
+[More about TypeScript and JavaScript](/docs/javascript-typescript).
 
 ## Python
 
@@ -81,7 +81,7 @@ download](/docs/getting-started#checking-a-download) has the commands.
 - Starlark, Cython and SCons files open with Python highlighting, and
   completion shows the server's whole list.
 
-[More about Python](/docs/lsp#python).
+[More about Python](/docs/python).
 
 ## Java debugging
 
@@ -96,7 +96,7 @@ download](/docs/getting-started#checking-a-download) has the commands.
 - **A tidier Run menu.** Stepping, watches and breakpoint items moved into
   **Run ▸ Debugger**, and Mute Breakpoints mutes exception stops too.
 
-[More about debugging](/docs/run-debug#debugging).
+[More about debugging](/docs/debugging).
 
 ## Also in this release
 

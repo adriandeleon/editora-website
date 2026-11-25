@@ -3,7 +3,7 @@ title: "Run files & main classes"
 group: "Run & debug"
 order: 1
 beta: false
-summary: "Run a Java, Python, Node.js or shell script, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations."
+summary: "Run a Java, Python, Node.js or shell script, a C, C++, Go or Rust program, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations."
 alt: "A Python script with a gutter ▶, and its output in the Run window below"
 ---
 
@@ -12,6 +12,8 @@ A green ▶ in the gutter runs the current file, a **Java compact source file** 
 A Node.js script runs under the version a project's `.nvmrc` or `.node-version` names (when nvm has it), else the Node.js set in Settings → Build Tools → Node.js, else `node` on your `PATH` (on a remote host, in WSL or in a container, with that host's nvm and Node.js), from its package folder, with source maps and colours on. TypeScript runs with the project's own `tsx`, else its compiled file in the tsconfig `outDir`, else on plain Node.js 22.18 or newer. The ▶ of a test file (`*.test.*`, `*.spec.*`, or under `test/` or `__tests__/`) runs `node --test` and fills Test Results.
 
 It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
+
+A **single-file Java program** (a `.java` outside a project whose class has a `main`) runs with the source launcher, `java Hello.java`. A **C or C++** file (a lone one, or one of a CMake or Make project), a Go file of `package main` and a Rust file of a Cargo package are built the way Debug builds them, then run with their output and exit code in the Run console. Test files run under their own runner (Jest, Vitest, Deno, RSpec, Minitest, PHPUnit, ExUnit, `dart test`, GoogleTest, Catch2, doctest), each test listed in Test Results, and web apps start their server: Django, Flask, FastAPI, Rails, PHP and Electron.
 
 For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
 
