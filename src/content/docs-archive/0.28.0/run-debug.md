@@ -3640,9 +3640,9 @@ interpreter of its own, and the one that runs debugpy when the project's
 interpreter cannot import it. A link at the top of the Debugging page leads
 there.
 
-![The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed](/screenshots/docs/debug-settings-go-rust.png "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.")
+![The Go (Delve) and Rust (CodeLLDB) cards of Settings → Debugging: Enable Go debugging (Delve) on, an empty Delve (dlv) path field with Browse…, Detected dlv: found (/home/ada/go/bin/dlv); Enable Rust debugging (CodeLLDB) on, an empty CodeLLDB (codelldb) path field, and Detected codelldb: found (/home/ada/.vs…-lldb-1.12.3/adapter/codelldb); both Install buttons read Installed](/screenshots/archive/0.28.0/debug-settings-go-rust.png "The Go and Rust cards: Delve found where go install puts it, CodeLLDB found in VS Code's extension.")
 
-![The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button](/screenshots/docs/debug-settings-csharp-ruby-php.png "The C#, Ruby and PHP cards, before their debuggers are installed.")
+![The C# (netcoredbg), Ruby (rdbg) and PHP (Xdebug) cards of Settings → Debugging, each with its Enable switch on, its path field (netcoredbg path, rdbg path, PHP Debug (phpDebug.js) path) with Browse…, a Detected line reading not found, and an Install… button](/screenshots/archive/0.28.0/debug-settings-csharp-ruby-php.png "The C#, Ruby and PHP cards, before their debuggers are installed.")
 
 For sending HTTP requests from `.http` files, see the
 [HTTP client](/docs/http-client). For Maven, Gradle, npm, Cargo, Go, sbt,
