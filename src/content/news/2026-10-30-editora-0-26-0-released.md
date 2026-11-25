@@ -74,7 +74,7 @@ review, and every finding was fixed. Download it from the
 - **New File** has XML Schema and XSLT entries, and DTD declarations are
   highlighted.
 
-[More about XML](/docs/lsp#xml).
+[More about XML](/docs/xml).
 
 ## HTML
 
@@ -98,7 +98,7 @@ review, and every finding was fixed. Download it from the
 - Go to Super Method reads generics and anonymous classes right, and paste
   with imports is more reliable.
 
-[More about Java library sources](/docs/lsp#the-java-server-and-your-project).
+[More about Java library sources](/docs/java#the-java-server-and-your-project).
 
 ## Shell scripts
 
@@ -106,7 +106,7 @@ review, and every finding was fixed. Download it from the
   state accurately. ShellCheck and shfmt can each be switched off, and
   libraries changed on disk are read again.
 
-[More about shell scripts](/docs/lsp#shell-scripts).
+[More about shell scripts](/docs/shell).
 
 ## Smaller things
 

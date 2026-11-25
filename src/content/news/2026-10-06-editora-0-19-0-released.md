@@ -50,7 +50,7 @@ The Debug console now feeds the running program's standard input for Java
 launches, so a debugged program that reads `System.in` no longer waits forever.
 While the program runs, Enter sends the line to it; while it is paused, Enter
 evaluates an expression as before. See
-[Program input in the Debug console](/docs/run-debug#program-input-in-the-debug-console).
+[Program input in the Debug console](/docs/debugging#program-input-in-the-debug-console).
 
 A breakpoint the debugger has not verified is drawn as a hollow ring with the
 reason on hover, and the call stack, variables, and console sit side by side

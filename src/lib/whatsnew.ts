@@ -5,10 +5,10 @@
 export type NewsItem = { title: string; detail: string };
 
 export const whatsNew: NewsItem[] = [
-  { title: "Debug eight more languages", detail: "Go, Rust, C and C++ (CodeLLDB or GDB), C#, Ruby, PHP and Bash, JavaScript in the browser, and VS Code's launch.json configurations." },
-  { title: "Go back in the debugger", detail: "Debug History keeps each stop, recording breakpoints collect stops without stopping, and GDB steps back over what it recorded." },
-  { title: "Several programs at once", detail: "Debug a second file while one runs, or a compound of several, each with its own tab, console, call stack and variables." },
-  { title: "Read and follow code on the Project Map", detail: "Go to Definition, Find Usages and the hierarchies answer with cards, Symbol Graph shows callers and callees, and Back and Forward step through them." },
-  { title: "Review and measure on the Map", detail: "Review a branch or your changes, and find the hotspots: code that is both complex and often changed." },
-  { title: "Every command on the keyboard", detail: "Every right-click row, button and setting is a command, a card lists the keys after a prefix key, and the whole interface zooms from 80% to 200%." },
+  { title: "Web apps run and debug as they are served", detail: "Django, Flask, FastAPI, Rails, PHP and Electron apps start from Run or F5, and breakpoints stop on each request." },
+  { title: "Tests at the caret in almost every language", detail: "Run or debug the one test under the caret in Go, Rust, Dart, Kotlin, Groovy, Jest, Vitest, Deno, RSpec, Minitest, PHPUnit, ExUnit, C# and C/C++." },
+  { title: "PowerShell, Elixir, Dart and Lua", detail: "Language servers and debuggers for four more languages, plus Deno and Firefox debugging." },
+  { title: "A log viewer for real logs", detail: "Live logs from Docker, Kubernetes, journald and SSH, filters by time, a summary of a log, and several logs merged by time." },
+  { title: "System and High Contrast themes", detail: "A theme that follows your light or dark setting, and High Contrast Light and Dark at 7:1 or better." },
+  { title: "The guide comes with the app", detail: "Help ▸ Documentation opens the user guide for the version you run, without a network connection." },
 ];

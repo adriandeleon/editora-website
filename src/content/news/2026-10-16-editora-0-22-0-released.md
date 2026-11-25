@@ -187,7 +187,7 @@ A full pass over shell support, from highlighting to Run:
   it.
 
 [More about running scripts](/docs/run-debug) and
-[ShellCheck and shfmt](/docs/lsp#shellcheck-and-shfmt).
+[ShellCheck and shfmt](/docs/shell#shellcheck-and-shfmt).
 
 ## Also
 
