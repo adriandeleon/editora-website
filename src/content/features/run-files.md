@@ -3,19 +3,44 @@ title: "Run files & main classes"
 group: "Run & debug"
 order: 1
 beta: false
-summary: "Run a script or program in most of the languages Editora supports, from Java, Python, Node.js and shell to Kotlin, Ruby, PHP, Go and Rust, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations."
+summary: "Run the file you are looking at from a gutter ▶: a script, a program or a project's <code>main</code> class, in most of the languages Editora supports. Output, input and clickable stack traces are in the Run console."
 description: "Run a Java, Python, Node.js, shell, Kotlin, Ruby, PHP, Go or Rust file, and many more, from a gutter button, with input and clickable stack traces."
 alt: "A Python script with a gutter ▶, and its output in the Run window below"
 ---
 
-A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script (under the project's own Python: its `.venv`, the interpreter picked in the status bar, or a specific shebang such as `python3.12`), a **Node.js** script (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, or a `node` shebang), a **shell** script (run with the interpreter its shebang names, else `bash`), a **Groovy** script (run with `groovy` on the selected Default JDK), a **Scala** program or `.sc` script (through its sbt or Mill build, else Scala CLI), or a **Clojure** file (a namespace's `-main` with `clojure -M -m` or `lein run -m` in its project, a script with `clojure -M`, a Babashka script with `bb`), a **Kotlin** script or a `.kt` file with a `main` (with `kotlinc`), a **Dart** program (`dart run`, or `flutter run` for a Flutter app), a **Deno** script in a project with a `deno.json` (`deno run`), a **Ruby** file (`ruby`, `rspec`, or a Rails app's server), a **PHP** script or web app (`php`, PHP's built-in server, or Laravel's), an **Elixir** file (`mix run`, `mix test`, or `elixir` outside a Mix project), or a **PowerShell** script (`pwsh`). Each language's page under [Languages](/docs/languages) says what its ▶ runs. All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
+---
+---
+A green ▶ in the gutter runs the file you are looking at, with nothing to set up first. It picks the runtime the project asks for, such as its `.venv`, its `.nvmrc` or its JDK, and works with language services turned off.
 
-A Node.js script runs under the version a project's `.nvmrc` or `.node-version` names (when nvm has it), else the Node.js set in Settings → Build Tools → Node.js, else `node` on your `PATH` (on a remote host, in WSL or in a container, with that host's nvm and Node.js), from its package folder, with source maps and colours on. TypeScript runs with the project's own `tsx`, else its compiled file in the tsconfig `outDir`, else on plain Node.js 22.18 or newer. The ▶ of a test file (`*.test.*`, `*.spec.*`, or under `test/` or `__tests__/`) runs `node --test` and fills Test Results.
+## What the ▶ runs
 
-It also runs a **project's main class**. *Run Main Class…* picks any `main` in the active file's **Maven or Gradle** project, and a ▶ sits beside every `public static void main` (the right-click menu offers *Run '….main()'*). With the Java language server set up, Editora asks it for the main classes and the resolved classpath; without it, Run falls back to the build tool, with Maven resolving the classpath and Gradle delegating to `run` or `bootRun`.
+- **Scripts**: Python, Node.js and TypeScript, shell, Ruby, PHP, Deno, Elixir and PowerShell.
+- **JVM files**: a single-file or compact Java program, Groovy, Kotlin, Scala and Clojure, each through its own build when it has one.
+- **Compiled programs**: C, C++, Go, Rust and Dart, built the way Debug builds them, then run.
+- **Tests**: a test file runs under its own runner, such as pytest, Jest, Vitest, RSpec, PHPUnit or GoogleTest, with each test listed in Test Results.
+- **Web apps**: Django, Flask, FastAPI, Rails, PHP and Electron start their server.
 
-A **single-file Java program** (a `.java` outside a project whose class has a `main`) runs with the source launcher, `java Hello.java`. A **C or C++** file (a lone one, or one of a CMake or Make project), a Go file of `package main` and a Rust file of a Cargo package are built the way Debug builds them, then run with their output and exit code in the Run console. Test files run under their own runner (Jest, Vitest, Deno, RSpec, Minitest, PHPUnit, ExUnit, `dart test`, GoogleTest, Catch2, doctest), each test listed in Test Results, and web apps start their server: Django, Flask, FastAPI, Rails, PHP and Electron.
+Each language's page under [Languages](/docs/languages/) says exactly what its ▶ runs.
 
-For anything you run more than once, save it as a [run configuration](/features/run-configurations) instead.
+**File: Run** is `C-c r` in the Emacs keymap and `Ctrl+Shift+B` in the VS Code keymap (`Cmd+Shift+B` on macOS). **Run: Rerun Last** runs the last file again with the same arguments.
 
-Output streams to the Run console, which also accepts **stdin** so `readln`-style programs work, and **stack-trace lines are clickable** (Java, Python and Node frames, and shell errors) to jump to the file and line. For Python that includes warnings and pytest or linter locations (`app.py:12:`). The console's first line shows the command that ran a script. The console draws the colours programs print, keeps a `\r` progress bar on one line, and has **End Input** for programs that read until the end of input. Pass per-file **program arguments** (remembered across runs), and re-run the last file with *Rerun Last*. *Run with Trace* runs a shell script with `bash -x`, and each traced line links to its source line. A file in a [remote folder](/features/remote-sftp) runs on its host, with output, input and Stop as for a local one. A Python script runs in its own folder with the project root and `src/` on `PYTHONPATH`, its output streams as it prints, and on macOS and Linux **Stop** sends Ctrl-C first so `finally` blocks and `atexit` handlers run. Python test files (`test_*.py`, `*_test.py`) get a ▶ for every test, which runs pytest (or `unittest`) into Test Results; see [build tools](/features/build-tools). A spinner turns in the Run window, and on the Run stripe button when the window is closed, while the program runs. Beside it the Run window names the **runtime** the program runs under, such as *Java 25.0.4 (Temurin)*, *Python 3.13.5*, *Node.js 24.18.1*, *Groovy 5.1.3 (Java 25.0.4)*, *Clojure CLI 1.12.6.1673* or *Scala CLI 1.18.0 (Scala 3.9.0)*, as reported by the very `java`, `python`, `node`, `groovy`, `clojure` or `scala-cli` the run started. It is `C-c r` in the Emacs keymap, and **File: Run** in the palette.
+## A project's main class
+
+In a Maven or Gradle project, a ▶ sits beside every `public static void main`, and **Run: Run Main Class…** picks any of them. The classpath comes from the Java language server, or from the build tool when the server is not set up.
+
+## The Run console
+
+- **Input**: the console takes `stdin`, so programs that read input work, and **Run: End Program Input** ends it.
+- **Clickable stack traces**: Java, Python and Node.js frames, shell errors and pytest locations open the file at that line.
+- **Colours and progress bars** show as the program prints them.
+- **Program arguments** are kept per file across runs.
+- **The runtime** the program runs under is named beside the console, such as *Python 3.13.5*, read from the program that ran.
+- **Stop** gives a Python program the chance to run its `finally` blocks on macOS and Linux.
+
+## Trace, remote and saved runs
+
+- **Run: Run with Trace** runs a shell script with `bash -x`, and each traced line links to its source.
+- A file in a [remote folder](/features/remote-sftp/) runs on its host, with the same output, input and Stop.
+- For anything you run more than once, save a [run configuration](/features/run-configurations/).
+
+See the [Running programs guide](/docs/run-debug/#running-files).

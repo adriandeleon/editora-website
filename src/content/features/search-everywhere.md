@@ -8,15 +8,16 @@ description: "One picker over commands, project files and symbols, grouped by so
 alt: "Search Everywhere for \"theme\", with matching files and symbols in separate groups"
 ---
 
-Editora has five pickers on five chords, and each one makes you decide *what kind* of thing you want before you can start typing its name. **Search Everywhere** takes the name and searches all of them.
+Every other picker asks you to decide what kind of thing you want before you can type its name. Search Everywhere skips that step: type the name, and commands, project files and symbols are searched together.
 
-- No prefix: commands, project files and symbols together
-- `>` commands only, `#` files only, `@` symbols only. The `>` and `@` prefixes are borrowed from VS Code, where many people already know them, with `#` for files.
+- **Open it**: `M-S-x` in the Emacs keymap, `Ctrl+Shift+E` in the others (`Cmd+Shift+E` on macOS).
+- **Narrow when you know**: start with `>` for commands only, `#` for files only, or `@` for symbols only.
+- **Grouped results**: commands, files and symbols each keep their own group and a fair share of rows, so thousands of symbols never push the one command you wanted off the list.
+- **Best group first**: groups are ordered by their best match, not by how many matches they have.
+- **Teaches like the palette**: an empty query lists every command, a switched-off feature's command is greyed with the setting that enables it, and the highlighted row's description sits under the list.
+- **No server needed**: symbols come from Editora's own [project symbol index](/features/code-navigation/), so they work with no language server installed.
+- **One chord for all of it**: **Palette shortcut opens Search Everywhere** in **Settings → Interface → Pickers** gives the palette's chord to Search Everywhere.
 
-Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge would fill the list from the biggest source and push the other two out. Each source gets a guaranteed share, and the groups are ordered by their *best* result rather than by how many results they have. When you restrict it to one source, nothing is capped.
+In a [remote project](/features/remote-sftp/) it lists files from the host and has no symbols.
 
-It **teaches the way the command palette does**: an empty query lists every command, a command whose feature is switched off is listed greyed with the setting that would enable it, the highlighted row's description sits under the list, and `C-h` opens its documentation.
-
-It is `M-S-x` in the Emacs keymap and `Ctrl`/`Cmd`+`Shift`+`E` in the others. It can also take over the palette's own shortcut from **Settings → Interface → Pickers**, if you would rather have one chord for all of it.
-
-The symbol half is backed by Editora's own [project symbol index](/features/code-navigation), so it works with no language server installed. In a [remote project](/features/remote-sftp), the host lists the files in one command; there are no symbols for a remote project. See [Navigation & search](/docs/navigation#search-everywhere).
+See the [Navigation guide](/docs/navigation/#search-everywhere).

@@ -8,11 +8,24 @@ description: "TODO, FIXME and your own regex patterns are highlighted in the edi
 alt: "TODO comments highlighted in a Java file, with the TODO window counting 1,309 matches in 163 files"
 ---
 
-Editora highlights **TODO / FIXME-style patterns** everywhere they appear and collects them in a **TODO** tool window (`M-g o`).
+---
+---
+Every TODO, FIXME and pattern of your own stands out where it is written and is collected in one list, so the notes you leave in code get picked up again.
 
-- Matches are highlighted inline and listed in the tool window, grouped by file; double-click a result to jump. A project window scans the project's tree; the No Project window lists only the current tab and hides the tool window while that tab has no TODOs.
-- Matches also show as **overview stripes** over the scrollbar and on the minimap edge, each in its pattern's color. Click to jump, hover for the line.
-- Jump between matches in the active file with `M-g ]` / `M-g [` (`todo.next` / `todo.previous`), wrapping around.
-- Patterns are configurable in **Settings → TODO → TODO highlighting**: name, regex, a color picker, match case, and enabled. Six ship by default: TODO, FIXME, HACK, NOTE, XXX and DONE. A new pattern's regex follows its name, and deleting one asks first.
+## See them
 
-On by default. Highlighting runs off the UI thread and is debounced; the project scan is lazy. See the [TODO highlighting guide](/docs/todo).
+- **Highlighted inline**, each pattern in its own colour.
+- **Stripes** on the scrollbar and the minimap edge show where they are; click one to jump.
+- **The TODO window** opens with `M-g o` in the Emacs keymap, or **Tool Window: TODO** in the palette, and lists every match in the project, grouped by file.
+- **Next and previous** match in the file with `M-g ]` and `M-g [` in the Emacs keymap, or **TODO: Next Match** in the palette.
+
+## Organize them
+
+- **Tags and priorities**: write `TODO [auth] (high) fix token refresh`, and the TODO window groups matches by file, priority, tag or keyword.
+- **Edit from the list**: right-click a match to mark it done, set its priority or change its text, and the source changes to match.
+
+## Choose the patterns
+
+**Settings → TODO → TODO highlighting** sets each pattern's name, regex, colour and case. Six ship with Editora: TODO, FIXME, HACK, NOTE, XXX and DONE. A new pattern's regex fills in from its name.
+
+**On by default.** Turn it off in **Settings → TODO → TODO highlighting** (**Highlight TODO/FIXME patterns**). See the [TODO highlighting guide](/docs/todo/).

@@ -3,15 +3,33 @@ title: "Snippets"
 group: "Editing"
 order: 1
 beta: false
-summary: "Expand VS Code / TextMate templates with tab stops, mirrors, choices, and variables, all from a prefix + <kbd>Tab</kbd>. Ships for 35 languages."
+summary: "Type a short prefix, press <kbd>Tab</kbd>, and fill in the blanks. VS Code and TextMate style templates, bundled for 35 languages."
 description: "VS Code and TextMate style snippets with tab stops, mirrors, choices and variables, bundled for 35 languages, plus your own in Settings."
 alt: "The Insert Snippet picker listing Java snippets such as main, class, record, enum and method"
 ---
 
-Expand boilerplate with interactive templates. Type a prefix and press **Tab**, or pick from the **Snippet: Insert…** list (`C-c i`).
+Boilerplate takes a few keystrokes: type a short trigger such as `fori` or `main`, press **Tab**, and fill in the blanks the snippet leaves for you.
 
-Placeholders are pre-selected to overtype, **Tab / Shift-Tab** cycle the fields, mirrors update live, choice fields show a dropdown, and `$0` is the final caret. Bodies use the standard VS Code / TextMate syntax, `$1`, `${1:default}`, mirrors, `${1|a,b|}` choices, and variables (`$TM_FILENAME`, `$CLIPBOARD`, date/time, the selection…).
+## Use a snippet
 
-While a snippet runs its fields are outlined and the status bar shows where you are ("Snippet 2/3"). Tab does not expand inside comments or strings, or on a member name after a `.`, in any language. A trigger typed out in full is expanded by Tab ahead of a dictionary or AI inline suggestion, and leads the completion list when a language server is running. In Markdown and plain text, a trigger that is an ordinary word expands only when it is alone on its line, and a block snippet (heading, table, alert…) only at the start of a line; mid-sentence, the completion popup still offers it. Shell snippets follow the script's `#!` line: under `sh` or `dash` they write `[ ]` tests instead of bash's `[[ ]]`. Python snippets cover functions, methods, classes, `if`/`for`/`while`/`with`, `try`/`except` blocks, `match`/`case` and the `__main__` guard. No Python trigger is a single character: `self` writes `self.`, `dunder` an `__init__`-style name and `doc` a docstring, `#ignore` writes a `# pyright: ignore[…]` comment, and `#env` a `python3` shebang. Java snippets cover declarations named after the file, methods and fields by access modifier, `sysout`, `soutv` and `printf` output and loggers, statements such as `ifnull`, `switchexpr`, `foreach` and `try_resources`, streams, text blocks, virtual threads and JUnit 5 tests; a language server's own template named like a snippet (jdtls's `sysout`, `fori`…) is left out of the completion list. In shell and Python, Enter on a completion that only repeats the word just typed (`else`, `case`, `try`…) starts a new line; Tab still expands the snippet.
+- **Expand** a trigger with **Tab**, or pick one by name from **Snippet: Insert…** (`C-c i` in the Emacs keymap, `Ctrl+J` in the IntelliJ keymap, `Cmd+J` on macOS).
+- **Fill the fields.** Placeholders are selected so you can type over them, **Tab** and **Shift+Tab** move between fields, and repeated fields update together.
+- **Choose from a list** where a field offers choices, and land on the final caret position when you finish.
+- **Know where you are.** Fields are outlined, and the status bar shows "Snippet 2/3".
 
-Snippets ship for 35 languages, and a bundled snippet can be disabled; add your own in **Settings → Snippets**, for any language, or in `~/.editora/snippets/<language>.json` (user snippets override the bundled ones).
+## Expands only where you mean it
+
+- **Not in comments or strings**, and not on a member name after a `.`, so Tab indents or completes as usual there.
+- **Not mid-sentence in prose.** In Markdown and plain text a word-like trigger expands only alone on its line; the completion popup still offers it.
+- **Ahead of other suggestions.** A trigger typed in full wins over a dictionary or AI inline suggestion, and leads the language server's completion list.
+
+## What ships
+
+Snippets ship for 35 languages, plus a set for every file. They use each language's idioms: shell snippets write `[ ]` tests under `sh` or `dash` and `[[ ]]` under bash, and the Java set covers declarations named after the file, loggers, streams, text blocks and JUnit 5 tests.
+
+## Your own snippets
+
+- **Add or change snippets** for any language in **Settings → Snippets**, or in `~/.editora/snippets/<language>.json`. Your snippet replaces a bundled one with the same trigger.
+- **Disable** a bundled snippet you never want.
+
+See the [Snippets guide](/docs/snippets-templates/#snippets).

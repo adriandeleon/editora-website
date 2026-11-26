@@ -8,18 +8,21 @@ description: "File to Help menus built over the command registry, each item with
 alt: "The Git menu open, listing its commands with their keybindings and submenus such as Branches and Stash"
 ---
 
-The command palette lists everything, but it is hard to browse. It helps when you know roughly what a command is called, and less when you want to see what the editor can do. The menu bar is for that.
+The command palette finds anything you can name, but it is hard to browse. The menu bar is for seeing what the editor can do: eleven menus, from **File** to **Help**, each item a registered [command](/features/command-driven-core/), so a menu never names an action that does not exist.
 
-**File / Edit / Find / View / Navigate / Code / Run / Git / Tools / Window / Help.** Every item names a registered [command](/features/command-driven-core), the same object the palette lists and the keymap binds, so the menu cannot drift out of step with what Editora can do.
+## Browse what Editora can do
 
-- Each entry shows its **current keybinding**, and updates when you [switch keymaps](/features/keymaps).
-- A command whose feature is switched off appears **greyed rather than vanishing**, so the menu stays a stable map instead of rearranging itself as you toggle features.
-- Almost every item that can carry an **icon** does, and it is the same glyph you see for that action in a right-click menu, so Save looks the same wherever you reach it from. About a third are left blank rather than given an invented glyph. The icon column is reserved either way, so the titles still line up.
-- Menus that grew long keep their daily items at the top and the rest one level down: Git groups its commands by what they act on, Run keeps the debugger's in four submenus, and File keeps its export formats under **Export**.
-- On **macOS** it sits in the system menu bar.
+- **Live keys**: each item shows its current keybinding and updates when you [switch keymaps](/features/keymaps/).
+- **A stable map**: a command whose feature is switched off is greyed rather than removed, so the menus never rearrange themselves.
+- **The same icons everywhere**: an item carries the glyph that action has in right-click menus, so Save looks the same wherever you reach it.
+- **Short menus**: daily items stay at the top and the rest sit one level down. Git groups its commands by what they act on, Run keeps the debugger in four submenus, and **File ▸ Export** holds the export formats.
+- **A curated subset**: Editora has over 1,600 commands, so the menus hold the useful ones and the palette stays the complete index.
 
-It is a curated subset. Editora registers over 1,600 commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
+## Keep it out of the way
 
-On Linux and Windows it can **share the window's title bar**, putting menus, title and system buttons on one row and giving a full bar of vertical space back to the editor. It is on by default; turn off **Merge the menu bar into the title bar** in **Settings → Interface** (or run **View: Toggle Menu Bar in Title Bar**) for the system title bar, with the menu bar below it. The change applies after a restart.
+- **From the keyboard**: **View: Focus Menu Bar** (`F10` in the Emacs keymap, `Ctrl+Shift+F10` in CUA, VS Code and Sublime Text) opens the first menu.
+- **One row of chrome**: on Linux and Windows the menus share the window's title bar, giving the editor a full row back. Turn off **Merge the menu bar into the title bar** in **Settings → Interface** for the system title bar; it applies after a restart.
+- **On macOS** the menus sit in the system menu bar.
+- **Hide it** with **View: Toggle Menu Bar**. It hides itself in Zen and Expert mode, and [Simple mode](/features/simple-ui-mode/) keeps a reduced menu bar, because a first-time user is the person most likely to browse.
 
-Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen and Expert mode. [Simple mode](/features/simple-ui-mode) keeps a reduced one (File, Edit, Find, View, Help), because someone new to the editor is the person most likely to need a menu to browse.
+**On by default.** Turn it off in **Settings → Interface → Window chrome**. See the [Workspace guide](/docs/workspace/#window-chrome).

@@ -8,12 +8,25 @@ description: "Rainbow CSV and TSV columns, a field readout, an editable grid wit
 alt: "A CSV file shown as a table in Preview, with a filter box and a first-row-is-header switch"
 ---
 
-`.csv` and `.tsv` files get spreadsheet-style tooling.
+---
+---
+Work with CSV and TSV files as a table when you want to read or edit the data, or as text with every column in its own colour when you want to see the raw file.
 
-- **Rainbow columns**: each column is colored distinctly in the editor (cycling every eight), so rows line up at a glance. On by default.
-- **Field readout**: the status bar shows *Field N of M* for the caret's column.
-- **CSV grid**: the file as a spreadsheet in its preview, with content-fit columns, a filter box, column sort, inconsistent-row highlighting, **editable cells and headers**, and a right-click export to **PDF / Print / Excel (`.xlsx`) / ODF (`.ods`)**. These output what the grid shows: its visible rows, in the displayed order.
-- **Align / shrink**: *CSV: Align Columns* pads fields so delimiters line up in the editor; *CSV: Shrink Columns* reverses it. Both preserve quoted fields.
-- **Markdown interop**: *CSV: Copy as Markdown Table*, and from a Markdown table, export to CSV/Excel/ODF or convert to and from CSV.
+## In the editor
 
-It builds on proper CSV/TSV syntax highlighting. Toggle rainbow and the grid in **Settings → Editor → CSV**.
+- **Rainbow columns** give each column its own colour, cycling through eight, so rows line up at a glance.
+- **Field readout**: the status bar says which field the caret is in, as *Field N of M*.
+- **CSV: Align Columns** pads fields so the delimiters line up, and **CSV: Shrink Columns** takes the padding out again. Quoted fields are kept intact.
+
+## As a grid
+
+- **The CSV Grid** shows the file as a spreadsheet in its preview, beside the text or instead of it.
+- **Edit cells and headers**, and the changes go straight back to the file.
+- **Sort and filter** by column, and spot rows with the wrong number of fields, which are highlighted.
+
+## Print, export and Markdown
+
+- **Print, PDF, Excel and ODF**: the grid's right-click menu outputs exactly what it shows, the filtered rows in the sorted order.
+- **CSV: Copy as Markdown Table** copies the file as a table for a README or an issue, and a Markdown table converts back to CSV.
+
+**On by default.** Turn rainbow columns and the grid off in **Settings → Editor → CSV**. See the [CSV & TSV guide](/docs/csv/).

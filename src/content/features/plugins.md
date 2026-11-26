@@ -8,8 +8,19 @@ description: "Add commands, keybindings and tool windows with plugins written in
 alt: "The Browse Plugins picker listing registry plugins with their versions and descriptions"
 ---
 
-Extend Editora without forking it. A plugin adds commands, keybindings, tool windows, editor-menu items, and status-bar segments, written in Java against a small exported API, or declared in a simple `plugin.json` manifest (with snippets and templates folders).
+Plugins extend Editora without forking it. A plugin adds commands, keybindings, tool windows, editor-menu items and status-bar segments.
 
-Install from the built-in **registry** (*Browse plugins…*), or from a `.zip` on disk; downloads are sha-256-verified and the registry index is Ed25519-signed. See the [plugins catalog](/plugins) and the [docs](/docs/plugins).
+- **Write one in Java** against a small API, or **declare one** in a `plugin.json` manifest with folders of snippets and templates.
+- **Install from the registry** with **Plugins: Browse Plugins**. The registry index is signed, and every download is checked against its SHA-256 hash. Browse it on the web in the [plugins catalog](/plugins/).
+- **Install from a file** with **Plugins: Install from File…** for a local `.zip`.
 
-Off by default. Plugins aren't sandboxed, so only install ones you trust, and Editora asks first: the consent dialog lists a plugin's code, its external commands and the chords it replaces, an install or update is staged and put in place only once you agree, and a plugin whose code, commands or chords differ from what you agreed to waits until you agree again. A plugin's commands stay in its own namespace, so it cannot replace a built-in one. Start with `--disable-plugins` to run a session without any, and the [Doctor](/features/doctor) lists any plugin that failed to load or start, or started slowly.
+## You stay in control
+
+Plugins are not sandboxed, so install only ones you trust. Editora helps you decide:
+
+- **It asks first.** The consent dialog lists a plugin's code, the external commands it runs and the chords it replaces. Nothing is installed until you agree.
+- **It asks again** when an update changes the code, commands or chords you agreed to.
+- **Built-ins stay safe.** A plugin's commands live in its own namespace, so it cannot replace a built-in command.
+- **Trouble is easy to rule out.** Start with `--disable-plugins` for a session without any, and [Doctor](/features/doctor/) lists a plugin that failed to load or start, or started slowly.
+
+**Off by default.** Turn it on in **Settings → Plugins**. See the [Plugins guide](/docs/plugins/#installing).

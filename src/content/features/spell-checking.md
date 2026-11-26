@@ -3,13 +3,28 @@ title: "Spell checking"
 group: "Editing"
 order: 5
 beta: false
-summary: "Red wavy underlines with right-click suggestions, Add-to-Dictionary, and Ignore: full text for prose, comments &amp; strings for code, set per file type. Pure-Java Hunspell; English, Spanish, French."
-description: "Pure-Java Hunspell spell checking for prose, comments and strings, in English, Spanish and French, with suggestions and a technical dictionary."
+summary: "Red wavy underlines in prose, comments and strings, never in your identifiers, with suggestions a right-click away. English, Spanish and French."
+description: "Spell checking for prose, comments and strings in English, Spanish and French, with suggestions, a personal dictionary and a technical dictionary."
 alt: "A Markdown paragraph with four misspelled words underlined in red"
 ---
 
-Misspelled words get a red wavy underline; right-click for **suggestions** (click one to replace), **Add to Dictionary**, or **Ignore**. In source files only comments and string literals are checked (identifiers aren't flagged, nor a shell command's bare arguments and options; in Python the first word of an `f"…"` string is checked without its prefix, and a `requirements.txt` file has only its comments checked); plaintext is checked in full, and so is Markdown prose, including link text and image alt text, but not code, front matter, link targets or HTML tags, as is the text of HTML and Typst documents. Data and configuration formats such as JSON, YAML and TOML are off by default; Settings → Spell Check → File Types sets this per file type.
+Typos get a red wavy underline wherever people will read the text, and your code's identifiers are left alone, so the underlines that remain are worth fixing.
 
-Commands move to the next or previous misspelling and correct, add or ignore the word at the caret, and the status bar shows the dictionary in use.
+## What is checked
 
-It's powered by Apache Lucene's pure-Java **Hunspell** engine, no native dependency. Ships **English (en_US, en_GB)**, **Spanish**, and **French**; pick a dictionary per file with *Spell Check: Set Language…*, or set a default in Settings → Spell Check. Your added words live in `dictionary.txt`. A bundled technical dictionary of over 2,000 terms keeps programming words (`async`, `kubernetes`, `worktree`, `ripgrep`, Python's `kwargs` and `noqa`) from being flagged, with their plurals and possessives, and the possessive of any dictionary word ("someone else's") is accepted.
+- **Prose** in plain text, Markdown, HTML and Typst is checked in full, apart from code, link targets and markup.
+- **Source code** has only its comments and string literals checked.
+- **Data and configuration formats** such as JSON, YAML and TOML are off by default. Tick any file type on or off in **Settings → Spell Check → File Types**.
+
+## Fix a word
+
+- **Right-click** a flagged word for suggestions, **Add to Dictionary** or **Ignore**.
+- **Work from the keyboard** with **Spell Check: Next Misspelling** and **Spell Check: Correct Word at Caret…** (`M-S-4` in the Emacs keymap). The add and ignore commands are in the palette too.
+
+## Dictionaries
+
+- **English** (US and UK), **Spanish** and **French** ship with the app, with no native library to install. Pick one per file with **Spell Check: Set Language…**, or set the default in **Settings → Spell Check**.
+- **Your words** live in `dictionary.txt`, kept across sessions.
+- **A technical dictionary** of over 2,000 terms, such as `async`, `kubernetes` and `worktree`, keeps programming words from being flagged, plurals and possessives included.
+
+**On by default.** Turn it off in **Settings → Spell Check**. See the [Spell checking guide](/docs/languages/#spell-checking).

@@ -5,14 +5,19 @@ order: 4
 beta: false
 summary: "As-you-type completion: a popup for code (LSP + snippets) and inline ghost text for prose. Trigger with <kbd>C-M-i</kbd> / <kbd>M-/</kbd>."
 description: "A completion popup that merges language-server results and snippets for code, and inline ghost-text suggestions for prose."
+alt: "A stand-in illustration of an editor, with faint lines of code and the word Autocomplete"
 ---
 
-Completion appears as you type, debounced and off the hot path.
+Completion saves keystrokes and the trip to the docs: Editora suggests what comes next as you type, from your language server and snippets in code, and from a word list in prose.
 
-**Code** buffers get a popup that merges LSP results and snippets, Enter or Tab to accept. It holds the server's whole list (`os` in Python lists all its members), and while a slow server is still answering, a row names it ("Waiting for Pyright…"). The documentation beside the list widens to fit a long signature. Java member completion appears immediately; identifier completion waits for a short pause, filters complete lists locally, and cancels obsolete requests as you keep typing. Overloads stay distinct, method calls reuse existing parentheses, and commit characters behave as the server intended.
+- **One popup in code** merges language-server results and snippets; Enter or Tab accepts.
+- **The whole list**: everything the server offers is listed, so `os.` in Python shows all of the module's members.
+- **Docs beside the list** show the highlighted item's signature and documentation, widening to fit a long signature.
+- **Snippets** start a tab-stop session, so Tab moves through the fields to fill in.
+- **Imports come along**: accepting a Java item adds its import, and one undo takes back both.
+- **A slow server says so**: a row such as "Waiting for Pyright…" shows until its answer arrives.
+- **Ghost text in prose** finishes the word you are typing in plain text and Markdown as a muted suffix; Tab accepts it.
 
-Accepting a snippet starts a full tab-stop session. An LSP item can auto-add its import even after safe continued typing; completion plus import undo and redo as one action, while later typing remains separate.
+Completion appears as you type. To ask for it, press `C-M-i` or `M-/` in the Emacs keymap, or `Ctrl+Space` in the others.
 
-**Prose** buffers get inline **ghost text**, a muted suffix you accept with Tab.
-
-Trigger manually with `C-M-i` or `M-/` in the Emacs keymap, Ctrl+Space in the others. Per-source toggles (words, snippets, Mermaid) live in Settings → Code Completion.
+**On by default.** Turn it off in **Settings → Code Completion**, where words, snippets and Mermaid keywords each have a switch of their own. See the [Languages guide](/docs/languages/#autocomplete).

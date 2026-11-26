@@ -8,12 +8,21 @@ description: "Record keyboard macros of commands and typed text, replay them as 
 alt: "The command palette filtered by \"macro\", listing the macro commands with F3, F4 and C-x e"
 ---
 
-Record a sequence of editor actions and replay it, Emacs-style. Recording captures the interleaved stream of invoked commands and literally typed text, and replay reproduces the exact sequence, so replayed typing runs through the same auto-close and auto-indent assists as live typing.
+When the same edit has to happen forty times, do it once and let Editora repeat it. A macro records the commands you run and the text you type, and replays them exactly, auto-indent and auto-close included.
 
-- In the Emacs keymap, **F3** starts recording, **F4** stops, and **C-x e** replays the last macro. In the CUA and Sublime Text keymaps F3 is Find: there, CUA's `Ctrl+Shift+R` starts and stops recording, Sublime Text's `Ctrl+Shift+Q` replays, and every macro command is in the palette. **Esc** cancels a recording and keeps the previous macro.
-- Text and keys typed into the find bar, a prompt or a picker are recorded too, so a search replays as a search.
-- One replay is one undo step.
-- The palette adds **Replay Last N Times**, **Name and Save Last**, **Run Saved**, and **Delete Saved**.
-- Saved macros persist across sessions, and each becomes its own palette command, so you can bind it to a shortcut in Settings → Keymaps like any other command.
+## Record and replay
 
-The recording hooks are inert when you're not recording, so there's no idle cost. See the [macros guide](/docs/macros).
+- **Record**: `F3` starts recording and `F4` stops in the Emacs keymap; `Esc` cancels and keeps the previous macro.
+- **Replay**: `C-x e` replays the last macro, and **Macro: Replay Last N Times** repeats it as often as you ask.
+- **Everything you do counts**: text typed into the find bar, a prompt or a picker is recorded too, so a search replays as a search.
+- **One undo step**: a whole replay undoes at once.
+
+## Keep the good ones
+
+- **Macro: Name and Save Last** keeps a macro across sessions.
+- **Each saved macro is a command** of its own, so it appears in the palette and takes a shortcut in **Settings → Keymaps**.
+- **Macro: Run Saved** and **Macro: Delete Saved** pick from your saved macros.
+
+In the CUA and Sublime Text keymaps `F3` is Find, so CUA starts and stops recording with `Ctrl+Shift+R` (`Cmd+Shift+R` on macOS) and Sublime Text replays with `Ctrl+Shift+Q`. In every keymap the macro commands are in the palette.
+
+See the [Macros guide](/docs/macros/#record-and-replay).

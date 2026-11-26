@@ -8,13 +8,22 @@ description: "Read a file one declaration at a time: the Structure window narrow
 alt: "A Java method narrowed: an amber banner says lines 39 to 62 of 74 are in reach, with Widen, and the Structure window beside it"
 ---
 
-The **Structure** tool window (`tool.structure`) lists a file's declarations. Its **Narrow to fold region** toggle, at the end of the sort row, turns that list into a way to read a file one piece at a time. A click narrows the editor to the picked symbol's own block (on a method, the method itself), and while the toggle is on, a click or Enter on another symbol narrows to that one instead of only scrolling there. In Markdown it narrows a heading to its section.
+A long file is easier to read one function at a time. Turn on narrowing in the **Structure** tool window, and each symbol you pick fills the editor on its own, with the rest of the file out of the way until you widen.
 
-Narrowing restricts the buffer itself, as in Emacs: search, replace, macros and Select All see only the region, and saving still writes the whole file. An amber banner names the lines shown (*Narrowed to lines 32–36 of 81*) and has a **Widen** button, and the gutter, the status bar's **Ln** and the outline keep the file's own line numbers. The outline stays the whole file's, with the rows outside the region muted.
+## Walk a file
 
-- `f` flips the toggle while the outline has focus, and `structure.narrowFold` can be bound in any keymap.
-- Widening any way, from the banner, the status-bar badge or `C-x n w`, ends the mode.
-- The `C-x n` chords from [Emacs heritage](/features/emacs-heritage) narrow too, and the toggle shows when one of them did.
-- On the [Project Map](/features/project-map), a declaration card's **Open** opens its file narrowed to the declaration.
+- **The toggle**: **Narrow to fold region**, at the end of the Structure window's sort row, narrows the editor to the picked symbol's block.
+- **Next symbol**: while the toggle is on, a click or Enter on another symbol narrows to that one instead of only scrolling there.
+- **Markdown** narrows a heading to its section.
+- **From the keyboard**: `f` flips the toggle while the outline has focus, and **Structure: Toggle Narrow to Fold Region** can take a key in any keymap.
+- **From the [Project Map](/features/project-map/)**: a declaration card's **Open** opens its file narrowed to that declaration.
 
-While a buffer is narrowed, language-server support is suspended, and bookmarks, notes and breakpoints stop being saved until you widen. See [The Emacs editing model](/docs/editing#the-emacs-editing-model).
+## What narrowing means
+
+- **Real narrowing, as in Emacs**: search, replace, macros and Select All see only the region, and saving still writes the whole file.
+- **You always know**: an amber banner names the lines shown, such as *Narrowed to lines 32–36 of 81*, with a **Widen** button.
+- **The file's own line numbers** stay in the gutter, the status bar and the outline, and the outline mutes the rows outside the region.
+- **Widen any way** to end it: the banner, the status-bar badge or `C-x n w` in the Emacs keymap. The `C-x n` chords from [Emacs heritage](/features/emacs-heritage/) narrow too.
+- **While narrowed**, language-server features pause, and bookmarks, notes and breakpoints are not saved until you widen.
+
+See the [Emacs editing model guide](/docs/editing/#the-emacs-editing-model).

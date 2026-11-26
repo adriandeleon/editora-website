@@ -8,17 +8,37 @@ description: "Git through your own git: branch in the status bar, gutter change 
 alt: "The Commit window beside a Java file: one changed file, two untracked, and a commit message typed"
 ---
 
-Native Git that shells out to your installed `git`, no bundled library. In a [remote folder](/features/remote-sftp) it is the host's own `git`, over the same SSH connection with the host's credentials, and everything below works there too, clone and init included.
+Do your everyday Git work without leaving the editor. Editora runs your own installed `git`, so it behaves exactly like the command line, with your own config and credentials.
 
-- The **status bar** shows the current branch with ahead/behind counts and a dropdown to switch/create branches, pull, fetch, and push.
-- **Gutter change bars** mark added/modified/deleted lines vs HEAD. Click one for a card with the old and new lines, where you can revert or stage that hunk.
-- The **Commit** tool window groups staged / changed / untracked files with stage, unstage, discard, and a commit box, plus Amend, Commit and Push, Sign off and Undo Last Commit.
-- **Merges, rebases, cherry-picks and reverts in progress** show in the status bar and as a banner in the Commit window with Continue, Skip and Abort. Conflicted files get their own group and open in the three-way resolver; finishing a resolution stages the file.
-- **Pull modes** (fast-forward only, rebase, merge), Force Push with lease, Push to another remote, and **branch management** from the dropdown: rename, merge, rebase onto, set upstream, compare and delete.
-- The **Project tree colors files by Git status** (added, modified, deleted, renamed, untracked), with changed folders tinted.
-- The **Git Log** pages through the whole history, with a commit graph, an all-branches view, and a search by message, `author:`, `content:`, date and `path:`. Enter on a commit opens everything it changed as one review.
-- A **blame** gutter column that can ignore whitespace, follow moved lines, and walk a line back through earlier revisions.
-- Plus remotes, worktrees, tags, a stash list, and Apply / Create Patch.
-- **A transcript of what it ran.** The **Output** console has a **Git** tab holding every `git` command Editora ran on your behalf, with its output, exit code and duration. It logs the ones you asked for (commit, push, pull, checkout, stash, clone…) and leaves out the `status`/`diff` reads it re-runs on every tab switch, which would bury them. Clone, fetch, pull and push open the tab when they start and show Git's progress, with a Stop button.
+## See what changed
 
-On by default, and inert until `git` is found. Toggle it under Settings → Version Control → Git.
+- **The branch in the status bar**, with ahead and behind counts and a menu to switch or create branches, pull, fetch and push.
+- **Change bars in the gutter** mark added, changed and deleted lines. Click one to see the old lines and revert or stage that hunk.
+- **The Project tree is coloured by status**: added, modified, deleted, renamed and untracked files, with changed folders tinted.
+
+## Commit
+
+- **The Commit window** (`M-4` in the Emacs keymap) groups staged, changed and untracked files, with stage, unstage, discard and a message box.
+- **Commit options**: Amend, Commit and Push, Sign off, and Undo Last Commit.
+
+## Merge, rebase and sync
+
+- **Operations in progress**, such as a merge, rebase, cherry-pick or revert, show in the status bar and the Commit window with Continue, Skip and Abort.
+- **Conflicts** get their own group and open in the [three-way resolver](/features/diff-merge/). Finishing a resolution stages the file.
+- **Pull your way**, fast-forward only, rebase or merge, and push with lease or to another remote.
+- **Manage branches** from the status-bar menu: rename, merge, rebase onto, set upstream, compare and delete.
+- **Remotes, worktrees, tags, stashes and patches** each have their own commands.
+
+## Explore history
+
+- **The Git Log** (`C-x v S-l` in the Emacs keymap) pages through the whole history with a commit graph. Search by message, author, content, date or path, and press Enter on a commit to review everything it changed.
+- **Blame** (`C-x v g` in the Emacs keymap) shows who last changed each line. It can ignore whitespace, follow moved lines, and walk a line back through earlier revisions.
+
+## Know what it ran
+
+- **A Git transcript** in the Output console lists every command you asked for, with its output, exit code and duration. Clone, fetch, pull and push show progress there, with a Stop button.
+- **Remote folders work too.** In a [remote folder](/features/remote-sftp/), the host's own `git` runs over the same SSH connection.
+
+Nothing appears until `git` is found. The other keymaps' chords are on the [keybindings](/keybindings/) page.
+
+**On by default.** Turn it off in **Settings → Version Control → Git**. See the [Git guide](/docs/git/#git-integration).

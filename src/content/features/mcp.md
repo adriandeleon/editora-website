@@ -3,19 +3,19 @@ title: "MCP server"
 group: "Customization & extensibility"
 order: 8
 beta: true
-summary: "Embed a Model Context Protocol server in the running editor so an LLM agent (Claude Code, …) can observe live state and drive the command registry. Loopback-only, token-authed, off by default."
+summary: "Lets an AI agent such as Claude Code read what is open in Editora and act through its commands. Loopback only, protected by a token, off by default."
 description: "A loopback-only, token-authenticated MCP server inside Editora that lets an agent such as Claude Code read editor state and run commands. Off by default."
 alt: "Settings → MCP Server with the loopback MCP server turned on"
 ---
 
-Editora can run a small **Model Context Protocol** server inside the editor, so an LLM agent like Claude Code can see what you're working on and act through Editora's own commands.
+The MCP server lets an AI agent such as Claude Code work with the editor you have open. The agent sees your files, problems and Git status, and acts through Editora's own commands rather than behind its back.
 
-It's a **loopback-only** HTTP/JSON-RPC server with **bearer-token auth**, exposing fourteen tools:
+- **Reads live state.** Open files and tabs, buffer text and the selection, diagnostics, document symbols, Git status, TODOs, find in files, and the list of commands.
+- **Edits you can undo.** The agent changes buffers with undoable edits, saves them, and opens files inside the window's project.
+- **Runs commands** from the same list the palette uses. Trusting a folder and installing or enabling plugins stay your decisions: the agent cannot run those commands.
+- **Stays on this computer.** The server listens on loopback only and requires a token. The port and token change every time Editora starts.
+- **Keeps out of private places.** Edits and saves refuse files in Editora's config folder and in version-control folders such as `.git/`.
 
-- **Reads**: `list_open_files`, `list_tabs`, `read_buffer`, `get_selection`, `get_diagnostics`, `document_symbols`, `git_status`, `todo_scan`, `find_in_files`, `list_commands`.
-- **Writes**: `edit_buffer` (undoable str-replace edits) and `save_buffer`.
-- **Actions**: `open_file` (files inside the window's project, or already open there) and `execute_command`.
+While it runs, a status-bar **MCP** item copies a ready-to-paste `claude mcp add` command. **Settings → MCP Server** has the same **Copy Endpoint Command**, and **New Token** locks out every agent set up with the old token.
 
-So an agent can observe live state, make undoable edits, and drive the editor. `edit_buffer` and `save_buffer` refuse files in Editora's config folder and in version-control metadata such as `.git/`. The endpoint is written to `mcp-endpoint.json` in your config folder for discovery, and a status-bar **MCP** indicator shows when it's running (click to copy the connection command), and Settings → MCP Server shows the endpoint, with **Copy Endpoint Command** and **New Token**. It uses the JDK's built-in HTTP server, so there's no new dependency.
-
-It's **off by default** and guarded by a security-notice dialog. Enable it under Settings → MCP Server, or with the **Toggle MCP Server** command.
+**Off by default.** Turn it on in **Settings → MCP Server** or with **View: Toggle MCP Server**, and accept the security notice. See the [MCP server guide](/docs/mcp/#enabling-and-connecting).

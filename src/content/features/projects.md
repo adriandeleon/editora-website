@@ -3,25 +3,35 @@ title: "Projects"
 group: "Workspace & files"
 order: 1
 beta: false
-summary: "Single-folder workspaces, each in its <strong>own window</strong> with its own saved session, explored as a file tree or on the Project Map, started from a template, and carrying settings the team can commit."
-description: "Single-folder projects, each in its own window with a saved session, a file tree and Project Map, templates, and settings a team can commit."
+summary: "Single-folder workspaces, each in its <strong>own window</strong> with its own saved session, explored as a file tree or on the Project Map, with settings the team can commit."
+description: "Single-folder projects, each in its own window with a saved session, a file tree and Project Map, and settings a team can commit."
 alt: "A Java file open in the Editora project, with the project's folders in the Project tree on the right and the Git menu in the menu bar"
 ---
 
-Projects are VS Code-style single-folder workspaces: a root folder plus its **own saved session**, open files (with carets and pins), the active tab, folds, [editor-group layout](/features/editor-groups) and tool-window layout. Each project opens in its own window, and everything in a window acts on its own project. A folder on a remote host over SFTP is a project too, with its own window, tabs and trust (a server folder is trusted separately from a local one with the same path); reopening it asks to connect.
+A project is a folder that opens in its own window and remembers how you left it, so switching between repositories never mixes their files, tabs or settings.
 
-Open one with `C-x C-p`, switch with `C-x p`, and close to return to the global session. Bookmarks, notes and [run configurations](/features/run-configurations) are scoped per project. **On by default**; Settings → Workspace turns it off.
+## One window per project
+
+- **Open a folder** with `C-x C-p` in the Emacs keymap, or **Project: Open Folder…** in the palette; switch with `C-x p` or **Project: Switch…**.
+- **Its own session**: open files with their carets and pins, the active tab, folds, the [editor-group](/features/editor-groups/) layout and the tool windows all come back.
+- **Its own scope**: everything in a window acts on its project, and bookmarks, notes and [run configurations](/features/run-configurations/) belong to it.
+- **Remote folders** are projects too: a [folder on a server](/features/remote-sftp/) gets its own window, tabs and trust.
+- **Closing** a project returns you to the global session.
 
 ## Tree and map
 
-The Project tool window shows the project as a tree, with multi-select, drag-to-move and the file actions you expect. Its **Map** button opens the same project as a **[Project Map](/features/project-map)** in a window of its own: folders as columns on a canvas you can pan and zoom, code cards that stay tied to their rows, callers and references as connected cards, recent-change heat and trails. **Reveal in Map** on an editor tab or a tree row finds that file there. Both views share one context menu, so New, rename, delete, reveal, terminal, Local History, bookmarks, Personal Notes, Maven and Git actions work in either.
+The Project tool window shows the folder as a tree, with multi-select, drag-to-move and the file actions you expect. Its **Map** button opens the same project on the [Project Map](/features/project-map/), and both share one context menu, so New, rename, Local History, bookmarks, Git and the rest work in either.
 
-## Start from a template
-
-**New Project From Template** scaffolds a whole project and opens it in its own window, rather than pointing Editora at a folder you made yourself. Pick a multi-file [template](/features/file-templates), give the project a name and a location, and the new folder is created, registered as a project and opened on the template's main file. **Python Project** and **Node.js TypeScript Project** templates ship with it, and every other multi-file template, yours included, appears in the same picker.
+To start a project from an archetype or a template, see [Starting a project](/features/starting-a-project/).
 
 ## Settings you can commit
 
-A project can carry `.editora/settings.json` with values that override yours for anyone who opens that project: indentation, tab size, rulers, wrapping, trimming trailing whitespace and the final newline, the spell-check language, the command each build tool runs, the Java, Python and JavaScript debugger programs, and **which language server to run and whether to run it**. One repository can then use two-space indentation and a JDK 17 server while another uses tabs and a JDK 25 one, and nobody has to flip a global preference between them. The values apply once the folder is trusted, and `.editorconfig` still comes first. In a project window, Settings has a **User | Project** switch to edit them on the usual rows, and **Project: Edit Project Settings…** creates the file with an example.
+A project can carry `.editora/settings.json`, whose values override yours for anyone who opens it:
 
-Appearance, keymap and fonts stay personal, because checking out a repository should not rearrange somebody's editor.
+- **Editing**: indentation, tab size, rulers, wrapping, trailing whitespace, the final newline and the spell-check language.
+- **Tools**: the command each build tool runs, the Java, Python and JavaScript debugger programs, and the JDK and build tools the project uses.
+- **Language servers**: which one runs for a language, and whether it runs at all.
+
+One repository can then use two-space indentation and a JDK 17 server while another uses tabs and JDK 25, with no global setting to flip. The values apply once the folder is trusted, and `.editorconfig` still comes first. In a project window, Settings switches between **All projects** and **This project** at the top, and **Project: Edit Project Settings…** creates the file with an example. Appearance, keymap and fonts stay personal.
+
+**On by default.** Turn it off in **Settings → Workspace** (**Enable projects**). See the [Projects guide](/docs/workspace/#projects).

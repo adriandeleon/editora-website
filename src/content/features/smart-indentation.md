@@ -3,13 +3,26 @@ title: "Smart indentation"
 group: "Editing"
 order: 2
 beta: false
-summary: "Per-language auto-indent on <kbd>Enter</kbd> (block openers, matching-pair stanzas, closer re-alignment), plus smart backspace that clears the indent in one press (one level at a time in Python and YAML)."
+summary: "<kbd>Enter</kbd> puts the next line where the language expects it, closers line up with their openers, and Backspace clears an indent in one press."
 description: "Per-language indentation on Enter and on typing a closer, PEP 8 hanging indents for Python, and a Backspace that clears the indent in one press."
 alt: "A Python file whose new line under a for statement is indented automatically"
 ---
 
-Enter follows each language's rules: it keeps the current line's indent, adds a level after a block opener (braces, `:` in Python/YAML, `do`/`then` in shell, an open tag in XML/HTML…), and splits a matching pair into an indented stanza with the closer dropped below. Typing a closer (`)]}` or a keyword like `end`/`fi`/`done`) re-aligns the line to its opener. In shell scripts the indent follows the script's structure: a `case` pattern indents its body, `;;` stays at the body's level (as shfmt lays it out), `fi`, `done` and `esac` line up with the block they close, and a here-document's body is left as it is while its closing delimiter is unindented so bash recognises it. In Python, typing the `:` of `else`, `elif`, `except` or `finally` lines the clause up with its `if` or `try` (`finally` always with its `try`), and a `case` lines up with the `case` before it, while the first `case` stays inside its `match`. Enter after `return`, `pass`, `raise`, `break` or `continue` steps out a level, the line after a wrapped statement goes back to the statement's indent, inside an open bracket the next line hangs one level in or lines up with the first argument, as PEP 8 shows, and Enter between `"""` and `"""` opens an indented line between the quotes. **Tab** on a Python line gives it the indent Enter would.
+You spend less time fixing whitespace: each new line starts at the right depth for the language you are writing, and Backspace takes an indent away in one press.
 
-In brace languages such as JavaScript, TypeScript and Java, a `case` label indents its body, the one statement under a brace-less `if`, `for`, `while` or `else` is indented and the next line steps back, an open argument list (`foo(a,`) indents the next argument, a line starting with `.` continues a call chain, and Enter inside a `/** … */` comment continues it with ` * `.
+- **Enter keeps the indent** of the current line, and adds a level after a block opener such as `{`, a trailing `:` in Python or YAML, `do` or `then` in shell, or an open tag.
+- **Pairs split into a stanza.** Enter between `{` and `}` puts the caret on an indented line with the closer dropped below.
+- **Closers line up.** Typing `)`, `]`, `}` or a closing keyword such as `end`, `fi` or `done` moves the line back to its opener.
 
-**Smart backspace** clears a line's indentation in one press, and on a blank, auto-indented line, a single Backspace jumps back to the end of the previous line. In Python and YAML, where indentation is syntax, it removes one indent level instead and never joins the line above. The indent unit (tabs vs spaces) is inferred from the file; in Python only lines that start a statement count, so PEP 8 hanging indents do not change it, and a file that mixes tabs and spaces the way Python rejects says "mixed indent" in the status bar's Tab segment.
+## In each language
+
+- **Python** follows PEP 8: `else`, `except` and `finally` line up with their `if` or `try`, Enter after `return` or `pass` steps out a level, and an open bracket gives a hanging indent. **Tab** gives a line the indent Enter would.
+- **Shell scripts** indent the way shfmt lays them out: `case` bodies indent, `fi`, `done` and `esac` line up, and a here-document's closing word stays at the margin so bash still finds it.
+- **Brace languages** such as Java, JavaScript and TypeScript indent a `case` body, the one statement under a brace-less `if`, the next argument of an open call, and a `.` call chain. Enter inside `/** … */` continues it with ` * `.
+
+## Backspace and indent style
+
+- **Smart Backspace** clears a line's whole indent in one press, and on a blank auto-indented line jumps back to the end of the line above. In Python and YAML, where indentation is syntax, it removes one level at a time.
+- **Tabs or spaces** are read from the file. A Python file that mixes them the way Python rejects says "mixed indent" in the status bar.
+
+See the [Editing guide](/docs/editing/#auto-indent).

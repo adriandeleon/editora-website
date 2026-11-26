@@ -3,25 +3,35 @@ title: "Build tools"
 group: "Run & debug"
 order: 5
 beta: false
-summary: "Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka each get a tasks tool window and a streaming console."
+summary: "Maven, Gradle, npm, Cargo, Go, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka each get a tasks tool window and a streaming console."
 description: "Tasks windows and streaming consoles for Maven, Gradle, npm, Cargo, Go, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka."
 alt: "A pom.xml beside the Maven tool window, listing its lifecycle phases and profiles"
 ---
 
-Each detected build tool gets its own **tasks tool window** (its stripe appears when the tool's marker file is found): a browsable tree of the tool's goals, scripts, or targets with a mini toolbar (Run / Reload / Stop / Run custom…). Double-click or Enter runs a task, and the output streams to a separate per-tool console window. A searchable actions popup is also available from the command palette (*Maven: Show Actions*, and so on).
+Run a project's builds without memorising its commands. Each build tool Editora finds gets a **tasks tool window**: a tree of its goals, scripts or targets, where a double-click or Enter runs one and the output streams to that tool's console. The window's stripe appears as soon as the tool's marker file is found, and the list loads instantly, offline.
 
-- **Maven** (`pom.xml`): lifecycle phases, the pom's declared profiles (checkable, composing via `-P`), and each plugin's bound goals, plus a *Run custom…* box. Prefers `./mvnw`, else `mvn`. A discovered-JDK selector controls Maven tasks, classpath resolution, Run, Debug, and before-launch steps; a run configuration can override it.
-- **npm** (`package.json`, the **Package Scripts** window): one entry per `scripts` name (run as `<pm> run <name>`) plus `install` / `ci`. Uses the project's package manager (npm/yarn/pnpm/bun), found at the workspace root for a monorepo member. A missing manager says how to get it, a failed script with no `node_modules` suggests installing first, and the **Package Scripts** tab of the Output window shows the script's colours and the Node.js it runs on, the same one Run picks.
-- **Cargo** (`Cargo.toml`): the standard subcommands, any `[[bin]]` / `[[example]]` targets, and a `--release` toggle.
+The mini toolbar has **Run**, **Reload**, **Stop** and **Run custom…**, and each tool's actions are in the palette as a searchable popup, such as **Maven: Show Actions**.
+
+## What each tool lists
+
+- **Maven** (`pom.xml`): lifecycle phases, the pom's profiles as checkboxes, and each plugin's goals. It prefers `./mvnw`.
+- **Gradle** (`build.gradle`, `build.gradle.kts`): the common tasks, plus **Load all tasks…**. It prefers `./gradlew`.
+- **npm** (`package.json`, the **Package Scripts** window): every script, plus `install` and `ci`, run with the project's own npm, pnpm, yarn or bun.
+- **Cargo** (`Cargo.toml`): the standard subcommands, each `[[bin]]` and `[[example]]`, and a `--release` toggle.
 - **Go** (`go.mod`): the standard subcommands over the whole module.
-- **Gradle** (`build.gradle[.kts]`): the common tasks plus *Load all tasks…*. Prefers `./gradlew`.
-- **sbt** (`build.sbt`): the common tasks plus *Load all tasks…* with each subproject's.
-- **Mill** (`build.mill`, `build.sc`): every module's compile and test plus *Load all tasks…* with each module's. Prefers `./mill`.
+- **sbt** (`build.sbt`): the common tasks, plus **Load all tasks…** with each subproject's.
+- **Mill** (`build.mill`, `build.sc`): every module's compile and test, plus **Load all tasks…**. It prefers `./mill`.
 - **Scala CLI** (`project.scala`): its commands over the project folder.
-- **Clojure CLI** (`deps.edn`): the aliases that run something (`-M:test`, `-X:build`, `-T:build`), plus `-P`, the dependency tree and the classpath.
-- **Leiningen** (`project.clj`): the common `lein` tasks (`run`, `test`, `uberjar`, …).
-- **Babashka** (`bb.edn`): one entry per task in `:tasks`.
+- **Clojure CLI** (`deps.edn`): the aliases that run something, such as `-M:test` or `-X:build`, plus the dependency tree and classpath.
+- **Leiningen** (`project.clj`): the common `lein` tasks, such as `run`, `test` and `uberjar`.
+- **Babashka** (`bb.edn`): one entry per task.
 
-A Java project's own **JDK, Maven and Gradle** come from its `.sdkmanrc`, its `.editora/settings.json`, or the pins [jkit](https://jkit-project.dev/) reads (`jkit.toml`, `.tool-versions`, `.java-version`): it builds, runs, debugs and is analysed on them. **Tools ▸ Java Toolchain** sets them, and with jkit installs, pins, syncs, upgrades and prunes JDKs, Maven, Gradle, sbt and GraalVM.
+A missing package manager says how to get it, and a failed npm script with no `node_modules` suggests installing first.
 
-Discovery parses the marker file directly (no shell-out, no new dependency), so it's instant and offline. **On by default**, each inert until its marker is found. See the [build tools guide](/docs/build-tools).
+## The project's JDK, Maven and Gradle
+
+A Java project builds, runs, debugs and is analysed on the versions it names, so everyone on the team uses the same ones. Editora reads them from the project's settings or from the files [jkit](https://jkit-project.dev/) reads: `jkit.toml`, `.sdkmanrc`, `.tool-versions` and `.java-version`.
+
+**Tools ▸ Java Toolchain** sets the project's JDK, Maven, Gradle, sbt and GraalVM. With jkit installed, it also installs, syncs, upgrades and removes them.
+
+**On by default.** Turn any tool off in **Settings → Build Tools**. See the [Build tools guide](/docs/build-tools/).

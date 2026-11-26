@@ -8,10 +8,14 @@ description: "Run your own command-line tools on the current file or selection, 
 alt: "The External Tools: Run picker listing three tools and what each does with its output"
 ---
 
-Define your own command-line tools in **Settings → External Tools** and run them on the current file or buffer, IntelliJ-style.
+Turn any command-line tool into an Editora command: run a checker on the current file, or pipe the selection through `jq`, `sort` or `sed` and put the result back.
 
-- Command and arguments support `$Name$` macros: `$FilePath$`, `$FileDir$`, `$FileName$`, `$FileNameWithoutExtension$`, `$SelectedText$`, `$LineNumber$`, `$ColumnNumber$`, `$ProjectFileDir$`.
-- A tool can pipe the **selection** or the **whole buffer** to the command's stdin.
-- Each tool chooses what to do with the output: show it in a read-only **console**, **replace the selection**, **replace the whole buffer** (undoable), or **insert at the caret**. That covers both "run and see the output" and text transforms with filters like `jq`, `sort`, or `sed`.
+- **Define a tool** in **Settings → External Tools** with its command, arguments, input and output. The list starts empty.
+- **Fill in the context** with macros such as `$FilePath$`, `$SelectedText$` and `$LineNumber$`, eight in all, for the current file, selection, caret and project.
+- **Send it text.** A tool can pipe the selection or the whole buffer to the command's standard input.
+- **Choose where the output goes:** a read-only console, the selection, the whole buffer as one undoable edit, or the caret.
+- **Run it like any command.** Each tool is its own palette command that you can bind to a key, and **External Tools: Run…** and **External Tools: Rerun Last** pick or repeat one.
 
-Every tool you define becomes its own palette command (and is bindable to a key), plus there's **External Tools: Run…** (a picker) and **Rerun Last**. Tools run off the UI thread with a timeout. Available by default (the list starts empty) and off in Simple UI mode. See the [external tools guide](/docs/external-tools).
+Tools run in the background with a time limit, so a slow one never freezes the editor. External tools are off in [Simple UI mode](/features/simple-ui-mode/).
+
+See the [External tools guide](/docs/external-tools/#macros).

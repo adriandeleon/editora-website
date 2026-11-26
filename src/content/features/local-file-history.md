@@ -8,14 +8,25 @@ description: "Snapshots of your files on save, auto-save and external reloads, t
 alt: "The Local History window: a Java file's saved versions, with one compared against the current text"
 ---
 
-Editora snapshots your local files over time, on save, on auto-save, and before it reloads a file that changed outside the editor. It's independent of any version control, so you get a safety net even on files that aren't in Git.
+---
+---
+Editora keeps earlier versions of your files on this machine, so a bad edit, a lost afternoon or an accidental delete can be undone even in a folder that is not in Git.
 
-Open a file's timeline from the **Local History** tool window (`M-g l`, or Alt+Shift+H in the other keymaps). Each revision shows its label, time, and the reason it was recorded, with the newest tagged *Current* when it equals the editor's text and *Latest* otherwise. Select one for a diff against the current file, then **Restore** the whole revision or use the **apply-chevrons to copy individual fragments** back in (undoable).
+## What it keeps
 
-As in IntelliJ IDEA, it has:
+- **Every save and auto-save** becomes a revision, and the version you started the session from is kept too.
+- **Before anything replaces your text**: an outside change, a revert, Replace in Files, an AI agent's write or a Git discard each keep a copy first.
+- **Deleted files**: deleting a file in Editora snapshots it first, so it can come back.
 
-- **Named snapshots** with *Put Label* (`history.putLabel`), shown bold in the list.
-- A **filter** over the revisions plus a project-wide **Recent Changes** picker (`history.recentChanges`).
-- A **folder view**: right-click a folder in the Project tree to list every file under it with history, **deleted files struck through and badged**, and restore a revision to recreate a file. Deleting a file in Editora snapshots it first, so an accidental delete is recoverable.
+## Look back and restore
 
-Snapshots are deduped by content and stored gzip-compressed under your config folder, pruned by configurable limits (revisions per file, age, size per project). On by default, local-only, and off in Simple UI mode.
+- **The Local History window** opens with `M-g l` in the Emacs keymap, `Alt+Shift+H` in the others (`Ctrl+Cmd+H` on macOS), and lists the file's revisions with when and why each was recorded.
+- **Compare** any revision with the current file side by side, and the diff follows your edits.
+- **Restore** the whole revision, or copy back single changes with the arrows in the diff. Both are undoable, and nothing is written until you save.
+- **Labels**: **Local History: Put Label…** names a moment, such as "before the refactor", and labelled versions are kept longer.
+- **Local History: Recent Changes…** lists the project's latest revisions across files.
+- **A folder's history**: right-click a folder in the Project tree to see every file under it, deleted ones struck through, and bring one back.
+
+History follows a file when you rename or move it, and old revisions are pruned by limits you set.
+
+**On by default.** Turn it off in **Settings → Workspace → Local History**. See the [Local History guide](/docs/workspace/#local-file-history).

@@ -3,14 +3,18 @@ title: "Undo History"
 group: "Editing"
 order: 7
 beta: false
-summary: "An in-session timeline of document checkpoints (one per typing burst). Jump back to any recent state from a filterable popup (<kbd>M-g v</kbd>) or the tool window (<kbd>M-g u</kbd>)."
+summary: "A timeline of the file as you edit it, one checkpoint per burst of typing. Jump back to any recent state from a filterable popup, without pressing undo forty times."
 description: "A timeline of in-session checkpoints, one per typing burst. Jump back to any earlier state of the buffer from a popup or a tool window."
 alt: "The Undo History window beside a Python file, listing each edit with its time"
 ---
 
-Editora keeps an in-session **timeline of checkpoints** as you edit, one per typing burst, finer-grained than save-based [Local History](/docs/workspace#local-file-history).
+Get back to how the file looked a few minutes ago without pressing undo over and over. Editora keeps a checkpoint for each burst of typing, so you can pick the state you want from a list.
 
-- The **popup** (`undoHistory.jump`, `M-g v`) lists the active buffer's checkpoints, each with a caret-line preview and capture time, and filters as you type. Pick one to jump back to that state (a single undoable restore). It's the fast, keyboard-driven path.
-- The **Undo History tool window** (`M-g u`) shows the same timeline; double-click or Enter to jump back.
+- **Pick a checkpoint** with **Undo History: Pick Checkpoint…** (`M-g v` in the Emacs keymap). Each entry shows the caret line and the time, and the list filters as you type.
+- **Undo the jump** if you picked the wrong one: restoring a checkpoint is a single undoable step.
+- **Keep it docked** in the **Undo History** tool window (`M-g u` in the Emacs keymap), where double-click or Enter jumps back. Its side-stripe button is off until you turn it on in **Settings → Tool Windows**.
+- **Up to 50 checkpoints** per file, within a shared memory budget, kept for the session.
 
-It's session-only and disabled for very large files. The tool-window stripe is off by default (the popup is the primary entry point); enable it in Settings → Tool Windows if you want it docked. This complements the **word/line-level undo** granularity, where one undo (`C-/`, or `Ctrl+Z` in the other keymaps) undoes a word or line rather than a whole burst.
+Undo History is finer-grained than [Local History](/features/local-file-history/), which keeps saved versions across sessions. It is off for very large files. The other keymaps run both commands from the palette.
+
+See the [Undo History guide](/docs/undo-history/#the-popup-recommended).
