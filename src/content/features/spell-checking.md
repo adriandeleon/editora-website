@@ -4,6 +4,7 @@ group: "Editing"
 order: 5
 beta: false
 summary: "Red wavy underlines with right-click suggestions, Add-to-Dictionary, and Ignore: full text for prose, comments &amp; strings for code, set per file type. Pure-Java Hunspell; English, Spanish, French."
+description: "Pure-Java Hunspell spell checking for prose, comments and strings, in English, Spanish and French, with suggestions and a technical dictionary."
 alt: "A Markdown paragraph with three misspelled words underlined in red"
 ---
 

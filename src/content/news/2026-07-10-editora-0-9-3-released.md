@@ -6,7 +6,7 @@ version: "0.9.3"
 ---
 
 **Editora 0.9.3** is out (0.9.2 shipped a few days earlier). Grab a native
-installer from the [releases page](https://github.com/adriandeleon/Editora/releases/latest),
+installer from the [releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.3),
 now including a portable Linux `.tar.gz` alongside the `.deb`.
 
 The headline additions:

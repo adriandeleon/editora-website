@@ -1,6 +1,7 @@
 ---
 title: "Editora 0.18.5: faster Java completion and safer editing"
-description: "Java member completion appears immediately and stale requests are cancelled, Maven can run on a JDK you select, the Run window opens on every run, and save, LSP, Git, diff, and merge operations refuse stale state."
+seoTitle: "Editora 0.18.5: faster Java completion"
+description: "Java member completion appears at once, Maven runs on a JDK you pick, the Run window opens on every run, and save, LSP, Git and merge refuse stale state."
 date: 2026-09-19
 version: "0.18.5"
 ---

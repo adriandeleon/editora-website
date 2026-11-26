@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 9
 beta: false
 summary: "Snapshots of your files over time, taken on save, auto-save, and before an external reload, so you can diff or restore an earlier version with no Git required."
+description: "Snapshots of your files on save, auto-save and external reloads, to diff or restore an earlier version, with labels and deleted-file recovery. No Git needed."
 alt: "The Local History window: a Java file's saved versions, with one compared against the current text"
 ---
 
@@ -11,7 +12,7 @@ Editora snapshots your local files over time, on save, on auto-save, and before 
 
 Open a file's timeline from the **Local History** tool window (`M-g l`, or Alt+Shift+H in the other keymaps). Each revision shows its label, time, and the reason it was recorded, with the newest tagged *Current* when it equals the editor's text and *Latest* otherwise. Select one for a diff against the current file, then **Restore** the whole revision or use the **apply-chevrons to copy individual fragments** back in (undoable).
 
-It's grown closer to IntelliJ:
+As in IntelliJ IDEA, it has:
 
 - **Named snapshots** with *Put Label* (`history.putLabel`), shown bold in the list.
 - A **filter** over the revisions plus a project-wide **Recent Changes** picker (`history.recentChanges`).

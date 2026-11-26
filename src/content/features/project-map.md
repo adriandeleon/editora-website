@@ -4,10 +4,11 @@ group: "Workspace & files"
 order: 0
 beta: false
 summary: "See a project as a <strong>map</strong> in a window of its own: folders as columns on a canvas, code cards you navigate like the editor, callers, references, hierarchies and a symbol graph as connected cards, branch review, dependencies and hotspots, and trails that walk a team through the code."
+description: "See a project as a map in its own window: folder columns on a canvas, code cards, callers and hierarchies as connected cards, hotspots and trails."
 alt: "The Project Map: folder columns joined by curves, a Java file selected and its Structure column"
 ---
 
-The Project Map is a second way to look at a [project](/features/projects), beside the file tree. It opens in a **window of its own** (place it next to the editor window, or on another screen) and lays the project out on a canvas you can pan and zoom. Open it with the **Map** button in the Project tool window, `Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs), or *Project: Open / Close Project Map Window*. `Alt-F1` reveals the file you are editing on it.
+The Project Map is a second way to look at a [project](/features/projects), beside the file tree. It opens in a **window of its own** (place it next to the editor window, or on another screen) and lays the project out on a canvas you can pan and zoom. Open it with the **Map** button in the Project tool window, `Alt-Shift-1` (`Cmd-Shift-1` on macOS, `C-c o m` in Emacs), or *Project: Open / Close Project Map Window*. `Alt-F1` (`C-c o r` in the Emacs keymap) reveals the file you are editing on it.
 
 ## Columns on a canvas
 
@@ -57,4 +58,4 @@ Save the map as a **working set** (open folders, selection, zoom, cards and pins
 
 Everything works from the keyboard: arrows follow the flow, typing a name jumps to it, `/` filters a column, `Alt-Left` / `Alt-Right` step back and forward through the places you visited, and `Alt`+arrows move a focused card, `Ctrl-Shift`+arrows jump between cards, and every row and button of the Map is a command you can bind to a key. **Print…** and **PDF…** output the whole map, split across pages when it is large, and the PDF is searchable; **Export** saves it as a PNG or an SVG. Screen readers read the rows on screen as a tree.
 
-See the [Project Map docs](/docs/workspace#project-map) for every option and key.
+See the [Project Map docs](/docs/project-map) for every option and key.

@@ -32,7 +32,7 @@ const CROPS = {
   "debug-settings-go": ["debug-settings-go", { left: 533, top: 670, width: 1592, height: 592 }],
   "debug-history-list": ["debug-history-list", { left: 640, top: 170, width: 1280, height: 600 }],
   "debug-settings-cpp": ["debug-settings-cpp", { left: 533, top: 670, width: 1592, height: 945 }],
-  "debug-settings-languages": ["debug-settings-languages", { left: 533, top: 670, width: 1592, height: 775 }],
+  "debug-settings-languages": ["debug-settings-languages", { left: 533, top: 670, width: 1592, height: 1150 }],
   "debug-triggered-breakpoint": ["debug-triggered-breakpoint", { left: 0, top: 0, width: 2560, height: 1270 }],
   "debug-breakpoint-groups": ["debug-breakpoint-groups", { left: 0, top: 0, width: 2560, height: 1270 }],
   "debug-add-logpoint": ["debug-add-logpoint", { left: 0, top: 0, width: 2560, height: 1270 }],

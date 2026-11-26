@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 2
 beta: false
 summary: "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written."
+description: "Create a Maven project from an archetype, git init a folder, and add any of about fifty file types from the Project tree with the right package."
 alt: "The New File From Template picker with two multi-file templates: HTML Page + CSS and Python Project"
 ---
 

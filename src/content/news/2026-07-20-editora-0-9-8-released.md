@@ -1,12 +1,12 @@
 ---
 title: "Editora 0.9.8: GitHub, without a token"
-description: "Review and check out pull requests, submit reviews, and jump from a failed CI log straight to the line, all through your own gh CLI. Plus a smarter test runner and gdb-style debug controls."
+description: "Review and check out pull requests and jump from a failed CI log to the line, all through your own gh CLI. Plus a smarter test runner and gdb-style controls."
 date: 2026-07-20
 version: "0.9.8"
 ---
 
 **Editora 0.9.8** brings GitHub into the editor. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.8).
 
 **GitHub, via your own `gh` CLI.** Editora never handles a token. It shells out
 to the authenticated [`gh`](https://cli.github.com) you already have, the same

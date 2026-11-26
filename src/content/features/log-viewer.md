@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 11
 beta: false
 summary: "Open a log file, a <code>.gz</code> log or a live stream from Docker, Kubernetes, journald or SSH for severity highlighting, Follow, filters by level, pattern and time, a summary, and logs merged by time."
+description: "A log mode with severity colours, Follow, filters by level, pattern and time, summaries, merged logs, and live streams from Docker, Kubernetes or SSH."
 alt: "A .log file in View mode with levels coloured, a filter box, and an error's stack trace highlighted"
 ---
 

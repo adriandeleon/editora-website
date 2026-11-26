@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 13
 beta: false
 summary: "Unsaved edits, including untitled buffers, are kept while you work and offered back on the next launch if Editora did not close normally. Restoring never writes to your files."
+description: "Editora keeps a recovery copy of unsaved edits, untitled buffers included, and offers them back as unsaved tabs after a crash."
 alt: "Settings → Workspace with \"Keep a recovery copy of unsaved edits\" turned on"
 ---
 

@@ -7,7 +7,7 @@ version: "0.15.0"
 
 **Editora 0.15.0** is out, with **4 new features, 5 changes and 5 fixes**, plus a
 printing path that is roughly twice as fast. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.15.0).
 
 Several of the fixes are for things that were wrong where you could not
 easily look: a print path whose failure the on-screen preview clips away, a menu

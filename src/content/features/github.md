@@ -4,6 +4,7 @@ group: "Git & diff"
 order: 2
 beta: false
 summary: "Review and check out pull requests, submit reviews, open a file on GitHub at the caret line, and jump from a failed CI log straight to the offending line. Uses your own <code>gh</code> CLI, so Editora never handles a token."
+description: "Review and check out pull requests, submit reviews, follow CI checks and open failed logs at the line, all through your own signed-in gh CLI."
 alt: "The GitHub tool window listing a repository's pull requests, with Issues and Runs tabs"
 ---
 

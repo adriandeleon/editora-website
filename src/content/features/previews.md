@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 7
 beta: false
 summary: "Open a data or config file and get a rendered or plain-English preview: JSON/YAML/TOML/XML trees, OpenAPI docs, and decoded systemd, ssh, Dockerfile, fstab, crontab, and GitHub Actions files."
+description: "Readable previews of JSON, YAML, TOML and XML as trees, OpenAPI specs as API docs, and crontab, systemd, ssh, fstab and Dockerfile files in plain English."
 alt: "A PNG image open in the image viewer, with zoom and Fit controls"
 ---
 

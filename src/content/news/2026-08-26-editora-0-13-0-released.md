@@ -7,7 +7,7 @@ version: "0.13.0"
 
 **Editora 0.13.0** is out. It is a code-navigation release that closes
 four gaps. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.13.0).
 
 Navigation is judged on two things: **reach**, whether the thing can be found at
 all, and **flow**, whether you can jump without losing your place. Editora's

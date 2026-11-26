@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 8
 beta: true
 summary: "Edit files on a remote host over SSH/SFTP, each remote folder a project in its own window, and run Git, builds, tests, language servers and debuggers on the host, in a container, or in a WSL distribution."
+description: "Edit a remote folder over SSH and SFTP as a project, and run Git, builds, tests, language servers and debuggers on the host, in a container or in WSL."
 alt: "The Connect to SFTP form with host, port, user, authentication, key file and path fields"
 ---
 

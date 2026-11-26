@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.9.7: performance and polish"
-description: "Work that was happening on the UI thread moves off it, so typing, scrolling, and zooming stay smooth, plus colored consoles, a project-grouped Bookmarks and Notes, and a palette that shows what it's hiding."
+description: "Work moves off the UI thread so typing, scrolling and zooming stay smooth, plus colored consoles, project-grouped Bookmarks and Notes, and a clearer palette."
 date: 2026-07-18
 version: "0.9.7"
 ---
@@ -8,7 +8,7 @@ version: "0.9.7"
 **Editora 0.9.7** is about how the editor feels. It finds the places where
 routine work was happening on the UI thread and moves it off, and adds a round
 of visual polish. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.7).
 
 **Performance.** Opening the first file of a language no longer freezes the
 editor while its language server starts up, because that work moved to a

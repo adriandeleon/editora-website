@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.10.0: a look of its own, and two files on screen at once"
+seoTitle: "Editora 0.10.0: its own look and split editors"
 description: "Editora Light and Dark, a rebuilt Settings, a menu bar, editor groups that nest and persist, shareable run configurations, and per-project settings."
 date: 2026-08-03
 version: "0.10.0"

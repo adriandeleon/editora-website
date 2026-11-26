@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.27.0: signed downloads and a Project Map for exploring code"
+seoTitle: "Editora 0.27.0: signed downloads, Project Map"
 description: "A signed and notarized macOS app, signed Linux downloads, Project Map working sets and trails, ESLint and Prettier, Python quick fixes, Java toString() values."
 date: 2026-11-05
 version: "0.27.0"

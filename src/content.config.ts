@@ -36,6 +36,9 @@ const news = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
   schema: z.object({
     title: z.string(),
+    // A shorter title for the <title> tag when the visible one is too long
+    // for search results; the page's heading keeps `title`.
+    seoTitle: z.string().optional(),
     description: z.string().optional(),
     date: z.coerce.date(),
     version: z.string().optional(),
@@ -52,6 +55,8 @@ const features = defineCollection({
     order: z.number().default(100),
     beta: z.boolean().default(false),
     summary: z.string(), // HTML — the card body on the home page
+    // Plain text, at most 160 characters: the page's meta description.
+    description: z.string().max(160).optional(),
     alt: z.string().optional(), // the hero screenshot's alt text
   }),
 });

@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 6
 beta: false
 summary: "A 3-mode preview for Graphviz DOT (<code>.dot</code>/<code>.gv</code>) and PlantUML (<code>.puml</code>) files via the <code>dot</code> / <code>plantuml</code> CLIs, with export to SVG / PNG / PDF."
+description: "Graphviz DOT and PlantUML files get an Editor, Split and Preview view rendered by dot and plantuml, with export to SVG, PNG and PDF."
 alt: "A Graphviz DOT file in Split view, with the rendered graph beside its source"
 ---
 

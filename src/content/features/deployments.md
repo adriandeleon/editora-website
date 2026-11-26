@@ -4,7 +4,8 @@ group: "Run & debug"
 order: 6
 beta: true
 summary: "Keep the project here and run it on an SSH host. Before each run, Editora copies what changed to a folder there, then runs or debugs the program in that copy."
-alt: "The Deployments window with a staging deployment: host, user, folder on the host, Leave out and options"
+description: "Edit a project locally and run or debug it on an SSH host: Editora copies only what changed to a folder there before each run."
+alt: "The Deployments window with a staging deployment: host, user, authentication, folder on the host, Leave out and options"
 ---
 
 A **deployment** lets you edit a project on this machine and run its programs on another one: a server with the database, a GPU box, or a machine with the right operating system. The sources, language servers, Git and Local History stay here. It is the reverse of a [remote folder](/features/remote-sftp), where the project itself lives on the host.

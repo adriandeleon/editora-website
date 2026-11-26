@@ -4,7 +4,8 @@ group: "Workspace & files"
 order: 16
 beta: false
 summary: "Open, edit and save GnuPG-encrypted <code>.gpg</code>, <code>.pgp</code> and <code>.asc</code> files as the text inside them, with your own <code>gpg</code> and keyring. The plain text never reaches the disk."
-alt: "The recipient picker with two people chosen, a Format menu and an Encrypt for 2 People button"
+description: "Edit GnuPG-encrypted .gpg, .pgp and .asc files as their plain text, with your own gpg and keyring. The plain text never reaches the disk."
+alt: "Encrypting README.md: the recipient picker with two people chosen, a Format menu and an Encrypt for 2 People button"
 ---
 
 Open `notes.md.gpg` and you edit a Markdown file, with Markdown highlighting and preview. Save encrypts it again, for the same people and in the same format, before anything reaches the disk; a save that can't be encrypted writes nothing and says why. Editora uses the `gpg` you already have, with your keyring, trust settings, smartcards and passphrase cache, and never asks you to export a key.

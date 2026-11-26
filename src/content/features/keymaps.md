@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 2
 beta: false
 summary: "Pick <strong>Emacs</strong>, <strong>CUA</strong>, <strong>Sublime Text</strong>, <strong>VS Code</strong>, or <strong>IntelliJ IDEA</strong>. Switch live with no restart, or rebind any command yourself in the built-in keybinding editor (multi-key chords like <kbd>C-x C-s</kbd> supported)."
+description: "Five complete keymaps (Emacs, CUA, Sublime Text, VS Code, IntelliJ IDEA), switched live with no restart, plus a keybinding editor for multi-key chords."
 alt: "The Keymap: Select picker offering Emacs, CUA, Sublime Text, Visual Studio Code and IntelliJ IDEA"
 ---
 

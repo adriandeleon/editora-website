@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.25.0: Java closer to an IDE, a lightbulb, Report a Problem"
+seoTitle: "Editora 0.25.0: Java closer to an IDE"
 description: "Java refactorings, Generate, Smart Type completion, Lombok, format on save, a code-action lightbulb in the gutter, Doctor update checks, and Report a Problem."
 date: 2026-10-26
 version: "0.25.0"
@@ -49,7 +50,7 @@ private. Download it from the
   commands by their IntelliJ and VS Code names, so "Reformat Code" or
   "Go to Test" finds the right one.
 
-[More about Java](/docs/lsp#changing-the-code).
+[More about Java](/docs/java).
 
 ## In the editor
 

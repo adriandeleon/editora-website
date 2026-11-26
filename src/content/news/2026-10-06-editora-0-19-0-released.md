@@ -1,6 +1,7 @@
 ---
 title: "Editora 0.19.0: faster on large files, safer with untrusted ones"
-description: "Editora 0.19.0 makes highlighting incremental, opens large files without freezing, lets a debugged Java program read its input, and restricts what an opened file, repository, or link is allowed to do."
+seoTitle: "Editora 0.19.0: faster on large files, and safer"
+description: "Incremental highlighting, large files that open without freezing, input for a debugged Java program, and limits on what an untrusted file or link can do."
 date: 2026-10-06
 version: "0.19.0"
 ---

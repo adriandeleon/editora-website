@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 6
 beta: false
 summary: "New File From Template: single- or multi-file scaffolds that ask for their variables (author, date, file name, …)."
+description: "New File From Template: 37 bundled single- and multi-file templates that ask for their variables, plus templates of your own."
 alt: "The New File From Template picker listing Java, HTML, Markdown, Python and shell templates"
 ---
 

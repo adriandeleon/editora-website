@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 6
 beta: false
 summary: "The default layout: menu bar, toolbar, tabs, tool windows, gutter, minimap, and status bar, with every feature available."
+description: "Editora's default layout: menu bar, toolbar, tabs, tool windows, gutter, minimap and status bar, with every feature available."
 alt: "The full IDE: a Java file with the Project tree on the right and the Git Log window below"
 ---
 

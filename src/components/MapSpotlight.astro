@@ -78,8 +78,8 @@ const points = [
       data-lb-caption={hero.caption}
       data-lb-alt={hero.alt}
     >
-      <img class:list={{ "v-light": hero.dark }} src={hero.src} alt={hero.alt} width="1360" height="760" loading="lazy" decoding="async" />
-      {hero.dark && <img class="v-dark" src={hero.dark} alt={hero.alt} width="1360" height="760" loading="lazy" decoding="async" />}
+      <img class:list={{ "v-light": hero.dark }} src={hero.src} alt={hero.alt} width={hero.width} height={hero.height} loading="lazy" decoding="async" />
+      {hero.dark && <img class="v-dark" src={hero.dark} alt={hero.alt} width={hero.width} height={hero.height} loading="lazy" decoding="async" />}
     </a>
     <figcaption>{hero.caption}</figcaption>
   </figure>
@@ -112,8 +112,8 @@ const points = [
               data-lb-caption={s.caption}
               data-lb-alt={s.alt}
             >
-              <img class:list={{ "v-light": s.dark }} src={s.src} alt={s.alt} loading="lazy" decoding="async" />
-              {s.dark && <img class="v-dark" src={s.dark} alt={s.alt} loading="lazy" decoding="async" />}
+              <img class:list={{ "v-light": s.dark }} src={s.src} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" />
+              {s.dark && <img class="v-dark" src={s.dark} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" />}
             </a>
             <figcaption>{s.caption}</figcaption>
           </figure>

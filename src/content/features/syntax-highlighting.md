@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 1
 beta: false
 summary: "TextMate grammars (via tm4e) for Java, Astro, Python, Rust, Go, Kotlin, C/C++, C#, Ruby, SQL, Markdown, and more."
+description: "Incremental TextMate highlighting off the UI thread for dozens of languages, with shebang and modeline detection and bracket-pair colours."
 alt: "A Java class in the Editora Light theme, with keywords, types, strings and comments in their own colours"
 ---
 

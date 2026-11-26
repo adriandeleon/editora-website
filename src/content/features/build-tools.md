@@ -4,6 +4,7 @@ group: "Run & debug"
 order: 5
 beta: false
 summary: "Maven, npm, Cargo, Go, Gradle, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka each get a tasks tool window and a streaming console."
+description: "Tasks windows and streaming consoles for Maven, Gradle, npm, Cargo, Go, sbt, Mill, Scala CLI, the Clojure CLI, Leiningen and Babashka."
 alt: "A pom.xml beside the Maven tool window, listing its lifecycle phases and profiles"
 ---
 

@@ -107,8 +107,12 @@ export default defineConfig({
         const path = new URL(page).pathname;
         // The newest What's New series page canonicalises to /whats-new/.
         if (path === `/whats-new/${version.split(".").slice(0, 2).join(".")}/`) return false;
-        const m = /\/docs\/(v-[^/]+)\//.exec(path + "/");
-        return !m || m[1] === `v-${version}`;
+        const m = /^\/docs\/(v-[^/]+)\/(.*)$/.exec(path);
+        if (!m) return true;
+        // Archived versions canonicalise to the current pages; the current
+        // version's guide pages canonicalise to /docs/<slug>/. Its landing page
+        // and command pages have no other home.
+        return m[1] === `v-${version}` && (m[2] === "" || m[2].startsWith("commands/"));
       },
     }),
     pagefind(),
@@ -116,7 +120,17 @@ export default defineConfig({
   // `astro dev` watches the whole project folder. The built site (dist/, about
   // 19,000 folders) and Claude Code worktrees under .claude/ are not sources,
   // and watching them can exhaust the system's file-watch limits.
+  // Scripts and styles go in cached files under /_astro instead of inline:
+  // every one of the ~25,000 pages (one per command per served version) carries
+  // the same header, search and page styles, and inline copies made the build
+  // grow toward GitHub Pages' 1 GB limit (npm run check:size).
+  build: {
+    inlineStylesheets: "never",
+  },
   vite: {
+    build: {
+      assetsInlineLimit: 0,
+    },
     server: {
       watch: { ignored: ["**/dist/**", "**/.claude/**"] },
     },
@@ -124,14 +138,12 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [rehypeVersionDocs, rehypeDocFigures, rehypeTableWrap],
   },
-  // Bare /docs lands on the current version, and so does /docs/<slug> for
-  // every current doc page: a stable link (the Editora README, a blog post)
-  // can point at /docs/cli and always reach the newest text. The versioned
-  // URLs are what is actually served — each app version pins its own
-  // /docs/v-<version>/ links, and past versions stay served from their
-  // archived copy — so these are redirects, not duplicate pages, and a slug
-  // that no longer exists simply stops redirecting. Every served version's
-  // command index points at the searchable command list.
+  // Bare /docs lands on the current version's landing page. Every current
+  // page is also served at its stable /docs/<slug> (the canonical URL, so a
+  // release does not move it); the versioned URLs stay served because each app
+  // version pins its own /docs/v-<version>/ links, and past versions keep their
+  // archived copy. Every served version's command index points at the
+  // searchable command list.
   //
   // Every target ends in a slash: the pages are emitted as directories, and
   // GitHub Pages answers a slashless directory URL with a 301 to the slashed
@@ -139,6 +151,9 @@ export default defineConfig({
   redirects: withTrailingSlash({
     // The blog was folded into News (2026-11-03). Old post URLs land on the
     // release's news post or the closest feature page, or on /news.
+    // The Roadmap page was removed (2026-11-25): it had drifted from the
+    // work and mostly listed shipped features, which What's New covers.
+    "/roadmap": "/whats-new",
     "/blog": "/news",
     "/blog/building-a-keyboard-first-editor": "/news",
     "/blog/editora-0-10-0": "/news/2026-08-03-editora-0-10-0-released",
@@ -171,7 +186,12 @@ export default defineConfig({
     "/blog/the-black-window-bounding-gpu-textures": "/news",
     "/blog/why-your-app-cant-find-git": "/news",
     "/docs": docsBase,
-    ...Object.fromEntries(docSlugs.map((slug) => [`/docs/${slug}`, currentDocPath(slug)])),
+    // The site serves each current page at /docs/<slug> itself
+    // (src/pages/docs/[slug].astro); the copy inside the app has only the
+    // versioned pages, so there the stable URL redirects.
+    ...(appDocs
+      ? Object.fromEntries(docSlugs.map((slug) => [`/docs/${slug}`, currentDocPath(slug)]))
+      : {}),
     ...Object.fromEntries(
       docVersions.map((v) => [`${v.base}/commands`, "/commands"]),
     ),

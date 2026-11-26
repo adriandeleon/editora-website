@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 5
 beta: false
 summary: "Project-wide search and replace with a results panel, plus AceJump to leap the caret to any visible spot by typing a label."
+description: "Project-wide search and replace with results grouped by file, using ripgrep when installed and on the host for remote folders, plus AceJump."
 alt: "Find in Files searching the project for \"theme\", with 1,617 matches grouped by file"
 ---
 

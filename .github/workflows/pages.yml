@@ -16,8 +16,9 @@ concurrency:
 
 jobs:
   # The site is deployed only when every generated page matches the Editora
-  # release it documents (scripts/check-generated.mjs); the build itself runs
-  # the command-id and chord check (npm run check:docs, from npm run build).
+  # release it documents (scripts/check-generated.mjs), the build passes (it
+  # runs the command-id and chord check, npm run check:docs) and no internal
+  # link or anchor is broken (npm run check:links).
   generated:
     runs-on: ubuntu-latest
     steps:
@@ -40,9 +41,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Build with Astro
-        uses: withastro/action@v6
-        # the Astro project is the repo root
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
+      # Runs check:docs first, then the Astro build into dist/.
+      - name: Build
+        run: npm run build
+      # A change merged straight to master skips no check: a broken internal
+      # link or anchor stops the deploy, as it fails a pull request.
+      - name: Internal links and anchors
+        run: npm run check:links
+      - name: Site size within the GitHub Pages limit
+        run: npm run check:size
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest

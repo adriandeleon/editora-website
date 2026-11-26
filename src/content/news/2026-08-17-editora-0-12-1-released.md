@@ -1,12 +1,13 @@
 ---
 title: "Editora 0.12.1: one editor, and 225 ms off the startup"
-description: "Opening a file from your file manager now reuses the editor you already have open instead of starting a second one, and the first frame that shows your file arrives about 225 ms sooner."
+seoTitle: "Editora 0.12.1: one editor, faster startup"
+description: "Opening a file from your file manager reuses the editor you already have open, and the first frame with your file arrives about 225 ms sooner."
 date: 2026-08-17
 version: "0.12.1"
 ---
 
 **Editora 0.12.1** is out. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.12.1).
 
 A small release, but both halves are things you feel on every launch.
 
