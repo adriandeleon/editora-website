@@ -91,7 +91,7 @@ const perfStats = [
 const platforms = [
   { name: "macOS", note: "DMG installer (x64 / arm64), or Homebrew on Apple Silicon" },
   { name: "Windows", note: "MSI installer (x64)" },
-  { name: "Linux", note: "DEB / RPM / AppImage / tar.gz (x64), tar.gz (arm64)" },
+  { name: "Linux", note: "DEB / RPM / AppImage / tar.gz (x64), tar.gz (arm64), or apt on Debian and Ubuntu" },
 ];
 ---
 
@@ -405,12 +405,21 @@ const platforms = [
       </p>
       <p class="note">
         On a Mac with Apple Silicon you can also install it with Homebrew:
-        <code>brew install --cask adriandeleon/tap/editora</code>
+        <code>brew install --cask adriandeleon/tap/editora</code>. On Debian
+        and Ubuntu, add the <a href="https://vitrina-project.dev">Vitrina</a>
+        apt repository and run <code>sudo apt install editora</code>; both keep
+        Editora up to date for you.
+      </p>
+      <p class="note">
+        <a href={`${docsBase}/getting-started/#install`}>Install steps for every package</a>:
+        which file to pick, the tarball and AppImage, adding the apt
+        repository, and checking that it runs.
       </p>
       <p class="note">
         The macOS app is signed and notarized by Apple, and the Linux packages
         and jars (.deb, .rpm, AppImage, tar.gz, .jar) come with OpenPGP
-        signatures
+        signatures. Every file is listed in <code>checksums_sha256.txt</code>
+        and has a build provenance attestation
         (<a href={`${docsBase}/getting-started/#checking-a-download`}>checking a download</a>).
         The Windows installer is unsigned: if SmartScreen appears, choose
         <em>More info → Run anyway</em>.
