@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 3
 beta: false
 summary: "Export code, a selection, or the Markdown preview to a syntax-highlighted PDF, HTML, MS Word, or ODF, or print with a preview. Light-themed and generated off-thread."
+description: "Export code or the Markdown preview to a highlighted PDF, HTML, Word or ODF, or print it with a page preview. Output is always light-themed."
 alt: "Print preview of a Java file, page 1 of 2, with Page Setup and Print buttons"
 ---
 

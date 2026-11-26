@@ -4,21 +4,24 @@
 // straight from src/lib/commands.ts (generated from the real keymap JSONs), so
 // the chords can't drift from the app. Each column is written in its keymap's
 // own notation, as the app shows it (C-S-p in Emacs, Ctrl+Shift+P elsewhere).
-// Tabs highlight one keymap's column and, on narrow screens, collapse the
-// matrix to Action + that keymap.
+// Toggle buttons (aria-pressed) highlight one keymap's column and, on narrow
+// screens, collapse the matrix to Action + that keymap. They are not ARIA tabs:
+// every column stays in the one table, so there is no tab panel to switch.
 import { commandGroups, keymaps } from "../lib/commands";
 import { formatChord } from "../lib/chord-format";
 
 const byId = new Map<string, (typeof commandGroups)[number]["commands"][number]>();
 for (const g of commandGroups) for (const c of g.commands) byId.set(c.id, c);
 
-const picks = [
+// `ids` names a different command for one keymap, where that keymap does the
+// action with a command of its own (Emacs replaces with Query Replace).
+const picks: { id: string; label: string; ids?: Record<string, string> }[] = [
   { id: "palette.show", label: "Command palette" },
   { id: "file.save", label: "Save" },
   { id: "file.find", label: "Go to file" },
   { id: "find.show", label: "Find in file" },
   { id: "search.inFiles", label: "Find in files" },
-  { id: "find.replace", label: "Replace" },
+  { id: "find.replace", label: "Replace", ids: { emacs: "edit.queryReplace" } },
   { id: "edit.toggleComment", label: "Toggle comment" },
   { id: "edit.duplicateLine", label: "Duplicate line" },
   { id: "edit.moveLineUp", label: "Move line up" },
@@ -38,7 +41,7 @@ const rows = picks
   .filter((p) => byId.has(p.id))
   .map((p) => ({
     label: p.label,
-    cells: keymaps.map((k) => ({ km: k.id, chord: chordFor(p.id, k.id) })),
+    cells: keymaps.map((k) => ({ km: k.id, chord: chordFor(p.ids?.[k.id] ?? p.id, k.id) })),
   }));
 
 // The tab the table opens on: the keymap most visitors already know. The app's
@@ -51,15 +54,14 @@ const parts = (chord: string) => chord.split(" ");
 ---
 
 <div class="km-wrap" data-active={defaultKm}>
-  <div class="km-tabs" role="tablist" aria-label="Keymap">
+  <div class="km-tabs" role="group" aria-label="Highlight a keymap">
     {
       keymaps.map((k) => (
         <button
           class="km-tab"
           type="button"
-          role="tab"
           data-km-tab={k.id}
-          aria-selected={k.id === defaultKm ? "true" : "false"}
+          aria-pressed={k.id === defaultKm ? "true" : "false"}
         >
           {k.name}
           {k.id === appDefaultKm && <span class="km-default"> (default)</span>}
@@ -99,8 +101,9 @@ const parts = (chord: string) => chord.split(" ");
                       ))}
                     </span>
                   ) : (
-                    <span class="km-none" aria-label="not bound">
-                      &mdash;
+                    <span class="km-none">
+                      <span aria-hidden="true">&mdash;</span>
+                      <span class="sr-only">not bound</span>
                     </span>
                   )}
                 </td>
@@ -131,7 +134,7 @@ const parts = (chord: string) => chord.split(" ");
           wrap.setAttribute("data-active", km);
           tabs.forEach(function (t) {
             t.setAttribute(
-              "aria-selected",
+              "aria-pressed",
               t === tab ? "true" : "false",
             );
           });
@@ -168,7 +171,7 @@ const parts = (chord: string) => chord.split(" ");
     color: var(--text);
     border-color: var(--accent);
   }
-  .km-tab[aria-selected="true"] {
+  .km-tab[aria-pressed="true"] {
     color: var(--on-accent);
     background: var(--accent);
     border-color: var(--accent);

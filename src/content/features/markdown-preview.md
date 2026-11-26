@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 1
 beta: false
 summary: "A 3-mode view rendered natively with CommonMark + GFM: task lists, alerts, images, LaTeX math, selectable text, wiki links and backlinks, linting, formatting, and export to PDF, HTML, Word, and ODF. Live and theme-matched."
+description: "A native CommonMark and GFM preview with math, alerts and wiki links, plus markdownlint, table editing, and export to PDF, HTML, Word and ODF."
 alt: "A Markdown file in Split view, with headings, a task list and a table rendered beside the source"
 ---
 

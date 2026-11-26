@@ -4,6 +4,8 @@ group: "Workspace & files"
 order: 14
 beta: false
 summary: "Reopen a file in the encoding it is really in, or save it in another one: Shift_JIS, GBK, windows-1251 and every other encoding the JDK knows. The choice is remembered per file."
+description: "Reopen a file in the encoding it is really in, or save it in another, from Shift_JIS to windows-1251. The choice is remembered per file."
+alt: "A Shift_JIS text file opened as ISO-8859-1, its encoding shown in the warning colour in the status bar, with Reopen with Encoding filtered to Shift_JIS"
 ---
 
 Editora reads a file as UTF-8 unless a byte-order mark or the project's [`.editorconfig`](/features/editorconfig) says otherwise. A file that is not valid UTF-8 opens through a single-byte stand-in (Windows-1252 or ISO-8859-1) that keeps every byte, and its encoding in the status bar is drawn in the warning colour, because it is a guess.

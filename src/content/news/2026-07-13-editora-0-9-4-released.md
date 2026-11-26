@@ -6,7 +6,7 @@ version: "0.9.4"
 ---
 
 **Editora 0.9.4** is out. Grab a native installer from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.4).
 
 The headline is **Expert mode**, a lighter focus mode than Zen. It strips the
 window chrome (toolbar, tab bar, breadcrumb, tool stripes) but **keeps the full

@@ -1,6 +1,7 @@
 ---
 title: "Editora 0.29.0: web apps and tests in more languages, a log viewer for real logs, and the guide inside the app"
-description: "Run and debug Django, Flask, FastAPI, Rails, PHP and Electron apps; PowerShell, Elixir, Dart and Lua; tests at the caret in almost every language; summaries, merged logs, live streams and times in the log viewer; System and High Contrast themes; the user guide offline; faster typing."
+seoTitle: "Editora 0.29.0: web apps, logs, in-app guide"
+description: "Run and debug Django, Flask, FastAPI, Rails, PHP and Electron apps; PowerShell, Elixir, Dart and Lua; tests at the caret; a better log viewer; an offline guide."
 date: 2026-11-25
 version: "0.29.0"
 ---

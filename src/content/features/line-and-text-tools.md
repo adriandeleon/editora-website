@@ -4,6 +4,8 @@ group: "Editing"
 order: 8
 beta: false
 summary: "Insert, delete, select and indent whole lines at every cursor; sort, filter and de-duplicate lines; encode, decode and escape the selection; increment the number at each cursor."
+description: "Line commands that run at every cursor, plus sorting, filtering, case conversion, Base64 and URL encoding, and number increments."
+alt: "Twelve selected Map.entry lines in a Java file with the String Manipulation picker filtered to sort"
 ---
 
 The small edits you make all day, as commands that work at **every cursor** and undo in one step.

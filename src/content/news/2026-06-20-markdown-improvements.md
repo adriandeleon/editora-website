@@ -1,6 +1,7 @@
 ---
 title: "Markdown gets linting, math, image paste, and HTML export"
-description: "A broad set of Markdown upgrades: more CommonMark extensions, a heading outline, linting, LaTeX math, image paste and drag-drop, table editing, and Export to HTML."
+seoTitle: "Markdown: linting, math, image paste, HTML export"
+description: "Markdown upgrades: more CommonMark extensions, a heading outline, linting, LaTeX math, image paste and drag-drop, table editing, and Export to HTML."
 date: 2026-06-20
 ---
 

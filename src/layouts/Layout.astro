@@ -17,7 +17,7 @@ interface Props {
 
 const {
   title = "Editora: a keyboard-driven programmer's text editor",
-  description = "Editora is a fast, keyboard-driven, cross-platform, open-source programmer's text editor. Every action is a command, reachable by your choice of keymap (Emacs, CUA, Sublime, VS Code, IntelliJ) or a fuzzy palette.",
+  description = "Editora is a fast, keyboard-driven, open-source programmer's editor for macOS, Windows and Linux. Every action is a command: use your keymap or the palette.",
   ogImage,
   canonicalPath,
 } = Astro.props;
@@ -65,8 +65,9 @@ const footerCols = [
     links: [
       { href: url("plugins"), label: "Plugins" },
       { href: url("news"), label: "News" },
+      { href: url("whats-new"), label: "What's new" },
       { href: url("compare"), label: "How it compares" },
-          { href: url("screenshots"), label: "Screenshots" },
+      { href: url("screenshots"), label: "Screenshots" },
       { href: `${repo}/blob/master/CHANGELOG.md`, label: "Changelog" },
     ],
   },
@@ -89,6 +90,8 @@ const jsonLd = {
   operatingSystem: "macOS, Windows, Linux",
   description,
   url: "https://editora-project.dev",
+  softwareVersion: version,
+  downloadUrl: `${repo}/releases/latest`,
   license: `${repo}/blob/master/LICENSE`,
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
@@ -220,7 +223,7 @@ const isActive = (href: string) => {
       </div>
     </header>
 
-    <script is:inline>
+    <script>
       // Narrow screens: the links fold behind a Menu button so the sticky
       // header stays one row tall instead of wrapping to four.
       (function () {
@@ -243,7 +246,7 @@ const isActive = (href: string) => {
       })();
     </script>
 
-    <script is:inline>
+    <script>
       // Sync the picker with the active theme and persist changes.
       (function () {
         var sel = document.getElementById("theme-select");
@@ -314,8 +317,12 @@ const isActive = (href: string) => {
     --border: #30363d;
     --border-soft: #21262d; /* minimap border */
     --text: #c9d1d9; /* .editor-area .text fill */
+    /* --muted and --faint carry text, so every theme below keeps both at
+       4.5:1 or better (WCAG AA) against its own --bg and --bg-soft. The hue is
+       the theme's; only the lightness was moved to pass. Re-check the ratio
+       when you change a background or one of these. */
     --muted: #8b949e; /* comment fill */
-    --faint: #6e7681; /* line-number text */
+    --faint: #7d8590; /* line-number text, lightened to pass 4.5:1 */
     --accent: #58a6ff; /* link / fold-chevron:hover */
     --accent-soft: rgba(31, 111, 235, 0.12); /* selection #1f6feb */
     --on-accent: #06101f; /* readable text on an accent fill */
@@ -368,7 +375,7 @@ const isActive = (href: string) => {
     --border: #dde0ea;
     --border-soft: #eceef5;
     --text: #1b1e2a;
-    --muted: #6e7781;
+    --muted: #6a737d;
     --faint: #6e7486;
     --accent: #0e8577;
     --accent-soft: rgba(14, 133, 119, 0.12);
@@ -389,8 +396,8 @@ const isActive = (href: string) => {
     --border: #d0d7de;
     --border-soft: #eaeef2;
     --text: #24292f;
-    --muted: #6e7781;
-    --faint: #8c959f;
+    --muted: #68717a;
+    --faint: #68717c;
     --accent: #0969da;
     --accent-soft: rgba(9, 105, 218, 0.1);
     --on-accent: #ffffff;
@@ -409,8 +416,8 @@ const isActive = (href: string) => {
     --border: #44475a;
     --border-soft: #191a21;
     --text: #f8f8f2;
-    --muted: #6272a4;
-    --faint: #6272a4;
+    --muted: #8692b9;
+    --faint: #8692b9;
     --accent: #bd93f9;
     --accent-soft: rgba(189, 147, 249, 0.15);
     --on-accent: #21222c;
@@ -429,8 +436,8 @@ const isActive = (href: string) => {
     --border: #434c5e;
     --border-soft: #3b4252;
     --text: #d8dee9;
-    --muted: #7b88a1;
-    --faint: #6c7689;
+    --muted: #9fa8ba;
+    --faint: #a1a8b5;
     --accent: #88c0d0;
     --accent-soft: rgba(136, 192, 208, 0.15);
     --on-accent: #2e3440;
@@ -449,8 +456,8 @@ const isActive = (href: string) => {
     --border: #3a3a3c;
     --border-soft: #2c2c2e;
     --text: #dfdfe0;
-    --muted: #6c7986;
-    --faint: #6f6f73;
+    --muted: #84909c;
+    --faint: #8e8e92;
     --accent: #0a84ff;
     --accent-soft: rgba(10, 132, 255, 0.15);
     --on-accent: #ffffff;
@@ -469,8 +476,8 @@ const isActive = (href: string) => {
     --border: #323438;
     --border-soft: #2b2d30;
     --text: #bcbec4;
-    --muted: #7a7e85;
-    --faint: #4b5059;
+    --muted: #868a90;
+    --faint: #828995;
     --accent: #56a8f5;
     --accent-soft: rgba(86, 168, 245, 0.15);
     --on-accent: #ffffff;

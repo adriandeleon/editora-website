@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 2
 beta: false
 summary: "Extend the editor with commands, tool windows, and integrations. Install from the built-in signed registry, or write your own (Java or a simple manifest)."
+description: "Add commands, keybindings and tool windows with plugins written in Java or declared in a manifest, installed from a signed registry after you consent."
 alt: "The Browse Plugins picker listing registry plugins with their versions and descriptions"
 ---
 

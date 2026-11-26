@@ -6,7 +6,7 @@ version: "0.9.1"
 ---
 
 **Editora 0.9.1** is the first tagged release. Grab a native installer for your
-platform from the [releases page](https://github.com/adriandeleon/Editora/releases/latest):
+platform from the [releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.1):
 `.dmg` for macOS (Intel & Apple Silicon), `.msi` for Windows (x64), and `.deb`
 for Linux (x64 & arm64). Each bundles its own Java runtime.
 

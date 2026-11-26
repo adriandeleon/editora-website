@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 8
 beta: false
 summary: "<strong>File / Edit / Find / View / Navigate / Code / Run / Git / Tools / Window / Help</strong> menus, built over the command registry, so every item shows its live keybinding. Hide it in one keystroke."
+description: "File to Help menus built over the command registry, each item with its live keybinding. On Windows and Linux the menu bar shares the title bar by default."
 alt: "The Git menu open, listing its commands with their keybindings and submenus such as Branches and Stash"
 ---
 
@@ -17,8 +18,8 @@ The command palette lists everything, but it is hard to browse. It helps when yo
 - Menus that grew long keep their daily items at the top and the rest one level down: Git groups its commands by what they act on, Run keeps the debugger's in four submenus, and File keeps its export formats under **Export**.
 - On **macOS** it sits in the system menu bar.
 
-It is a curated subset. Editora registers over seven hundred commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
+It is a curated subset. Editora registers over 1,600 commands, and a menu listing all of them would be harder to use than the palette, which remains the complete index.
 
-On Linux and Windows it can **share the window's title bar**, putting menus, title and system buttons on one row and giving a full bar of vertical space back to the editor. This is experimental and off by default, under **Settings → Interface**.
+On Linux and Windows it can **share the window's title bar**, putting menus, title and system buttons on one row and giving a full bar of vertical space back to the editor. It is on by default; turn off **Merge the menu bar into the title bar** in **Settings → Interface** (or run **View: Toggle Menu Bar in Title Bar**) for the system title bar, with the menu bar below it. The change applies after a restart.
 
 Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen mode (Expert mode keeps it). [Simple mode](/features/simple-ui-mode) keeps a reduced one (File, Edit, Find, View, Help), because someone new to the editor is the person most likely to need a menu to browse.

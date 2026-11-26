@@ -6,7 +6,7 @@ version: "0.9.2"
 ---
 
 **Editora 0.9.2** is out. Grab a native installer for your platform from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest): `.dmg`
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.2): `.dmg`
 for macOS (Intel & Apple Silicon), `.msi` for Windows (x64), and `.deb` for Linux
 (x64 & arm64). Each bundles its own Java runtime.
 

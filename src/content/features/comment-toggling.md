@@ -4,6 +4,7 @@ group: "Editing"
 order: 4
 beta: false
 summary: "<kbd>M-;</kbd> comments or uncomments the line or selection using the language's syntax (<code>//</code>, <code>#</code>, <code>&lt;!-- --&gt;</code>, <code>/* */</code>, <code>--</code>, …)."
+description: "M-; comments or uncomments the line or selection in the language's own syntax, keeps the indentation, and never touches a shebang line."
 alt: "A Java method commented out as one block comment, its lines highlighted"
 ---
 

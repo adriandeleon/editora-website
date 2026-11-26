@@ -1,13 +1,14 @@
 ---
 title: "Editora 0.13.1: a startup crash on most non-AVX-512 CPUs"
-description: "0.13.0 aborted a fraction of a second into startup on most consumer Intel from 12th gen onward and every AMD before Zen 4. If you installed it, upgrade. This note explains what happened."
+seoTitle: "Editora 0.13.1: fixes a startup crash"
+description: "0.13.0 crashed at startup on most consumer Intel CPUs from 12th gen on and every AMD CPU before Zen 4. If you installed it, upgrade. Here is what happened."
 date: 2026-08-27
 version: "0.13.1"
 ---
 
 **Editora 0.13.1** is out, and if you installed
 [0.13.0](/news/2026-08-26-editora-0-13-0-released) you should take it. Grab it
-from the [releases page](https://github.com/adriandeleon/Editora/releases/latest).
+from the [releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.13.1).
 
 0.13.0 **crashed on startup on any CPU without AVX-512**, which means most consumer
 Intel from the 12th generation onward and every AMD before Zen 4. The JVM aborted with

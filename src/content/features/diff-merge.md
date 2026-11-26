@@ -4,6 +4,7 @@ group: "Git & diff"
 order: 3
 beta: false
 summary: "A multi-file diff workspace for files, folders, patches, and Git changes, with smart alignment, hunk actions, editable results, and true three-way merge resolution."
+description: "Side-by-side and unified diffs of files, folders, patches and Git changes, with word emphasis, hunk actions and a three-way merge resolver."
 alt: "A Java file side by side with its HEAD version, the changed line and words highlighted"
 ---
 

@@ -1,13 +1,13 @@
 ---
 title: "Editora 0.9.5: a hardening release"
-description: "A big round of data-safety and security fixes, including crash-safe saves, protected auto-save, and config integrity. The Project tree also becomes a mini file manager."
+description: "Data-safety and security fixes: crash-safe saves, protected auto-save, and config integrity. The Project tree also becomes a mini file manager."
 date: 2026-07-15
 version: "0.9.5"
 ---
 
 **Editora 0.9.5** is mostly about making the editor safer with your files and
 your data. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.5).
 
 **Your files.** Saving is now crash-safe (written atomically, so an interruption
 can't leave a truncated file), auto-save can no longer undo a manual save or

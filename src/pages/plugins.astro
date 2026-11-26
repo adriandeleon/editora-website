@@ -9,6 +9,7 @@ const plugins = await loadPlugins();
 <Layout
   title="Plugin registry — Editora"
   description="Browse Editora plugins, which extend the editor with commands, tool windows, and integrations and install from the built-in registry."
+  ogImage="og/plugins.png"
 >
   <main class="page">
     <h1>Plugins</h1>
@@ -23,12 +24,18 @@ const plugins = await loadPlugins();
       <h2>Installing</h2>
       <ol>
         <li>
-          Enable plugins in <strong>Settings → Plugins</strong> (off by default).
+          Enable plugins in <strong>Settings → Plugins</strong> (off by default,
+          and off in Simple UI mode).
         </li>
         <li>
           Click <strong>Browse plugins…</strong> (or run the
           <code>plugins.browse</code> command) to install from the registry, or
           <strong>Install from file…</strong> for a local <code>.zip</code>.
+        </li>
+        <li>
+          Read the <strong>Enable this plugin?</strong> dialog, which lists what
+          the plugin will be able to do, and choose <strong>Enable</strong>. If
+          you cancel, nothing is installed.
         </li>
         <li>Restart Editora to load newly installed plugins.</li>
       </ol>

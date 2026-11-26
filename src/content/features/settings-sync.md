@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 11
 beta: true
 summary: "Keeps your snippets, abbreviations, templates, personal dictionary and shortcuts the same on every computer, through a private Git repository you own. Off by default."
+description: "Sync snippets, abbreviations, templates, your dictionary and shortcuts between computers through a private Git repository you own. Off by default."
 alt: "Settings → Sync with a repository URL, Connect and Create on GitHub buttons, and what to sync"
 ---
 

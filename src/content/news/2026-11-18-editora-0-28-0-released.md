@@ -1,6 +1,7 @@
 ---
 title: "Editora 0.28.0: a debugger for eight more languages, and the Project Map as a code browser"
-description: "Debug Go, Rust, C and C++, C#, Ruby, PHP, Bash and browser JavaScript; Step Back, Debug History and several sessions at once; code navigation, review and metrics on the Project Map; every command on the keyboard; a zoom for the whole interface."
+seoTitle: "Editora 0.28.0: debugging for 8 more languages"
+description: "Debug Go, Rust, C/C++, C#, Ruby, PHP, Bash and browser JavaScript; Step Back and several sessions at once; a code-browsing Project Map; a whole-UI zoom."
 date: 2026-11-18
 version: "0.28.0"
 ---
@@ -33,7 +34,7 @@ Download it from the [0.28.0 release page](https://github.com/adriandeleon/Edito
   import, method and field breakpoints and lambda breakpoints in Java,
   JavaScript and TypeScript, and logpoints in one step.
 
-[More about debugging](/docs/run-debug).
+[More about debugging](/docs/debugging).
 
 ## Project Map
 

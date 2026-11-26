@@ -48,8 +48,8 @@ const near = (k: number) => k === 0 || k === 1 || k === n - 1;
             data-lb-more-label={s.more?.label}
             title="View full size"
           >
-            <img class:list={{ "v-light": s.dark }} src={s.src} alt={s.alt} loading="lazy" decoding="async" draggable="false" />
-            {s.dark && <img class="v-dark" src={s.dark} alt={s.alt} loading="lazy" decoding="async" draggable="false" />}
+            <img class:list={{ "v-light": s.dark }} src={s.src} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" draggable="false" />
+            {s.dark && <img class="v-dark" src={s.dark} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" draggable="false" />}
           </a>
         </div>
       ))
@@ -83,7 +83,7 @@ const near = (k: number) => k === 0 || k === 1 || k === n - 1;
     </button>
   </div>
 
-  <p class="car-cap" aria-live="polite">{shots[0].caption}</p>
+  <p class="car-cap" aria-live="off">{shots[0].caption}</p>
   <p class="car-all">
     <a href={galleryHref}>Browse all {galleryCount} screenshots →</a>
   </p>
@@ -126,6 +126,9 @@ const near = (k: number) => k === 0 || k === 1 || k === n - 1;
       playing = p;
       play.toggleAttribute("data-playing", p);
       play.setAttribute("aria-label", p ? "Pause the slideshow" : "Play the slideshow");
+      // Announce the caption only when someone moves the slideshow; while it
+      // advances on its own, a screen reader would read out every slide.
+      cap.setAttribute("aria-live", p ? "off" : "polite");
       tick();
     }
 

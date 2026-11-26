@@ -4,6 +4,7 @@ group: "Git & diff"
 order: 1
 beta: false
 summary: "Native Git: status-bar branch, gutter change bars vs HEAD, a Commit tool window, merges and rebases with a conflict resolver, branches, remotes, tags, stashes and patches, a paged log with a commit graph, and blame."
+description: "Git through your own git: branch in the status bar, gutter change bars, a Commit window, merge conflict resolver, paged log with a graph, and blame."
 alt: "The Commit window beside a Java file: one changed file, two untracked, and a commit message typed"
 ---
 

@@ -6,7 +6,7 @@ version: "0.12.0"
 ---
 
 **Editora 0.12.0** is out. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.12.0).
 
 **Tool windows go where you want them.** Until now a tool window lived on the
 stripe it was assigned to, at whatever size that side happened to be. Now it can

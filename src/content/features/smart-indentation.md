@@ -4,6 +4,7 @@ group: "Editing"
 order: 2
 beta: false
 summary: "Per-language auto-indent on <kbd>Enter</kbd> (block openers, matching-pair stanzas, closer re-alignment), plus smart backspace that clears the indent in one press (one level at a time in Python and YAML)."
+description: "Per-language indentation on Enter and on typing a closer, PEP 8 hanging indents for Python, and a Backspace that clears the indent in one press."
 alt: "A Python file whose new line under a for statement is indented automatically"
 ---
 

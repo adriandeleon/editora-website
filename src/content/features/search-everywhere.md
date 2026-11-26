@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 3
 beta: false
 summary: "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in. A <code>&gt;</code>, <code>#</code> or <code>@</code> prefix narrows it when you already know."
+description: "One picker over commands, project files and symbols, grouped by source. The VS Code prefixes >, # and @ narrow it to one kind."
 alt: "Search Everywhere for \"theme\", with matching files and symbols in separate groups"
 ---
 

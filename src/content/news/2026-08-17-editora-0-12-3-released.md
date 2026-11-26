@@ -7,7 +7,7 @@ version: "0.12.3"
 
 **Editora 0.12.3** is out, and it comes with **0.12.2**. They are two fixes to
 the same thing, so this note covers both. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.12.3).
 
 [0.12.1](/news/2026-08-17-editora-0-12-1-released) made a file opened from your
 file manager reuse the editor you already have running, instead of starting a

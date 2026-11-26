@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 8
 beta: true
 summary: "Embed a Model Context Protocol server in the running editor so an LLM agent (Claude Code, …) can observe live state and drive the command registry. Loopback-only, token-authed, off by default."
+description: "A loopback-only, token-authenticated MCP server inside Editora that lets an agent such as Claude Code read editor state and run commands. Off by default."
 alt: "Settings → MCP Server with the loopback MCP server turned on"
 ---
 

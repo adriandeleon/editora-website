@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 4
 beta: false
 summary: "Click the globe on any HTML file to open it in a detected browser (Safari, Chrome, Firefox, Edge…), served over a loopback web server with live-as-you-type reload. The whole site's CSS, JS, and images included."
+description: "Open an HTML file in your browser from a loopback-only server that serves the whole site and reloads the page as you type, before you save."
 alt: "An HTML file in the editor, with the status bar giving the live preview's local address"
 ---
 

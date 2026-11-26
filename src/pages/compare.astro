@@ -5,38 +5,20 @@
 //
 // Rules for this page: every number is one we measured ourselves, on one
 // machine, with one method, and the method is written out in full below the
-// table. Nothing here should claim a win Editora does not have; the single-file
-// result is a tie with VS Code and it says so.
+// table. Nothing here should claim a win Editora does not have; where the
+// single-file lead over VS Code is too small to feel, the page says so. The
+// figures live in src/lib/bench.ts, shared with the home page's chart.
 import Layout from "../layouts/Layout.astro";
-import { repo, lspServerCount } from "../lib/editora";
+import { repo, lspServerCount, version } from "../lib/editora";
+import { editoraInternal, machine, measured, secs, startup } from "../lib/bench";
 
-const startup = {
-  file: [
-    { name: "Editora", ver: "0.22.0", ms: 521, lo: 511, hi: 529, self: true },
-    { name: "VS Code", ver: "1.142.0", ms: 589, lo: 575, hi: 594 },
-    { name: "IntelliJ IDEA", ver: "2026.2.3", ms: 2183, lo: 2139, hi: 2293 },
-  ],
-  project: [
-    { name: "Editora", ver: "0.22.0", ms: 578, lo: 545, hi: 614, self: true },
-    { name: "VS Code", ver: "1.142.0", ms: 664, lo: 654, hi: 664 },
-    { name: "IntelliJ IDEA", ver: "2026.2.3", ms: 3156, lo: 2191, hi: 3973 },
-  ],
-};
-
-const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
-
-// The machine every figure on this page was measured on. A startup benchmark
-// without the hardware under it is unfalsifiable, so this is listed part by
-// part rather than summarised as "an M5".
-const machine = [
-  ["Model", "14-inch MacBook Pro, M5 generation (Mac17,2)"],
-  ["Chip", "Apple M5, 10 cores (4 performance, 6 efficiency)"],
-  ["Memory", "16 GB unified"],
-  ["Storage", "Apple 1 TB internal SSD (APPLE SSD AP1024Z), 255 GB free"],
-  ["OS", "macOS 27.0 (build 26A428)"],
-  ["Displays", "AORUS FI32U at 5120\u00d72880 (main, where the windows opened), alongside the built-in 3024\u00d71964 Liquid Retina XDR"],
-  ["Power", "AC, battery at 80%"],
-];
+const fileMs = (name: string) => startup.file.find((r) => r.name === name)!.ms;
+// Editora's lead over VS Code on the single file, and the gap between its
+// window appearing and its first painted frame.
+const leadMs = fileMs("VS Code") - fileMs("Editora");
+const paintGapMs = Math.round((editoraInternal.firstPaintMs - editoraInternal.windowMs) / 100) * 100;
+const rerunNote =
+  measured.editoraVersion === version ? "" : ` They have not been re-run on Editora\u00a0${version} yet.`;
 
 // Where Editora genuinely differs, and where it plainly does not.
 const rows = [
@@ -59,6 +41,11 @@ const rows = [
     what: "Language support",
     editora: `${lspServerCount} language servers, using the ones already installed on your machine`,
     others: "VS Code's extension marketplace is far larger. IntelliJ's Java and Kotlin tooling is deeper than anything here",
+  },
+  {
+    what: "Debugging",
+    editora: "Step debugging for Java, Python, JavaScript and TypeScript, Go, Rust, C and C++, C#, Ruby, PHP and more, through the Debug Adapter Protocol, using adapters you install",
+    others: "VS Code debugs most languages through extensions. IntelliJ IDEA debugs Java and Kotlin built in; most other languages need another JetBrains IDE, several of them paid. Emacs uses dap-mode or dape",
   },
   {
     what: "Account and telemetry",
@@ -87,11 +74,15 @@ const rows = [
 
     <h2>Startup, measured</h2>
     <p>
-      These measurements were taken in October&nbsp;2026 on
-      Editora&nbsp;0.22.0. Both tables are the median of timed runs on the one
+      These measurements were taken in {measured.month.replace(" ", "\u00a0")} on
+      Editora&nbsp;{measured.editoraVersion}.{rerunNote} Both tables are the median of timed runs on the one
       machine below, with every editor fully quit between runs and launched the
       same way. The clock starts at launch and stops when a window owned by
       that editor carries the file's or project's name in its title.
+    </p>
+    <p>
+      Sublime Text and Zed are fast editors too; they were not part of this
+      benchmark, so these figures say nothing about them.
     </p>
     <dl class="machine">
       {
@@ -133,11 +124,11 @@ const rows = [
     </table>
     <p class="note">
       Five runs each, opening a 710-line Markdown file with no project loaded.
-      Editora is ahead of VS Code by 68&nbsp;ms, and the two spreads do not
+      Editora is ahead of VS Code by {leadMs}&nbsp;ms, and the two spreads do not
       overlap, so the order is real — but it is a sixteenth of a second, which
       nobody will feel. What this does not show is the file's text arriving:
-      Editora's own instrumentation puts its window at 475&nbsp;ms and its first
-      painted frame at 890&nbsp;ms on this fixture, and VS Code and IntelliJ
+      Editora's own instrumentation puts its window at {editoraInternal.windowMs}&nbsp;ms and its first
+      painted frame at {editoraInternal.firstPaintMs}&nbsp;ms on this fixture, and VS Code and IntelliJ
       have a gap of their own that we cannot see from outside.
     </p>
 
@@ -197,7 +188,7 @@ const rows = [
     <p>
       A window appearing is not the same as the file being readable in it, and
       this measures the former. For Editora the difference is roughly
-      400&nbsp;ms; for the other two it is unmeasurable from outside, so the
+      {paintGapMs}&nbsp;ms; for the other two it is unmeasurable from outside, so the
       figures are an early bound for all three rather than a like-for-like
       account of when you can start reading. Nor are they a cold boot, a measure
       of when indexing finishes, or a claim about your hardware: they are

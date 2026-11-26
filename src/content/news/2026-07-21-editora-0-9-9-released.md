@@ -1,12 +1,12 @@
 ---
 title: "Editora 0.9.9: asks before it builds"
-description: "Workspace trust for repo-supplied build wrappers, a much smarter command palette that explains what it can't run, the HTTP client as a real preview, and a 28% faster start on Apple silicon."
+description: "Workspace trust for repo-supplied build wrappers, a command palette that explains what it can't run, the HTTP client as a preview, and a faster start."
 date: 2026-07-21
 version: "0.9.9"
 ---
 
 **Editora 0.9.9** is out. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.9).
 
 **Workspace trust.** A repository that ships its own `./mvnw` or `./gradlew`
 gets that script run with your privileges the moment you trigger a Maven or

@@ -1,6 +1,6 @@
 ---
 title: "TODO highlighting and tool window"
-description: "Configurable regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a new TODO tool window, with scrollbar and minimap stripes."
+description: "Regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a TODO tool window, with scrollbar and minimap stripes."
 date: 2026-06-22
 ---
 

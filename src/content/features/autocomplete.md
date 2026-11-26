@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 4
 beta: false
 summary: "As-you-type completion: a popup for code (LSP + snippets) and inline ghost text for prose. Trigger with <kbd>C-M-i</kbd> / <kbd>M-/</kbd>."
+description: "A completion popup that merges language-server results and snippets for code, and inline ghost-text suggestions for prose."
 ---
 
 Completion appears as you type, debounced and off the hot path.
