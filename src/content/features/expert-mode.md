@@ -3,12 +3,12 @@ title: "Expert mode"
 group: "Customization & extensibility"
 order: 4
 beta: false
-summary: "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay."
-description: "A lighter focus mode: the toolbar, tabs, breadcrumb and stripes go, while line numbers, minimap, status bar and menu bar stay."
-alt: "Expert mode: a Java file with only the menu bar, line numbers, minimap and status bar around it"
+summary: "A lighter focus mode than Zen: the menu bar, toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, and the status bar stay."
+description: "A lighter focus mode: the menu bar, toolbar, tabs, breadcrumb and stripes go, while line numbers, minimap and status bar stay."
+alt: "Expert mode: a Java file with only line numbers, the minimap and the status bar around it, and the E button that leaves the mode"
 ---
 
-Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
+Expert mode removes the window chrome around the editor and keeps the editor itself complete. The [menu bar](/features/menu-bar), toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden; where the menus share the title bar, the title and the window buttons stay. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, and the status bar stay.
 
 It suits people who drive the editor from the keyboard and want the room back without losing their bearings in the file. Nothing is switched off, so language servers, Git, and every command keep working.
 

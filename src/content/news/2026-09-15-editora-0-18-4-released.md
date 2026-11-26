@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.18.4: JavaFX 27 and one-step JUnit debugging"
+seoTitle: "Editora 0.18.4: JavaFX 27, JUnit debugging"
 description: "Editora 0.18.4 moves to JavaFX 27, adds debugging for the JUnit test at the caret, fixes a Local History race, and enforces the supported build toolchain."
 date: 2026-09-15
 version: "0.18.4"

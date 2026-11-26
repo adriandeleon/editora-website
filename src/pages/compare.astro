@@ -10,9 +10,12 @@
 // figures live in src/lib/bench.ts, shared with the home page's chart.
 import Layout from "../layouts/Layout.astro";
 import { repo, lspServerCount, version } from "../lib/editora";
-import { editoraInternal, machine, measured, secs, startup } from "../lib/bench";
+import { editoraInternal, machine, measured, projectWarmup, secs, startup } from "../lib/bench";
 
 const fileMs = (name: string) => startup.file.find((r) => r.name === name)!.ms;
+// With three timed runs, the slowest, the median and the fastest are the runs.
+const ijProject = startup.project.find((r) => r.name === "IntelliJ IDEA")!;
+const warmedUp = startup.project.find((r) => r.name === projectWarmup.name)!;
 // Editora's lead over VS Code on the single file, and the gap between its
 // window appearing and its first painted frame.
 const leadMs = fileMs("VS Code") - fileMs("Editora");
@@ -39,13 +42,13 @@ const rows = [
   },
   {
     what: "Language support",
-    editora: `${lspServerCount} language servers, using the ones already installed on your machine`,
+    editora: `${lspServerCount} language servers, found on your PATH or installed by Editora from Settings`,
     others: "VS Code's extension marketplace is far larger. IntelliJ's Java and Kotlin tooling is deeper than anything here",
   },
   {
     what: "Debugging",
-    editora: "Step debugging for Java, Python, JavaScript and TypeScript, Go, Rust, C and C++, C#, Ruby, PHP and more, through the Debug Adapter Protocol, using adapters you install",
-    others: "VS Code debugs most languages through extensions. IntelliJ IDEA debugs Java and Kotlin built in; most other languages need another JetBrains IDE, several of them paid. Emacs uses dap-mode or dape",
+    editora: "Step debugging for Java, Python, JavaScript and TypeScript, Go, Rust, C and C++, C#, Ruby, PHP and more, through the Debug Adapter Protocol. Groovy, Kotlin and Clojure run on Editora's own JVM debugger, and most other adapters install from Settings → Debugging",
+    others: "VS Code debugs most languages through extensions. IntelliJ IDEA debugs Java and Kotlin built in, and its paid Ultimate edition and plugins reach further. Emacs uses dap-mode or dape",
   },
   {
     what: "Account and telemetry",
@@ -152,9 +155,10 @@ const rows = [
     <p class="note">
       Three runs each, opening a 117&nbsp;MB source repository of 3,680 files (a
       clean clone of Editora's own). Treat IntelliJ's figure as the roughest of
-      the six: its three runs came in at 3.97s, 3.16s and 2.19s, a spread far
-      wider than its median is precise. The discarded warm-up runs are a better
-      illustration still — VS Code's was 3.08s against the 0.66s it then settled
+      the six: its three runs came in at {secs(ijProject.hi)}, {secs(ijProject.ms)} and
+      {secs(ijProject.lo)}, a spread far wider than its median is precise. The
+      discarded warm-up runs are a better illustration still — {projectWarmup.name}'s
+      was {secs(projectWarmup.ms)} against the {secs(warmedUp.ms)} it then settled
       to, so a cold first open of a project is a different measurement from any
       of these.
     </p>

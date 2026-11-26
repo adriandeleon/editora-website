@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.20.0: more Git, crash recovery, and settings sync"
+seoTitle: "Editora 0.20.0: Git, crash recovery, sync"
 description: "Merges, rebases, branches, stashes and patches from inside the editor, unsaved edits that survive a crash, settings sync, and reworked printing and PDF export."
 date: 2026-10-08
 version: "0.20.0"

@@ -22,4 +22,4 @@ It is a curated subset. Editora registers over 1,600 commands, and a menu listin
 
 On Linux and Windows it can **share the window's title bar**, putting menus, title and system buttons on one row and giving a full bar of vertical space back to the editor. It is on by default; turn off **Merge the menu bar into the title bar** in **Settings → Interface** (or run **View: Toggle Menu Bar in Title Bar**) for the system title bar, with the menu bar below it. The change applies after a restart.
 
-Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen mode (Expert mode keeps it). [Simple mode](/features/simple-ui-mode) keeps a reduced one (File, Edit, Find, View, Help), because someone new to the editor is the person most likely to need a menu to browse.
+Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen and Expert mode. [Simple mode](/features/simple-ui-mode) keeps a reduced one (File, Edit, Find, View, Help), because someone new to the editor is the person most likely to need a menu to browse.

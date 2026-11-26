@@ -29,6 +29,7 @@ const cards = [
   // No command count here: this string is baked into a PNG, so it cannot track
   // the generated total the way the pages do, and would quietly go stale.
   { slug: "commands", kicker: "Reference", title: "The command reference" },
+  { slug: "keybindings", kicker: "Keybindings", title: "Every keymap, every chord" },
 ];
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

@@ -47,6 +47,10 @@ export const startup: { file: BenchRow[]; project: BenchRow[] } = {
   ],
 };
 
+/** One discarded warm-up run from the project test, kept because it shows how
+    far a cold first open is from the warm figures above. */
+export const projectWarmup = { name: "VS Code", ms: 3080 };
+
 /** Editora's own instrumentation (scripts/measure-startup.sh in the Editora
     repo) on the single-file fixture: window shown, and first frame with the
     file's text painted. */

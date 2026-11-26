@@ -3,7 +3,7 @@ title: "Run configurations"
 group: "Run & debug"
 order: 2
 beta: false
-summary: "Save how a Java main class, Python, Node.js, shell, Groovy, Clojure or Scala script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file."
+summary: "Save how a Java main class, a Python, Node.js, shell, Groovy, Kotlin, Clojure or Scala script, a C, C++, Go, Rust or Dart program, a make target, or a named npm script is launched, with a before-launch step and a shareable project file."
 description: "Save how a main class, script, make target or npm script runs, with arguments, environment and a before-launch step, and share it in the project."
 alt: "A Python script run configuration: script, interpreter, arguments, working folder, console and Run on"
 ---
@@ -20,11 +20,16 @@ Choose a **Type** in the project's **Run Configurations** window:
 - a **Scala** file or script, run with Scala CLI
 - a **shell script** (its shebang picks the interpreter unless you set **Interpreter** and **Interpreter options**)
 - a **Groovy script** (run with `groovy` on the configuration's JDK, its VM arguments in `JAVA_OPTS`)
+- a **Kotlin file**: a `.kts` script run with `kotlinc -script`, or a `.kt` program compiled and run with `java -jar`, on the configuration's JDK
 - a **Clojure script** (run with the Clojure CLI, Leiningen or Babashka, as its project says, on the configuration's JDK)
+- a **C program** or **C++ program**, built the way Debug builds it: its CMake or Make project, or the file alone with `cc` or `c++`
+- a **Go program** (the file's package, or the file alone outside a module; a test file runs all its tests)
+- a **Rust program**, built by Cargo from the file's package (a test file runs all its tests)
+- a **Dart program**, run with `dart run`, or `flutter run` for a Flutter app
 - a **make target**
 - a named **npm script**, run with the project's own package manager (npm, pnpm, yarn or bun), with arguments passed after `--`
 
-Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host) and, for Python, the project's venv there (or the host's Python for Run and tests). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Groovy, Clojure, Scala, Node.js and npm configurations can be debugged, several together as a compound, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
+Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind but the C, C++, Go, Rust and Dart programs (which build and run on this computer only) runs on the host, with the host's own Java (or the JDK home set for that host) and, for Python, the project's venv there (or the host's Python for Run and tests). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Every type but shell and make can be debugged, several configurations together as a compound: Java, Groovy, Kotlin, Clojure, Scala, Node.js, npm, Python, C, C++, Go, Rust and Dart (see [Debugging](/features/debugging)). Debug on a shell configuration points you to its Bash script, which is debugged from its own tab, or to *Run with Trace* (see [Run files](/features/run-files)).
 
 ## A step before the launch
 

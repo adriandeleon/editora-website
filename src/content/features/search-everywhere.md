@@ -4,14 +4,14 @@ group: "Keyboard & commands"
 order: 3
 beta: false
 summary: "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in. A <code>&gt;</code>, <code>#</code> or <code>@</code> prefix narrows it when you already know."
-description: "One picker over commands, project files and symbols, grouped by source. The VS Code prefixes >, # and @ narrow it to one kind."
+description: "One picker over commands, project files and symbols, grouped by source. A > (commands), # (files) or @ (symbols) prefix narrows it to one kind."
 alt: "Search Everywhere for \"theme\", with matching files and symbols in separate groups"
 ---
 
 Editora has five pickers on five chords, and each one makes you decide *what kind* of thing you want before you can start typing its name. **Search Everywhere** takes the name and searches all of them.
 
 - No prefix: commands, project files and symbols together
-- `>` commands only, `#` files only, `@` symbols only. These are VS Code's sigils, chosen because many people already know them.
+- `>` commands only, `#` files only, `@` symbols only. The `>` and `@` prefixes are borrowed from VS Code, where many people already know them, with `#` for files.
 
 Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge would fill the list from the biggest source and push the other two out. Each source gets a guaranteed share, and the groups are ordered by their *best* result rather than by how many results they have. When you restrict it to one source, nothing is capped.
 

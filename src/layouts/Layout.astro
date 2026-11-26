@@ -13,6 +13,9 @@ interface Props {
       current version so search engines consolidate there rather than ranking
       an old release's page against its replacement. */
   canonicalPath?: string;
+  /** Keeps the page out of search results: emits a robots noindex and no
+      canonical (the 404 page has no URL of its own to point at). */
+  noindex?: boolean;
 }
 
 const {
@@ -20,11 +23,12 @@ const {
   description = "Editora is a fast, keyboard-driven, open-source programmer's editor for macOS, Windows and Linux. Every action is a command: use your keymap or the palette.",
   ogImage,
   canonicalPath,
+  noindex = false,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
-// Versioned docs base, relative for url() (e.g. "docs/v-1.0.0").
+// The guide base, relative for url() ("docs", or "docs/v-1.0.0" in the copy inside the app).
 const docsRel = docsBase.slice(1);
 
 // Absolute URLs for SEO/social tags (Astro.site is set in astro.config).
@@ -42,7 +46,7 @@ const ogImageUrl = new URL(ogImage ?? "/og-image.png", Astro.site).href;
 const nav = [
   { href: url("features"), label: "Features" },
   { href: url("news"), label: "News" },
-  { href: url(docsRel), label: "Docs" },
+  { href: url(`${docsRel}/`), label: "Docs" },
   { href: `${repo}/discussions`, label: "Discussions", external: true },
   { href: url("plugins"), label: "Plugins" },
   { href: repo, label: "GitHub", external: true },
@@ -52,10 +56,10 @@ const footerCols = [
   {
     title: "Documentation",
     links: [
-      { href: url(`${docsRel}/getting-started`), label: "Getting Started" },
-      { href: url(`${docsRel}/configuration`), label: "Configuration" },
-      { href: url(`${docsRel}/plugins`), label: "Plugins guide" },
-      { href: url(`${docsRel}/faq`), label: "FAQ" },
+      { href: url(`${docsRel}/getting-started/`), label: "Getting Started" },
+      { href: url(`${docsRel}/configuration/`), label: "Configuration" },
+      { href: url(`${docsRel}/plugins/`), label: "Plugins guide" },
+      { href: url(`${docsRel}/faq/`), label: "FAQ" },
       { href: url("commands"), label: "Commands" },
       { href: url("keybindings"), label: "Keybindings" },
     ],
@@ -113,11 +117,11 @@ const isActive = (href: string) => {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonical} />
+    {!noindex && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:site_name" content="Editora" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -320,7 +324,12 @@ const isActive = (href: string) => {
     /* --muted and --faint carry text, so every theme below keeps both at
        4.5:1 or better (WCAG AA) against its own --bg and --bg-soft. The hue is
        the theme's; only the lightness was moved to pass. Re-check the ratio
-       when you change a background or one of these. */
+       when you change a background or one of these.
+       --on-accent is text on an --accent fill (primary buttons, the skip link,
+       pressed toggles, Beta pills), so every theme keeps that pair at 4.5:1 or
+       better too: Primer Dark 7.55, Editora Dark 10.93, Editora Light 4.53,
+       Primer Light 5.19, Dracula 6.55, Nord 6.24, Cupertino Dark 5.76 (black
+       is the most a #0a84ff fill allows), Islands Dark 8.32. */
     --muted: #8b949e; /* comment fill */
     --faint: #7d8590; /* line-number text, lightened to pass 4.5:1 */
     --accent: #58a6ff; /* link / fold-chevron:hover */
@@ -460,7 +469,7 @@ const isActive = (href: string) => {
     --faint: #8e8e92;
     --accent: #0a84ff;
     --accent-soft: rgba(10, 132, 255, 0.15);
-    --on-accent: #ffffff;
+    --on-accent: #000000; /* 5.76:1 on the accent; white was 3.65:1 */
     --bookmark: #f2a65c;
     --tok-keyword: #fc5fa3;
     --tok-string: #fc6a5d;
@@ -480,7 +489,7 @@ const isActive = (href: string) => {
     --faint: #828995;
     --accent: #56a8f5;
     --accent-soft: rgba(86, 168, 245, 0.15);
-    --on-accent: #ffffff;
+    --on-accent: #000000; /* 8.32:1 on the accent; white was 2.53:1 */
     --bookmark: #f2a65c;
     --tok-keyword: #cf8e6d;
     --tok-string: #6aab73;

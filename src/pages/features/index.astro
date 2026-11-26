@@ -12,7 +12,7 @@ const total = groups.reduce((n, g) => n + g.items.length, 0);
 
 <Layout
   title="Features — Editora"
-  description={`All ${total} features of Editora, the keyboard-driven editor: commands and keymaps, editing, language servers, run and debug, Git, previews, the Project Map, and more.`}
+  description={`All ${total} features of Editora, the keyboard-driven editor: commands and keymaps, editing, language servers, run and debug, Git, previews and the Project Map.`}
   ogImage="og/features.png"
 >
   <main class="features-page">
@@ -21,7 +21,7 @@ const total = groups.reduce((n, g) => n + g.items.length, 0);
       <p class="fp-lead">
         Everything Editora does, in {total} features across {groups.length} areas.
         Each card opens a page with the details and links into the
-        <a href={docsBase}>docs</a>, or see them all in the
+        <a href={`${docsBase}/`}>docs</a>, or see them all in the
         <a href="/screenshots">screenshot gallery</a>.
       </p>
       <nav class="fp-jump" aria-label="Feature areas">

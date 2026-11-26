@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.22.0: tools on the host, wiki links and HTTP scripts"
+seoTitle: "Editora 0.22.0: host tools, wiki links, HTTP"
 description: "Git, builds, language servers and debuggers run on a remote host, in a container or in WSL. Also Markdown wiki links, HTTP Client scripts and Emacs registers."
 date: 2026-10-16
 version: "0.22.0"

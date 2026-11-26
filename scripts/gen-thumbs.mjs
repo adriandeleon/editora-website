@@ -25,11 +25,12 @@ const force = process.argv.includes("--force");
 const THUMB_W = 560;
 const RASTER = new Set([".png", ".jpg", ".jpeg", ".webp"]);
 
-// Folders under public/screenshots that get a thumbs/ folder. The feature
-// cards use the light capture only; the gallery follows the site theme, so the
-// docs, map and hero captures get their `.dark` twins thumbed too.
+// Folders under public/screenshots that get a thumbs/ folder. The gallery
+// follows the site theme, so every folder with `.dark` twins gets them thumbed
+// too: without one, a dark theme (the site default) loads the full-size twin
+// into a 560px cell. The feature cards themselves use the light thumb only.
 const DIRS = [
-  { dir: "features", dark: false },
+  { dir: "features", dark: true },
   { dir: "docs", dark: true },
   { dir: "map", dark: true },
   { dir: "hero", dark: true },

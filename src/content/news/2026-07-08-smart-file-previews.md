@@ -1,5 +1,6 @@
 ---
 title: "Instant previews for data, config, and diagram files"
+seoTitle: "Instant previews for data and diagram files"
 description: "JSON/YAML/TOML/XML trees, OpenAPI docs, decoded systemd/ssh/Dockerfile/fstab/crontab/GitHub-Actions files, DOT and PlantUML diagrams, and PDF/SVG viewers."
 date: 2026-07-08
 ---

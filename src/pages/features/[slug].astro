@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import sharp from "sharp";
 import Layout from "../../layouts/Layout.astro";
 import { featureShotAlt, groupedFeatures, groupId } from "../../lib/features";
 
@@ -29,6 +30,15 @@ const shotDark = shot
   ? shot.replace(/(\.[a-z]+)$/, ".dark$1")
   : null;
 const hasDark = shotDark !== null && existsSync(resolve("public", shotDark));
+// The capture's pixel size, for the <img> width and height (so the page does
+// not shift as the picture loads). sharp reads only the header. The light and
+// dark twins are taken at the same size. src/lib/screenshots.ts has its own
+// header reader for the gallery, but keeps it private.
+const size = shot ? await sharp(resolve("public", shot)).metadata() : null;
+const dims = size?.width && size?.height ? { width: size.width, height: size.height } : {};
+// A real capture doubles as the page's social card; an SVG stand-in does not
+// (most link previews do not render SVG), so that keeps the generic card.
+const ogImage = shot && !shot.endsWith(".svg") ? shot : undefined;
 
 // Sibling features in the same group, for "Related".
 const groups = await groupedFeatures();
@@ -51,6 +61,7 @@ const description =
 <Layout
   title={`${entry.data.title} — Editora`}
   description={description}
+  ogImage={ogImage}
 >
   <main class="doc feature" data-pagefind-body data-pagefind-meta="kind:Feature">
     <p class="back"><a href={group ? `/features#${groupId(group.title)}` : "/features"}>← All features</a></p>
@@ -64,11 +75,11 @@ const description =
       shot ? (
         <figure class="shot doc-figure">
           <a class={`doc-figure-link${hasDark ? " doc-figure-light" : ""}`} href={`/${shot}`} title="Open the full-size screenshot">
-            <img src={`/${shot}`} alt={featureShotAlt(entry)} />
+            <img src={`/${shot}`} alt={featureShotAlt(entry)} {...dims} />
           </a>
           {hasDark && (
             <a class="doc-figure-link doc-figure-dark" href={`/${shotDark}`} title="Open the full-size screenshot">
-              <img src={`/${shotDark}`} alt={featureShotAlt(entry)} />
+              <img src={`/${shotDark}`} alt={featureShotAlt(entry)} {...dims} />
             </a>
           )}
         </figure>

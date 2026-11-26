@@ -1,5 +1,6 @@
 ---
 title: "Build-tool integration for Maven, npm, Cargo, Go, and Gradle"
+seoTitle: "Build tools: Maven, npm, Cargo, Go, Gradle"
 description: "Each detected build tool gets a toolbar icon with an IntelliJ-style actions popup that streams the chosen task to a per-tool console."
 date: 2026-07-07
 ---
