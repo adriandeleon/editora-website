@@ -187,7 +187,15 @@ Every command has its own page at `/docs/v-<version>/commands/<command-id>` (e.g
 `src/pages/docs/[version]/commands/[id].astro` from the data in
 `src/lib/commands.ts`. The app deep-links these by version + command id. Each
 page shows the title, id, description, and per-keymap keybindings, with links
-back to the relevant guide and the command list. English-only for now; a locale
+back to the relevant guide and the command list.
+
+An archived version's command pages are small standalone stubs
+(`src/components/ArchivedCommand.astro`): the command's title, id, description
+and that release's keys, an "archived" note and a link to the current page,
+without the site header, search or scripts. Old app versions keep their links,
+and an archived version costs about 5 MB instead of about 20 MB (each release
+used to add a full copy, heading for GitHub Pages' 1 GB limit; see
+`npm run check:size`). English-only for now; a locale
 dimension can be added later (per-locale command data plus a locale-prefixed
 route).
 
