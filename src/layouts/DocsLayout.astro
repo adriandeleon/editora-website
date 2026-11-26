@@ -27,6 +27,7 @@ const CATEGORY_ORDER = [
   "Languages",
   "Version control",
   "Workspace",
+  "Tools",
   "Customization",
   "Integrations",
   "Help",
@@ -57,13 +58,18 @@ type Page = (typeof pages)[number];
 // Where a current page lives for good: /docs/<slug>. The versioned URL of the
 // same page is kept for the app's deep links and points its canonical here. The
 // copy inside the app (appDocs) has no stable pages, so it stays versioned.
+// Every href ends in a slash: the pages are directories, and GitHub Pages
+// answers a slashless one with a 301.
 const stableHref = (slug: string) =>
-  slug === "introduction"
-    ? currentDocVersion.base
-    : appDocs
-      ? `${currentDocVersion.base}/${slug}`
-      : `/docs/${slug}`;
-const href = (p: Page) => (stable ? stableHref(p.slug) : p.slug === "introduction" ? base : `${base}/${p.slug}`);
+  appDocs
+    ? slug === "introduction"
+      ? `${currentDocVersion.base}/`
+      : `${currentDocVersion.base}/${slug}/`
+    : slug === "introduction"
+      ? "/docs/"
+      : `/docs/${slug}/`;
+const href = (p: Page) =>
+  stable ? stableHref(p.slug) : p.slug === "introduction" ? `${base}/` : `${base}/${p.slug}/`;
 
 // Flat order for prev/next.
 const flat = cats.flatMap((c) => pages.filter((p) => p.entry.data.category === c));
@@ -77,17 +83,17 @@ const thisSlug = prefix && entry.id.startsWith(prefix) ? entry.id.slice(prefix.l
 const currentSlugs = new Set((await getCollection("docs")).map((d) => d.id));
 const latestHref = !archived
   ? null
-  : thisSlug === "introduction" || !currentSlugs.has(thisSlug)
-    ? currentDocVersion.base
+  : !currentSlugs.has(thisSlug)
+    ? stableHref("introduction")
     : stableHref(thisSlug);
 
 // Each version in the switcher links to this same page in that version when
 // it has one (so switching keeps your place), else to that version's root.
 const archiveIds = new Set((await getCollection("docsArchive")).map((d) => d.id));
 const versionHref = (v: DocVersion) => {
-  if (thisSlug === "introduction") return v.base;
+  if (thisSlug === "introduction") return `${v.base}/`;
   const has = v.archive === null ? currentSlugs.has(thisSlug) : archiveIds.has(`${v.archive}/${thisSlug}`);
-  return has ? `${v.base}/${thisSlug}` : v.base;
+  return has ? `${v.base}/${thisSlug}/` : `${v.base}/`;
 };
 
 const reference = [
@@ -162,7 +168,7 @@ const faqJsonLd =
         {
           cats.map((c) => (
             <div class="docs-cat">
-              <h3>{c}</h3>
+              <p class="docs-cat-label">{c}</p>
               {pages
                 .filter((p) => p.entry.data.category === c)
                 .map((p) => (
@@ -178,14 +184,14 @@ const faqJsonLd =
           ))
         }
         <div class="docs-cat">
-          <h3>Reference</h3>
+          <p class="docs-cat-label">Reference</p>
           {reference.map((r) => <a href={r.href}>{r.label}</a>)}
         </div>
         {
           docVersions.length > 1 && (
             <details class="docs-cat docs-versions">
               <summary>
-                <h3>Version</h3>
+                <p class="docs-cat-label">Version</p>
                 <span class="docs-version-now">
                   {docVersion.version}
                   {docVersion.current && <span class="docs-version-tag">latest</span>}
@@ -218,7 +224,7 @@ const faqJsonLd =
 
     <article
       class="docs-content doc"
-      data-pagefind-body={!archived && (stable || appDocs || thisSlug === "introduction") ? true : undefined}
+      data-pagefind-body={!archived && (stable || appDocs) ? true : undefined}
       data-pagefind-meta="kind:Docs"
     >
       {
@@ -283,7 +289,8 @@ const faqJsonLd =
     gap: 0.15rem;
   }
 
-  .docs-cat h3 {
+  .docs-cat .docs-cat-label {
+    font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -413,7 +420,7 @@ const faqJsonLd =
   .docs-versions > summary::-webkit-details-marker {
     display: none;
   }
-  .docs-versions > summary h3 {
+  .docs-versions > summary .docs-cat-label {
     margin: 0;
   }
   .docs-versions > summary::after {

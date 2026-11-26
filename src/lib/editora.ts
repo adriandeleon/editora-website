@@ -3,13 +3,20 @@
 // the Editora repo (it isn't checked out in CI). Re-exported here so callers
 // keep importing { version } from "../lib/editora".
 import { version } from "./version";
+import { appDocs } from "./app-docs";
 
 export { version };
 
-// Docs are versioned: the canonical docs URLs live under /docs/v-<version>/.
-// Templates build links from this; Markdown content links (authored as plain
-// /docs/...) are rewritten to this base at build time (see astro.config.mjs).
-export const docsBase = `/docs/v-${version}`;
+// Where templates link the user guide. On the website that is the stable
+// /docs/<slug>/ (each page's canonical URL; src/pages/docs/[slug].astro); the
+// copy inside the app serves only /docs/v-<version>/. Markdown links (authored
+// as plain /docs/...) get the same treatment at build time (astro.config.mjs).
+// End every link built from it with a slash: GitHub Pages answers a slashless
+// directory URL with a 301.
+export const docsBase = appDocs ? `/docs/v-${version}` : "/docs";
+
+// Per-command pages exist only under the version: /docs/v-<version>/commands/<id>/.
+export const commandsBase = `/docs/v-${version}/commands`;
 
 export const repo = "https://github.com/adriandeleon/Editora";
 export const latestRelease = `${repo}/releases/latest`;

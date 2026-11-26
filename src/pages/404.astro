@@ -5,7 +5,7 @@ const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 ---
 
-<Layout title="Page not found — Editora" description="That page doesn't exist.">
+<Layout title="Page not found — Editora" description="That page doesn't exist." noindex>
   <main class="page">
     <p class="code">404</p>
     <h1>Page not found</h1>

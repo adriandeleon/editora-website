@@ -134,6 +134,10 @@ const near = (k: number) => k === 0 || k === 1 || k === n - 1;
 
     function go(k: number, byUser = false) {
       k = wrap(k);
+      // The live region has to be polite before its text changes, or a screen
+      // reader skips the first slide someone picks while the show was playing.
+      const wasSilent = byUser && cap.getAttribute("aria-live") !== "polite";
+      if (byUser) cap.setAttribute("aria-live", "polite");
       if (k !== cur) {
         const from = slides[cur];
         const to = slides[k];
@@ -148,7 +152,10 @@ const near = (k: number) => k === 0 || k === 1 || k === n - 1;
         // On phones the tabs scroll sideways; keep the current one in view.
         const list = tabs[k].parentElement!;
         list.scrollLeft = tabs[k].offsetLeft - (list.clientWidth - tabs[k].offsetWidth) / 2;
-        cap.textContent = to.dataset.caption ?? "";
+        const caption = to.dataset.caption ?? "";
+        // Give the accessibility tree a moment to see the region as live.
+        if (wasSilent) window.setTimeout(() => { if (slides[cur] === to) cap.textContent = caption; }, 100);
+        else cap.textContent = caption;
         cur = k;
         slides[wrap(k + 1)].classList.add("is-near");
         slides[wrap(k - 1)].classList.add("is-near");

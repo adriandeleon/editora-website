@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.26.0: a reworked Project Map and a modern terminal"
+seoTitle: "Editora 0.26.0: Project Map, modern terminal"
 description: "The Project Map gets compact folder chains, Reveal Active File and notes on cards; the terminal gets themes, Nerd Font icons and the kitty keyboard protocol."
 date: 2026-10-29
 version: "0.26.0"
@@ -33,7 +34,7 @@ review, and every finding was fixed. Download it from the
   right, numbered files sort by number, and the Modified filter is now
   **Unsaved**.
 
-[More about the Project Map](/docs/workspace#project-map).
+[More about the Project Map](/docs/project-map).
 
 ## Terminal
 

@@ -1,5 +1,6 @@
 ---
 title: "Recently shipped: debugging, Git, LSP, and a lot more"
+seoTitle: "Recently shipped: debugging, Git, LSP and more"
 description: A roundup of the major features that have landed in Editora.
 date: 2026-06-14
 ---

@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.15.0: printing, Typst structure, and menus that keep up"
+seoTitle: "Editora 0.15.0: printing, Typst, live menus"
 description: "Long Markdown files print correctly, Typst files fold and outline by section, the Maven tree lists every plugin goal, and the VCS menu works inside Git."
 date: 2026-08-30
 version: "0.15.0"

@@ -53,7 +53,7 @@ Download it from the [0.28.0 release page](https://github.com/adriandeleon/Edito
 - **Cards read like the editor**, with its gutter, problems and usage counts,
   and the Map follows the debugger to each stop.
 
-[More about the Project Map](/docs/workspace#project-map).
+[More about the Project Map](/docs/project-map).
 
 ## Every command on the keyboard
 

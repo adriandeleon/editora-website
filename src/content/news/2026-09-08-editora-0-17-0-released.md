@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.17.0: whole-change review and editable diffs"
+seoTitle: "Editora 0.17.0: change review, editable diffs"
 description: "The diff viewer gains multi-file Git reviews, recursive folder comparisons, editable result drafts, smart alignment, and three-way merge resolution."
 date: 2026-09-08
 version: "0.17.0"

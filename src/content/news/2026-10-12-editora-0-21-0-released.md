@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.21.0: a faster editor and a reworked Local History"
+seoTitle: "Editora 0.21.0: faster editor, Local History"
 description: "Less work per keystroke, tab switch and startup, less memory per open file, a reworked Local History, and clickable code lenses."
 date: 2026-10-11
 version: "0.21.0"
