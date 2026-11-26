@@ -139,6 +139,9 @@ export default defineConfig({
   redirects: withTrailingSlash({
     // The blog was folded into News (2026-11-03). Old post URLs land on the
     // release's news post or the closest feature page, or on /news.
+    // The Roadmap page was removed (2026-11-25): it had drifted from the
+    // work and mostly listed shipped features, which What's New covers.
+    "/roadmap": "/whats-new",
     "/blog": "/news",
     "/blog/building-a-keyboard-first-editor": "/news",
     "/blog/editora-0-10-0": "/news/2026-08-03-editora-0-10-0-released",

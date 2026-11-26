@@ -2,7 +2,7 @@
 // in scripts/ against Editora at the release the site documents (the tag
 // v<version> of the committed src/lib/version.ts) and fails when the output
 // differs from what is committed. So the user guide (copied from Editora's
-// user-docs/), the Commands and Keybindings data, the Roadmap, What's new, the
+// user-docs/), the Commands and Keybindings data, What's new, the
 // version, the Pauta conformance page and the feature pages cannot drift from the app without the build saying so
 // (pauta-project.dev, Documentation: DOCS-04; Conformance: PAUTA-14).
 //
@@ -35,7 +35,7 @@ const GENERATORS = [
   ["GenCommands.java", ["src/lib/commands.ts"]],
   [
     "GenRoadmap.java",
-    ["src/lib/roadmap.ts", "src/lib/version.ts", "src/lib/release-series.ts", "src/pages/whats-new.md", "src/pages/whats-new"],
+    ["src/lib/version.ts", "src/lib/release-series.ts", "src/pages/whats-new.md", "src/pages/whats-new"],
   ],
   ["GenPauta.java", ["src/content/docs/pauta.md"]],
   ["GenFeatures.java", ["src/content/features"]],

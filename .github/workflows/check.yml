@@ -2,7 +2,7 @@ name: Check
 
 # Runs on every pull request (and on demand) so a broken build, a wrong
 # command id or chord in the docs, a broken internal link, or a generated page
-# (commands, roadmap, What's new, version, Pauta conformance, features) that no
+# (commands, What's new, version, Pauta conformance, features) that no
 # longer matches the app is caught before merge. The
 # deploy workflow (pages.yml) only runs after merge to master.
 on:
