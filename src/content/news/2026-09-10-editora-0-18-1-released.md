@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.18.1: safer saves, history, and Git workflows"
+seoTitle: "Editora 0.18.1: safer saves, history, Git"
 description: "Local and remote saves, file history, Project-tree deletion, Git operations, agent edits, and LSP workspace changes are safer when they overlap."
 date: 2026-09-10
 version: "0.18.1"

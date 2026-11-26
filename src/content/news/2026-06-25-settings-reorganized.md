@@ -1,5 +1,6 @@
 ---
 title: "A reorganized Settings window, with built-in editors"
+seoTitle: "A reorganized Settings window"
 description: "The Settings sidebar is grouped into five sections, and macros, snippets, templates, and your personal dictionary are now managed in the GUI."
 date: 2026-06-25
 ---

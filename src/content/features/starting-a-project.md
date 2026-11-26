@@ -3,9 +3,9 @@ title: "Starting a project"
 group: "Workspace & files"
 order: 2
 beta: false
-summary: "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written."
-description: "Create a Maven project from an archetype, git init a folder, and add any of about fifty file types from the Project tree with the right package."
-alt: "The New File From Template picker with two multi-file templates: HTML Page + CSS and Python Project"
+summary: "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about sixty file types from the Project tree with the right package declaration already written."
+description: "Create a Maven project from an archetype, git init a folder, and add any of about sixty file types from the Project tree with the right package."
+alt: "The New Project From Template picker listing seven bundled templates, from HTML Page + CSS and Python Project to GitHub Issue + PR Templates"
 ---
 
 Editora can create a project as well as open one: from a Maven archetype, or from a multi-file [template](/features/file-templates) with **New Project From Template**.
@@ -30,6 +30,6 @@ Starts version control without dropping to a terminal. It prompts for a folder, 
 
 ## New ▸ on any folder
 
-About fifty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
+About sixty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
 
 A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. A name that already ends in a known extension keeps it, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.

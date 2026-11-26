@@ -1,0 +1,20 @@
+---
+import { getEntry } from "astro:content";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import { currentDocVersion } from "../../lib/doc-versions";
+import { appDocs } from "../../lib/app-docs";
+
+// The guide's landing page (introduction) at its stable URL, /docs/, the
+// canonical home of /docs/v-<version>/. The copy inside the app serves only the
+// versioned page, so there /docs redirects (astro.config.mjs) and this page is
+// not built. (A rest route, so it can be left out of that build: `landing` is
+// undefined, which is /docs/ itself.)
+export function getStaticPaths() {
+  return appDocs ? [] : [{ params: { landing: undefined } }];
+}
+
+const entry = await getEntry("docs", "introduction");
+if (!entry) throw new Error("introduction.md is missing");
+---
+
+<DocsLayout entry={entry} docVersion={currentDocVersion} stable />

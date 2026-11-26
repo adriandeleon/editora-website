@@ -62,12 +62,12 @@ On macOS the non-Emacs keymaps use ⌘ wherever the [keybindings reference](/key
     new Feature("search-everywhere", KB, 3, false,
         "Search Everywhere",
         "One picker over <strong>commands, files and symbols</strong>. Type the name of the thing instead of first choosing which finder it lives in. A <code>&gt;</code>, <code>#</code> or <code>@</code> prefix narrows it when you already know.",
-        "One picker over commands, project files and symbols, grouped by source. The VS Code prefixes >, # and @ narrow it to one kind.",
+        "One picker over commands, project files and symbols, grouped by source. A > (commands), # (files) or @ (symbols) prefix narrows it to one kind.",
         """
 Editora has five pickers on five chords, and each one makes you decide *what kind* of thing you want before you can start typing its name. **Search Everywhere** takes the name and searches all of them.
 
 - No prefix: commands, project files and symbols together
-- `>` commands only, `#` files only, `@` symbols only. These are VS Code's sigils, chosen because many people already know them.
+- `>` commands only, `#` files only, `@` symbols only. The `>` and `@` prefixes are borrowed from VS Code, where many people already know them, with `#` for files.
 
 Results stay **grouped by source** rather than interleaved on raw score. The sources differ in size by orders of magnitude (tens of thousands of symbols, thousands of files, a few hundred commands), so a flat merge would fill the list from the biggest source and push the other two out. Each source gets a guaranteed share, and the groups are ordered by their *best* result rather than by how many results they have. When you restrict it to one source, nothing is capped.
 
@@ -233,7 +233,7 @@ It is a curated subset. Editora registers over 1,600 commands, and a menu listin
 
 On Linux and Windows it can **share the window's title bar**, putting menus, title and system buttons on one row and giving a full bar of vertical space back to the editor. It is on by default; turn off **Merge the menu bar into the title bar** in **Settings → Interface** (or run **View: Toggle Menu Bar in Title Bar**) for the system title bar, with the menu bar below it. The change applies after a restart.
 
-Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen mode (Expert mode keeps it). [Simple mode](/features/simple-ui-mode) keeps a reduced one (File, Edit, Find, View, Help), because someone new to the editor is the person most likely to need a menu to browse.
+Hide it from **Settings → Interface** or with **View: Toggle Menu Bar**, and it hides itself in Zen and Expert mode. [Simple mode](/features/simple-ui-mode) keeps a reduced one (File, Edit, Find, View, Help), because someone new to the editor is the person most likely to need a menu to browse.
 """),
     new Feature("snippets", ED, 1, false,
         "Snippets",
@@ -469,10 +469,10 @@ While a buffer is narrowed, language-server support is suspended, and bookmarks,
 """),
     new Feature("run-files", RD, 1, false,
         "Run files & main classes",
-        "Run a Java, Python, Node.js or shell script, a C, C++, Go or Rust program, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
-        "Run a Java, Python, Node.js, shell, Groovy, Scala, Clojure, C, C++, Go or Rust file from a gutter button, with input and clickable stack traces.",
+        "Run a script or program in most of the languages Editora supports, from Java, Python, Node.js and shell to Kotlin, Ruby, PHP, Go and Rust, or a Maven/Gradle project's <code>main</code> class, from a gutter ▶. Output and <code>stdin</code> go to the Run console, with clickable stack traces and saved run configurations.",
+        "Run a Java, Python, Node.js, shell, Kotlin, Ruby, PHP, Go or Rust file, and many more, from a gutter button, with input and clickable stack traces.",
         """
-A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script (under the project's own Python: its `.venv`, the interpreter picked in the status bar, or a specific shebang such as `python3.12`), a **Node.js** script (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, or a `node` shebang), a **shell** script (run with the interpreter its shebang names, else `bash`), a **Groovy** script (run with `groovy` on the selected Default JDK), a **Scala** program or `.sc` script (through its sbt or Mill build, else Scala CLI), or a **Clojure** file (a namespace's `-main` with `clojure -M -m` or `lein run -m` in its project, a script with `clojure -M`, a Babashka script with `bb`). All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
+A green ▶ in the gutter runs the current file, a **Java compact source file** (JEP 512), an extensionless Java file with a `java --source 25+` shebang, a **Python** script (under the project's own Python: its `.venv`, the interpreter picked in the status bar, or a specific shebang such as `python3.12`), a **Node.js** script (`.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.cts`, or a `node` shebang), a **shell** script (run with the interpreter its shebang names, else `bash`), a **Groovy** script (run with `groovy` on the selected Default JDK), a **Scala** program or `.sc` script (through its sbt or Mill build, else Scala CLI), or a **Clojure** file (a namespace's `-main` with `clojure -M -m` or `lein run -m` in its project, a script with `clojure -M`, a Babashka script with `bb`), a **Kotlin** script or a `.kt` file with a `main` (with `kotlinc`), a **Dart** program (`dart run`, or `flutter run` for a Flutter app), a **Deno** script in a project with a `deno.json` (`deno run`), a **Ruby** file (`ruby`, `rspec`, or a Rails app's server), a **PHP** script or web app (`php`, PHP's built-in server, or Laravel's), an **Elixir** file (`mix run`, `mix test`, or `elixir` outside a Mix project), or a **PowerShell** script (`pwsh`). Each language's page under [Languages](/docs/languages) says what its ▶ runs. All of them run with language services disabled; Java uses the selected Default JDK or `java` on your `PATH`. Shell startup files such as `.bashrc` and `.xinitrc` get no ▶.
 
 A Node.js script runs under the version a project's `.nvmrc` or `.node-version` names (when nvm has it), else the Node.js set in Settings → Build Tools → Node.js, else `node` on your `PATH` (on a remote host, in WSL or in a container, with that host's nvm and Node.js), from its package folder, with source maps and colours on. TypeScript runs with the project's own `tsx`, else its compiled file in the tsconfig `outDir`, else on plain Node.js 22.18 or newer. The ▶ of a test file (`*.test.*`, `*.spec.*`, or under `test/` or `__tests__/`) runs `node --test` and fills Test Results.
 
@@ -486,7 +486,7 @@ Output streams to the Run console, which also accepts **stdin** so `readln`-styl
 """),
     new Feature("run-configurations", RD, 2, false,
         "Run configurations",
-        "Save how a Java main class, Python, Node.js, shell, Groovy, Clojure or Scala script, make target, or named npm script is launched, in a dedicated window, with a before-launch step and a shareable project file.",
+        "Save how a Java main class, a Python, Node.js, shell, Groovy, Kotlin, Clojure or Scala script, a C, C++, Go, Rust or Dart program, a make target, or a named npm script is launched, with a before-launch step and a shareable project file.",
         "Save how a main class, script, make target or npm script runs, with arguments, environment and a before-launch step, and share it in the project.",
         """
 A run configuration saves how something is launched: the main class or script, program and VM arguments, environment variables (`$NAME` expands, and `@.env` loads a `.env` file), an optional JDK override, a shell or Python script's interpreter, and a working directory (relative to the project root; a Python script runs in its own folder when it is blank). Pick one in the toolbar and hit **Run** or **Debug**, with **Stop** beside them; the choice is remembered across restarts. Starting it always opens the Run console, and trying again while it is active brings that console back into focus.
@@ -501,11 +501,16 @@ Choose a **Type** in the project's **Run Configurations** window:
 - a **Scala** file or script, run with Scala CLI
 - a **shell script** (its shebang picks the interpreter unless you set **Interpreter** and **Interpreter options**)
 - a **Groovy script** (run with `groovy` on the configuration's JDK, its VM arguments in `JAVA_OPTS`)
+- a **Kotlin file**: a `.kts` script run with `kotlinc -script`, or a `.kt` program compiled and run with `java -jar`, on the configuration's JDK
 - a **Clojure script** (run with the Clojure CLI, Leiningen or Babashka, as its project says, on the configuration's JDK)
+- a **C program** or **C++ program**, built the way Debug builds it: its CMake or Make project, or the file alone with `cc` or `c++`
+- a **Go program** (the file's package, or the file alone outside a module; a test file runs all its tests)
+- a **Rust program**, built by Cargo from the file's package (a test file runs all its tests)
+- a **Dart program**, run with `dart run`, or `flutter run` for a Flutter app
 - a **make target**
 - a named **npm script**, run with the project's own package manager (npm, pnpm, yarn or bun), with arguments passed after `--`
 
-Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind runs on the host, with the host's own Java (or the JDK home set for that host) and, for Python, the project's venv there (or the host's Python for Run and tests). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Java, Groovy, Clojure, Scala, Node.js and npm configurations can be debugged, several together as a compound, and Debug says so for the others; Python files are debugged directly (see [Debugging](/features/debugging)), and a shell script can be traced with *Run with Trace* (see [Run files](/features/run-files)).
+Run configurations belong to a [project](/features/projects): each project window keeps its own, and the No Project window has none. There, a script or a compact Java file runs from its gutter ▶ or **File: Run** (see [Run files](/features/run-files)). Script configurations need no language server. In a [remote project](/features/remote-sftp), every kind but the C, C++, Go, Rust and Dart programs (which build and run on this computer only) runs on the host, with the host's own Java (or the JDK home set for that host) and, for Python, the project's venv there (or the host's Python for Run and tests). While a configuration runs, a spinner turns in the Run window, and on the Run stripe button when the window is closed. Every type but shell and make can be debugged, several configurations together as a compound: Java, Groovy, Kotlin, Clojure, Scala, Node.js, npm, Python, C, C++, Go, Rust and Dart (see [Debugging](/features/debugging)). Debug on a shell configuration points you to its Bash script, which is debugged from its own tab, or to *Run with Trace* (see [Run files](/features/run-files)).
 
 ## A step before the launch
 
@@ -867,8 +872,8 @@ Appearance, keymap and fonts stay personal, because checking out a repository sh
 """),
     new Feature("starting-a-project", WF, 2, false,
         "Starting a project",
-        "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about fifty file types from the Project tree with the right package declaration already written.",
-        "Create a Maven project from an archetype, git init a folder, and add any of about fifty file types from the Project tree with the right package.",
+        "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about sixty file types from the Project tree with the right package declaration already written.",
+        "Create a Maven project from an archetype, git init a folder, and add any of about sixty file types from the Project tree with the right package.",
         """
 Editora can create a project as well as open one: from a Maven archetype, or from a multi-file [template](/features/file-templates) with **New Project From Template**.
 
@@ -892,7 +897,7 @@ Starts version control without dropping to a terminal. It prompts for a folder, 
 
 ## New ▸ on any folder
 
-About fifty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
+About sixty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
 
 A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. A name that already ends in a known extension keeps it, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.
 """),
@@ -1182,10 +1187,10 @@ The other three ways to run the editor are [Expert mode](/features/expert-mode),
 """),
     new Feature("expert-mode", CE, 4, false,
         "Expert mode",
-        "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay.",
-        "A lighter focus mode: the toolbar, tabs, breadcrumb and stripes go, while line numbers, minimap, status bar and menu bar stay.",
+        "A lighter focus mode than Zen: the menu bar, toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, and the status bar stay.",
+        "A lighter focus mode: the menu bar, toolbar, tabs, breadcrumb and stripes go, while line numbers, minimap and status bar stay.",
         """
-Expert mode removes the window chrome around the editor and keeps the editor itself complete. The toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, the status bar, and the [menu bar](/features/menu-bar) stay.
+Expert mode removes the window chrome around the editor and keeps the editor itself complete. The [menu bar](/features/menu-bar), toolbar, tab bar, breadcrumb, tool-window stripes, and whitespace guides are hidden; where the menus share the title bar, the title and the window buttons stay. Line numbers, the minimap, the rulers, the indent guides, the current-line highlight, and the status bar stay.
 
 It suits people who drive the editor from the keyboard and want the room back without losing their bearings in the file. Nothing is switched off, so language servers, Git, and every command keep working.
 
@@ -1331,15 +1336,15 @@ static final Map<String, String> ALT = Map.ofEntries(
     Map.entry("editor-groups", "Two editor groups side by side: a CSV file on the left and a Markdown file on the right"),
     Map.entry("editorconfig", "An .editorconfig file with sections for all files, Java, XML, JSON and YAML"),
     Map.entry("emacs-heritage", "The command palette filtered by \"kill\", listing the Emacs kill commands with their chords"),
-    Map.entry("expert-mode", "Expert mode: a Java file with only the menu bar, line numbers, minimap and status bar around it"),
+    Map.entry("expert-mode", "Expert mode: a Java file with only line numbers, the minimap and the status bar around it, and the E button that leaves the mode"),
     Map.entry("export-pdf-print", "Print preview of a Java file, page 1 of 2, with Page Setup and Print buttons"),
     Map.entry("external-tools", "The External Tools: Run picker listing three tools and what each does with its output"),
     Map.entry("file-templates", "The New File From Template picker listing Java, HTML, Markdown, Python and shell templates"),
-    Map.entry("find-in-files", "Find in Files searching the project for \"theme\", with 1,617 matches grouped by file"),
-    Map.entry("full-ide", "The full IDE: a Java file with the Project tree on the right and the Git Log window below"),
+    Map.entry("find-in-files", "Find in Files searching the project for \"themeFor\" with ripgrep: 10 matches in 6 files, grouped by file"),
+    Map.entry("full-ide", "The full IDE: a Java file with the Project tree on the right and the Git Log window below, its commit graph topped by v0.29.0 on master"),
     Map.entry("git", "The Commit window beside a Java file: one changed file, two untracked, and a commit message typed"),
     Map.entry("github", "The GitHub tool window listing a repository's pull requests, with Issues and Runs tabs"),
-    Map.entry("html-live-preview", "An HTML file in the editor, with the status bar giving the live preview's local address"),
+    Map.entry("html-live-preview", "An HTML file in the editor, with the globe button at the top right that opens its live preview in a browser"),
     Map.entry("http-client", "An .http file with two requests and a test script, beside the JSON response of a 200 OK"),
     Map.entry("jump-to-popups", "The Jump to Structure picker listing a Java class and its methods"),
     Map.entry("keymaps", "The Keymap: Select picker offering Emacs, CUA, Sublime Text, Visual Studio Code and IntelliJ IDEA"),
@@ -1354,9 +1359,9 @@ static final Map<String, String> ALT = Map.ofEntries(
     Map.entry("mermaid", "A Mermaid flowchart in Split view, with the rendered diagram beside its source"),
     Map.entry("multiple-cursors", "Five carets in a column of Java lines, the same word typed at each"),
     Map.entry("plugins", "The Browse Plugins picker listing registry plugins with their versions and descriptions"),
-    Map.entry("previews", "A PNG image open in the image viewer, with zoom and Fit controls"),
+    Map.entry("previews", "A YAML config file in Split view: the source on the left and its data tree on the right, with the name, version, features and authors keys and their typed values"),
     Map.entry("project-map", "The Project Map: folder columns joined by curves, a Java file selected and its Structure column"),
-    Map.entry("projects", "A Java file open in a project, with the project's folders in the Project tree on the right"),
+    Map.entry("projects", "A Java file open in the Editora project, with the project's folders in the Project tree on the right and the Git menu in the menu bar"),
     Map.entry("read-only-view-mode", "A Java file in View mode, with an amber banner and an Enable Editing button"),
     Map.entry("remote-sftp", "The Connect to SFTP form with host, port, user, authentication, key file and path fields"),
     Map.entry("run-configurations", "A Python script run configuration: script, interpreter, arguments, working folder, console and Run on"),
@@ -1365,12 +1370,12 @@ static final Map<String, String> ALT = Map.ofEntries(
     Map.entry("settings-sync", "Settings → Sync with a repository URL, Connect and Create on GitHub buttons, and what to sync"),
     Map.entry("simple-ui-mode", "Simple UI mode: a Java file with a short menu bar, a small toolbar, and no gutter or tool windows"),
     Map.entry("smart-indentation", "A Python file whose new line under a for statement is indented automatically"),
-    Map.entry("snippets", "The Insert Snippet picker listing Java snippets such as main, sysout and foreach"),
-    Map.entry("spell-checking", "A Markdown paragraph with three misspelled words underlined in red"),
-    Map.entry("starting-a-project", "The New File From Template picker with two multi-file templates: HTML Page + CSS and Python Project"),
+    Map.entry("snippets", "The Insert Snippet picker listing Java snippets such as main, class, record, enum and method"),
+    Map.entry("spell-checking", "A Markdown paragraph with four misspelled words underlined in red"),
+    Map.entry("starting-a-project", "The New Project From Template picker listing seven bundled templates, from HTML Page + CSS and Python Project to GitHub Issue + PR Templates"),
     Map.entry("syntax-highlighting", "A Java class in the Editora Light theme, with keywords, types, strings and comments in their own colours"),
     Map.entry("themes-fonts", "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"),
-    Map.entry("todo-highlighting", "TODO comments highlighted in a Java file, with the TODO window counting 677 matches in 90 files"),
+    Map.entry("todo-highlighting", "TODO comments highlighted in a Java file, with the TODO window counting 1,309 matches in 163 files"),
     Map.entry("typst", "A Typst document in Split view, with the typeset page, headings and maths beside the source"),
     Map.entry("undo-history", "The Undo History window beside a Python file, listing each edit with its time"),
     Map.entry("zen-mode", "Zen mode: a Java file with no menus, tabs, toolbars or status bar around it"),

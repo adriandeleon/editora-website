@@ -52,7 +52,7 @@ download](/docs/getting-started#checking-a-download) has the commands.
   the name in the case you typed first, a long local folder is listed whole,
   and clearing the search keeps your place.
 
-[More about the Project Map](/docs/workspace#project-map).
+[More about the Project Map](/docs/project-map).
 
 ## JavaScript and TypeScript
 

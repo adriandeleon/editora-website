@@ -136,7 +136,7 @@ of the *same* file. Those work exactly as before, and the two can be combined.
 Also: a saved configuration no longer refuses to run because a README happens to
 be the front tab. Any open Java file in the project serves. Debugging remains
 Java-only, and now says so instead of reporting a confusing Java error. See
-[Run & debug](/docs/run-debug).
+[Debugging](/docs/debugging).
 
 ## Projects
 

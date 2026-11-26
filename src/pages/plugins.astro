@@ -2,6 +2,13 @@
 import Layout from "../layouts/Layout.astro";
 import { loadPlugins, sourceUrl, REGISTRY_REPO } from "../lib/plugins";
 import { docsBase } from "../lib/editora";
+import { commandGroups } from "../lib/commands";
+
+// The palette shows a command's title, not its id, so name it the same way;
+// looked up so a renamed command changes here too.
+const browseTitle =
+  commandGroups.flatMap((g) => g.commands).find((c) => c.id === "plugins.browse")?.title ??
+  "Plugins: Browse Plugins";
 
 const plugins = await loadPlugins();
 ---
@@ -28,12 +35,12 @@ const plugins = await loadPlugins();
           and off in Simple UI mode).
         </li>
         <li>
-          Click <strong>Browse plugins…</strong> (or run the
-          <code>plugins.browse</code> command) to install from the registry, or
+          Click <strong>Browse plugins…</strong> (or run
+          <strong>{browseTitle}</strong> from the palette) to install from the registry, or
           <strong>Install from file…</strong> for a local <code>.zip</code>.
         </li>
         <li>
-          Read the <strong>Enable this plugin?</strong> dialog, which lists what
+          Read the <strong>Enable <em>name</em> <em>version</em>?</strong> dialog, which lists what
           the plugin will be able to do, and choose <strong>Enable</strong>. If
           you cancel, nothing is installed.
         </li>
@@ -42,7 +49,7 @@ const plugins = await loadPlugins();
       <p class="trust">
         Plugins run with full access and are not sandboxed, so only install ones
         you trust. See the
-        <a href={`${docsBase}/plugins`}>plugins documentation</a> to write your own.
+        <a href={`${docsBase}/plugins/`}>plugins documentation</a> to write your own.
       </p>
     </div>
 

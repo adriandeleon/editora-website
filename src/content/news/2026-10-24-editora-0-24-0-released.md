@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.24.0: Maven reworked, Structure narrowing, a Map window"
+seoTitle: "Editora 0.24.0: Maven, narrowing, Map window"
 description: "Maven reworked from the parent chain to Debug Test, the Structure window narrows the editor to a symbol, and the Project Map opens in its own window."
 date: 2026-10-24
 version: "0.24.0"
@@ -61,7 +62,7 @@ separate, resizable window, which can sit beside the editor or on another
 screen, while the tool window keeps the tree. The Map window has its own
 search field, opening a file from it brings the editor forward, and a workspace
 that last had it open reopens it.
-[More about the Project Map](/docs/workspace#project-map).
+[More about the Project Map](/docs/project-map).
 
 ## Settings
 

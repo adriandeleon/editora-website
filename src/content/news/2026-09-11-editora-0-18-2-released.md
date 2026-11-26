@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.18.2: better Emacs window control and clearer actions"
+seoTitle: "Editora 0.18.2: Emacs window control"
 description: "More Emacs window-management keys, a fix for C-x 1 across editor groups, color-coded Save and Discard buttons, and consistent typography on editable tabs."
 date: 2026-09-11
 version: "0.18.2"

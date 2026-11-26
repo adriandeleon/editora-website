@@ -52,16 +52,31 @@ function baseForFile(file) {
   return m ? `/docs/v-${m[1]}` : docsBase;
 }
 
+// Adds the slash GitHub Pages would otherwise answer with a 301 (the pages are
+// emitted as directories): "/docs/x#y" -> "/docs/x/#y".
+function slashed(href) {
+  const cut = href.search(/[?#]/);
+  const path = cut < 0 ? href : href.slice(0, cut);
+  const rest = cut < 0 ? "" : href.slice(cut);
+  return (path.endsWith("/") ? path : `${path}/`) + rest;
+}
+
+// The current guide links to each page's stable /docs/<slug>/ URL (its
+// canonical; src/pages/docs/[slug].astro) on the website. An archived page,
+// and the copy inside the app, which serves only versioned pages, link within
+// their own version.
 function rehypeVersionDocs() {
   return (tree, file) => {
     const base = baseForFile(file);
+    const stable = !appDocs && base === docsBase;
     const rewrite = (node) => {
       if (node.type === "element" && node.tagName === "a" && node.properties) {
         const h = node.properties.href;
         if (typeof h === "string") {
-          if (h === "/docs") node.properties.href = base;
+          if (h === "/docs" || h.startsWith("/docs#") || h === "/docs/")
+            node.properties.href = slashed(stable ? `/docs${h.slice(5)}` : base + h.slice(5));
           else if (h.startsWith("/docs/") && !h.startsWith("/docs/v-"))
-            node.properties.href = base + h.slice("/docs".length);
+            node.properties.href = slashed(stable ? h : base + h.slice("/docs".length));
         }
       }
       if (node.children) for (const c of node.children) rewrite(c);
@@ -110,9 +125,9 @@ export default defineConfig({
         const m = /^\/docs\/(v-[^/]+)\/(.*)$/.exec(path);
         if (!m) return true;
         // Archived versions canonicalise to the current pages; the current
-        // version's guide pages canonicalise to /docs/<slug>/. Its landing page
-        // and command pages have no other home.
-        return m[1] === `v-${version}` && (m[2] === "" || m[2].startsWith("commands/"));
+        // version's guide and landing page canonicalise to /docs/<slug>/ and
+        // /docs/. Its command pages have no other home.
+        return m[1] === `v-${version}` && m[2].startsWith("commands/");
       },
     }),
     pagefind(),
@@ -138,9 +153,9 @@ export default defineConfig({
   markdown: {
     rehypePlugins: [rehypeVersionDocs, rehypeDocFigures, rehypeTableWrap],
   },
-  // Bare /docs lands on the current version's landing page. Every current
-  // page is also served at its stable /docs/<slug> (the canonical URL, so a
-  // release does not move it); the versioned URLs stay served because each app
+  // The current guide is served at stable URLs, /docs/ and /docs/<slug> (its
+  // canonical URLs, so a release does not move it); the versioned URLs stay
+  // served because each app
   // version pins its own /docs/v-<version>/ links, and past versions keep their
   // archived copy. Every served version's command index points at the
   // searchable command list.
@@ -185,7 +200,9 @@ export default defineConfig({
     "/blog/signing-the-plugin-registry": "/news",
     "/blog/the-black-window-bounding-gpu-textures": "/news",
     "/blog/why-your-app-cant-find-git": "/news",
-    "/docs": docsBase,
+    // On the website /docs/ is the guide's landing page itself
+    // (src/pages/docs/index.astro); the app's copy has only the versioned one.
+    ...(appDocs ? { "/docs": docsBase } : {}),
     // The site serves each current page at /docs/<slug> itself
     // (src/pages/docs/[slug].astro); the copy inside the app has only the
     // versioned pages, so there the stable URL redirects.

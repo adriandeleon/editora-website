@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.23.0: four JVM languages, a terminal, encrypted files"
+seoTitle: "Editora 0.23.0: JVM languages, terminal, GnuPG"
 description: "Kotlin, Scala, Clojure and Groovy, a Terminal tool window, Node.js Run and Debug, deployments to an SSH host, GnuPG-encrypted files, and Java hot code replace."
 date: 2026-10-19
 version: "0.23.0"

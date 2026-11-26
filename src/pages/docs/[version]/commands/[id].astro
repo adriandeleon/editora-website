@@ -10,6 +10,7 @@ import {
   type Keymap,
 } from "../../../../lib/doc-versions";
 import { getCollection, render, type CollectionEntry } from "astro:content";
+import { appDocs } from "../../../../lib/app-docs";
 
 // One page per command, per served version. The app deep-links these as
 // /docs/v-<appVersion>/commands/<command-id>, so each version lists the commands
@@ -59,7 +60,13 @@ const { Content } = doc ? await render(doc) : { Content: null };
 
 const keymaps: Keymap[] = docVersion.keymaps;
 const archived = !docVersion.current;
-const docsBase = docVersion.base;
+// Links into the guide: its stable /docs/<slug>/ on the website (the canonical
+// URL), the versioned page in the copy inside the app.
+const docsBase = appDocs ? docVersion.base : "/docs";
+const docHref = (target: string) => {
+  const [slug, anchor] = target.split("#");
+  return `${docsBase}/${slug}/${anchor ? `#${anchor}` : ""}`;
+};
 
 // Does this command still exist in the current version? Drives where "read the
 // current version" points, so a command that has since been removed doesn't 404.
@@ -67,8 +74,10 @@ const stillExists =
   !archived ||
   currentDocVersion.commandGroups.some((g) => g.commands.some((c) => c.id === cmd.id));
 const latestHref = stillExists
-  ? `${currentDocVersion.base}/commands/${cmd.id}`
-  : currentDocVersion.base;
+  ? `${currentDocVersion.base}/commands/${cmd.id}/`
+  : appDocs
+    ? `${currentDocVersion.base}/`
+    : "/docs/";
 
 const allCommands = docVersion.commandGroups.flatMap((g) => g.commands);
 const titleOf = (id: string) => allCommands.find((c) => c.id === id)?.title ?? null;
@@ -83,8 +92,8 @@ const PRINT_IDS = [
 ];
 const BY_PREFIX: [string[], string][] = [
   [PRINT_IDS, "print-pdf"],
-  [["eslint."], "lsp#eslint"],
-  [["python."], "lsp#the-python-interpreter"],
+  [["eslint."], "javascript-typescript#eslint"],
+  [["python."], "python#the-python-interpreter"],
   [["install.typstCli"], "typst"],
   [["install.mermaidSupport", "mermaid."], "markdown"],
   [["install."], "lsp#one-click-install"],
@@ -113,7 +122,6 @@ const BY_PREFIX: [string[], string][] = [
   [["history.", "localHistory."], "workspace#local-file-history"],
   [["undoHistory."], "undo-history"],
   [["projectMap."], "project-map"],
-  [["projectMap."], "workspace#project-map"],
   [["debug.", "tool.debug"], "debugging"],
   [["workspace."], "workspace#trusted-folders"],
   [["deploy."], "deployments"],
@@ -129,7 +137,7 @@ const BY_CATEGORY: Record<string, string> = {
   Search: "navigation",
   "Buffers & tabs": "workspace",
   "View & display": "workspace",
-  Folding: "editing",
+  Folding: "navigation#folding",
   "Splits & zoom": "workspace",
   Markdown: "markdown",
   Diagrams: "diagrams",
@@ -152,7 +160,7 @@ const BY_CATEGORY: Record<string, string> = {
   "Snippets & templates": "snippets-templates",
   "Macros & external tools": "external-tools",
   Projects: "workspace",
-  "Project Map": "workspace",
+  "Project Map": "project-map",
   "Remote (SFTP)": "remote",
   "Deployments & containers": "deployments",
   "Encrypted files": "encrypted-files",
@@ -175,8 +183,8 @@ const guideTarget = (): string | null => {
 };
 const target = guideTarget();
 const guide = target
-  ? { href: `${docsBase}/${target}`, label: guides[target.split("#")[0]] }
-  : { href: docsBase, label: "Documentation" };
+  ? { href: docHref(target), label: guides[target.split("#")[0]] }
+  : { href: `${docsBase}/`, label: "Documentation" };
 
 // The command's chords per keymap, in the app's notation, primary first. An
 // archived version keeps its chords as that release's docs wrote them.
@@ -322,21 +330,21 @@ const need: Need | null = archived
         text: "It works through the language server for the file's language. Editora never bundles one; it uses a server on your PATH, and",
         cmd: "install.languageServer",
         installs: "installs a supported one.",
-        href: `${docsBase}/lsp#servers-are-auto-detected-never-bundled`,
+        href: docHref("lsp#servers-are-auto-detected-never-bundled"),
         link: "Which servers are supported",
       }
     : covers(["debug."])
       ? {
           text: "It needs the debug adapter for the program's language. Adapters are not bundled; each language's card on Settings → Debugging can install one.",
-          href: `${docsBase}/debugging#installing-adapters`,
+          href: docHref("debugging#installing-adapters"),
           link: "Installing adapters",
         }
       : covers(["git.", "tool.commit", "tool.gitLog"])
         ? { text: "It runs the git installed on this machine, in a folder that is a Git repository." }
         : covers(["github.", "tool.github"])
-          ? { text: "It runs your own GitHub CLI (gh), signed in.", href: `${docsBase}/github`, link: "GitHub" }
+          ? { text: "It runs your own GitHub CLI (gh), signed in.", href: docHref("github"), link: "GitHub" }
           : covers(["crypto."])
-            ? { text: "It runs the GnuPG (gpg) installed on this machine.", href: `${docsBase}/encrypted-files#install-gnupg`, link: "Install GnuPG" }
+            ? { text: "It runs the GnuPG (gpg) installed on this machine.", href: docHref("encrypted-files#install-gnupg"), link: "Install GnuPG" }
             : /^typst\.export/.test(cmd.id)
               ? { text: "Exporting runs the typst CLI;", cmd: "install.typstCli" }
               : cmd.id === "mermaid.export"
@@ -433,7 +441,7 @@ if (need) {
     bindings={bindings.map((b) => ({ name: b.name, chords: b.pc }))}
     latestHref={latestHref}
     stillExists={stillExists}
-    docsBase={docsBase}
+    docsBase={`${docVersion.base}/`}
   />
 ) : (
 <Layout
@@ -446,7 +454,7 @@ if (need) {
     data-pagefind-meta="kind:Command"
   >
     <nav class="crumbs" data-pagefind-ignore>
-      <a href={docsBase}>Docs</a>
+      <a href={`${docsBase}/`}>Docs</a>
       <span>›</span>
       <a href="/commands">Commands</a>
       <span>›</span>

@@ -11,9 +11,9 @@ import { lspServerCount, lspServers } from "../lib/editora";
 
 // How each language's chip looks, in the order the chips are shown. A language
 // a server serves that is missing here still gets a plain chip at the end.
-const chipStyle: { name: string; tag: string; color: string; dark?: boolean }[] = [
+const chipStyle: { name: string; tag: string; color: string }[] = [
   { name: "Java", tag: "Jv", color: "#e76f00" },
-  { name: "JavaScript", tag: "JS", color: "#f7df1e", dark: true },
+  { name: "JavaScript", tag: "JS", color: "#f7df1e" },
   { name: "TypeScript", tag: "TS", color: "#3178c6" },
   { name: "Python", tag: "Py", color: "#3776ab" },
   { name: "Go", tag: "Go", color: "#00add8" },
@@ -31,7 +31,7 @@ const chipStyle: { name: string; tag: string; color: string; dark?: boolean }[] 
   { name: "HTML", tag: "<>", color: "#e34c26" },
   { name: "Handlebars", tag: "{{", color: "#f0772b" },
   { name: "CSS", tag: "CSS", color: "#1572b6" },
-  { name: "JSON", tag: "{}", color: "#8a8f98", dark: true },
+  { name: "JSON", tag: "{}", color: "#8a8f98" },
   { name: "YAML", tag: "YML", color: "#cb171e" },
   { name: "XML", tag: "XML", color: "#f6820c" },
   { name: "TOML", tag: "TML", color: "#9c4221" },
@@ -46,13 +46,28 @@ const chipStyle: { name: string; tag: string; color: string; dark?: boolean }[] 
   { name: "PowerShell", tag: "PS", color: "#2671be" },
 ];
 
+// The monogram is text on the brand color, so it takes whichever of white or
+// the dark ink (#10141a) contrasts more with that color. Every badge above
+// passes 4.5:1 that way (the lowest are TypeScript's white at 4.53 and PHP's
+// dark at 4.64); a hand-picked flag let many fall short.
+const luminance = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const v = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const ratio = (a: number, b: number) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+const darkText = (hex: string) =>
+  ratio(luminance(hex), luminance("#10141a")) > ratio(luminance(hex), 1);
+
 const served = new Set(lspServers.flatMap((s) => s.languages));
 const languages = [
   ...chipStyle.filter((c) => served.has(c.name)),
   ...[...served]
     .filter((name) => !chipStyle.some((c) => c.name === name))
-    .map((name) => ({ name, tag: name.slice(0, 2), color: "#8a8f98", dark: true })),
-];
+    .map((name) => ({ name, tag: name.slice(0, 2), color: "#8a8f98" })),
+].map((l) => ({ ...l, dark: darkText(l.color) }));
 
 const previews = [
   "Markdown",
@@ -85,6 +100,7 @@ const previews = [
             <span
               class={`chip-badge${l.dark ? " on-light" : ""}`}
               style={`--c:${l.color}`}
+              aria-hidden="true"
             >
               {l.tag}
             </span>

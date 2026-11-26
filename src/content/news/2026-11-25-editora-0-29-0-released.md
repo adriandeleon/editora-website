@@ -95,4 +95,4 @@ highlighting up to 200,000 lines.
 - Without a system keychain, AI API keys are kept in an encrypted file instead
   of `settings.json`.
 
-The full list is in [What's New](/whats-new/0.29/#0290---2026-11-25).
+The full list is in [What's New](/whats-new/#0290---2026-11-25).

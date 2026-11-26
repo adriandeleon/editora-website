@@ -1,5 +1,6 @@
 ---
 title: "Editora 0.12.0: panels that go where you want, poms you can read"
+seoTitle: "Editora 0.12.0: movable panels, readable poms"
 description: "Tool windows maximize, re-dock and float, a pom.xml previews as a readable summary, and Maven can update a project's versions, showing you the diff first."
 date: 2026-08-16
 version: "0.12.0"

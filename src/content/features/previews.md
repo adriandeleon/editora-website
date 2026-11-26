@@ -5,7 +5,7 @@ order: 7
 beta: false
 summary: "Open a data or config file and get a rendered or plain-English preview: JSON/YAML/TOML/XML trees, OpenAPI docs, and decoded systemd, ssh, Dockerfile, fstab, crontab, and GitHub Actions files."
 description: "Readable previews of JSON, YAML, TOML and XML as trees, OpenAPI specs as API docs, and crontab, systemd, ssh, fstab and Dockerfile files in plain English."
-alt: "A PNG image open in the image viewer, with zoom and Fit controls"
+alt: "A YAML config file in Split view: the source on the left and its data tree on the right, with the name, version, features and authors keys and their typed values"
 ---
 
 Many file types get the same 3-mode preview as Markdown, turning raw config and data into something readable.

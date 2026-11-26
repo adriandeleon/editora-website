@@ -97,7 +97,7 @@ now kept, so a crash's log is still there when you reopen Editora to report it.
 - **File structure in the Project Map.** A file row opens a column of its
   declarations, and a declaration opens a preview card of just its lines.
   Preview cards now pan and zoom with the map.
-  [More about the Project Map](/docs/workspace#project-map).
+  [More about the Project Map](/docs/project-map).
 
 For trying the Clojure debugger, the repository now has a small
 [Clojure debugging sample](https://github.com/adriandeleon/Editora/tree/v0.25.0/samples/debug/clojure)

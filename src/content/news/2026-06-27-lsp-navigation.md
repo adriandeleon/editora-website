@@ -1,5 +1,6 @@
 ---
 title: "Better code navigation: symbols, references, and Ctrl-click"
+seoTitle: "Better code navigation: symbols and references"
 description: "Go to Symbol in Workspace, a browsable References tool window, and Ctrl/Cmd-click to go to a definition round out the LSP navigation."
 date: 2026-06-27
 ---
