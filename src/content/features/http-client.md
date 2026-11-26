@@ -8,12 +8,37 @@ description: "Run .http and .rest requests from the editor or with editora http 
 alt: "An .http file with two requests and a test script, beside the JSON response of a 200 OK"
 ---
 
-Open a `.http` or `.rest` file and click the green ▶ next to a request to send it, or press `C-c C-c` (`Ctrl+Alt+R` in the other keymaps). No external tool is needed: it uses the JDK's built-in HTTP client.
+---
+---
+Try an API without leaving the editor. Write requests in a `.http` or `.rest` file, send one with the green ▶ beside it, and read the response next to the request that produced it. Nothing else to install.
 
-Requests are written in JetBrains' HTTP request format, separated by `###`, with some VS Code REST Client syntax as well. That covers `{{var}}` and `@var` substitution, directives such as `# @no-redirect` and `# @timeout 5 s`, dynamic variables (`{{$uuid}}`, `{{$random.*}}`, `{{$datetime}}` with date math, `{{$dotenv.X}}`), **request chaining** from an earlier response, **multipart** and external-file bodies, **environment files** (`http-client.env.json` and a private one, with a `$shared` section) chosen per file from an Env pill beside the editor or the status bar, and Basic/Digest auth shorthand. Responses can be tested with `# @assert status == 200` lines or JetBrains-style JavaScript **response handlers** (`> {% client.test(…) %}`) that run on your own Node.js from trusted folders, **pre-request scripts** (`< {% … %}`) can sign a request with the `crypto` and `jwt` helpers and set its variables, and `client.global.set` or `# @capture` keeps a value for later requests as `{{name}}`. A variable that can't be resolved is underlined as you type (with a quick fix to switch to an environment that defines it) and listed in the response's warnings, typing `{{` offers the variables available there, and a request that reads your environment variables or a `.env` file asks before it runs from a folder you haven't trusted.
+**HTTP: Run Request at Caret** is `C-c C-c` in the Emacs keymap and `Ctrl+Alt+R` in the other keymaps (see the [keybindings](/keybindings/) for macOS). **HTTP: Run All Requests in File** is `C-c C-r` in the Emacs keymap.
 
-The response is the `.http` file's own **preview**, in the same Editor / Split / Preview view every other rich file type uses, so it sits beside the request that produced it. A header row gives the status (`200 OK · 32 ms · 44 B`), and tabs hold the body (pretty-printed, content-type-highlighted JSON, HTML and XML; compressed responses decoded; images shown with their type and size), the headers, the tests (`2/3`), the request as it was sent, and warnings. Each request line in the editor shows its last result (`200 OK · 83 ms · ✗ 1 of 3 tests`), a Run All lists every request with its status and tests, and a request that got no response shows what went wrong (Connection refused, Timed out…) with Run again. The last 10 responses of each file are kept, with credential headers masked. **Copy as cURL** gives a bash/zsh command that is safe to paste, **Import cURL** takes a browser's copy, and Save response keeps the bytes as received. Run one request or the whole file, from a saved or an untitled file.
+## Write requests
 
-**From the command line**, `editora http` runs every request of a file in order, as Run All does (same cookie jar, chained responses, `# @assert` checks and JavaScript handlers), and prints each response and test, for CI and scripts. It takes an environment (`--env`, `--env-file`, `--private-env-file`), variables (`-V name=value`, or `-P` for one masked in the output), `--report` for a JUnit XML report and `--no-scripts`, and exits 1 when a request or a test fails. On Windows it is `editora-cli http`. `editora http --help` lists every option.
+- **JetBrains' HTTP request format**, requests separated by `###`, with some VS Code REST Client syntax too.
+- **Variables and environments**: `{{name}}` comes from the file, an `http-client.env.json` environment picked from the Env pill, a `.env` file or a dynamic value such as `{{$uuid}}`.
+- **Chaining**: a request reads a value from an earlier response, so a sign-in feeds the token to the next call.
+- **Bodies and auth**: multipart and file bodies, and Basic and Digest shorthand.
+- **Help as you type**: `{{` offers the variables in scope, and an unknown variable is underlined, with a fix that switches to an environment that defines it.
 
-On by default. Toggle it under Settings → Languages & Tools → Web.
+## Test the response
+
+- **`# @assert` lines** check the status, a header or a JSON value without any code.
+- **JavaScript response handlers** run JetBrains-style `client.test(…)` scripts on your own Node.js.
+- **Pre-request scripts** sign a request or set its variables before it is sent.
+- **Trusted folders**: scripts run, and requests read your environment, only in folders you trust, or after you agree.
+
+## Read the response
+
+- **Beside the request**: the response opens as the `.http` file's preview, with the status, time and size in its header.
+- **Tabs** hold the body, pretty-printed and highlighted, the headers, the test results, the request exactly as sent, and warnings.
+- **Results on each request line**, such as `200 OK · 83 ms · ✗ 1 of 3 tests`, and a clear message when there was no response.
+- **History**: the last 10 responses of each file are kept, with credential headers masked.
+- **cURL**: **HTTP: Copy Request as cURL** gives a command that is safe to paste, and **HTTP: Import cURL from Clipboard** takes a browser's copy.
+
+## Run from the command line
+
+`editora http` (`editora-cli http` on Windows) runs every request of a file in order, with the same chaining, checks and handlers, for CI and scripts. It takes an environment and variables, writes a JUnit XML report with `--report`, and exits 1 when a request or a test fails. `editora http --help` lists every option.
+
+**On by default.** Turn it off in **Settings → Web**. See the [HTTP client guide](/docs/http-client/#writing-requests).

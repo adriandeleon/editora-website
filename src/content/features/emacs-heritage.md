@@ -8,80 +8,58 @@ description: "The Emacs editing model in Editora: kill ring, mark ring, register
 alt: "The command palette filtered by \"kill\", listing the Emacs kill commands with their chords"
 ---
 
-Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto their own commands. Editora implements the model underneath: the concepts an Emacs user reaches for without thinking, built as real features rather than shortcut aliases. Emacs is the default keymap, and everything here works in the other four too, through the palette or a binding of your own.
+Plenty of editors ship an "Emacs keymap" that maps a handful of chords onto their own commands. Editora builds the model underneath, so the concepts an Emacs user reaches for without thinking are real features, not shortcut aliases. Every chord below is in the Emacs keymap, the default; the same commands are in the palette and bindable in the other four keymaps.
 
-## Killing and yanking
+## Kill and yank
 
-The kill ring holds the last 120 kills (Emacs' own `kill-ring-max`), consecutive kills accumulate into one entry, and the ring is shared with the system clipboard in both directions, so text copied in another application is yankable and a kill is pasteable elsewhere.
+The kill ring holds the last 120 kills, consecutive kills join into one entry, and the ring is shared with the system clipboard both ways.
 
-- **C-k** kill line, **M-d** kill word, **M-DEL** backward kill word, **C-S-DEL** kill whole line
-- **M-z** zap to char, **C-M-k** kill sexp
-- **C-y** yank, **M-y** yank-pop to cycle back through the ring
+- **Kill**: `C-k` line, `M-d` word, `M-backspace` word backward, `C-S-backspace` whole line, `M-z` zap to char, `C-M-k` sexp.
+- **Yank**: `C-y` yanks, and `M-y` cycles back through the ring.
 
-## The mark
+## Mark, rectangles and registers
 
-- **C-SPC** sets the mark, **C-x C-SPC** pops back through the ring, **C-x h** marks the whole buffer.
-- The ring is per buffer, as in Emacs, and marks are tracked through edits: type above a mark and it stays on its text rather than its old offset.
+- **The mark**: `C-space` sets it, `C-x C-space` pops back through the ring, `C-x h` marks the whole buffer. The ring is per buffer, and marks stay on their text as you edit.
+- **Rectangles**: the full `C-x r` family works on the columns between point and mark: kill, copy, yank, delete, clear, open, string-rectangle and number-lines, each one undo step.
+- **Text registers**: `C-x r s` copies the region into a one-character register, and `C-x r i` inserts it.
+- **Position registers**: `C-x r space` saves point, and `C-x r j` jumps back, opening the file if it is closed. The position follows edits to its file.
+- **Edit: List Registers** shows them all. Registers last for the session, one set per window.
 
-## Rectangles
+## Narrow, search and move
 
-The full **C-x r** family over the columns between point and mark: kill, copy, yank, delete, clear, open, string-rectangle, and number-lines. Each is a single undo step. Note these are character columns, so a tab counts as one, and rectangles are distinct from the Alt-drag multiple-cursor selection.
+- **Narrowing**: `C-x n n`, `C-x n d` and `C-x n f` narrow to the region, the defun or a fold region, and `C-x n w` widens. Search, replace and macros see only the narrowed part; saving writes the whole file. See [Structure narrowing](/features/structure-narrowing/).
+- **Incremental search**: `C-s` and `C-r`, repeating the chord to step through matches.
+- **Query-replace**: `M-S-5` (Emacs' `M-%`) and `C-M-S-5` for the regexp form, with the usual `y`, `n`, `!`, `.` and `q` answers.
+- **Occur**: `M-s o` lists every matching line in the buffer.
+- **Sexps and defuns**: `C-M-f` and `C-M-b` move by sexp, `C-M-space` marks one, `C-M-a` and `C-M-e` jump to a defun's start and end.
+- **Jump by label**: `M-g j` and `M-g S-l` jump to any visible character or line by typing its label, in the spirit of avy.
 
-## Registers
+## Repeat and record
 
-Named slots, one character each, for text and for places:
-
-- **C-x r s** copies the region into a register (with **C-u**, it cuts it), and **C-x r i** inserts a register's text, leaving point before it.
-- **C-x r SPC** saves point (its file and position) in a register, and **C-x r j** jumps back there, opening the file if it is closed. A saved position moves with edits to its file while the file is open, as an Emacs marker does.
-- Each command asks for the register's name as the next key; **C-g** or Escape cancels. *Edit: List Registers* shows them all.
-
-Registers last for the session, one set per window. Number, rectangle and window-configuration registers are not supported.
-
-## Narrowing
-
-**C-x n** narrows to the region, the current defun, or a fold region, and widening restores everything. In Python the defun is the innermost `def` or `class` around the caret, with its decorators. Search, replace, Select All and macros all see only the narrowed region. Writing the file still writes the whole file. A narrowed editor says so where you are looking: an amber banner names the accessible lines and offers Widen, and the gutter keeps the file's line numbers. The Structure tool window narrows by symbol too: its **Narrow to fold region** toggle narrows to the picked symbol's block, and while it is on, picking another symbol narrows to that one.
-
-## Search, replace, and motion
-
-- **C-s** / **C-r** incremental search, repeating the chord to cycle matches.
-- **M-%** query-replace and **C-M-%** query-replace-regexp, with the usual `y`, `n`, `!`, `.` and `q` answers.
-- **M-s o** occur, listing every match in the buffer.
-- **C-M-f** / **C-M-b** move by sexp, **C-M-SPC** marks one, and **C-M-a** / **C-M-e** jump to the start and end of a defun.
-- **M-g j** and **M-g L** jump to any visible character or line by typing its label, in the spirit of avy.
-
-## Prefix arguments
-
-**C-u** takes a numeric argument the way Emacs does: `C-u 5 C-n`, `C-u 40 -` to type a row of dashes, `C-u C-SPC` to pop the mark. It is a repeat model rather than a full numeric argument, so a negative argument does not reverse motion and `C-u 0` specials are not honoured.
-
-## Keyboard macros
-
-The `C-x (`, `C-x )`, `C-x e` habit, on the function keys: **F3** starts recording, **F4** stops, **C-x e** replays. Recording captures the interleaved stream of commands and literally typed characters, so a replay reruns the same auto-indent and auto-close behaviour a human keystroke would, rather than pasting text in.
-
-It also does things that take a `defun` in Emacs. A macro can be named and saved, it persists across sessions, and each saved macro **becomes a command of its own**, so it shows up in the palette and can be bound to a key in Settings like anything else. There is also a replay-N-times prompt, and a run-saved picker. See [keyboard macros](/features/macros).
-
-## M-x, and a palette that explains itself
-
-**M-x** fuzzy-matches a command by name and runs it. The difference is what the list can tell you, because every command is a registered object with an id, a title and a description rather than a symbol you have to already know.
-
-- Each result shows its **description** and its current **keybinding**, so the palette doubles as the way you learn the chords.
-- A command that cannot run right now is still **listed**, greyed out, and **says why**: the feature is switched off, or there is no file open, or you are not in a git repository. It points at the setting that would enable it instead of failing silently.
-- The same list drives keybindings and the toolbar, so the palette can never drift out of step with what the editor can do.
+- **Prefix arguments**: `C-u` repeats the next command, as in `C-u 5 C-n`, or `C-u 40 -` for a row of dashes.
+- **Keyboard macros**: `F3` records, `F4` stops, `C-x e` replays, and a saved macro becomes a command you can bind. See [Keyboard macros](/features/macros/).
+- **M-x** finds any command by name, with its description and key, and a greyed row says why a command cannot run. See the [command-driven core](/features/command-driven-core/).
 
 ## The rest of the muscle memory
 
-Transpose (**C-t**, **M-t**, **C-x C-t**), fill paragraph (**M-q**) with a fill column and optional auto-fill, case commands (**M-u**, **M-l**, **M-c**), whitespace and line surgery (**M-\**, **M-SPC**, **C-x C-o**, **C-o**, **M-^**), comment-dwim (**M-;**), abbreviations (**C-x a e**, **C-x a g**), and **C-g** to back out of anything.
+- **Transpose**: `C-t`, `M-t` and `C-x C-t`.
+- **Fill**: `M-q` fills a paragraph to the fill column, with optional auto-fill.
+- **Case**: `M-u`, `M-l` and `M-c`.
+- **Whitespace and lines**: `M-\`, `M-space`, `C-x C-o`, `C-o` and `M-S-6` (Emacs' `M-^`).
+- **Comments and abbreviations**: `M-;` comments, `C-x a g` defines an abbreviation and `C-x a e` expands it.
+- **Back out**: `C-g` cancels anything.
 
-## What we don't copy
+## What Editora does differently
 
-Some parts of Emacs come from a different philosophy, and Editora does not follow them.
+- **No Elisp.** Editora answers "can it do X?" by [running the tools you have installed](/features/doctor/): your `git`, your `ripgrep`, your language servers. You extend it with [plugins](/features/plugins/) and the command system, so it does not replace a tuned Emacs configuration.
+- **Discoverable by default.** Every action has a title and a description, Settings is a real window with checkboxes, and you should not need the manual to find a feature.
+- **A default, not a requirement.** Four other complete [keymaps](/features/keymaps/) ship, and any command can be rebound.
+- **Modern windows.** Tabs, tool windows, a project tree, drag and drop and a working mouse replace the Emacs buffer and window model.
 
-- **No Elisp, and no editor-as-operating-system.** Emacs answers "can it do X?" by reimplementing X in Lisp. Editora answers it by [running the tool you already have](/features/doctor): your `git`, your `ripgrep`, your language servers. Extension is through [plugins](/features/plugins) and the [command system](/features/command-driven-core), so nothing here replaces a tuned Emacs configuration.
-- **Discoverability is not opt-in.** Emacs rewards knowing the name of the function. Here every action carries a title and a description, Settings is a real window with checkboxes, and the palette explains why something is unavailable. You should not need to have read the manual to find a feature.
-- **Emacs is a default, not a requirement.** Four other complete keymaps ship (CUA, Sublime, VS Code, IntelliJ), and any command can be rebound.
-- **Modern window conventions.** Tabs, tool windows, a project tree, drag and drop, and a working mouse, rather than the Emacs buffer and window model.
+## Limits of the port
 
-## Not yet
+- `C-u` repeats rather than passing a true numeric argument, so a negative argument does not reverse a motion.
+- Rectangles count character columns, so a tab counts as one.
+- Number, rectangle and window-configuration registers, a global cross-buffer mark ring and dabbrev are not supported; `M-/` opens completion instead.
 
-A global cross-buffer mark ring and dabbrev are not implemented yet. A few of the ports are also approximations: `C-u` repeats rather than passing a true numeric argument, and rectangles count character columns rather than display columns.
-
-Browse the [full command list](/commands) or the [keybindings reference](/keybindings).
+Browse the [command list](/commands/) or the [keybindings](/keybindings/). See the [Emacs editing model guide](/docs/editing/#the-emacs-editing-model).

@@ -3,25 +3,34 @@ title: "Markdown preview"
 group: "Docs & diagrams"
 order: 1
 beta: false
-summary: "A 3-mode view rendered natively with CommonMark + GFM: task lists, alerts, images, LaTeX math, selectable text, wiki links and backlinks, linting, formatting, and export to PDF, HTML, Word, and ODF. Live and theme-matched."
+summary: "A live, GitHub-style preview beside your Markdown, with math, alerts, wiki links and backlinks, 43 lint rules, table editing, and export to PDF, HTML, Word and ODF."
 description: "A native CommonMark and GFM preview with math, alerts and wiki links, plus markdownlint, table editing, and export to PDF, HTML, Word and ODF."
 alt: "A Markdown file in Split view, with headings, a task list and a table rendered beside the source"
 ---
 
-An IntelliJ-style 3-mode view (**Editor**, **Editor + Preview** (split), and **Preview**) via a floating control at the top-right of any Markdown file.
+Write Markdown and see it as GitHub would show it, updated as you type, with the tools for tables, links, images and linting in the same editor.
 
-It renders **natively** (no WebView) from CommonMark + GFM, GitHub-style: real task-list checkboxes, inline-code pills, underlined headings, tables, and **images** (local and remote, including SVG badges; remote images load once you allow them for the document). It updates live as you type, follows the active theme (or its own light/dark toggle), and remembers its mode per file. It can also open in a tab of its own, beside the file, following the active document or locked to one. It also renders front matter (as a table), GitHub alerts, footnotes, emoji shortcodes, `==highlight==`, superscript and subscript, definition lists, heading anchors, `++inserted++` text and a safe subset of HTML. A ```` ```console ```` or ```` ```shell-session ```` block shows as a terminal session: a muted prompt, the command highlighted as shell, and plain output. Text in the preview can be selected and copied as formatted text, task boxes clicked to tick the source, and images and diagrams enlarged.
+## Preview as you write
 
-Markdown files get a full editing kit:
+- **Three views** from the floating control at the top right of any Markdown file: Editor, Split and Preview. Each file remembers its view.
+- **GitHub-style rendering** of task lists, tables, alerts, footnotes, front matter, emoji shortcodes and LaTeX math, drawn natively with no browser engine.
+- **Images**, local and remote, including SVG badges. Remote images load once you allow them for the document.
+- **Theme-matched**, or switched with its own light and dark toggle, and it can open in a tab of its own beside the file.
+- **Work in the preview.** Select and copy text as formatted text, tick a task box to update the source, and enlarge images and diagrams.
+- **Terminal sessions.** A `console` block shows a muted prompt, the command highlighted, and plain output.
 
-- **Linting** with 43 markdownlint rules plus checks for broken links, shown as inline squiggles, scrollbar/minimap stripes, a status-bar count and a Markdown Lint tool window, with **auto-fix** (also on save), per-rule severity, project-wide lint, inline directives, and `.markdownlint` / `.markdownlint-cli2` config discovery.
-- **LaTeX math**: inline `$…$` and display `$$…$$` (on by default).
-- **Image paste & drag-drop** into an assets folder you choose (unused pasted images go to the trash on save), **Paste as Markdown** for HTML and spreadsheet cells, and **smart link paste** to wrap a selection.
-- **Table editing**: insert a table, add/delete rows and columns, move and sort them, align columns, Tab between cells, and reflow; convert to and from **CSV** or export the table to Excel/ODF.
-- **Table of contents** and **task-list** insertion, plus a **heading outline** in the Structure tool window.
-- **Links and wiki links**: follow `#heading`, other-file and reference links; `[[wiki links]]` with completion; a **Backlinks** tool window; and links updated when a file is renamed or moved.
-- **Format Document**, heading numbering, and completion of paths, heading anchors, emoji and fence languages.
-- A **word count** and reading time in the status bar, and **typewriter mode**.
-- **Export** the preview to PDF, **self-contained HTML**, **Word (`.docx`)**, or **ODF (`.odt`)**.
+## Edit faster
 
-Zoom with the −/+ control or Ctrl+wheel; right-click to copy, export, or print. See the [Markdown guide](/docs/markdown).
+- **Tables**: insert one, add, move and sort rows and columns, Tab between cells, reflow, and convert to and from CSV.
+- **Pasting**: drop or paste images into an assets folder you choose, paste HTML or spreadsheet cells as Markdown, and paste a link over a selection to wrap it.
+- **Links and wiki links**: follow `#heading` and file links, complete `[[wiki links]]`, see a **Backlinks** tool window, and keep links right when a file is renamed or moved.
+- **Structure**: a heading outline, a table of contents, heading numbering and **Markdown: Format Document**.
+- **Writing aids**: a word count and reading time in the status bar, and typewriter mode.
+
+## Lint and export
+
+- **Linting** with 43 markdownlint rules plus broken-link checks, shown as squiggles and in a **Markdown Lint** tool window, with auto-fix that can also run on save. Your project's `.markdownlint` config is read.
+- **Export** the preview to PDF, self-contained HTML, Word or ODF, or print it; see [Export and print](/features/export-pdf-print/).
+- **Diagrams** in a `mermaid` fence render in place; see [Mermaid diagrams](/features/mermaid/).
+
+See the [Markdown guide](/docs/markdown/#live-preview).

@@ -8,14 +8,31 @@ description: "Review and check out pull requests, submit reviews, follow CI chec
 alt: "The GitHub tool window listing a repository's pull requests, with Issues and Runs tabs"
 ---
 
-GitHub, through the [`gh` CLI](https://cli.github.com) you already have signed in. **Editora never handles a token**: it shells out to `gh` the same way the Git support shells out to `git`, so GitHub Enterprise works with no extra setup.
+Review pull requests, follow CI and jump to a failing line without opening a browser. Editora works through the [`gh` CLI](https://cli.github.com) you have signed in, so it never handles a token, and GitHub Enterprise works with no extra setup.
 
-- **Review a pull request in the editor.** A *Files changed* tab lists every file with its status and per-file `+` / `−` counts; click one for a read-only diff. The description renders as Markdown above the list, and `n` / `p` step through changes.
-- **Submit a review**, approve, request changes, or comment, without leaving the editor.
-- **Check out a PR** and **open the current file on GitHub** at the caret line.
-- **Create a pull request** from the branch's commits and the repository's template, with a base-branch chooser and an offer to push an unpushed branch.
-- A **pull request / issue / Actions-runs tool window**, with one filter box across all three that matches anything a row shows (number, title, author, branch, state, labels), with a leading `#` optional, so `42` and `#42` both find PR 42. It opens with focus in the filter and the first row selected; `C-n` / `C-p` move without leaving the box, Down enters the list, Enter opens. Pull requests and issues filter by state (open, closed, merged, all) and "Mine", and load more on demand.
-- A **status-bar CI checks** indicator for the current branch's pull request. It updates while checks are pending and opens a list of the checks with links and failure logs.
-- **A failed CI run's log opens in the Output console with clickable stack frames.** Runner paths are mapped back onto your local checkout, so a red build takes you straight to the line. A **GitHub** tab beside it keeps a transcript of the `gh` commands Editora ran, with their exit codes and durations.
+## Review pull requests
 
-On by default, and invisible until Git support is on, `gh` is signed in and the repo has an open PR, issue, or workflow run. See the [GitHub guide](/docs/github).
+- **Read a pull request in the editor.** **GitHub: Review Pull Request Diff…** opens a Files changed tab with the description rendered as Markdown and per-file `+` and `−` counts. Click a file for its diff.
+- **Step through changes** with `n` and `p` inside any read-only diff.
+- **Submit a review**, to approve, request changes or comment, with **GitHub: Submit Review…**.
+- **Check out a pull request** to work on it locally.
+
+## Open and share
+
+- **Create a pull request** from the branch's commits and the repository's template, with a base-branch chooser and an offer to push the branch first.
+- **Open the current file on GitHub** at the caret line.
+
+## Find what you need
+
+- **One tool window** for pull requests, issues and Actions runs (`M-g p` in the Emacs keymap). A single filter box matches anything a row shows, so `42` and `#42` both find PR 42.
+- **Narrow the lists** by state, such as open, closed or merged, or to your own items, and load more on demand.
+
+## Follow CI
+
+- **CI checks in the status bar** for the current branch's pull request, updated while checks run, with a list of checks and their logs a click away.
+- **Failed logs open at the line.** A failed run's log opens in the Output console with clickable stack frames mapped onto your local checkout.
+- **A transcript** of the `gh` commands Editora ran, with exit codes and durations, sits in the console's GitHub tab.
+
+Nothing appears until Git support is on, `gh` is signed in, and the repository has an open pull request, issue or workflow run.
+
+**On by default.** Turn it off in **Settings → Version Control → GitHub**. See the [GitHub guide](/docs/github/).

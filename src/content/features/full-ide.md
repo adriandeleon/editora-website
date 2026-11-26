@@ -12,7 +12,9 @@ The full IDE is the layout Editora starts in. Nothing is hidden: the menu bar, t
 
 Some features work as soon as you open a folder, and some wait for their tool or for you to trust the folder:
 
-- **Available from the start:** [Git](/features/git) and [GitHub](/features/github) (when `git` and `gh` are installed), [build tools](/features/build-tools), [previews](/features/previews), [projects](/features/projects), and [Local History](/features/local-file-history).
-- **Once their tool is installed:** [language servers](/features/lsp) and [debugging](/features/debugging). A file whose server is missing offers to install it, and servers that would run a project's build wait until you trust the folder.
+- **Available from the start:** [build tools](/features/build-tools/), [previews](/features/previews/), [projects](/features/projects/), and [Local History](/features/local-file-history/).
+- **Once their tool is installed:** [Git](/features/git/) and [GitHub](/features/github/), which use `git` and `gh`, [language servers](/features/lsp/) and [debugging](/features/debugging/). A file whose server is missing offers to install it, and servers that would run a project's build wait until you trust the folder.
 
-Every piece of the interface can be shown or hidden on its own from the View menu or Settings → Interface. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode) and [Expert mode](/features/expert-mode) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode) hides more and also switches the heavier features off.
+Every piece of the interface can be shown or hidden on its own from the **View** menu or **Settings → Interface**. For a whole-window change, use one of the other three ways to run the editor: [Zen mode](/features/zen-mode/) and [Expert mode](/features/expert-mode/) hide parts of the interface and leave every feature running, and [Simple UI mode](/features/simple-ui-mode/) hides more and also switches the heavier features off.
+
+See the [Window chrome guide](/docs/workspace/#window-chrome).

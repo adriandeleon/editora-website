@@ -8,15 +8,27 @@ description: "Optional AI actions (explain, rewrite, commit messages, inline com
 alt: "Settings → AI Agent with the agent on, Claude Code as the active client, and editor context included in prompts"
 ---
 
-Editora has optional AI, off by default and yours to configure.
+AI in Editora stays out of the way until you ask for it: quick actions on the code in front of you, or a coding agent whose edits wait for your review.
 
-**AI actions** call the model directly (streamed):
+## Quick actions
 
-- **Generate a commit message** from the staged diff into the Commit window.
-- **Explain the selection** in a new Markdown buffer.
-- **Rewrite the selection** per an instruction, as a single undoable edit.
-- **Inline completion**: after a typing pause, a muted one-line ghost suggestion at the caret, accepted with Tab (its own fast model).
+- **AI: Generate Commit Message** writes a message from the staged diff into the Commit window.
+- **AI: Explain Selection** explains the selected code in a Markdown buffer of its own.
+- **AI: Rewrite Selection…** rewrites the selection to your instruction, as one edit you can undo.
+- **Inline completion** shows a muted one-line suggestion at the caret after a pause in typing, and Tab accepts it. It has its own switch and its own fast model.
 
-**AI Agent** is a chat with an embedded coding agent over the [Agent Client Protocol](https://agentclientprotocol.com), the default being Claude Code's `claude-code-acp` adapter (any ACP agent works). Its reads see your unsaved buffers, and its edits to open files apply as **undoable buffer edits** you review and save, with a permission dialog for each action. It works in the project of its own window, and its file reads and writes stay inside that folder. The agent is a user-installed external tool, never bundled.
+## A coding agent beside your code
 
-**Provider**: use the **Anthropic API** (key from `ANTHROPIC_API_KEY` or Settings), **Local (OpenAI-compatible)**, a separate **LM Studio / Bionic** local provider, or **Codex** through a user-installed ACP adapter and existing login. The LM Studio provider can also power an OpenCode ACP agent preset. Codex AI Actions use separate text-only sessions and do not provide inline completion. Each provider keeps its own key, endpoint and model (Codex has its own model too), so switching provider never sends one provider's key to another's server. Keys typed into Settings are kept in the system keychain (macOS Keychain, Windows Credential Manager, Secret Service), or, where there is none, in an encrypted file of their own, never in `settings.json`. Enable these options under Settings → AI. See the [AI guide](/docs/ai).
+- **Your choice of agent.** Claude Code is the default, and Gemini CLI, GitHub Copilot CLI, Codex, Qwen Code and OpenCode also work, over the [Agent Client Protocol](https://agentclientprotocol.com). You install the agent; Editora never bundles one.
+- **It sees what you see.** The agent's reads include your unsaved changes.
+- **You review every edit.** Its edits to open files arrive as undoable buffer edits that you save yourself, and each action asks your permission first.
+- **It stays in the project.** Its file reads and writes stay inside the project folder of its window.
+
+## Your model, your keys
+
+- **Anthropic API**, with the key from `ANTHROPIC_API_KEY` or Settings.
+- **A local model** through any OpenAI-compatible server, or through LM Studio or Bionic, which can also run the agent through OpenCode.
+- **Codex**, through your existing Codex login. It runs the quick actions but not inline completion.
+- **Keys stay where they belong.** Each provider keeps its own key, endpoint and model, so switching provider never sends a key to another provider's server. Keys typed into Settings go in the system keychain, never in `settings.json`.
+
+**Off by default.** Turn it on in **Settings → AI**. See the [AI guide](/docs/ai/#turning-it-on).

@@ -3,13 +3,17 @@ title: "HTML live preview"
 group: "Docs & diagrams"
 order: 4
 beta: false
-summary: "Click the globe on any HTML file to open it in a detected browser (Safari, Chrome, Firefox, Edge…), served over a loopback web server with live-as-you-type reload. The whole site's CSS, JS, and images included."
+summary: "Click the globe on an HTML file to open it in your browser, served with the rest of its site and reloaded as you type, before you save."
 description: "Open an HTML file in your browser from a loopback-only server that serves the whole site and reloads the page as you type, before you save."
 alt: "An HTML file in the editor, with the globe button at the top right that opens its live preview in a browser"
 ---
 
-A floating browser-globe button on any `.html`/`.htm`/`.xhtml` file opens it in a **detected browser**: Safari, Chrome, Firefox, Edge, or the system default.
+See your page in a real browser while you write it: click the globe and the page opens, then follows every keystroke without a save or a manual refresh.
 
-The page's whole site is served over a tiny embedded web server bound to **loopback only** (the project folder, or the highest folder of an unbroken chain of folders with an `index.html`, the root the HTML language server gives a loose page too), so its CSS, JS, images, `/…` links and folder links load, and a small injected script **reloads the page live as you type** (it serves the buffers' in-memory text, so you don't have to save). Editing a stylesheet of the site swaps it in without a reload; opening a file without editing it reloads nothing. Each site gets its own address (its own port and random path), so one previewed page cannot read another site's files. Hidden files, private keys, credential and password stores, databases and encrypted files are never served. No external tool: it uses the JDK's built-in HTTP server.
+- **Open in your browser.** The globe at the top right of any `.html`, `.htm` or `.xhtml` file opens it in Safari, Chrome, Firefox, Edge or the system default. **HTML Preview: Open in Browser…** picks another.
+- **Reload as you type.** The browser shows the text in the editor, saved or not. Editing a stylesheet swaps it in without a reload.
+- **The whole site loads.** Stylesheets, scripts, images, root-relative `/…` links and folder links all work, served from the project folder or the page's site folder.
+- **Private by default.** The server answers only this machine, each site gets its own address, and hidden files, private keys, credential stores, databases and encrypted files are never served.
+- **Nothing to install.** The server is built into Editora.
 
-On by default. Toggle it and choose the browser under Settings → Web → HTML Preview. See the [HTML docs](/docs/html#live-preview).
+**On by default.** Turn it off, or choose the browser, in **Settings → Web → HTML Preview**. See the [HTML live preview guide](/docs/html/#live-preview).

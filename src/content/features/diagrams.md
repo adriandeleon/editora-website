@@ -8,6 +8,13 @@ description: "Graphviz DOT and PlantUML files get an Editor, Split and Preview v
 alt: "A Graphviz DOT file in Split view, with the rendered graph beside its source"
 ---
 
-Standalone `.dot`/`.gv` (Graphviz) and `.puml`/`.plantuml` files get the same 3-mode preview as Markdown and Mermaid, rendered off-thread via the external **`dot`** and **`plantuml`** CLIs. Both rasterize to PNG natively, so there's no headless browser, and results are cached by source hash. Zoom resizes the image, and you can export a diagram to **SVG / PNG / PDF** (`diagram.export`).
+Keep your architecture and UML diagrams as plain text in the repository, and see them drawn beside the source as you edit.
 
-**On by default**, self-gating on detection, so it's inert until the tool is found (install via your package manager, e.g. `brew install graphviz plantuml`). Tool paths live under Settings → Diagrams, which shows whether each tool is found.
+- **Graphviz and PlantUML.** `.dot` and `.gv` files and `.puml` and `.plantuml` files get the Editor, Split and Preview views, drawn by the `dot` and `plantuml` tools.
+- **Quick to redraw.** An unchanged diagram is not drawn again, and zoom resizes the image.
+- **Export** a diagram to SVG, PNG or PDF with **Diagram: Export (SVG/PNG/PDF)**, or print it.
+- **Safe to open.** PlantUML runs sandboxed, so a diagram cannot pull in local files or URLs.
+
+Nothing appears until the tools are found. Install them with your package manager, such as `brew install graphviz plantuml`; **Settings → Diagrams** shows whether each one is found.
+
+**On by default.** Turn it off in **Settings → Diagrams**. See the [Diagrams guide](/docs/diagrams/).

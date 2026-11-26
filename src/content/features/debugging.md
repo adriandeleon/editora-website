@@ -8,63 +8,67 @@ description: "Debug 20 languages over the Debug Adapter Protocol: breakpoints of
 alt: "A Java program paused at a breakpoint, with inline values and the Debug window's call stack and variables"
 ---
 
-Full debugging for **Java**, **Python**, **JavaScript and TypeScript** (Node.js), **Groovy**, **Kotlin**, **Clojure**, **Scala** (through Metals for a build's file, Editora's own debugger for a script), **Go** (Delve), **Rust**, **C** and **C++** (CodeLLDB, or GDB for C and C++), **C#** (netcoredbg), **Ruby** (rdbg), **PHP** (Xdebug), **Bash** (bashdb), **PowerShell** (PowerShell Editor Services), **Elixir** (ElixirLS), **Dart** and Flutter (the SDK's own debugger) and **Lua** (Local Lua Debugger) through the Debug Adapter Protocol, with an IntelliJ-style Debug tool window:
+---
+---
+Stop a program where it goes wrong, read its values and step through it, in one Debug window that works the same way in every language and never takes the keyboard from the editor.
 
-- Breakpoints (conditional, with a hit count, **temporary** ones removed once hit, **recording** ones that keep the stop in Debug History and let the program go on, **triggered** ones that wait until another breakpoint is hit, and **logpoints**, added in one step with Shift+click on the gutter; in Java, JavaScript and TypeScript also **lambda breakpoints** that stop inside a lambda's or arrow function's body, and in Java **method breakpoints** and **field watchpoints**, marked in the gutter on their member's line), step in / over / out, **run-to-cursor** (or **force run-to-cursor** past every breakpoint; while paused, a click on a line number does either), **jump-to-line** (Python), and the time each step took shown faintly after the line it stopped on
-- **Breakpoint groups** turned on and off together, and **export and import** of breakpoints to a file you can keep or share
-- **Breakpoint filters** that make a breakpoint stop only in some threads, only when called from some functions, or only on one marked object, in every language
-- A threads + call-stack view you can **copy as text**, and a **Threads view** listing every thread, running or suspended and why, where you can **pause or resume one thread** alone
-- **Thread Dump** shows every thread's call stack in a window of its own, identical stacks merged, even on a program that hangs, and **Parallel Stacks** draws them as one tree where threads that went through the same calls share a box
-- **Don't step into**: code Step Into goes over (a class, package, module, function or file), in Settings or with *Don't Step Into This…* on a call-stack frame, for every debugger
-- **Step Back** and **Reverse Continue** where the program can run backward: for C and C++ on GDB, turn on **Record Execution** at a stop
-- **Open Core Dump** opens the core a crashed Go, C, C++ or Rust program left, with its threads, stacks and variables
-- **Pinned values**: an expression pinned to a line is evaluated at every stop and painted at the end of that line, and saved with the project's breakpoints
-- **Debug History**: Back and Forward in the Debug window show an earlier stop as it was, with its call stack, values, watches, inline and pinned values, and *Show Value History* lists a variable's value at every stop; any debugger, kept in memory only
-- **Disassembly and Memory** views for C, C++, Rust and Go, with **stepping by instruction**, **instruction breakpoints** (with conditions and hit counts) and **Edit Bytes…** to change memory while paused
-- **Autos** lists the values used on the line where the program stopped and the line before, and a step out of a function shows its **return value** (Python, and Kotlin, Groovy and Clojure on Editora's JVM debugger)
-- **Attach to Remote Program** debugs a C, C++ or Rust program under gdbserver or lldb-server on another machine, in a container or on a board
-- **Web apps** run and debug as they are served: Django, Flask and FastAPI (the debugger follows the reloader), Rails, PHP's built-in server and Laravel, and Electron's main process with its windows; launch.json's `serverReadyAction` opens or debugs the page once the server listens, and **Debug: Listen for Xdebug** waits for PHP you start yourself
-- **Debug Test at Caret** in Java, Kotlin, Groovy, Python, Go, Rust, Dart, C#, C and C++ (GoogleTest, Catch2, doctest), Jest, Vitest, Deno, `node:test`, RSpec, Minitest, PHPUnit and ExUnit, with **Run Test at Caret** beside it
-- A lazy variables tree with **set-value**, names, values and types coloured like code in the editor theme, and **changed values highlighted** after each step; **Copy as Expression** copies what gives a value in the stopped code, and **Jump to Type Source** opens the class a value really has
-- A **filter** for the Variables tree, **Go to Index** in a long list or array, and integers shown in **hexadecimal** on demand (Java and Python), or one value at a time with **Show Value As** decimal, hexadecimal, binary, octal or character (every debugger)
-- **Evaluate expressions** as in IntelliJ IDEA: a field at the top of Variables whose result opens as a tree, non-modal **Evaluate windows**, and **Alt+click Quick Evaluate** in the editor; the fields are highlighted, take your keymap's keys, complete from the debugger and keep a history, and run code fragments of several lines
-- **Watches** that can be paused, evaluated once or given a new value with *Set Value…*, and a console you can search; a removed watch, or a breakpoint with a condition or a filter, comes back with *Edit: Undo Last Removal*
-- **Logpoints** whose message can name the function, its caller, the call stack and the thread (`$FUNCTION`, `$CALLER`, `$CALLSTACK`, `$TID`, `$TNAME`)
-- An **evaluation time limit** (GDB and Python): a watch or hover that calls a function which never returns is stopped, and the program stays paused
-- **Mark Object** gives an object a label that shows wherever it appears in the session, and **View As** opens a string as laid-out JSON or XML, or as text
-- **View as Table** opens a list, array, slice, set or map as a table, a row per element and a column per field, to sort, filter, copy or open as CSV; in Python, **View as DataFrame** and **View as Array** open a pandas DataFrame or Series, or a numpy array, as its rows
-- **Type renderers** show a value of a type as your own expressions say, such as a `Money` as `12.50 EUR`, in Variables, watches, Evaluate and hover, with the debugger's own view under *[Raw View]*
-- **Loaded Sources** and **Modules** list what the program has loaded, and code with no file, such as code run through `eval`, opens read-only where it stops
-- A hover **value popup** that unfolds objects, arrays and collections as a tree
-- **Exception breakpoints** picked from what the debugger offers (Python: raised, uncaught, user-uncaught; uncaught exceptions stop from the start), and **exception breakpoints by type and condition** that stop only on the exceptions you name (`java.io.*`, `*Error`), where a condition holds
-- An **exception card** under the line that threw: caught or uncaught, the type and message, the causes and stack trace when the debugger sends them (Python, JavaScript), with **Copy**; it never takes focus, and *Debug: Show Exception* opens it again
-- **Debug File** in the editor's right-click menu, next to Run File, and on its own for a Go, Rust, C, C++, C#, Ruby or PHP file
-- **Several programs at once**, each in a session of its own with a tab in the Debug window: *Debug Both* when you debug another file while a session runs, the session that stops shown by itself, and *Stop All*
-- **Compounds** that start several configurations together: launch.json's `compounds`, or the project's own compounds of saved run configurations, made in *Debug: Edit Compounds…*
-- **VS Code's `launch.json`**: *Debug: Start Configuration…* starts the project's configurations as VS Code would, with its variables, `inputs` and `preLaunchTask`
-- **Debug adapters of your own** in `debug-adapters.json`: any program that speaks the Debug Adapter Protocol, for F5 or for launch.json
-- A debugged Java, Python or JavaScript program can read **standard input** typed in the Debug console
-- The Debug window names the **runtime** the program runs under: its JDK, Python or Node.js version
-- Tests inside JUnit `@Nested` classes run and debug from the gutter, or with Debug in the test file
+## Start a session
 
-For Java it goes beyond single files: *Debug Main Class…* debugs any `main` in the active file's Maven or Gradle project (with saved run configurations carrying program and VM arguments and environment variables), and *Debug via Build Tool* launches a Gradle or Spring Boot app under a suspended JVM and attaches when it is listening. *Attach to Running Program* lists the last eight addresses the project attached to, and *Reattach* goes back to the last one without asking. *Attach to Process* lists the Java, Node.js and Python programs running on this machine that listen for a debugger, and Go, Rust, C and C++ programs too, attaches to the one you pick, and Stop leaves it running. Every launch builds first, a loose file or a plain folder too (compiled with `javac` when the language server can't build it), and stops on compile errors in the code the program runs, which the Debug console lists as links. Saving a file during a session loads the change into the running program (**hot code replace**), and *Restart Frame* and *Smart Step Into* are there when you need them. Step Into skips JDK classes, and JDK or library frames open their source. A **method breakpoint** stops on entering a method (every overload in its class), a **field watchpoint** when a field is assigned in any instance, and *Break When Value Changes* in Variables watches the field a row shows. Pause stops every thread of the program and Continue resumes them all; a setting makes every breakpoint stop all threads too. Breakpoints differ by shape, are listed in one picker you can filter, and can be muted, exception stops included; caught and uncaught exception stops, one ⚠ button in the Debug window, are kept per project. Every keymap binds the debugger, and the Debug window never takes the keyboard from the editor.
+**Debug: Start / Continue** is `C-c C-d d` in the Emacs keymap and `F5` in the CUA, Sublime Text and VS Code keymaps (see the [keybindings](/keybindings/) for IntelliJ IDEA). It builds first and stops on compile errors.
 
-JavaScript starts exactly as Run starts it: the same Node.js, flags and folder, with `tsx` or the compiled file for TypeScript. Node.js's own frames fold into one row of the call stack, and a breakpoint in a compiled project's `.ts` source stops there through source maps. *Attach to Running Program* connects to a Node.js started with `--inspect`, *Debug Test at Caret* debugs a `node:test` test, and Node.js and npm run configurations can be debugged. *Debug in Browser…* opens a web page (an HTML file, or a dev server's URL) in Chrome, Edge or another Chromium browser under the same debugger, or in Firefox (Settings → Debugging → *Debug web pages in*), F5 on an HTML file does it too, and *Attach to Browser…* attaches to a browser started with `--remote-debugging-port`.
+- **Debug File** in the editor's right-click menu debugs the file you are in.
+- **Debug Test at Caret** debugs one test, in JUnit, pytest, Go, Rust, Jest, RSpec, PHPUnit and most other frameworks.
+- **Web apps** debug as they are served: Django, Flask, FastAPI, Rails, PHP and Electron.
+- **Debug in Browser…** opens a page in Chrome, Edge or Firefox under the debugger.
+- **VS Code's `launch.json`** starts as it does in VS Code, compounds and `preLaunchTask` included.
+- **Several sessions** run at once, each in its own tab.
+- **Attach to Process…** lists the programs on this machine you can debug, and Stop leaves the one you pick running.
+- **Attach to Remote Program…** debugs a C, C++ or Rust program under gdbserver or lldb-server elsewhere.
+- **Open Core Dump…** opens what a crashed Go, C, C++ or Rust program left.
 
-A Python program is debugged the way Run runs it: under the project's virtual environment (or the interpreter picked for the project), in the script's own folder, with the project root and `src/` on `PYTHONPATH`. A process the program starts (`multiprocessing`, a Python subprocess) is debugged too, in a session of its own, and a breakpoint in a Django or Jinja template stops on its line. A Python program started under `python -m debugpy --listen` can be attached to with *Attach to Process*. A pytest test is debugged from its test line, *Debug Test at Caret*, or its row in Test Results; without pytest, a `unittest` test runs under `unittest`. The console shows the command that runs and, at the end, the exit code.
+## Set breakpoints
 
-Groovy is debugged by a debugger built into Editora, with nothing to install: breakpoints in scripts, classes and closures, stepping that skips Groovy's own runtime, locals and fields, and a stop where an uncaught exception is thrown. It reads variables and field paths but does not evaluate expressions, and breakpoint conditions and log messages are not supported yet.
+**Debug: Toggle Breakpoint** is `C-c C-b` in the Emacs keymap and `F9` in the CUA, Sublime Text and VS Code keymaps.
 
-Clojure uses the same debugger, under the Clojure CLI or Leiningen: breakpoints in a namespace's functions and a script's top-level forms, frames named as Clojure names them (`my-app.core/greet`), locals kept visible for the whole function, and stepping that skips Clojure's runtime. Babashka, a native program, can't be debugged, and says so.
+- **Conditions and hit counts** decide when a breakpoint stops, and a **temporary** one removes itself once hit.
+- **Logpoints** print a message without stopping; Shift+click the gutter to add one.
+- **Triggered** breakpoints wait for another one, and **recording** ones note the stop and let the program go on.
+- **Lambda, method and field breakpoints** stop inside a lambda, on entering a Java method, or when a field changes.
+- **Exception breakpoints** stop on the exceptions you name, such as `java.io.*`, and a card under the line that threw shows what was thrown.
+- **Filters** limit a breakpoint to some threads, callers or one marked object.
+- **Groups** switch a set of breakpoints together, and **export and import** share them.
 
-Go is debugged with Delve, as in VS Code's Go extension: Debug on a Go file debugs its package (the file alone outside a module), and in a `_test.go` file Debug and *Debug Test at Caret* run the test at the caret, or the package's tests. Goroutines are listed as threads, without the runtime's own and with their pprof labels in their names, and Delve's goroutine filter narrows the list. A panic stops where it happened. *Attach to Process* lists running Go programs and attaches to one by its process id, on Linux and macOS; Stop leaves it running. Delve's build goes to the temporary folder, not your package.
+## Step through the code
 
-Rust is debugged with CodeLLDB, as in VS Code: Cargo builds the package in the Debug console, then the program, an example, or the `#[test]` function at the caret runs under the debugger. Values read as Rust values (a `String` as its text, a `Vec` as its items), and a panic stops where it happened. *Attach to Process* attaches to a running Rust program on Linux.
+- **Step Into, Over and Out**, with the time each step took shown after the line.
+- **Run to Cursor**, or **Force Run to Cursor** past every breakpoint.
+- **Don't Step Into This…** makes Step Into go over a class, package, module or file.
+- **Smart Step Into…** picks the call to enter, and **Restart Frame** runs a function again.
+- **Hot code replace** loads a saved Java change into the running program.
+- **Step Back** runs C and C++ backward on GDB once **Debug: Record Execution** is on.
+- **Pause or resume one thread** while the others keep going.
 
-C and C++ are debugged with the same CodeLLDB, or with GDB 14 or later through its own debug adapter mode: F5 builds a CMake project's Debug build in `build/editora-debug`, runs `make` in a Make project, or compiles a lone file with `cc` or `c++ -g -O0`, then debugs the program. `std::string`, `std::vector` and `std::map` read as values, a thrown C++ exception stops where it was thrown, and *Attach to Process* attaches to a running C or C++ program on Linux.
+## Inspect values
 
-C# runs on netcoredbg: F5 builds the project with `dotnet build`, or a lone `.cs` file as a .NET 10 file-based app, and an exception your code doesn't handle stops it, as in Visual Studio. *Debug Test at Caret* debugs an xUnit, NUnit or MSTest test under `dotnet test`. Ruby runs under rdbg, the debugger Ruby 3.1 and later ship. PHP runs with Xdebug, through the PHP Debug adapter VS Code uses.
+- **Inline values** follow each line while paused, and a hover unfolds a value as a tree.
+- **The Variables tree** highlights what the last step changed and edits a value in place.
+- **Evaluate Expression** runs code in the stopped frame, in its own window or with Alt+click.
+- **Watches and pinned values** update at every stop; a pinned value sits at the end of its line.
+- **Autos** lists the values the stopped line uses, and a step out shows the return value where the debugger reports it.
+- **Show Value As** shows a number in hexadecimal, binary, octal or as a character.
+- **Type renderers** show a type your way, such as a `Money` as `12.50 EUR`.
+- **View as Table** opens a list or map as a sortable table, and a pandas DataFrame or numpy array as its rows.
+- **Mark Object** labels an object, and **View as JSON or XML** lays out a string.
 
-Files in a [remote folder](/features/remote-sftp) are debugged on their host: debugpy or vscode-js-debug there for Python and JavaScript (a Python program under the project's virtual environment on that host), and the host's `jdtls` for Java (Debug Main Class, Attach, Debug Test and saved configurations too). Breakpoints survive a reconnect.
+## Look back and look deeper
 
-While suspended, **inline values** appear after each line and hovering a variable shows its value. The adapters (java-debug, debugpy, vscode-js-debug, Delve, CodeLLDB, netcoredbg, rdbg, PHP Debug, Bash Debug, Local Lua Debugger, the Firefox debug adapter, ElixirLS and PowerShell Editor Services; Dart and Flutter use the SDK's own) are user-installed, not bundled: each language's card in Settings → Debugging shows whether its adapter is found and has an **Install…** button where Editora can fetch it (Delve through `go install`, rdbg through `gem install`; a CodeLLDB or PHP Debug already installed in VS Code is found too), and a `jdtls` that already bundles java-debug is detected as-is. On by default; the switch is in Settings → Debugging. Java debugging runs through the Java language server, so it also needs [LSP](/features/lsp), which is on by default too. A Bash script is debugged with bashdb, through Bash Debug: breakpoints, stepping, and its variables in a watch or a hover. Scripts of other shells can't be debugged; *Run with Trace* (see [Run files](/features/run-files)) prints each line as it runs, with a link to its source.
+- **Debug History** shows an earlier stop as it was, with its stack, values and watches.
+- **Thread Dump** shows every thread's stack, even in a program that hangs, and **Parallel Stacks** draws them as one tree.
+- **Disassembly and Memory** views step by instruction and edit bytes in C, C++, Rust and Go.
+- **Loaded Sources** opens code with no file, such as `eval` code, where it stops.
+
+## Languages and adapters
+
+Each language's debugger is installed separately. Its card in **Settings → Debugging** says whether it is found and offers **Install…** where Editora can fetch it. Java debugging also needs the [language server](/features/lsp/), and **Debug: Edit Debug Adapters** adds any other debugger that speaks the Debug Adapter Protocol. Each page under [Languages](/docs/languages/) says what its debugger supports.
+
+**On by default.** Turn it off in **Settings → Debugging**. See the [Debugging guide](/docs/debugging/#start-debugging).

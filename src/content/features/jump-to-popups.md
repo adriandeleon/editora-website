@@ -8,14 +8,17 @@ description: "Fuzzy pickers for recent files, symbols, open tabs, tool windows, 
 alt: "The Jump to Structure picker listing a Java class and its methods"
 ---
 
-Fuzzy pickers for moving around a project from the keyboard.
+Get anywhere in a project without touching the mouse. Each picker opens on a chord, filters as you type, and shows a footer legend of its keys.
 
-- **Recent files**: `C-x C-r`
-- **Symbols / file structure**: `M-g i`
-- **Open tabs**: `C-x b`
-- **Tool windows**: `M-g t`
-- **Bookmarks**: `M-g b`, **Notes**: `M-g n`
+- **Recent Files: Jump…** (`C-x C-r` in the Emacs keymap) reopens a file you had open.
+- **Structure: Jump…** (`M-g i`) lists the current file's symbols.
+- **Open Files: Jump…** (`C-x b`) switches between open tabs.
+- **Tool Windows: Jump…** (`M-g t`) opens any tool window by name.
+- **Bookmarks: Jump…** (`M-g b`) and **Jump to Note…** (`M-g n`) reach your bookmarks and notes across files.
+- **File: Find File…** (`C-x C-f`) is an Emacs-style path finder: Tab completes, Enter goes into a folder or opens a file, creating it if needed, and `C-d` opens a folder as a project.
 
-There's also an Emacs `find-file`-style **path finder** (`C-x C-f`) with prefix autocomplete, type and Tab to complete, Enter to descend a folder or open (or create) a file, and `C-d` to open a folder as a project. Every picker shows a footer legend of its navigation keys.
+**Smart ranking**: every picker scores what you typed by contiguity, word and camelCase boundaries and exact case, and bolds the matched characters, so `mcon` finds `MainController` first.
 
-Every one of them **ranks** what you typed by contiguity, word and camelCase boundaries, and exact case, and emboldens the characters responsible for the match, so `mcon` finds `MainController` and the best answer is first. When you don't know which picker holds something, use [Search Everywhere](/features/search-everywhere).
+The other keymaps bind several of these in their own editors' style; see the [keybindings](/keybindings/). When you don't know which picker holds something, use [Search Everywhere](/features/search-everywhere/).
+
+See the [Navigation guide](/docs/navigation/#jump-pickers).

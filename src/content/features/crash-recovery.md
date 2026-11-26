@@ -8,6 +8,8 @@ description: "Editora keeps a recovery copy of unsaved edits, untitled buffers i
 alt: "Settings → Workspace with \"Keep a recovery copy of unsaved edits\" turned on"
 ---
 
+---
+---
 Editora keeps a recovery copy of every buffer with unsaved edits, untitled ones included, in every window. The copies live in the config folder and are written as you work.
 
 If Editora did not close normally (a crash, a kill, a logout, a power loss), the next launch offers the edits back.
@@ -17,4 +19,6 @@ If Editora did not close normally (a crash, a kill, a logout, a power loss), the
 - A copy is removed when you save, revert or close the buffer.
 - If a refactoring that moves or deletes files is interrupted, the next time the project is opened Editora offers to put the files back.
 
-Buffers over 16 million characters are not covered. On by default: **Keep a recovery copy of unsaved edits** in Settings → Workspace, or `View: Toggle Crash Recovery`. `File: Recover Unsaved Edits…` shows what is kept. See the [crash recovery guide](/docs/undo-history#crash-recovery).
+Buffers over about 16.8 million characters are not covered. **File: Recover Unsaved Edits…** shows what is kept.
+
+**On by default.** Turn it off in **Settings → Workspace** (**Keep a recovery copy of unsaved edits**) or with **View: Toggle Crash Recovery**. See the [Crash recovery guide](/docs/undo-history/#crash-recovery).

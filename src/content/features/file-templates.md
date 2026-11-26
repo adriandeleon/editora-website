@@ -3,13 +3,32 @@ title: "File templates"
 group: "Workspace & files"
 order: 6
 beta: false
-summary: "New File From Template: single- or multi-file scaffolds that ask for their variables (author, date, file name, …)."
+summary: "New File From Template: single- and multi-file scaffolds that fill in the author, date, file name and package for you, with 37 bundled and room for your own."
 description: "New File From Template: 37 bundled single- and multi-file templates that ask for their variables, plus templates of your own."
 alt: "The New File From Template picker listing Java, HTML, Markdown, Python and shell templates"
 ---
 
-**New File From Template** (`C-c C-n`) scaffolds a file (or a whole set of files) from a reusable template, prompting for any variables (author, date, file name, package…) in a small wizard.
+Start a file from a template instead of a blank page or a copy of the last one. **Template: New File From Template…**, `C-c C-n` in the Emacs keymap or the toolbar button, asks only for what it cannot fill in, and every field starts filled, so **Create** alone gives a working file.
 
-Template bodies use `${variable}`, `${variable:default}` and `${cursor}` for where the caret lands; anything else, such as `$1` or `$HOME`, is written as it is. Before a template writes anything it lists the files that already exist. Editora ships 37 of them: code (Java class, JUnit 5 test, Java shebang script, Python script, pytest module, Node.js script, shell and Zsh scripts, HTML), XML (a Maven `pom.xml`, an XML Schema, an XSLT stylesheet, and an XML file bound to a schema), the formats it previews or runs (Markdown, Typst, Mermaid, Markwhen, HTTP requests with environment files), writing (README, changelog, decision record, blog post, meeting notes) and project files (MIT and Apache 2.0 licenses, `.gitignore`, `.editorconfig`, GitHub issue and PR templates, a Java Dockerfile with optional Compose). Every field starts filled in, so **Create** alone gives a working file. Created files follow the project's `.editorconfig` line endings and indentation (a shell script is always written with LF), and a file that starts with `#!` is made executable; where the file system keeps no executable bit (Windows), the status bar says how to run it. Add your own under `~/.editora/templates/`, or use **Edit User Templates** to copy a bundled one and change it.
+## What ships
 
-A multi-file template can also scaffold a **whole project**: **New Project From Template** asks for a project name and a location, creates that folder, registers it as a [project](/features/projects) and opens it on the template's main file. **Python Project** and **Node.js TypeScript Project** templates ship with it, each with a package layout, a test, a build file, a README and a `.gitignore`. The Python project uses a `src` layout, and its README walks through creating a virtual environment, installing the package with `pip install -e .`, running it, and testing it with `unittest` or pytest.
+Editora ships 37 templates:
+
+- **Code**: a Java class, a JUnit 5 test, Python, Node.js, shell and Zsh scripts, an HTML page, and a Maven `pom.xml`.
+- **XML**: a schema, an XSLT stylesheet, and an XML file bound to a schema so it validates from the start.
+- **Files Editora previews or runs**: Markdown, Typst, Mermaid, Markwhen and HTTP requests with environment files.
+- **Writing**: a README, a changelog, a decision record, a blog post and meeting notes.
+- **Project files**: MIT and Apache 2.0 licenses, `.gitignore`, `.editorconfig`, GitHub issue and PR templates, and a Java Dockerfile.
+- **Whole projects**: multi-file templates start a project; see [Starting a project](/features/starting-a-project/).
+
+## How it fills in
+
+- **Variables** such as the author, the date, the file name and the package are filled in for you, and the caret lands where the template says.
+- **Nothing overwritten**: before writing, a template lists any files that already exist.
+- **Fits the project**: files follow its `.editorconfig`, and a script that starts with `#!` is made executable.
+
+## Your own templates
+
+Add templates under `~/.editora/templates/`, or use **Template: Edit User Templates…** to copy a bundled one and change it.
+
+See the [File templates guide](/docs/snippets-templates/#file-templates).

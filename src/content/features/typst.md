@@ -8,11 +8,15 @@ description: "A multi-page preview for .typ files rendered by the Typst CLI, the
 alt: "A Typst document in Split view, with the typeset page, headings and maths beside the source"
 ---
 
-Standalone `.typ` files get the same 3-mode view (Editor / Split / Preview) as Markdown, rendered off-thread by the external **`typst`** CLI as a **multi-page** stack. The last good render stays on screen while you edit, so the preview does not flicker, and a compile error keeps the pages visible under a small banner.
+Write Typst documents with the typeset pages beside your source, and the editing comforts of Markdown. The preview keeps its last good render while you type, so it never flickers, and a compile error shows as a small banner over pages that stay visible.
 
-- **Editing** has Markdown-style ergonomics: Enter continues a `-` / `+` / `N.` list, and selecting text pops a format bar (bold, emphasis, raw, link, bullet, heading) with matching right-click and palette actions. Bundled snippets cover figures, tables, and more.
-- **Structure and folding** follow the document's own sections: headings drive both the outline and folding, so a section collapses like one, and `#let` / `#show` bindings join the Structure window nested under the section they are written in. Long embedded listings collapse at their fence.
-- **Code intelligence** comes from the **tinymist** language server.
-- **Export** to PDF (a native single file), PNG, or SVG (`typst.export`); print paginates the pages.
+- **See every page.** `.typ` files get the Editor, Split and Preview views, rendered by the `typst` CLI as a stack of pages.
+- **Edit like Markdown.** Enter continues a list, and selecting text pops a format bar for bold, emphasis, raw, link, bullet and heading, also on the right-click menu.
+- **Insert the usual blocks**: tables, images and a table of contents, plus bundled snippets for figures and more.
+- **Navigate by section.** Headings drive the outline and the folding, and `#let` and `#show` bindings appear in the Structure window under their section.
+- **Code intelligence** comes from the tinymist language server, which Editora can install for you.
+- **Export** to PDF, PNG or SVG with **Typst: Export (PDF/PNG/SVG)**, or print the pages.
 
-**On by default**, self-gating on detection, so it's inert until `typst` is found. Install it with your package manager (`brew install typst`, `cargo install typst-cli`) or the in-app **Install…** button. See the [Typst guide](/docs/typst).
+Nothing appears until `typst` is found. Install it with your package manager, such as `brew install typst` or `cargo install typst-cli`, or with the **Install…** button in **Settings → Typst**.
+
+**On by default.** Turn it off in **Settings → Typst**. See the [Typst guide](/docs/typst/).

@@ -3,33 +3,40 @@ title: "Starting a project"
 group: "Workspace & files"
 order: 2
 beta: false
-summary: "Generate a Maven project from an archetype, <code>git init</code> a folder without a terminal, and create any of about sixty file types from the Project tree with the right package declaration already written."
-description: "Create a Maven project from an archetype, git init a folder, and add any of about sixty file types from the Project tree with the right package."
+summary: "Start a project without a terminal: a Maven project from an archetype, a whole project from a template, a Git repository, and any of about sixty file types with the right package already written."
+description: "Start a Maven project from an archetype or a project from a template, git init a folder, and add any of about sixty file types with the right package."
 alt: "The New Project From Template picker listing seven bundled templates, from HTML Page + CSS and Python Project to GitHub Issue + PR Templates"
 ---
 
-Editora can create a project as well as open one: from a Maven archetype, or from a multi-file [template](/features/file-templates) with **New Project From Template**.
+Editora creates projects as well as opening them, so a new idea goes from nothing to a project that runs without a trip to the terminal.
 
 ## New Maven Project
 
-A wizard where you pick an archetype and fill in the coordinates, and the generated project is registered and opened in its own window. Reachable from the File menu, the Project tree's **New ▸** submenu, and the palette.
+**Maven: New Maven Project…**, in the File menu and on a folder's **New ▸** submenu, builds a project from an archetype and opens it in its own window.
 
-Archetypes come from a curated list of eight that ships with the editor, with **Load full catalog…** to stream Maven Central's catalog (one row per archetype at its newest version, cached for a day) when you need something unusual. Where both list the same archetype the curated pin wins, because the published catalog is often years out of date. The package name is derived the way IntelliJ does it, so `my-app` becomes `my_app` and `2048` becomes `_2048`.
+- **Pick an archetype** from eight that ship with the editor and build on a current JDK, or **Load full catalog…** for anything on Maven Central.
+- **Ready to run**: a run configuration for the main class is seeded and that class is opened, so [Run](/features/run-files/) works on the first press.
+- **Advanced** sets the Java release from the JDKs you have installed, and can update the generated pom's dependencies and plugins to their latest versions.
+- **Inside another project's folder** works too: an ordinary jar project there is left alone, and an aggregator pom gains the new project as a module.
 
-The project arrives ready to run: a run configuration is seeded for its main class with `maven:compile` as its before-launch step (the project's own Maven, resolved at run time), and that class is opened, so [Run](/features/run-files) works on the first press instead of failing on an empty `target/classes`. Generation shells out to `mvn archetype:generate` rather than writing a pom by hand, so Maven has to be on your `PATH`, which is checked before the wizard opens rather than after five fields have been typed.
+## New Project From Template
 
-A collapsed **Advanced** section carries the project `<url>`, the Java release (a combo of the JDK majors you have installed, still editable), and an **update to latest versions** checkbox that brings the generated pom's dependencies and plugins up to date on the way out. Empty means "keep what the archetype wrote", so the fields are not prefilled with the archetype's own values. None of the three can be an archetype property, because `archetype:generate` ignores them and quickstart bakes its own into the pom template. They are applied afterwards as a format-preserving edit to the generated pom, which leaves its indentation and its `<!-- FIXME -->` comments where they are.
+**Project: New Project From Template…** writes a multi-file [template](/features/file-templates/) into a new folder and opens it as a project, on the template's main file.
 
-Generating a project **beside an existing one** works. `archetype:generate` registers the new project as a `<module>` of whatever project it finds in its working directory and fails outright when that one is an ordinary jar project; generation therefore happens in a scratch directory and the finished project is moved into place. An aggregator (`packaging=pom`) is still left attached, where the module is what you want.
-
-Versions can be refreshed later too, from the [Maven submenu](/docs/build-tools#the-maven-submenu).
+- **Python Project** gives a `src` layout, a test, a build file and a README that walks through a virtual environment and `pip install -e .`.
+- **Node.js TypeScript Project** gives a `package.json`, `tsconfig.json`, a test and a README.
+- **Your own** multi-file templates appear in the same picker.
 
 ## Git: Initialize Repository
 
-Starts version control without dropping to a terminal. It prompts for a folder, defaults to the project root, and brings the [Git](/features/git) UI up the usual way: status bar, Commit window, gutter change bars. Creating a repository inside an existing one is refused, naming the enclosing root, since that is nearly always a mistake and awkward to undo.
+**Git: Initialize Repository…** puts a folder under version control, defaulting to the project root, and the [Git](/features/git/) status bar, Commit window and change bars appear at once. A repository inside another one is refused, since that is nearly always a mistake.
 
-## New ▸ on any folder
+## New files on any folder
 
-About sixty file types, grouped by family (Java, Web, Scripts, Languages, Data & Config, Docs & Diagrams, Build & Ops), each carrying the icon the file will have once it exists.
+A folder's **New ▸** submenu offers about sixty file types, grouped by family, from Java and web to data, docs and build files.
 
-A new Java file takes its package from where you create it, so "New ▸ Class" in `src/main/java/demo` writes `package demo;`, and a qualified name like `text.Slug` creates the sub-package to match. A name that already ends in a known extension keeps it, so `notes.json` under Text File gives you JSON rather than `notes.json.txt`, and a dotfile stays a dotfile. A name that tries to climb out of the folder creates nothing, and an existing file is never overwritten.
+- **The right package**: **New ▸ Java ▸ Class** in `src/main/java/demo` writes `package demo;`, and `text.Slug` creates the sub-package.
+- **The type you meant**: `notes.json` under Text File gives you JSON, not `notes.json.txt`.
+- **Safe**: an existing file is never overwritten.
+
+See the [Build tools guide](/docs/build-tools/#new-maven-project).

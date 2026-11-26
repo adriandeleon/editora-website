@@ -3,19 +3,29 @@ title: "Syntax highlighting"
 group: "Code intelligence"
 order: 1
 beta: false
-summary: "TextMate grammars (via tm4e) for Java, Astro, Python, Rust, Go, Kotlin, C/C++, C#, Ruby, SQL, Markdown, and more."
-description: "Incremental TextMate highlighting off the UI thread for dozens of languages, with shebang and modeline detection and bracket-pair colours."
+summary: "TextMate grammars for dozens of languages, from Java, Python, Rust and Go to Astro, SQL and Markdown, with bracket-pair colours and language detection from a shebang."
+description: "Accurate highlighting for dozens of languages that never makes typing wait, with the language found from a shebang or modeline, and bracket-pair colours."
 alt: "A Java class in the Editora Light theme, with keywords, types, strings and comments in their own colours"
 ---
 
-Highlighting uses **TextMate grammars** (via tm4e) for Java, Astro, XML, shell, PowerShell, DOS batch, Python, Groovy, Kotlin, Scala, Clojure, Ruby, C, C++, Rust, Go, C#, Markdown, JSON, CSS, HTML, YAML, INI, and SQL, plus TypeScript/JavaScript, PHP, Lua, Elixir, Dart, Dockerfile, Terraform, TOML, and more added alongside their language servers. Astro uses the official grammar for mixed frontmatter, HTML, and CSS.
+Accurate colours make code faster to read and mistakes easier to spot. Editora highlights dozens of languages with TextMate grammars, the format VS Code and Sublime Text use, and keeps highlighting in step with every keystroke without slowing your typing.
 
-A file whose name gives no language takes it from a shebang (`#!/usr/bin/env bash`, `#!/usr/bin/env -S uv run --script` for Python, or `java --source 25` for Java) or a vim or emacs modeline (`# vim: ft=sh`, `-*- mode: sh -*-`), and the status-bar language picker sets it by hand; the language server, Run and the tab's file-type icon follow either way. Shell scripts are also recognised by their startup-file names (`.bashrc`, `.zshrc`, direnv's `.envrc`, `/etc/profile`, …), and a command's bare arguments are plain text, so commands, variables and strings stand out. Python's grammar covers f-strings, t-strings, `match`/`case`, type parameters (`def f[T]`), `type` aliases and decorators that are any expression (PEP 614), and a Python project's other files open with a format: pip `requirements.txt` files get their own highlighting, `Pipfile` and the Poetry, uv and PDM lock files open as TOML, and `Pipfile.lock` and `.ipynb` notebooks as JSON. Python's dialects open with the Python grammar, comments and indentation: Starlark (`BUILD`, `BUILD.bazel`, `.bzl`, `.star`, `Tiltfile`) and Cython (`.pyx`, `.pxd`, `.pxi`), while SCons files (`SConstruct`, `SConscript`) and `.pythonrc` open as Python, as do scripts whose shebang names `ipython`, `graalpy`, `micropython` or `pythonw`. See [Languages & highlighting](/docs/languages).
+## The right language for every file
 
-Tokenization is **stateful** (it carries grammar state across lines, so block comments and heredocs highlight correctly) and **incremental**: an edit re-tokenizes only from the changed line, off the UI thread. Token colors are themed per editor theme.
+- **Dozens of languages**: Java, Python, Rust, Go, C and C++, C#, Kotlin, Ruby, PHP, TypeScript, Elixir, Dart, SQL, Markdown and many more, plus config formats such as YAML, TOML, INI and Dockerfile.
+- **Mixed files** highlight each part in its own language: Astro's frontmatter, HTML and CSS use the official Astro grammar.
+- **A file with no telling name** takes its language from a shebang such as `#!/usr/bin/env bash` or a vim or Emacs modeline.
+- **The status-bar language picker** sets it by hand, and the language server, Run and the tab's icon follow.
+- **Familiar file names** open in the right language without an extension, such as `.bashrc`, `.envrc`, `requirements.txt` and Bazel's `BUILD` files.
 
-## Bracket-pair colorization
+## Correct and fast
 
-Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am I?" is readable without counting. The matching-bracket highlight answers a different question, "where does *this* one close?", and the two combine on the same character.
+- **Stateful**: grammar state carries from line to line, so block comments, heredocs and multi-line strings colour correctly.
+- **Incremental**: an edit re-tokenizes only from the changed line, in the background, so a large file stays responsive.
+- **Themed**: token colours follow the editor theme you pick.
 
-Brackets inside strings and comments are skipped, as is the `)` that ends a shell `case` pattern, because a stray `{` in a string would otherwise shift the colour of every bracket below it. The depth pass runs as part of tokenizing, so it costs no extra repaint. On by default; Settings → Editor turns it off.
+## Bracket-pair colours
+
+Each `()`, `[]` and `{}` is tinted by how deeply it is nested, so "how far in am I?" is readable without counting. The matching-bracket highlight answers "where does *this* one close?", and the two combine on the same character. Brackets inside strings and comments are skipped, so a stray `{` in a string does not shift the colour of every bracket below it.
+
+**On by default.** Turn bracket-pair colours off in **Settings → Editor**. See the [Languages guide](/docs/languages/#syntax-highlighting).

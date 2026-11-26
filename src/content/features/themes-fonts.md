@@ -8,22 +8,26 @@ description: "Thirty themes, including Editora Light and Dark and a High Contras
 alt: "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"
 ---
 
-**Editora Light** and **Editora Dark** are the app's own pair, drawn from the palette in its icon: a teal accent, an ink-navy ground, and a periwinkle reserved for keybindings. They are what a fresh install starts in, through the **System** theme, which shows Editora Light while your system is light and Editora Dark while it is dark, and switches as soon as the system does.
+Editora looks at home on any system and can follow it between light and dark. Thirty themes ship with it, and you can add your own without a restart.
 
-**High Contrast Light** and **High Contrast Dark** put text, accents and syntax colours at 7:1 or better on a black or white ground, and while Windows' high-contrast mode is on Editora switches to the matching one by itself.
+## Pick a theme
 
-Thirty themes ship in total: the Editora pair, the High Contrast pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
+- **Editora Light and Editora Dark** are the app's own pair, drawn from its icon: a teal accent, an ink-navy ground, and periwinkle kept for keybindings. A fresh install starts in Editora Light.
+- **System**, first in the picker, shows Editora Light while your system is light and Editora Dark while it is dark, and switches as soon as the system does.
+- **High Contrast Light and Dark** put text, accents and syntax colours at 7:1 or better. While Windows' high-contrast mode is on, Editora switches to the matching one by itself.
+- **Primer, Nord and Cupertino** come in light and dark, alongside **Dracula** and nineteen community themes in twelve families.
+- **Syntax colours to match.** Each theme colours the syntax, the editor surface, the gutter and the project tree together. The editor theme is **Automatic** and follows the app theme until you pick one of its own.
 
-Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme is **Automatic** at first and follows the app theme; pick one and the two are independent, or choose Automatic again to follow. Both pickers group themes under Light and Dark headings.
+## Colours that mean one thing
 
-## One vocabulary for state
-
-Colour means the same thing everywhere. **Amber** means "not saved yet" on the tab, the Switcher, the file tree and the pickers, and it follows the theme rather than being one fixed value that only suited a light background. **Red** is broken, **green** is verified, **olive** and **violet** are git's untracked and renamed, and **periwinkle** is only ever a keybinding.
+**Amber** means "not saved yet" on the tab, the Switcher, the file tree and the pickers, in every theme. **Red** is broken, **green** is verified, and **periwinkle** is only ever a keybinding.
 
 ## Fonts
 
-Five monospace fonts ship with the app (**JetBrains Mono**, **Cascadia Code**, **Fira Code**, **IBM Plex Mono** and **Source Code Pro**), so nothing needs installing, and there is per-editor **text zoom**. The interface itself is set in **Inter** on every platform, so Editora looks the same wherever you run it.
+Five monospace fonts ship with the app, so nothing needs installing: **JetBrains Mono**, **Cascadia Code**, **Fira Code**, **IBM Plex Mono** and **Source Code Pro**. Each editor has its own **text zoom**. The interface is set in **Inter** on every platform, so Editora looks the same wherever you run it.
 
 ## Bring your own
 
-Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears in the picker under its filename, in a **Your themes** group, and **Reload themes** on the Appearance page (or **Reload User Themes** from the palette) re-scans without a restart.
+Drop a stylesheet into `themes/` in your config directory for a full app theme, or into `editor-themes/` for syntax colours only. It appears under **Your themes** in the picker. **Reload themes** in **Settings → Appearance**, or **Theme: Reload User Themes** in the palette, picks it up without a restart.
+
+See the [Themes and fonts guide](/docs/themes-fonts/#themes).

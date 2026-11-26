@@ -3,17 +3,31 @@ title: "Export & print"
 group: "Docs & diagrams"
 order: 3
 beta: false
-summary: "Export code, a selection, or the Markdown preview to a syntax-highlighted PDF, HTML, MS Word, or ODF, or print with a preview. Light-themed and generated off-thread."
+summary: "Turn code or a Markdown document into a clean PDF, HTML, Word or ODF file, or print it after a page-by-page preview. Output is always light-themed."
 description: "Export code or the Markdown preview to a highlighted PDF, HTML, Word or ODF, or print it with a page preview. Output is always light-themed."
 alt: "Print preview of a Java file, page 1 of 2, with Page Setup and Print buttons"
 ---
 
-Export **code** to a syntax-highlighted PDF (with optional line numbers), or the **Markdown / Mermaid preview** to a richly formatted PDF, with headings, lists, tables, code blocks, and images rendered as native vector text.
+Share your work in the format the reader wants: a highlighted PDF of your code, or a Markdown document as a polished PDF, web page, Word or ODF file, always light-themed and readable on paper.
 
-The Markdown preview also exports to **self-contained HTML** (local images embedded, code highlighted, following the reader's light or dark preference), **MS Word (`.docx`)**, and **OpenDocument Text (`.odt`)**, embedding tables, code, math, Mermaid diagrams, and images. PDFs draw highlight, superscript, subscript and emoji, and GitHub alerts come out coloured and titled.
+## Export code
 
-Or **print** either, with a page-by-page preview first (what you preview is what prints). PDFs and printouts are always light-themed and generated off the UI thread, via Apache PDFBox / Apache POI / `javafx.print`. **Print…** is in the File menu and **Export to PDF…** under File ▸ Export; both are in the tab menu and the editor's right-click menu, where **Print Selection…** and **Export Selection to PDF…** output only the selected lines. Image tabs and the whole Project Map print and export too.
+- **Syntax-highlighted PDF** of the current file, with line numbers if you want them: **File: Export to PDF…**.
+- **Only the lines you need**: **File: Export Selection to PDF…** and **File: Print Selection…** output the selected lines, numbered as in the file.
 
-Exported PDFs have clickable links, bookmarks from the headings, and a page footer. The Print Preview shows the sheet at paper size, with zoom, Page Setup and keyboard paging. PDF page size, orientation, margins, the code font size and the footer are set in Settings → Editor → Export & Print; printing uses the paper chosen in Page Setup.
+## Export documents
 
-Long lists, quotes, code blocks, tables and paragraphs continue from the current page, a heading stays with what follows it, and a table split across pages repeats its header row.
+- **PDF** from the Markdown or Mermaid preview, with headings, lists, tables, code blocks, math, images and coloured GitHub alerts drawn as sharp vector text.
+- **Self-contained HTML** with images embedded and code highlighted, following the reader's light or dark preference.
+- **Word** (`.docx`) and **OpenDocument** (`.odt`), with tables, code, math, Mermaid diagrams and images.
+- **Long documents paginate well**: a heading stays with what follows it, and a table split across pages repeats its header row.
+- **Ready to navigate**: exported PDFs have clickable links, bookmarks from the headings, and a page footer.
+
+## Print
+
+- **Preview first.** **File: Print…**, in the palette or `Ctrl+P` in the CUA keymap (`Cmd+P` on macOS), opens a page-by-page preview at paper size, with zoom, Page Setup and keyboard paging. What you preview is what prints.
+- **More than text.** Image tabs, data previews and the whole [Project Map](/features/project-map/) print and export too.
+
+Find both under the **File** menu, with the export formats under **File ▸ Export**, and in the tab and editor right-click menus. Page size, margins, code font size and the footer are set in **Settings → Editor → Export & Print**.
+
+See the [Print and PDF guide](/docs/print-pdf/).

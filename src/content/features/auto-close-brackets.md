@@ -8,6 +8,14 @@ description: "Brackets and quotes close as you type, type over their closer, wra
 alt: "A Python script whose last line has auto-closed brackets and quotes around the caret"
 ---
 
-Typing `(`, `[`, `{`, `"`, `'`, or `` ` `` inserts the matching closer and keeps the caret between them. Type the closer when it's already next to the caret and Editora types over it; type an opener with a selection and it wraps the selection; Backspace inside an empty pair deletes both halves. A bracket pairs only before whitespace, a closer, a separator, a quote or the end of the line, so `(` typed before `foo` gives `(foo`.
+Brackets and quotes take care of themselves: the closer appears as you type the opener, and you never end up with a stray or missing one.
 
-Quotes aren't auto-paired next to a word character, so the apostrophe in `don't` is left alone. In Python a quote after a string prefix (`f'`, `rb"`, `t'`) pairs as well, the third quote of `"""` adds the closing triple quote with the caret between, and a backtick is not paired. And whenever the caret sits next to a bracket, both it and its match are highlighted.
+- **Closes as you type.** Typing `(`, `[`, `{`, `"`, `'` or `` ` `` adds the closer and keeps the caret between them.
+- **Types over the closer** when it sits next to the caret, so typing it yourself does no harm.
+- **Wraps a selection** when you type an opener with text selected.
+- **Deletes as a pair.** Backspace inside an empty pair removes both halves.
+- **Stays out of the way.** A bracket pairs only where a closer can go, so `(` typed before `foo` gives `(foo`, and the apostrophe in `don't` is left alone.
+- **Knows Python strings.** A quote after a prefix such as `f` or `rb` pairs, and the third quote of `"""` adds the closing triple quote.
+- **Shows the match.** When the caret sits next to a bracket, it and its partner are highlighted.
+
+See the [Brackets and quotes guide](/docs/editing/#brackets-and-quotes).
