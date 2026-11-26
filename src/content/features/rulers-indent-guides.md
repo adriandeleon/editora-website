@@ -5,6 +5,7 @@ order: 9
 beta: false
 summary: "Rulers at any columns, with their own set per language, and faint guides at every indentation level, carried through blank lines."
 description: "Column rulers set globally or per language, and indent guides at every level that run through blank lines and stay aligned in any font."
+alt: "A Rust file with rulers at columns 60 and 80 and indent guides down each nested block"
 ---
 
 **Rulers** mark line lengths: one at column 80 by default, or as many as you like. Set them in Settings → Editor (**Rulers**, such as `80, 120`), or with *Editor: Set Rulers…* from the palette.

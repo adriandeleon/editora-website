@@ -1374,11 +1374,15 @@ static final Map<String, String> ALT = Map.ofEntries(
     Map.entry("typst", "A Typst document in Split view, with the typeset page, headings and maths beside the source"),
     Map.entry("undo-history", "The Undo History window beside a Python file, listing each edit with its time"),
     Map.entry("zen-mode", "Zen mode: a Java file with no menus, tabs, toolbars or status bar around it"),
+    Map.entry("file-encodings", "A Shift_JIS text file opened as ISO-8859-1, its encoding shown in the warning colour in the status bar, with Reopen with Encoding filtered to Shift_JIS"),
+    Map.entry("line-and-text-tools", "Twelve selected Map.entry lines in a Java file with the String Manipulation picker filtered to sort"),
+    Map.entry("rulers-indent-guides", "A Rust file with rulers at columns 60 and 80 and indent guides down each nested block"),
+    Map.entry("structure-narrowing", "A Java method narrowed: an amber banner says lines 39 to 62 of 74 are in reach, with Widen, and the Structure window beside it"),
     Map.entry("terminal", "The Terminal tool window under a Java file, a local shell tab showing a git log graph in the project folder"),
     Map.entry("deployments", "The Deployments window with a staging deployment: host, user, authentication, folder on the host, Leave out and options"),
     Map.entry("encrypted-files", "Encrypting README.md: the recipient picker with two people chosen, a Format menu and an Encrypt for 2 People button")
-    // No alt text (and no real screenshot yet) for autocomplete, file-encodings, line-and-text-tools,
-    // rulers-indent-guides and structure-narrowing; add an entry here when their screenshots land.
+    // No alt text (and no real screenshot) for autocomplete: its completion popup does not show in
+    // a headless capture, so the page keeps a drawn stand-in.
 );
 
 String yaml(String s) {
