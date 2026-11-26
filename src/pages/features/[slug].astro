@@ -34,11 +34,23 @@ const hasDark = shotDark !== null && existsSync(resolve("public", shotDark));
 const groups = await groupedFeatures();
 const group = groups.find((g) => g.items.some((f) => f.id === entry.id));
 const related = (group?.items ?? []).filter((f) => f.id !== entry.id).slice(0, 6);
+
+// Meta description: the page's own plain-text `description`, else the summary
+// with its tags stripped and its HTML entities decoded (so no literal &amp;).
+const decodeEntities = (s: string) =>
+  s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&(lt|gt|quot|apos|nbsp|amp);/g, (_, e) =>
+      ({ lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", amp: "&" })[e as string] ?? "",
+    );
+const description =
+  entry.data.description ?? decodeEntities(entry.data.summary.replace(/<[^>]+>/g, ""));
 ---
 
 <Layout
   title={`${entry.data.title} — Editora`}
-  description={entry.data.summary.replace(/<[^>]+>/g, "")}
+  description={description}
 >
   <main class="doc feature" data-pagefind-body data-pagefind-meta="kind:Feature">
     <p class="back"><a href={group ? `/features#${groupId(group.title)}` : "/features"}>← All features</a></p>

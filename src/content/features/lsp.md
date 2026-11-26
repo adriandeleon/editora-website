@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 2
 beta: false
 summary: "Go-to-definition, code actions, rename, signature help, inlay hints, hierarchy, diagnostics and completions via 29 language servers (Java, Astro, TypeScript, Python, Go, Rust, C/C++, and more), auto-detected, never bundled."
+description: "Definitions, references, rename, code actions, hover, inlay hints and diagnostics from 29 language servers that Editora finds on your PATH or installs."
 alt: "Quick fixes for an unresolved ArrayList in a Java file, above the Problems window listing two errors"
 ---
 

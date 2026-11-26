@@ -4,6 +4,7 @@ group: "Docs & diagrams"
 order: 5
 beta: false
 summary: "A 3-mode preview for <code>.typ</code> files rendered by the Typst CLI, a tinymist language server, Markdown-style editing, and export to PDF / PNG / SVG."
+description: "A multi-page preview for .typ files rendered by the Typst CLI, the tinymist language server, list and format helpers, and export to PDF, PNG or SVG."
 alt: "A Typst document in Split view, with the typeset page, headings and maths beside the source"
 ---
 

@@ -1,30 +1,30 @@
 ---
-// Cold-start bar chart for the "Built for speed" section.
-//
-// Every number here must come from a real run of scripts/bench/measure-editors.sh,
-// which times all three editors with one metric on one machine. Do not add a bar
-// you have not measured yourself that way: a startup comparison is only
-// meaningful if every entry was timed identically, and a figure taken from
-// someone else's blog post measures a different thing on different hardware.
+// Cold-start bar chart for the "Built for speed" section. The figures live in
+// src/lib/bench.ts, shared with /compare; read the rules there before changing
+// one.
 //
 // The metric is when the editor's window for the file appears — the moment its
 // title names the file. That is earlier than the first frame showing the file's
-// text, and the caption says so rather than letting the stronger reading stand:
-// Editora's own instrumentation (scripts/measure-startup.sh in the Editora repo)
-// puts window-shown at 475 ms and first paint at 890 ms on this same fixture.
+// text, and the caption says so rather than letting the stronger reading stand.
 // The same gap exists for the other two and cannot be measured from outside, so
 // all three bars are the window-appears moment and none of them is first paint.
 //
 // `methodology` renders under the chart and is not optional. A benchmark
 // without its conditions stated is a claim nobody can check.
-const bars = [
-  { label: "Editora", sub: "0.22.0", ms: 521, highlight: true },
-  { label: "VS Code", sub: "1.142.0", ms: 589 },
-  { label: "IntelliJ IDEA", sub: "2026.2.3", ms: 2183 },
-];
+import { version } from "../lib/editora";
+import { editoraInternal, measured, secs, startup } from "../lib/bench";
+
+const bars = startup.file.map((r) => ({ label: r.name, sub: r.ver, ms: r.ms, highlight: !!r.self }));
+const editoraMs = startup.file.find((r) => r.self)!.ms;
+
+// Said above the chart, not only in the small print: the figures are from an
+// older release than the one on the download button.
+const asOf =
+  `Measured in ${measured.month} on Editora ${measured.editoraVersion}, on ${measured.machineShort}` +
+  (measured.editoraVersion === version ? "." : `; not yet re-run on ${version}.`);
 
 const methodology =
-  "Measured in October 2026 on Editora 0.22.0. Median of five timed runs per " +
+  "Median of five timed runs per " +
   "editor (a discarded warm-up first), all on one 14-inch MacBook Pro " +
   "(Mac17,2): Apple M5, 10 cores (4 performance, 6 efficiency), 16 GB of " +
   "memory, Apple's 1 TB internal SSD, macOS 27.0 (build 26A428), on AC power, " +
@@ -36,18 +36,18 @@ const methodology =
   "file's name, not when a splash screen appears: IntelliJ puts up a splash " +
   "and a welcome window well before its editor exists. That moment is when the " +
   "window arrives, which comes before the file's text is painted — Editora's " +
-  "own instrumentation puts its first frame showing the file at 0.89s against " +
-  "the 0.52s here, and the other two have a gap of their own that we cannot " +
+  `own instrumentation puts its first frame showing the file at ${secs(editoraInternal.firstPaintMs)} against ` +
+  `the ${secs(editoraMs)} here, and the other two have a gap of their own that we cannot ` +
   "measure from outside. These are relaunches on a warm page cache rather than " +
   "a first boot, and none of them measure background work that continues " +
   "afterwards.";
 
 const max = Math.max(...bars.map((b) => b.ms));
 const pct = (ms: number) => Math.round((ms / max) * 100);
-const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
 ---
 
 <figure class="speed">
+  <p class="speed-asof">{asOf}</p>
   <div class="speed-rows">
     {
       bars.map((b) => (
@@ -75,6 +75,11 @@ const secs = (ms: number) => (ms / 1000).toFixed(2) + "s";
 <style>
   .speed {
     margin: 2.5rem 0 0;
+  }
+  .speed-asof {
+    margin: 0 0 1rem;
+    color: var(--muted);
+    font-size: 0.88rem;
   }
   .speed-rows {
     display: flex;

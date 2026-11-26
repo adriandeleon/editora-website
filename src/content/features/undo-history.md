@@ -4,6 +4,7 @@ group: "Editing"
 order: 7
 beta: false
 summary: "An in-session timeline of document checkpoints (one per typing burst). Jump back to any recent state from a filterable popup (<kbd>M-g v</kbd>) or the tool window (<kbd>M-g u</kbd>)."
+description: "A timeline of in-session checkpoints, one per typing burst. Jump back to any earlier state of the buffer from a popup or a tool window."
 alt: "The Undo History window beside a Python file, listing each edit with its time"
 ---
 

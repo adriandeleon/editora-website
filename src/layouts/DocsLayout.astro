@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import Layout from "./Layout.astro";
 import { currentDocVersion, docVersions, type DocVersion } from "../lib/doc-versions";
+import { appDocs } from "../lib/app-docs";
 
 type DocEntry = CollectionEntry<"docs"> | CollectionEntry<"docsArchive">;
 
@@ -9,8 +10,10 @@ interface Props {
   entry: DocEntry;
   /** Defaults to the current version, so a caller predating versioning still works. */
   docVersion?: DocVersion;
+  /** Rendered at the stable /docs/<slug> URL (src/pages/docs/[slug].astro), the canonical home of a current page. */
+  stable?: boolean;
 }
-const { entry, docVersion = currentDocVersion } = Astro.props;
+const { entry, docVersion = currentDocVersion, stable = false } = Astro.props;
 const base = docVersion.base;
 const archived = !docVersion.current;
 
@@ -25,7 +28,9 @@ const CATEGORY_ORDER = [
   "Version control",
   "Workspace",
   "Customization",
+  "Integrations",
   "Help",
+  "About",
 ];
 
 // The sidebar comes from the version being rendered, not from the live docs:
@@ -49,7 +54,16 @@ const cats = [
 ].filter((c) => pages.some((p) => p.entry.data.category === c));
 
 type Page = (typeof pages)[number];
-const href = (p: Page) => (p.slug === "introduction" ? base : `${base}/${p.slug}`);
+// Where a current page lives for good: /docs/<slug>. The versioned URL of the
+// same page is kept for the app's deep links and points its canonical here. The
+// copy inside the app (appDocs) has no stable pages, so it stays versioned.
+const stableHref = (slug: string) =>
+  slug === "introduction"
+    ? currentDocVersion.base
+    : appDocs
+      ? `${currentDocVersion.base}/${slug}`
+      : `/docs/${slug}`;
+const href = (p: Page) => (stable ? stableHref(p.slug) : p.slug === "introduction" ? base : `${base}/${p.slug}`);
 
 // Flat order for prev/next.
 const flat = cats.flatMap((c) => pages.filter((p) => p.entry.data.category === c));
@@ -65,7 +79,7 @@ const latestHref = !archived
   ? null
   : thisSlug === "introduction" || !currentSlugs.has(thisSlug)
     ? currentDocVersion.base
-    : `${currentDocVersion.base}/${thisSlug}`;
+    : stableHref(thisSlug);
 
 // Each version in the switcher links to this same page in that version when
 // it has one (so switching keeps your place), else to that version's root.
@@ -130,7 +144,7 @@ const faqJsonLd =
   title={`${entry.data.title} — Editora Docs`}
   description={entry.data.description ?? entry.data.title}
   ogImage="og/docs.png"
-  canonicalPath={archived ? latestHref! : undefined}
+  canonicalPath={archived ? latestHref! : stableHref(thisSlug)}
 >
   {
     faqJsonLd && faqJsonLd.mainEntity.length > 0 && (
@@ -204,7 +218,7 @@ const faqJsonLd =
 
     <article
       class="docs-content doc"
-      data-pagefind-body={archived ? undefined : true}
+      data-pagefind-body={!archived && (stable || appDocs || thisSlug === "introduction") ? true : undefined}
       data-pagefind-meta="kind:Docs"
     >
       {

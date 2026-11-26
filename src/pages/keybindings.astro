@@ -2,7 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import { commandGroups, keymaps } from "../lib/commands";
 import { formatChord } from "../lib/chord-format";
-import { formatChordMac } from "../lib/chord-format-mac";
 
 // For each bundled keymap, the command groups with at least one bound command,
 // each with that keymap's chords on Windows/Linux and on macOS (the app loads a
@@ -22,7 +21,7 @@ const byKeymap = keymaps.map((km) => {
               ? [c.bindings[km.id], ...(c.alt?.[km.id] ?? [])].map((k) => formatChord(k, km.id))
               : [],
             mac: c.mac?.[km.id]
-              ? [c.mac[km.id], ...(c.macAlt?.[km.id] ?? [])].map((k) => formatChordMac(k, km.id))
+              ? [c.mac[km.id], ...(c.macAlt?.[km.id] ?? [])].map((k) => formatChord(k, km.id, true))
               : [],
           }),
         )
@@ -43,7 +42,7 @@ const rowClass = (r: Row) =>
 
 <Layout
   title="Keybindings — Editora"
-  description="Editora's keymaps: Emacs (default), CUA, Sublime Text, VS Code, and IntelliJ IDEA. Every command with its default bindings on Windows, Linux and macOS, grouped by area. Rebind anything in Settings → Keymaps."
+  description="Editora's five keymaps (Emacs, CUA, Sublime Text, VS Code, IntelliJ IDEA): every command's default chords on Windows, Linux and macOS, grouped by area."
 >
   <main class="page">
     <h1>Keybindings</h1>
@@ -74,8 +73,13 @@ const rowClass = (r: Row) =>
     </div>
 
     <form class="keymaps">
-      <input type="radio" name="os" id="os-pc" class="km-radio" checked />
-      <input type="radio" name="os" id="os-mac" class="km-radio" />
+      <fieldset class="os-switch">
+        <legend class="os-label">Platform</legend>
+        <input type="radio" name="os" id="os-pc" class="km-radio" checked />
+        <label for="os-pc" class="os-opt">Windows / Linux</label>
+        <input type="radio" name="os" id="os-mac" class="km-radio" />
+        <label for="os-mac" class="os-opt">macOS</label>
+      </fieldset>
       {
         byKeymap.map((km, i) => (
           <input
@@ -87,11 +91,6 @@ const rowClass = (r: Row) =>
           />
         ))
       }
-      <div class="os-switch">
-        <span class="os-label" id="os-label">Platform</span>
-        <label for="os-pc" class="os-opt">Windows / Linux</label>
-        <label for="os-mac" class="os-opt">macOS</label>
-      </div>
       <div class="tabs">
         {
           byKeymap.map((km) => (
@@ -213,8 +212,14 @@ const rowClass = (r: Row) =>
     margin-top: 0.6rem;
   }
 
-  /* Platform switcher: two hidden radios drive which chord column shows. */
+  /* Platform switcher: two hidden radios drive which chord column shows. The
+     fieldset + legend name the group for screen readers; the floated legend is
+     laid out as an ordinary flex item instead of sitting in the border. */
   .os-switch {
+    position: relative;
+    min-inline-size: 0;
+    border: 0;
+    padding: 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -224,6 +229,8 @@ const rowClass = (r: Row) =>
   }
 
   .os-label {
+    float: left;
+    padding: 0;
     color: var(--muted);
     margin-right: 0.35rem;
   }
@@ -241,15 +248,13 @@ const rowClass = (r: Row) =>
     color: var(--text);
   }
 
-  #os-pc:checked ~ .os-switch label[for="os-pc"],
-  #os-mac:checked ~ .os-switch label[for="os-mac"] {
+  .os-switch input:checked + label {
     color: var(--text);
     background: var(--bg-soft);
     font-weight: 600;
   }
 
-  #os-pc:focus-visible ~ .os-switch label[for="os-pc"],
-  #os-mac:focus-visible ~ .os-switch label[for="os-mac"],
+  .os-switch input:focus-visible + label,
   #km-emacs:focus-visible ~ .tabs label[for="km-emacs"],
   #km-cua:focus-visible ~ .tabs label[for="km-cua"],
   #km-sublime:focus-visible ~ .tabs label[for="km-sublime"],
@@ -263,13 +268,13 @@ const rowClass = (r: Row) =>
     display: none;
   }
 
-  #os-mac:checked ~ .km-panels .mac {
+  .keymaps:has(#os-mac:checked) .km-panels .mac {
     display: inline;
   }
 
-  #os-mac:checked ~ .km-panels .pc,
-  #os-mac:checked ~ .km-panels tr.pc-only,
-  #os-pc:checked ~ .km-panels tr.mac-only {
+  .keymaps:has(#os-mac:checked) .km-panels .pc,
+  .keymaps:has(#os-mac:checked) .km-panels tr.pc-only,
+  .keymaps:has(#os-pc:checked) .km-panels tr.mac-only {
     display: none;
   }
 

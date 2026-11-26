@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 7
 beta: false
 summary: "The Emacs editing <em>model</em>, not just its keybindings: a kill ring and a mark ring, registers, <code>C-x r</code> rectangles, narrowing, query-replace, <kbd>C-u</kbd> prefix arguments, and structural sexp motion. Emacs is the default keymap."
+description: "The Emacs editing model in Editora: kill ring, mark ring, registers, C-x r rectangles, narrowing, query-replace, C-u prefix arguments and sexp motion."
 alt: "The command palette filtered by \"kill\", listing the Emacs kill commands with their chords"
 ---
 
@@ -81,6 +82,6 @@ Some parts of Emacs come from a different philosophy, and Editora does not follo
 
 ## Not yet
 
-Registers, a global cross-buffer mark ring, and dabbrev are not implemented yet. A few of the ports are also approximations: `C-u` repeats rather than passing a true numeric argument, and rectangles count character columns rather than display columns.
+A global cross-buffer mark ring and dabbrev are not implemented yet. A few of the ports are also approximations: `C-u` repeats rather than passing a true numeric argument, and rectangles count character columns rather than display columns.
 
 Browse the [full command list](/commands) or the [keybindings reference](/keybindings).

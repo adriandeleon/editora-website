@@ -4,7 +4,8 @@ group: "Workspace & files"
 order: 15
 beta: false
 summary: "Shells in a Terminal tool window, on this machine or where the project runs: an SSH host, a container or WSL. Shell integration, find, and clickable paths."
-alt: "The Terminal tool window under the editor, running git status and git log in the project folder"
+description: "Shells in a Terminal tool window, on this machine, an SSH host, a container or WSL, with shell integration, find and clickable paths."
+alt: "The Terminal tool window under a Java file, a local shell tab showing a git log graph in the project folder"
 ---
 
 The **Terminal** tool window runs shells inside Editora, one per tab, below the editor. It is `M-0` in the Emacs keymap, Alt+F12 in IntelliJ IDEA's and Ctrl+\` in the others, and **Open Terminal Here** on a tab, a folder in the Project tree or the breadcrumb starts a shell in that folder. A focused terminal owns the keyboard, so Ctrl+C, Escape and your shell's own shortcuts work as in any terminal; Shift+Escape goes back to the editor.

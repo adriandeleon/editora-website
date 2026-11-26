@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 4
 beta: false
 summary: "A lighter focus mode than Zen: the toolbar, tabs, breadcrumb, and tool stripes go, while line numbers, the minimap, the status bar, and the menu bar stay."
+description: "A lighter focus mode: the toolbar, tabs, breadcrumb and stripes go, while line numbers, minimap, status bar and menu bar stay."
 alt: "Expert mode: a Java file with only the menu bar, line numbers, minimap and status bar around it"
 ---
 

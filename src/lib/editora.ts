@@ -17,10 +17,10 @@ export const latestRelease = `${repo}/releases/latest`;
 // The language servers the app registers: one entry per ServerDef in
 // LspServerRegistry in the Editora repo, in its order, with the languages each
 // one serves. MAVEN_POM is left out: it is the Maven-aware variant of the XML
-// server for pom.xml, not a language of its own. Matches "Twenty-six servers"
-// in docs/lsp.md. Update this list when a server is added or removed; the
-// count and the home page's language chips both come from it, so they cannot
-// disagree.
+// server for pom.xml, not a language of its own. Checked against the
+// ServerDef enum in v0.29.0 (29 servers). Update this list when a server is
+// added or removed; the count and the home page's language chips both come
+// from it, so they cannot disagree.
 export const lspServers: { id: string; languages: string[] }[] = [
   { id: "java", languages: ["Java"] },
   { id: "typescript", languages: ["JavaScript", "TypeScript"] },
@@ -48,6 +48,9 @@ export const lspServers: { id: string; languages: string[] }[] = [
   { id: "csharp", languages: ["C#"] },
   { id: "typst", languages: ["Typst"] },
   { id: "astro", languages: ["Astro"] },
+  { id: "dart", languages: ["Dart"] },
+  { id: "elixir", languages: ["Elixir"] },
+  { id: "powershell", languages: ["PowerShell"] },
 ];
 
 // How many language servers the app registers. One number for every page that

@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 5
 beta: false
 summary: "Walk a file one function at a time: a toggle in the Structure tool window narrows the editor to the symbol you click, and a click on the next one moves there."
+description: "Read a file one declaration at a time: the Structure window narrows the editor to the symbol you pick, Emacs-style, with a Widen banner."
 ---
 
 The **Structure** tool window (`tool.structure`) lists a file's declarations. Its **Narrow to fold region** toggle, at the end of the sort row, turns that list into a way to read a file one piece at a time. A click narrows the editor to the picked symbol's own block (on a method, the method itself), and while the toggle is on, a click or Enter on another symbol narrows to that one instead of only scrolling there. In Markdown it narrows a heading to its section.

@@ -18,7 +18,7 @@ const date = entry.data.date.toLocaleDateString("en-US", {
 ---
 
 <Layout
-  title={`${entry.data.title} — Editora News`}
+  title={`${entry.data.seoTitle ?? entry.data.title} — Editora News`}
   description={entry.data.description ?? entry.data.title}
 >
   <article class="doc" data-pagefind-body data-pagefind-meta="kind:News">

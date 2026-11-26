@@ -1,6 +1,7 @@
 ---
 // One feature as a card with its screenshot thumbnail: the /features grid and
-// the home page's preview of it use the same card.
+// the home page's preview of it use the same card. Both put the cards under an
+// h2, so the card title is an h3.
 import type { CollectionEntry } from "astro:content";
 import { featureShot } from "../lib/features";
 
@@ -24,10 +25,10 @@ const shot = featureShot(f.id);
       </span>
     )
   }
-  <h4>
+  <h3>
     {f.data.title}
     {f.data.beta && <span class="beta-pill">Beta</span>}
-  </h4>
+  </h3>
   <p set:html={f.data.summary} />
 </a>
 
@@ -68,12 +69,12 @@ const shot = featureShot(f.id);
     font-size: 1.6rem;
     letter-spacing: 0.1em;
   }
-  .card h4 {
+  .card h3 {
     margin: 0.9rem 1.1rem 0.4rem;
     font-size: 1.05rem;
     color: var(--text);
   }
-  .card:hover h4 {
+  .card:hover h3 {
     color: var(--accent);
   }
   .card p {

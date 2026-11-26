@@ -1,12 +1,13 @@
 ---
 title: "Editora 0.11.0: start a new project from the editor"
-description: "A New Maven Project wizard, git init from inside the editor, inlay hints that sit where they belong, and typing that stops getting slower the longer you leave the editor open."
+seoTitle: "Editora 0.11.0: new projects from the editor"
+description: "A New Maven Project wizard, git init from inside the editor, inlay hints where they belong, and typing that no longer slows down over a long session."
 date: 2026-08-11
 version: "0.11.0"
 ---
 
 **Editora 0.11.0** is out. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.11.0).
 
 **New Maven Project.** Until now Editora could only ever *open* an existing
 folder as a project, which made it a poor place to begin one. There is now a

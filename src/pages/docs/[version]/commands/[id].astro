@@ -2,7 +2,6 @@
 import Layout from "../../../../layouts/Layout.astro";
 import { type Cmd } from "../../../../lib/commands";
 import { formatChord } from "../../../../lib/chord-format";
-import { formatChordMac } from "../../../../lib/chord-format-mac";
 import {
   currentDocVersion,
   docVersions,
@@ -112,7 +111,9 @@ const BY_PREFIX: [string[], string][] = [
   [["abbrev."], "editing#abbreviations"],
   [["history.", "localHistory."], "workspace#local-file-history"],
   [["undoHistory."], "undo-history"],
+  [["projectMap."], "project-map"],
   [["projectMap."], "workspace#project-map"],
+  [["debug.", "tool.debug"], "debugging"],
   [["workspace."], "workspace#trusted-folders"],
   [["deploy."], "deployments"],
   [["container."], "remote#tools-in-a-container"],
@@ -185,7 +186,7 @@ const pcChords = (k: Keymap) => {
 };
 const macChords = (k: Keymap) => {
   const first = cmd.mac?.[k.id];
-  return first ? [first, ...(cmd.macAlt?.[k.id] ?? [])].map((c) => formatChordMac(c, k.id)) : [];
+  return first ? [first, ...(cmd.macAlt?.[k.id] ?? [])].map((c) => formatChord(c, k.id, true)) : [];
 };
 // A version whose data has macOS chords gets a macOS column.
 const hasMac = !archived && allCommands.some((c) => c.mac);
@@ -223,7 +224,7 @@ const paletteMacKeys = hasMac && palette
       ...new Set(
         keymaps
           .filter((k) => palette.mac?.[k.id] && palette.mac[k.id] !== palette.bindings?.[k.id])
-          .map((k) => formatChordMac(palette.mac![k.id], k.id)),
+          .map((k) => formatChord(palette.mac![k.id], k.id, true)),
       ),
     ]
   : [];
@@ -326,7 +327,7 @@ const need: Need | null = archived
     : covers(["debug."])
       ? {
           text: "It needs the debug adapter for the program's language. Adapters are not bundled; each language's card on Settings → Debugging can install one.",
-          href: `${docsBase}/run-debug#installing-adapters`,
+          href: `${docsBase}/debugging#installing-adapters`,
           link: "Installing adapters",
         }
       : covers(["git.", "tool.commit", "tool.gitLog"])
@@ -343,6 +344,20 @@ const need: Need | null = archived
                   ? { text: "Exporting runs Graphviz dot or PlantUML, whichever the diagram is written for, installed on this machine." }
                   : null;
 const needCmd = need?.cmd ? titleOf(need.cmd) : null;
+
+// The search snippet: what it does, then how to run it (a keymap's key, or the
+// palette), capped near 160 characters at a word break.
+const firstKey = bindings.find((b) => b.pc.length > 0);
+const metaDescription = (() => {
+  const what = cmd.desc || `The ${cmd.title} command in Editora.`;
+  const how = firstKey
+    ? ` Default key in the ${firstKey.name} keymap: ${firstKey.pc[0]}; or run it from the command palette.`
+    : " Run it from the command palette; it has no default key.";
+  const full = `${what}${how}`;
+  if (full.length <= 160) return full;
+  const cut = full.slice(0, 157);
+  return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
+})();
 
 // Sentences with inline markup, built as segments so the markup sits flush
 // against its punctuation: text, a chord (one <kbd> per key), bold, or a link.
@@ -409,7 +424,7 @@ if (need) {
 
 <Layout
   title={`${cmd.title} — Editora command`}
-  description={cmd.desc || `The ${cmd.title} command in Editora (${cmd.id}).`}
+  description={metaDescription}
   canonicalPath={archived ? latestHref : undefined}
 >
   <main

@@ -4,9 +4,10 @@ group: "Workspace & files"
 order: 7
 beta: false
 summary: "Toggle a buffer read-only to browse without editing; pager-style <kbd>Space</kbd>/<kbd>Backspace</kbd> paging and a Word-style View Mode banner."
+description: "Toggle a buffer read-only with a View mode banner and pager keys. Files of 200,000 lines or 16 MB, very long lines and minified code open in View mode."
 alt: "A Java file in View mode, with an amber banner and an Enable Editing button"
 ---
 
 Toggle a buffer read-only with `C-x C-q` so it can't be edited by accident: typing and edit commands are blocked while highlighting, folding, search, and copy keep working.
 
-A file that isn't writable on disk opens read-only automatically, and the per-file state is remembered. A Word-style **View Mode banner** docks above the editor with an *Enable Editing* button (when the file is writable), and while read-only, **Space pages down / Backspace pages up** like a pager. Files of 5 MB or more, files with a line of 64K characters, and minified code also open in View Mode, with a banner that says why.
+A file that isn't writable on disk opens read-only automatically, and the per-file state is remembered. A Word-style **View Mode banner** docks above the editor with an *Enable Editing* button (when the file is writable), and while read-only, **Space pages down / Backspace pages up** like a pager. Files of 200,000 lines or 16 MB or more, files with a line of 1 MiB (about a million characters), and minified code also open in View Mode, with a banner that says why.

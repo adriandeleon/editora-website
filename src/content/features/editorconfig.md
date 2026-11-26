@@ -4,6 +4,7 @@ group: "Editing"
 order: 6
 beta: false
 summary: "Honors a project's <code>.editorconfig</code>: indent style/size, tab width, end-of-line, charset, max line length, and on-save trim / final-newline. On by default."
+description: "Editora follows a project's .editorconfig: indent style and size, tab width, line endings, charset, max line length, trimming and final newline."
 alt: "An .editorconfig file with sections for all files, Java, XML, JSON and YAML"
 ---
 

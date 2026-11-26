@@ -58,3 +58,5 @@ jobs:
 
       - name: Internal links and anchors
         run: npm run check:links
+      - name: Site size within the GitHub Pages limit
+        run: npm run check:size

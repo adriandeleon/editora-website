@@ -11,7 +11,8 @@
     "check:generated": "node scripts/check-generated.mjs",
     "check:links": "node scripts/check-links.mjs",
     "optimize:shots": "node scripts/optimize-screenshots.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "check:size": "node scripts/check-size.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

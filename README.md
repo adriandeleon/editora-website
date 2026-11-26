@@ -19,6 +19,7 @@ npm run preview   # serve the build
 npm run check:docs       # command ids and Emacs chords quoted in the docs (also run by build)
 npm run check:generated  # every generated page still matches the Editora release (needs JDK 25)
 npm run check:links      # internal links and anchors in dist/ (after a build)
+npm run check:size       # dist/ under the GitHub Pages size budget (after a build)
 ```
 
 Every pull request runs `.github/workflows/check.yml`: `check:generated`, then
@@ -69,6 +70,11 @@ those copies here; `check:generated` fails when they differ from the release. An
 the move (0.28.x and older) has no `user-docs/`, and the script leaves the copies alone. The archived docs of
 past releases (`src/content/docs-archive/`) stay here.
 
+A guide fix made after a release would otherwise wait for the next one. Land it on Editora master, cherry-pick it
+onto a branch `guide/v<version>` cut from the release tag, and name that branch in `src/lib/guide-ref.ts`:
+`check:generated` then copies the guide from the branch, and refuses one that does not descend from the tag or
+that changes anything outside `user-docs/`. Set `guideRef` back to `null` when the next release is regenerated.
+
 ### The copy inside the app
 
 `node scripts/build-app-docs.mjs --editora <Editora checkout> --out <folder>` renders the guide for the
@@ -117,18 +123,18 @@ there (or in the Markdown, then port it back).
 
 The docs are versioned: every docs page and per-command page lives under
 `/docs/v-<version>/…` (e.g. `/docs/v-1.0.0/editing`), where `<version>` comes
-from the committed `src/lib/version.ts`. Bare `/docs` redirects to the current
-version, and so does the unversioned slug of every current docs page:
-`/docs/<slug>` (e.g. `/docs/editing`) redirects to `/docs/v-<version>/<slug>`
-(`/docs/introduction` to the version's landing page, `/docs/v-<version>/`).
-Those are the stable links for places outside the site — the Editora README,
-news posts — that should always reach the newest text. The redirect list is
-generated in `astro.config.mjs` from the files in `src/content/docs/`, so a new
-page gets one automatically and a removed page's stops. Only the versioned URLs
-are real pages, and each app version pins its own `/docs/v-<appVersion>/…`
-links; unversioned per-command URLs are not served.
+from the committed `src/lib/version.ts`, and each app version pins its own
+`/docs/v-<appVersion>/…` links. The current version's guide pages are also
+served at their stable unversioned URL, `/docs/<slug>` (e.g. `/docs/editing`,
+`src/pages/docs/[slug].astro`), and that is their canonical URL: the versioned
+copy points its canonical there, and the sitemap lists only the stable one, so
+a release does not move every page to a new address in search engines. Bare
+`/docs` redirects to the version's landing page (`/docs/v-<version>/`).
+Unversioned per-command URLs are not served. The copy inside the app
+(`EDITORA_APP_DOCS=1`) builds no stable pages; there `/docs/<slug>` redirects to
+the versioned page.
 
-The routes live under `src/pages/docs/[version]/` (`index.astro`,
+The versioned routes live under `src/pages/docs/[version]/` (`index.astro`,
 `[...slug].astro`, `commands/[id].astro`); each emits one path per served
 version. Markdown content is authored with plain `/docs/…` links; a small rehype
 plugin in `astro.config.mjs` rewrites them to the versioned base at build time,

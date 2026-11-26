@@ -12,6 +12,9 @@
 //      this repo or of its worktrees folder) that has the tag: `git archive`
 //      of the tag into a temporary folder, so the clone's own branch is untouched.
 //   3. A shallow clone of the tag from GitHub.
+// The user guide (SyncDocs) comes from src/lib/guide-ref.ts's branch instead of
+// the tag when one is named there: a guide fix made after the release. That
+// branch must descend from the tag and change nothing outside user-docs/.
 // --allow-unreleased: when the tag does not exist yet (a draft for the next
 // release, as on website-next) say so and pass instead of failing.
 //
@@ -52,6 +55,9 @@ if (!version) {
   process.exit(2);
 }
 const tag = `v${version}`;
+const guideRef = /guideRef: string \| null = "([^"]+)"/.exec(
+  readFileSync(join(root, "src/lib/guide-ref.ts"), "utf8"),
+)?.[1];
 
 function git(cwd, ...rest) {
   return spawnSync("git", ["-C", cwd, ...rest], { encoding: "utf8" });
@@ -103,12 +109,64 @@ if (given) {
   }
 }
 
+// The tree the guide is copied from: the release itself, or guideRef's branch.
+let guideSrc = src;
+let guideTemp;
+if (guideRef) {
+  guideTemp = mkdtempSync(join(tmpdir(), "editora-guide-"));
+  guideSrc = guideTree(guideRef, guideTemp);
+}
+
 try {
   for (const [script] of GENERATORS) {
-    execFileSync("java", [join("scripts", script), src], { cwd: root, stdio: "inherit" });
+    const from = script === "SyncDocs.java" ? guideSrc : src;
+    execFileSync("java", [join("scripts", script), from], { cwd: root, stdio: "inherit" });
   }
 } finally {
   if (temp) rmSync(temp, { recursive: true, force: true });
+  if (guideTemp) rmSync(guideTemp, { recursive: true, force: true });
+}
+
+// Extracts guideRef's tree into `into` after checking that it is the release
+// plus guide changes only. Uses the local clone when it has the branch (as
+// origin/<ref> or <ref>), else a shallow clone from GitHub.
+function guideTree(ref, into) {
+  let repo = localClone();
+  let rev = null;
+  for (const cand of repo ? [`refs/remotes/origin/${ref}`, `refs/heads/${ref}`] : []) {
+    if (git(repo, "rev-parse", "--verify", "--quiet", cand).status === 0) {
+      rev = cand;
+      break;
+    }
+  }
+  if (!rev || git(repo, "rev-parse", "--verify", "--quiet", `refs/tags/${tag}`).status !== 0) {
+    repo = join(into, ".clone");
+    const clone = spawnSync(
+      "git",
+      ["clone", "--quiet", "--bare", "--depth", "200", "--branch", ref, GITHUB, repo],
+      { encoding: "utf8" },
+    );
+    if (clone.status !== 0) {
+      console.error(`check-generated: src/lib/guide-ref.ts names ${ref}, which Editora does not have: ${clone.stderr.trim()}`);
+      process.exit(1);
+    }
+    execFileSync("git", ["-C", repo, "fetch", "--quiet", "--depth", "200", "origin", `refs/tags/${tag}:refs/tags/${tag}`]);
+    rev = "HEAD";
+  }
+  if (git(repo, "merge-base", "--is-ancestor", `refs/tags/${tag}`, rev).status !== 0) {
+    console.error(`check-generated: ${ref} does not descend from ${tag}; cut it from the release tag.`);
+    process.exit(1);
+  }
+  const outside = git(repo, "diff", "--name-only", `refs/tags/${tag}`, rev)
+    .stdout.split("\n")
+    .filter((f) => f && !f.startsWith("user-docs/"));
+  if (outside.length > 0) {
+    console.error(`check-generated: ${ref} changes files outside user-docs/ since ${tag}:\n  ${outside.join("\n  ")}`);
+    process.exit(1);
+  }
+  execFileSync("sh", ["-c", `git -C "$1" archive "$2" | tar -x -C "$3"`, "sh", repo, rev, into]);
+  console.log(`check-generated: user guide from ${ref} (${tag} plus guide fixes)`);
+  return into;
 }
 
 const paths = GENERATORS.flatMap(([, out]) => out);
@@ -121,4 +179,4 @@ if (changed) {
   );
   process.exit(1);
 }
-console.log(`check-generated: every generated page matches Editora ${tag}.`);
+console.log(`check-generated: every generated page matches Editora ${tag}${guideRef ? ` (guide from ${guideRef})` : ""}.`);

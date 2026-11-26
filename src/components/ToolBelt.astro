@@ -1,28 +1,28 @@
 ---
 // "Uses the tools you already have" — Editora's external-CLI design, framed as
 // the advantage it is, plus Doctor (the health screen that reports on all of
-// them). Tool list mirrors what the app actually shells out to; the Doctor shot
-// falls back to a generated stand-in until a real capture is dropped in as
-// public/screenshots/doctor.png (raster wins over the .svg).
-import { existsSync } from "node:fs";
+// them). Tool list mirrors what the app actually shells out to.
 import { lspServerCount } from "../lib/editora";
-import { resolve } from "node:path";
+import { commandGroups } from "../lib/commands";
 
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 
-const shotExts = ["png", "jpg", "jpeg", "webp", "avif", "svg"];
-const shotPath = shotExts
-  .map((e) => `screenshots/doctor.${e}`)
-  .find((p) => existsSync(resolve("public", p)));
-const isStandIn = !!shotPath && shotPath.endsWith(".svg");
+// The Doctor capture (2720 x 1700). Its size is written out so the page does
+// not shift when the picture loads.
+const doctorShot = { src: url("screenshots/doctor.jpg"), width: 2720, height: 1700 };
+
+// The palette shows a command's title, not its id, so name it the same way;
+// looked up so a renamed command changes here too.
+const doctorTitle =
+  commandGroups.flatMap((g) => g.commands).find((c) => c.id === "view.doctor")?.title ?? "View: Doctor";
 
 const tools = [
   { name: "git", note: "Version control, blame, diffs" },
   { name: "gh", note: "Pull requests, issues, CI runs" },
   { name: "ripgrep", note: "Faster Find in Files" },
   { name: `${lspServerCount} language servers`, note: "Completion, diagnostics" },
-  { name: "Debug adapters", note: "Java, Python, JavaScript" },
+  { name: "Debug adapters", note: "Java, Python, JS/TS, Go, Rust, C/C++, C# and more" },
   { name: "mmdc", note: "Mermaid diagrams" },
   { name: "dot / plantuml", note: "Graphviz and PlantUML" },
   { name: "typst", note: "Typst documents" },
@@ -90,28 +90,21 @@ const reasons = [
         re-checks live, without a restart.
       </p>
       <p class="doctor-run">
-        Run it from the palette: <code>view.doctor</code> &middot;
+        Run it from the palette: <strong>{doctorTitle}</strong> &middot;
         <a href="/features/doctor">More about Doctor</a>
       </p>
     </div>
 
-    {
-      shotPath && (
-        <figure class="doctor-shot">
-          <img
-            src={url(shotPath)}
-            alt="Editora's Doctor screen listing external tools with found, warning, and missing status"
-            loading="lazy"
-          />
-          {isStandIn && (
-            <figcaption>
-              <span class="doctor-badge">Stand-in</span>
-              Replaced automatically by a real capture.
-            </figcaption>
-          )}
-        </figure>
-      )
-    }
+    <figure class="doctor-shot">
+      <img
+        src={doctorShot.src}
+        alt="Editora's Doctor screen listing external tools with found, warning, and missing status"
+        width={doctorShot.width}
+        height={doctorShot.height}
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
   </div>
 </div>
 
@@ -216,26 +209,6 @@ const reasons = [
     border-radius: var(--radius);
     box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.6);
   }
-  .doctor-shot figcaption {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.7rem;
-    color: var(--faint);
-    font-size: 0.8rem;
-  }
-  .doctor-badge {
-    flex: none;
-    color: var(--on-accent);
-    background: var(--accent);
-    border-radius: 999px;
-    padding: 0.08rem 0.5rem;
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
   @media (max-width: 720px) {
     .doctor {
       grid-template-columns: 1fr;

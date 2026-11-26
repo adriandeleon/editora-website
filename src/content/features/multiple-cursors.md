@@ -4,6 +4,7 @@ group: "Keyboard & commands"
 order: 5
 beta: false
 summary: "Add a caret at the next occurrence, above/below, on every occurrence or at every selected line's end, split a selection into lines, or <kbd>Alt</kbd>-drag a column/box selection to edit many places at once."
+description: "Add carets at the next or every occurrence, above or below, or at line ends, split a selection into lines, or Alt-drag a column selection."
 alt: "Five carets in a column of Java lines, the same word typed at each"
 ---
 

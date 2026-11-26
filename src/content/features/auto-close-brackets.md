@@ -4,6 +4,7 @@ group: "Editing"
 order: 3
 beta: false
 summary: "Typing <code>([{</code> or quotes inserts the closer, type-over to skip, wrap a selection, and Backspace clears an empty pair. The bracket beside the caret is highlighted with its match."
+description: "Brackets and quotes close as you type, type over their closer, wrap a selection, and delete as a pair. The bracket at the caret shows its match."
 alt: "A Python script whose last line has auto-closed brackets and quotes around the caret"
 ---
 

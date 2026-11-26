@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.9.6: a security and correctness sweep"
-description: "A systematic security and correctness sweep across nearly every feature, with SSH host-key verification, per-provider AI keys, owner-only config, and dozens of audit-driven fixes."
+description: "A security and correctness sweep across nearly every feature: SSH host-key checks, per-provider AI keys, owner-only config, and dozens of audit fixes."
 date: 2026-07-17
 version: "0.9.6"
 ---
@@ -8,7 +8,7 @@ version: "0.9.6"
 **Editora 0.9.6** is the largest correctness release so far: a per-feature audit
 that closed a long list of security holes and bugs across almost every
 part of the editor. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.9.6).
 
 **Security.** SFTP now verifies the server's host key against your
 `known_hosts`, so a machine on your network can no longer impersonate a server

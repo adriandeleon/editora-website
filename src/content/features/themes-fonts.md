@@ -3,7 +3,8 @@ title: "Themes & fonts"
 group: "Customization & extensibility"
 order: 1
 beta: false
-summary: "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus 26 more (Primer, Nord, Cupertino, Dracula and the community set). Five bundled monospace fonts, no install needed, and you can drop in a theme of your own."
+summary: "<strong>Editora Light</strong> and <strong>Editora Dark</strong>, plus 28 more (High Contrast, Primer, Nord, Cupertino, Dracula and the community set). Five bundled monospace fonts, no install needed, and you can drop in a theme of your own."
+description: "Thirty themes, including Editora Light and Dark and a High Contrast pair, five bundled monospace fonts, and themes of your own without a restart."
 alt: "Settings → Appearance with font, size, theme and editor theme, and a live preview of Java code"
 ---
 
@@ -11,7 +12,7 @@ alt: "Settings → Appearance with font, size, theme and editor theme, and a liv
 
 **High Contrast Light** and **High Contrast Dark** put text, accents and syntax colours at 7:1 or better on a black or white ground, and while Windows' high-contrast mode is on Editora switches to the matching one by itself.
 
-Twenty-eight themes ship in total: the Editora pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
+Thirty themes ship in total: the Editora pair, the High Contrast pair, **Primer**, **Nord** and **Cupertino** (each light and dark), **Dracula**, and nineteen community themes in twelve families (Army, Autumn, Blacky, Blue, Browny, Fall, Navy, News, Spring, Summer, Winter, Yacht).
 
 Each one themes the syntax tokens, the editor surface, the gutter and the project tree together. The **editor** theme is **Automatic** at first and follows the app theme; pick one and the two are independent, or choose Automatic again to follow. Both pickers group themes under Light and Dark headings.
 

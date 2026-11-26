@@ -4,6 +4,7 @@ group: "Workspace & files"
 order: 10
 beta: false
 summary: "Configurable regex patterns (TODO, FIXME, and your own) are highlighted in the editor and collected in a TODO tool window, with scrollbar and minimap stripes."
+description: "TODO, FIXME and your own regex patterns are highlighted in the editor, listed in a TODO window, and marked on the scrollbar and minimap."
 alt: "TODO comments highlighted in a Java file, with the TODO window counting 677 matches in 90 files"
 ---
 

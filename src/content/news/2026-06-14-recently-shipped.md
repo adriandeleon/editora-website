@@ -22,5 +22,4 @@ for everything.
   templates**, **multiple cursors**, **Remote files over SFTP**, and a
   **localized UI** (six languages).
 
-The [roadmap](/roadmap) shows what's shipped and what's
-next.
+[What's New](/whats-new/) lists everything that has shipped.

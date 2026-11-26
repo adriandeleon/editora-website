@@ -1,6 +1,7 @@
 ---
 title: "Editora 0.18.6: compact Java debugging and more AI choices"
-description: "Editora 0.18.6 adds debugging for compact and shebang Java sources, Codex AI Actions, an LM Studio/OpenCode preset, clearer Git output, and experimental native archives."
+seoTitle: "Editora 0.18.6: compact Java debugging, more AI"
+description: "Debugging for compact and shebang Java sources, Codex AI Actions, an LM Studio/OpenCode preset, clearer Git output, and experimental native archives."
 date: 2026-09-28
 version: "0.18.6"
 ---

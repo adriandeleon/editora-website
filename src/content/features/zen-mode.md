@@ -4,6 +4,7 @@ group: "Customization & extensibility"
 order: 3
 beta: false
 summary: "Hides every bar, the line numbers, and the minimap, leaving only the text. Everything you have switched on keeps running."
+description: "Zen mode hides every bar, the line numbers and the minimap, leaving only the text, while every feature and keybinding keeps working."
 alt: "Zen mode: a Java file with no menus, tabs, toolbars or status bar around it"
 ---
 

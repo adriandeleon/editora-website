@@ -1,6 +1,6 @@
 ---
 title: "Editora 0.14.0: a chrome release"
-description: "The menu bar can share the title bar, three bars of chrome are reconsidered, Search Everywhere can now replace the command palette, and toggling Simple UI mode got about four times faster."
+description: "The menu bar can share the title bar, three bars of chrome are reconsidered, Search Everywhere can replace the command palette, and Simple UI mode is faster."
 date: 2026-08-29
 version: "0.14.0"
 ---
@@ -8,7 +8,7 @@ version: "0.14.0"
 **Editora 0.14.0** is out. It is a chrome release: the window gives rows back to
 the editor, the icons and bars that remain are consistent with each other, and the
 two focus modes now remove all the chrome they were meant to. Grab it from the
-[releases page](https://github.com/adriandeleon/Editora/releases/latest).
+[releases page](https://github.com/adriandeleon/Editora/releases/tag/v0.14.0).
 
 Chrome is the part of an editor you are not looking at, which makes it easy to
 add and easy to leave wrong. Every bar takes a row of pixels from the file you

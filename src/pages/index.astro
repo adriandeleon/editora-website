@@ -1,6 +1,4 @@
 ---
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import { groupedFeatures, groupId } from "../lib/features";
@@ -23,14 +21,6 @@ import { tourShots, gallerySections } from "../lib/screenshots";
 const base = import.meta.env.BASE_URL;
 const url = (p: string) => `${base}/${p}`.replace(/\/{2,}/g, "/");
 const logo = url("editora-icon.svg");
-
-// The "see-it" section plays a real screen capture when one is present (drop
-// screenshots/hero-demo.mp4|webm into public/). Without one it shows the editor
-// screenshot under a heading and lead that describe that screenshot, so nothing
-// on the page promises a video that is not there.
-const heroVideo = ["mp4", "webm"]
-  .map((e) => `screenshots/hero-demo.${e}`)
-  .find((p) => existsSync(resolve("public", p)));
 
 // Latest news for the home-page teaser. Same-day items tie-break on version
 // (newest release first), then on the link.
@@ -86,7 +76,7 @@ const perfStats = [
   },
   {
     stat: "Large files stay smooth",
-    body: "5 MB+ skips highlighting and the minimap; 50 MB+ opens read-only with a capped load so a multi-GB log can't exhaust memory.",
+    body: "200,000 lines or 16 MB+ turns off highlighting and the minimap; 50 MB+ opens read-only with a capped load so a multi-GB log can't exhaust memory.",
   },
   {
     stat: "Incremental everything",
@@ -99,7 +89,7 @@ const perfStats = [
 ];
 
 const platforms = [
-  { name: "macOS", note: "DMG installer (x64 / arm64)" },
+  { name: "macOS", note: "DMG installer (x64 / arm64), or Homebrew on Apple Silicon" },
   { name: "Windows", note: "MSI installer (x64)" },
   { name: "Linux", note: "DEB / RPM / AppImage / tar.gz (x64), tar.gz (arm64)" },
 ];
@@ -108,6 +98,7 @@ const platforms = [
 <Layout>
   <PageToc />
 
+  <main>
   <section id="top" class="hero">
     <div class="hero-inner">
       <img class="hero-logo" src={logo} alt="Editora logo" width="96" height="96" />
@@ -150,37 +141,19 @@ const platforms = [
     </div>
   </section>
 
-  <main>
+  <div class="main-inner">
     <section id="see-it" class="section see-it">
-      <h2>{heroVideo ? "See it in action" : "A look at the editor"}</h2>
+      <h2>A look at the editor</h2>
       <p class="section-lead">
-        {
-          heroVideo
-            ? "The actual editor, recorded: editing, navigating, and running commands from the keyboard."
-            : "The actual editor, not a mockup: the code, the Project Map, Git, the HTTP Client and more. Click a picture to see it full size."
-        }
+        The actual editor, not a mockup: the code, the Project Map, Git, the
+        HTTP Client and more. Click a picture to see it full size.
       </p>
-      {
-        heroVideo ? (
-          <video
-            class="demo-video"
-            src={url(heroVideo)}
-            poster={url("screenshots/hero/editor.jpg")}
-            autoplay
-            loop
-            muted
-            playsinline
-            controls
-          />
-        ) : (
-          <ShotCarousel
-            shots={tourShots}
-            group="tour"
-            galleryHref={url("screenshots")}
-            galleryCount={galleryCount}
-          />
-        )
-      }
+      <ShotCarousel
+        shots={tourShots}
+        group="tour"
+        galleryHref={url("screenshots")}
+        galleryCount={galleryCount}
+      />
     </section>
     <section id="why" class="section why">
       <h2>Why Editora</h2>
@@ -415,14 +388,14 @@ const platforms = [
             id="dl-toggle"
             class="btn btn-primary dl-caret"
             type="button"
-            aria-haspopup="true"
             aria-expanded="false"
+            aria-controls="dl-menu"
             aria-label="Show downloads for all platforms"
             hidden
           >
             <span aria-hidden="true">▾</span>
           </button>
-          <div id="dl-menu" class="dl-menu" role="menu" hidden></div>
+          <div id="dl-menu" class="dl-menu" hidden></div>
         </span>
         <a class="btn btn-ghost" href={`${repo}/releases`}>All releases</a>
       </div>
@@ -431,8 +404,13 @@ const platforms = [
         runnable jar for <code>java -jar</code> on JDK&nbsp;25.
       </p>
       <p class="note">
+        On a Mac with Apple Silicon you can also install it with Homebrew:
+        <code>brew install --cask adriandeleon/tap/editora</code>
+      </p>
+      <p class="note">
         The macOS app is signed and notarized by Apple, and the Linux packages
-        (.deb, .rpm, AppImage, tar.gz) come with OpenPGP signatures
+        and jars (.deb, .rpm, AppImage, tar.gz, .jar) come with OpenPGP
+        signatures
         (<a href={`${docsBase}/getting-started/#checking-a-download`}>checking a download</a>).
         The Windows installer is unsigned: if SmartScreen appears, choose
         <em>More info → Run anyway</em>.
@@ -470,6 +448,7 @@ const platforms = [
         as a reviewed, tested commit on GitHub.
       </p>
     </section>
+  </div>
   </main>
 
   <script is:inline define:vars={{ repo }}>
@@ -482,14 +461,24 @@ const platforms = [
         if (!btn) return;
         var ua = navigator.userAgent;
         var plat = navigator.platform || "";
+        // Phones and tablets cannot run any build: iOS and Android would
+        // otherwise match "Mac" and "Linux" below and be handed a DMG or a
+        // .deb. iPadOS asks for desktop pages with a Mac user agent, so a
+        // touch screen on "Mac" counts as an iPad. They keep the plain
+        // Download button, which leads to the platform list.
+        var mobile =
+          /iPhone|iPad|iPod|Android|Mobile/i.test(ua) ||
+          (/Mac/i.test(ua) && navigator.maxTouchPoints > 1);
+        // The package types each OS gets, in order of preference; they match
+        // the release assets' extensions.
         var os = "Linux",
           exts = [".deb", ".appimage", ".rpm", ".tar.gz"];
         if (/Mac/i.test(ua)) {
           os = "macOS";
-          exts = [".dmg", ".pkg"];
+          exts = [".dmg"];
         } else if (/Win/i.test(ua)) {
           os = "Windows";
-          exts = [".msi", ".exe"];
+          exts = [".msi"];
         }
         // The hero button mirrors this one, so a newcomer gets the right
         // installer from the first screen instead of scrolling to #download.
@@ -502,7 +491,7 @@ const platforms = [
             if (href) hero.href = href;
           }
         }
-        setLabel("Download for " + os);
+        if (!mobile) setLabel("Download for " + os);
 
         // Detect CPU arch. Browsers report "MacIntel"/"Intel" even on Apple
         // Silicon, so beyond the UA/platform string (which catches Linux/Windows
@@ -556,8 +545,7 @@ const platforms = [
               // Arch first, then the OS's package types in order of preference
               // (asset names end with e.g. "-linux-x64.deb"). So Linux ARM, which
               // ships no .deb, gets "-linux-arm64.tar.gz" rather than the x64
-              // .deb. The "-native-experimental.tar.gz" archives never match:
-              // the arch is not directly before their extension.
+              // .deb.
               for (var a = 0; a < archPrefs.length && !pick; a++) {
                 for (var e = 0; e < exts.length && !pick; e++) {
                   for (var i = 0; i < rel.assets.length; i++) {
@@ -568,7 +556,7 @@ const platforms = [
                   }
                 }
               }
-              if (pick) {
+              if (pick && !mobile) {
                 setLabel(
                   "Download for " + os + (rel.tag_name ? " (" + rel.tag_name + ")" : ""),
                   pick.browser_download_url
@@ -631,7 +619,7 @@ const platforms = [
 
           // macOS, Windows, Linux; native installers before portable jars.
           var platRank = { macos: 0, windows: 1, linux: 2 };
-          var extRank = { dmg: 0, msi: 0, exe: 0, deb: 1, rpm: 2, appimage: 3, "tar.gz": 4, jar: 5 };
+          var extRank = { dmg: 0, msi: 0, deb: 1, rpm: 2, appimage: 3, "tar.gz": 4, jar: 5 };
           items.sort(function (a, b) {
             return (
               rank(platRank, a.plat, 9) - rank(platRank, b.plat, 9) ||
@@ -647,7 +635,6 @@ const platforms = [
             var a = document.createElement("a");
             a.className = "dl-item";
             a.href = it.url;
-            a.setAttribute("role", "menuitem");
             var main = document.createElement("span");
             main.className = "dl-item-main";
             var name = document.createElement("span");
@@ -759,29 +746,6 @@ const platforms = [
     margin: 0 auto;
     padding: 4rem 1.25rem 2.5rem;
     text-align: center;
-  }
-
-  .hero-shot {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: 0 1.25rem 4rem;
-  }
-
-  .hero-shot img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow:
-      0 20px 50px -20px rgba(0, 0, 0, 0.6),
-      0 0 0 1px var(--border-soft);
-  }
-
-  .hero-kbd {
-    color: var(--muted);
-    font-size: 0.95rem;
-    margin: 1.25rem 0 0;
   }
 
   .badges {
@@ -1070,7 +1034,7 @@ const platforms = [
     }
   }
 
-  main {
+  .main-inner {
     max-width: var(--maxw);
     margin: 0 auto;
     padding: 0 1.25rem;
@@ -1236,18 +1200,6 @@ const platforms = [
     color: var(--faint);
     font-size: 0.85rem;
     margin: 0.9rem 0 0;
-  }
-
-  /* --- "See it in action" video (the slideshow styles itself) --- */
-  .demo-video {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow:
-      0 20px 50px -20px rgba(0, 0, 0, 0.6),
-      0 0 0 1px var(--border-soft);
   }
 
   /* --- Why: pillars --- */

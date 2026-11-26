@@ -99,7 +99,7 @@ so the configuration matches what `gradle run` would launch rather than whicheve
 file is open. **Debug via Build Tool** covers the projects where the build tool
 is the natural way to start the app: it launches Gradle `run`/`bootRun
 --debug-jvm` or Maven `spring-boot:run` under a suspended JVM and attaches when
-it is ready. See [Running and debugging](/docs/run-debug).
+it is ready. See [Debug via the build tool](/docs/java#debug-via-the-build-tool).
 
 Clicking a **Java stack-trace frame** in the Run, Test or Build console now asks
 the language server to resolve it, so a frame inside a dependency or the JDK

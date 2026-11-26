@@ -4,6 +4,7 @@ group: "Code intelligence"
 order: 3
 beta: false
 summary: "Go to symbol <strong>with no language server</strong>, sticky scroll, Peek Definition, preview tabs, and related-file jumps. Move around code without losing your place."
+description: "Go to Symbol without a language server, Ctrl or Cmd hover links, sticky scroll, Peek Definition, preview tabs, Recent Locations and related files."
 alt: "The Go to Symbol in Project picker over a Java file, listing classes with their files and lines"
 ---
 
@@ -14,6 +15,7 @@ Navigation needs two things: a symbol has to be **findable**, and you have to be
 The rest help you keep your place:
 
 - **Sticky scroll** pins the enclosing scope headers above the viewport, lined up with the code below them, so deep in a long method you can still see what it belongs to. Python's scopes come from indentation, so it works there without a language server.
+- **Ctrl/Cmd-hover** shows what a click would follow: hold Ctrl (Cmd on macOS) over code and the symbol under the mouse is underlined, with a hand pointer, when Go to Definition can take you somewhere from there (a symbol the language server resolves, or an HTML page's `href` or `src`). Click to go there.
 - **Peek Definition** shows a definition over the editor and leaves your place, scroll and tab count where they were. Enter commits to the real jump.
 - **Preview tabs** reuse one tab while you browse instead of opening one per file. The reused slot's title is italic, and editing or explicitly opening the file promotes it.
 - **Recent Locations** lists the session's trail with the line you were on, and previews as you arrow through it.
