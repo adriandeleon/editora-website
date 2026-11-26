@@ -1,5 +1,6 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
+import ArchivedCommand from "../../../../components/ArchivedCommand.astro";
 import { type Cmd } from "../../../../lib/commands";
 import { formatChord } from "../../../../lib/chord-format";
 import {
@@ -422,14 +423,26 @@ if (need) {
 }
 ---
 
+{archived ? (
+  <ArchivedCommand
+    version={docVersion.version}
+    currentVersion={currentDocVersion.version}
+    title={cmd.title}
+    id={cmd.id}
+    desc={cmd.desc}
+    bindings={bindings.map((b) => ({ name: b.name, chords: b.pc }))}
+    latestHref={latestHref}
+    stillExists={stillExists}
+    docsBase={docsBase}
+  />
+) : (
 <Layout
   title={`${cmd.title} — Editora command`}
   description={metaDescription}
-  canonicalPath={archived ? latestHref : undefined}
 >
   <main
     class="page"
-    data-pagefind-body={archived ? undefined : true}
+    data-pagefind-body
     data-pagefind-meta="kind:Command"
   >
     <nav class="crumbs" data-pagefind-ignore>
@@ -440,19 +453,6 @@ if (need) {
       <span class="crumb-cat">{category}</span>
     </nav>
 
-    {
-      archived && (
-        <p class="version-note" data-pagefind-ignore>
-          <strong>Editora {docVersion.version}.</strong> Archived, so links from
-          that release keep working.{" "}
-          <a href={latestHref}>
-            {stillExists
-              ? `Read the ${currentDocVersion.version} page →`
-              : `Not a command in ${currentDocVersion.version} — browse the current docs →`}
-          </a>
-        </p>
-      )
-    }
 
     <h1>{cmd.title}</h1>
     <code class="cmd-id">{cmd.id}</code>
@@ -537,25 +537,9 @@ if (need) {
     </section>
   </main>
 </Layout>
+)}
 
 <style>
-  /* Reading an archived version is a deliberate state, so it is stated on the
-     page rather than only implied by the URL. */
-  .version-note {
-    margin: 0 0 1.5rem;
-    padding: 0.7rem 0.9rem;
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--radius);
-    background: var(--bg-soft);
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  .version-note strong {
-    color: var(--text);
-  }
-
   .page {
     max-width: 52rem;
     margin: 0 auto;

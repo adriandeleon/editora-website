@@ -1,7 +1,8 @@
-// GitHub Pages refuses a published site over 1 GB. Every release adds a full
-// copy of the docs and ~1,700 command pages under /docs/v-<version>/, so the
-// build grows each time; this fails well before the limit (and warns earlier)
-// so trimming the archive is a planned change, not a failed deploy.
+// GitHub Pages refuses a published site over 1 GB. Every release archives a
+// version under /docs/v-<version>/: a copy of the guide and ~1,700 small
+// command stubs (src/components/ArchivedCommand.astro), about 5 MB. This fails
+// well before the limit (and warns earlier) so trimming the archive is a
+// planned change, not a failed deploy.
 //
 //   npm run check:size   (after npm run build)
 import { readdirSync, statSync } from "node:fs";
