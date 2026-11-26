@@ -1,0 +1,73 @@
+---
+// The page of a command in an archived docs version: /docs/v-<old>/commands/<id>.
+//
+// Old app versions deep-link these, so every one must keep resolving, but each
+// release used to add ~1,700 full pages (site header, search, theme picker,
+// footer) and the site was heading for GitHub Pages' 1 GB limit. An archived
+// command page is therefore a small standalone document: what the command is,
+// the keys that release gave it, and the way to the current page. No layout,
+// no scripts; it is not indexed (the canonical points at the current page and
+// nothing marks it for Pagefind).
+interface Props {
+  version: string;
+  currentVersion: string;
+  title: string;
+  id: string;
+  desc?: string;
+  /** That release's chords per keymap, as its docs wrote them. */
+  bindings: { name: string; chords: string[] }[];
+  latestHref: string;
+  stillExists: boolean;
+  docsBase: string;
+}
+const { version, currentVersion, title, id, desc, bindings, latestHref, stillExists, docsBase } = Astro.props;
+const site = Astro.site ?? new URL("https://editora-project.dev");
+const canonical = new URL(latestHref.endsWith("/") ? latestHref : `${latestHref}/`, site).href;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — Editora {version} command</title>
+    <meta name="description" content={desc || `The ${title} command in Editora ${version}.`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.png" />
+    <style is:inline>
+      :root{color-scheme:light dark;font:16px/1.55 system-ui,sans-serif}
+      body{max-width:40rem;margin:2.5rem auto;padding:0 1.25rem}
+      .note{padding:.6rem .8rem;border:1px solid #8884;border-radius:8px;font-size:.92rem}
+      code,kbd{font:.85em ui-monospace,monospace;border:1px solid #8886;border-radius:5px;padding:.05rem .35rem}
+      td,th{text-align:left;padding:.25rem 1.25rem .25rem 0;vertical-align:top}
+      a{color:#2f6fdb}
+    </style>
+  </head>
+  <body>
+    <p class="note">
+      <strong>Editora {version}.</strong> Archived, so links from that release keep working.
+      <a href={latestHref}>
+        {stillExists ? `Read the ${currentVersion} page →` : `Not a command in ${currentVersion} — browse the current docs →`}
+      </a>
+    </p>
+    <h1>{title}</h1>
+    <p><code>{id}</code></p>
+    {desc && <p>{desc}</p>}
+    {
+      bindings.length > 0 ? (
+        <table>
+          <caption style="text-align:left;padding-bottom:.3rem">Default keys in {version}</caption>
+          {bindings.map((b) => (
+            <tr>
+              <th scope="row">{b.name}</th>
+              <td>{b.chords.map((c, i) => <>{i > 0 && " or "}<kbd>{c}</kbd></>)}</td>
+            </tr>
+          ))}
+        </table>
+      ) : (
+        <p>No default key in {version}; it runs from the command palette.</p>
+      )
+    }
+    <p><a href={docsBase}>Editora {version} docs</a> · <a href="/commands">All commands</a> · <a href="/">editora-project.dev</a></p>
+  </body>
+</html>
